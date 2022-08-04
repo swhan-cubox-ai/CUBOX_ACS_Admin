@@ -15,26 +15,7 @@
         <property name="password" value="1111"/>
 
 
-    </bean> 
-
- 	<bean id="dataSource_link" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-      	<!--
-      	<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
-        <property name="url" value="jdbc:oracle:thin:@172.16.107.111:1521:orcl" />
-        <property name="username" value="TEST_DBA"/>
-        <property name="password" value="TEST_DBA"/>
-        -->
     </bean>
-
-   	<!-- Mssql  -->
-	<bean id="dataSource_visit" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-	   	<!--
-	   	<property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
-	    <property name="url" value="jdbc:jtds:sqlserver://172.16.107.112:1433/TEST"/>
-	    <property name="username" value="TEST_USER"/>
-	    <property name="password" value="1111"/>
-	    -->
-	</bean>
 
 
 </beans>
