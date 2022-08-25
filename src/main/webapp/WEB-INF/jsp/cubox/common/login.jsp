@@ -16,24 +16,24 @@
 </c:if>
 <script type="text/javascript">
 $(function(){
-	$("#fsiteid").focus();
+	$("#login_id").focus();
 
 	var sUserId = getCookie("cookieLoginUserId");
 	if(!fnIsEmpty(sUserId)){
-		$("input[name=fsiteid]").val(sUserId);
+		$("input[name=login_id]").val(sUserId);
 		$("#chkIdSave").attr("checked", true);
 	}
 });
 
 function fnLoginProc () {
-	var fsiteid = $("input[name=fsiteid]").val();
-	var fpasswd = $("input[name=fpasswd]").val();
+	var login_id = $("input[name=login_id]").val();
+	var login_pwd = $("input[name=login_pwd]").val();
 
-	if(fnIsEmpty(fsiteid)){alert ("아이디를 입력하세요."); $("input[name=fsiteid]").focus(); return;}
-	if(fnIsEmpty(fpasswd)){alert ("비밀번호를 입력하세요."); $("input[name=fpasswd]").focus(); return;}
+	if(fnIsEmpty(login_id)){alert ("아이디를 입력하세요."); $("input[name=login_id]").focus(); return;}
+	if(fnIsEmpty(login_pwd)){alert ("비밀번호를 입력하세요."); $("input[name=login_pwd]").focus(); return;}
 
 	if($("#chkIdSave").is(":checked")) {
-		var sUserId = $("input[name=fsiteid]").val();
+		var sUserId = $("input[name=login_id]").val();
 		setCookie("cookieLoginUserId", sUserId, 365);
 	}else{
 		deleteCookie("cookieLoginUserId");
@@ -41,6 +41,25 @@ function fnLoginProc () {
 
 	f = document.frmLogin;
 	f.action = "/common/loginProc.do"
+	f.submit();
+}
+
+function fnTest () {
+	var login_id = $("input[name=login_id]").val();
+	var login_pwd = $("input[name=login_pwd]").val();
+
+	if(fnIsEmpty(login_id)){alert ("아이디를 입력하세요."); $("input[name=login_id]").focus(); return;}
+	if(fnIsEmpty(login_pwd)){alert ("비밀번호를 입력하세요."); $("input[name=login_pwd]").focus(); return;}
+
+	if($("#chkIdSave").is(":checked")) {
+		var sUserId = $("input[name=login_id]").val();
+		setCookie("cookieLoginUserId", sUserId, 365);
+	}else{
+		deleteCookie("cookieLoginUserId");
+	}
+
+	f = document.frmLogin;
+	f.action = "/user/addUser.do"
 	f.submit();
 }
 
@@ -132,16 +151,17 @@ function fnGoVisit() {
 						<div class="icon">
 							<img src="/img/login/login_icon1.png" alt="" />
 						</div>
-						<input name="fsiteid" type="text" placeholder="Username" onkeyup="this.value=this.value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|/`~!@#$%^&*()_=+|<>?:{}-]/g,'')" />
+						<input name="login_id" type="text" placeholder="Username" onkeyup="this.value=this.value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|/`~!@#$%^&*()_=+|<>?:{}-]/g,'')" />
 					</div>
 					<div class="tx_box">비밀번호</div>
 					<div class="input_inbox">
 						<div class="icon">
 							<img src="/img/login/login_icon2.png" alt="" />
 						</div>
-						<input type="password" name="fpasswd" placeholder="Password" onkeypress="caps_lock(event);" />
+						<input type="password" name="login_pwd" placeholder="Password" onkeypress="caps_lock(event);" />
 					</div>
 					<button type="button" class="login_btn mt_30 mr_20" onClick="fnLoginProc()">로그인</button>
+					<button type="button" class="login_btn mt_30 mr_20" onClick="fnTest()">테스트계정 생성</button>
 					<%-- <button type="button" class="login_btn mt_30" onClick="fnGoVisit()">방문신청</button> --%>
 					<div class="com_box">
 						<input type="checkbox" id="chkIdSave" class="checkbox mr_5" value="Y">

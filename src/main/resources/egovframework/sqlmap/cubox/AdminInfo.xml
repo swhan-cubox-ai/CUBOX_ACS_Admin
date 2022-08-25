@@ -3,8 +3,8 @@
 
 <mapper namespace="admin">
 
-
 	<!-- 사이트유저가져오기 -->
+<!--
 	<select id="getSiteUserList" resultType="aero.cubox.core.vo.SiteUserVO" parameterType="aero.cubox.core.vo.SiteUserVO" >
 		select tsu.fsiteid, tsu.fpasswd, tsu.fpasswdyn, tsu.fkind3, tsu.fname, tsu.fphone, tsu.fuseyn, tsu.fregdt
 		, DATE_FORMAT(fregdt,'%Y-%m-%d') AS fregdt2
@@ -116,5 +116,5 @@
 		  FROM author_menu_tb
          WHERE author_id= #{author_id};
 	</insert>
-
+-->
 </mapper>

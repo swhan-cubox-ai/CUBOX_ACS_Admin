@@ -5,15 +5,13 @@ import aero.cubox.cmmn.service.CommonService;
 import aero.cubox.core.vo.CodeVO;
 import aero.cubox.core.vo.DateTimeVO;
 import aero.cubox.core.vo.LoginVO;
+//import aero.cubox.core.vo.LoginVO;
 import aero.cubox.util.DataScrty;
-import aero.cubox.util.StringUtil;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service("commonService")
 public class CommonServiceImpl extends EgovAbstractServiceImpl implements CommonService {
@@ -31,14 +29,14 @@ public class CommonServiceImpl extends EgovAbstractServiceImpl implements Common
 	public LoginVO actionLogin(LoginVO vo) throws Exception {
 
     	// 1. 입력한 비밀번호를 암호화한다.
-		String fpasswd = DataScrty.encryptPassword(vo.getFpasswd(), vo.getFsiteid());
-    	vo.setFpasswd(fpasswd);
+		String loginPwd = DataScrty.encryptPassword(vo.getLogin_pwd(), vo.getLogin_id());
+    	vo.setLogin_pwd(loginPwd);
 
     	// 2. 아이디와 암호화된 비밀번호가 DB와 일치하는지 확인한다.
     	LoginVO loginVO = commonDAO.actionLogin(vo);
 
     	// 3. 결과를 리턴한다.
-    	if (loginVO != null && !loginVO.getFsiteid().equals("")) {
+    	if (loginVO != null && !loginVO.getLogin_id().equals("")) {
     		return loginVO;
     	} else {
     		loginVO = new LoginVO();
@@ -52,10 +50,10 @@ public class CommonServiceImpl extends EgovAbstractServiceImpl implements Common
    	 * @return
    	 * @throws Exception
    	 */
-    @Override
-	public int lastConnect(LoginVO vo) throws Exception {
-    	return commonDAO.lastConnect(vo);
-    }
+    //@Override
+//	public int lastConnect(LoginVO vo) throws Exception {
+//    	return commonDAO.lastConnect(vo);
+//    }
 
     /**
 	 * 코드가져오기

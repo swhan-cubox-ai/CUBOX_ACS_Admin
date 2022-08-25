@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:set var="currentPath" value="${requestScope['javax.servlet.forward.servlet_path']}" />
-<c:if test="${not empty sessionScope.loginVO.fsiteid and fn:trim(currentPath) ne '/admin/pwChange.do'}">
+<c:if test="${not empty sessionScope.loginVO.login_id and fn:trim(currentPath) ne '/admin/pwChange.do'}">
  <c:choose>
 	<c:when test="${sessionScope.loginVO.fdatediff > 90}">
 		<script type="text/javascript">

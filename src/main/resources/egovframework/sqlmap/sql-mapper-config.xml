@@ -12,8 +12,7 @@
 		<typeAlias alias="authorVO"      type="aero.cubox.core.vo.AuthorVO"/>
 		<typeAlias alias="authorGroupVO" type="aero.cubox.core.vo.AuthorGroupVO"/>
 		<typeAlias alias="authorGroupDetailVO" type="aero.cubox.core.vo.AuthorGroupDetailVO"/>
-		<typeAlias alias="menuClVO"      type="aero.cubox.menu.vo.MenuClVO"/>
-		<typeAlias alias="menuDetailVO"  type="aero.cubox.menu.vo.MenuDetailVO"/>
+
 		<typeAlias alias="commonUtils"   type="aero.cubox.util.CommonUtils"/>
 	</typeAliases>
 </configuration>

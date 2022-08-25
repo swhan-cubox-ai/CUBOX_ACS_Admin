@@ -5,10 +5,10 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ page import="aero.cubox.core.vo.LoginVO" %>
 <%@ page import="aero.cubox.util.AuthorManager" %>
-<%@ page import="aero.cubox.menu.vo.MenuClVO" %>
 <%-- <%@ page import="vo.menu.aero.cubox.MenuDetailVO" %> --%>
 <%@ page import="java.util.*" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="aero.cubox.core.vo.MenuVO" %>
 <%
 	Date nowTime = new Date();
 	SimpleDateFormat sf = new SimpleDateFormat("yyyy년 MM월 dd일");
@@ -18,15 +18,19 @@
 	LoginVO loginVO = (LoginVO)session.getAttribute("loginVO");
 	String authorId = "";
 	if(loginVO!= null) {
-		authorId = loginVO.getAuthor_id ();
+		authorId = loginVO.getRole_id ();
 	}
 
 	//대메뉴 조회
-	List<MenuClVO> menuClList = null;
+	List<MenuVO> menuList = null;
 	if(authorManager != null) {
-		menuClList = authorManager.getMenuCl (authorId);
+
+		//menuClList = authorManager.getMenuCl (authorId);
+		menuList = authorManager.getMenuList (authorId);
 	}
-	pageContext.setAttribute("menuClList", menuClList);
+	pageContext.setAttribute("menuList", menuList);
+
+
 
 	//String strUriPath = (String) session.getAttribute("uriPath");
 %>
@@ -35,7 +39,7 @@
 	<header class="main">
 		<div class="logo" style="width: 250px;">
 			<a href="/main.do">
-				<img id="topLeftLogo" src="/img/logo/logo_<spring:eval expression="@property['Globals.site.main.id']" />.png" alt="" style="max-width: 170px; <c:if test="${sessionScope.loginVO.author_id ne '00008'}">display: none;</c:if>"/>
+				<img id="topLeftLogo" src="/img/logo/logo_<spring:eval expression="@property['Globals.site.main.id']" />.png" alt="" style="max-width: 170px; <c:if test="${sessionScope.loginVO.role_id ne '00008'}">display: none;</c:if>"/>
 			</a>
 		</div>
 		<div class="title_box">
@@ -54,7 +58,7 @@
 					<img src="/img/icon_member.png" alt="" />
 				</div>
 				<p>
-					[<c:out value="${sessionScope.loginVO.site_nm}"/>] <c:out value="${sessionScope.loginVO.fname}"/>
+					<!--[<c:out value="${sessionScope.loginVO.user_nm}"/>] 부서, 소속이름 테이블 변경 필요.--> <c:out value="${sessionScope.loginVO.user_nm}"/>
 				</p>
 			</div>
 			<button type="button" class="pw" onclick="fnPassChange();">비밀번호 변경</button>
@@ -62,9 +66,9 @@
 		</div>
 	</header>
 	<!--//상단영역 공통  -->
-	<c:if test="${sessionScope.loginVO.author_id ne '00008'}"><input type="checkbox" id="menu_state" checked></c:if>
+	<c:if test="${sessionScope.loginVO.role_id ne '00008'}"><input type="checkbox" id="menu_state" checked></c:if>
 	<nav>
-		<c:if test="${sessionScope.loginVO.author_id ne '00008'}"><label for="menu_state"><i class="fa"></i></label></c:if>
+		<c:if test="${sessionScope.loginVO.role_id ne '00008'}"><label for="menu_state"><i class="fa"></i></label></c:if>
 		<div class="left_title">
 			<a href="/main.do">
 				<img src="/img/logo/logo_<spring:eval expression="@property['Globals.site.main.id']" />_w.png" alt="" style="max-width: 170px;"/>
@@ -72,9 +76,9 @@
 		</div>
 		<!-- 메뉴 자동 -->
 		<ul class="nav" id="demo1">
-		<c:forEach var="result" items="${menuClList}" varStatus="status">
+		<c:forEach var="result" items="${menuList}" varStatus="status">
 			<li>
-				<a href="" style="background: url('/img/${result.icon_img}');">${result.menu_cl_nm}</a>
+				<a href="" style="background: url('/img/${result.icon_img}');">${result.menu_nm}</a>
 				<c:if test="${result.list != null && fn:length(result.list) > 0 }">
 					<ul class="menu2">
 						<c:forEach var="menuList" items="${result.list}" varStatus="dStatus">

@@ -1,13 +1,9 @@
 package aero.cubox.cmmn.service;
 
 import aero.cubox.board.service.vo.BoardVO;
-import aero.cubox.core.vo.CodeVO;
-import aero.cubox.core.vo.DateTimeVO;
-import aero.cubox.core.vo.LoginVO;
-import aero.cubox.core.vo.MainStatusVO;
+import aero.cubox.core.vo.*;
 
 import java.util.List;
-import java.util.Map;
 
 
 public interface CommonService {
@@ -25,7 +21,7 @@ public interface CommonService {
 	 * @return
 	 * @throws Exception
 	 */
-	int lastConnect(LoginVO vo) throws Exception;
+	//int lastConnect(LoginVO vo) throws Exception;
 
 	/**
 	 * 코드가져오기

@@ -15,7 +15,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import aero.cubox.core.vo.LoginVO;
+//import aero.cubox.core.vo.LoginVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -85,33 +85,33 @@ public class FileController {
 		return "cubox/file/fileList";
 	}
 
-	@RequestMapping(value="/fileListOwnerIframe.do")
-	public String fileListOwnerIframe(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
-		LoginVO loginVO = (LoginVO)request.getSession().getAttribute("loginVO");
-
-		String registId = loginVO.getFsiteid();
-		String atchFileId = String.valueOf(request.getParameter("atchFileId"));
-		String ifr_id = String.valueOf(request.getParameter("ifr_id"));
-
-		FileVO vo = new FileVO();
-		vo.setAtchFileId(atchFileId);
-
-		//본인여부
-		FileVO rMap = fileService.getFileManage(vo);
-		if(rMap != null){
-			String writng_id = rMap.getRegistId();
-			if(registId.equals(writng_id)){
-				model.addAttribute("owner", "Y");
-			}
-		}
-
-		List<FileVO> result = fileService.getFileList(vo);
-
-		model.addAttribute("ifr_id", ifr_id);
-		model.addAttribute("result", result);
-		
-		return "cubox/file/fileList";
-	}
+//	@RequestMapping(value="/fileListOwnerIframe.do")
+//	public String fileListOwnerIframe(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+//		LoginVO loginVO = (LoginVO)request.getSession().getAttribute("loginVO");
+//
+//		String registId = loginVO.getFsiteid();
+//		String atchFileId = String.valueOf(request.getParameter("atchFileId"));
+//		String ifr_id = String.valueOf(request.getParameter("ifr_id"));
+//
+//		FileVO vo = new FileVO();
+//		vo.setAtchFileId(atchFileId);
+//
+//		//본인여부
+//		FileVO rMap = fileService.getFileManage(vo);
+//		if(rMap != null){
+//			String writng_id = rMap.getRegistId();
+//			if(registId.equals(writng_id)){
+//				model.addAttribute("owner", "Y");
+//			}
+//		}
+//
+//		List<FileVO> result = fileService.getFileList(vo);
+//
+//		model.addAttribute("ifr_id", ifr_id);
+//		model.addAttribute("result", result);
+//
+//		return "cubox/file/fileList";
+//	}
 
 
 	@RequestMapping(value="/fileDetailPopup/")

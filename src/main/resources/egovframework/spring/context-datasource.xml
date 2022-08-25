@@ -10,10 +10,16 @@
         <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
 
 		<!-- CUBOX Server Dev -->
+		<!--
 		<property name="url" value="jdbc:log4jdbc:mysql://172.16.254.3:3306/gacs_sample_db?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnection=true&amp;allowMultiQueries=true&amp;noAccessToProcedureBodies=true" />
         <property name="username" value="dev"/>
         <property name="password" value="1111"/>
+		-->
 
+		<!-- 신규DB-->
+		<property name="url" value="jdbc:log4jdbc:mysql://13.209.174.31:3306/cubox_acs?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnection=true&amp;allowMultiQueries=true&amp;noAccessToProcedureBodies=true" />
+		<property name="username" value="acs"/>
+		<property name="password" value="cubox2022!"/>
 
     </bean>
 

@@ -1,10 +1,8 @@
 package aero.cubox.util;
 
-import aero.cubox.core.vo.AuthorVO;
-import aero.cubox.core.vo.LoginVO;
+import aero.cubox.core.vo.*;
 import aero.cubox.menu.service.MenuService;
-import aero.cubox.menu.vo.MenuClVO;
-import aero.cubox.menu.vo.MenuDetailVO;
+import aero.cubox.role.service.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -28,6 +26,8 @@ public class SessionCheck extends HandlerInterceptorAdapter {
 	@Resource
     private MenuService menuService;
 
+	@Resource
+	private RoleService roleService;
 
 	/**
 	 * 세션정보 체크
@@ -46,7 +46,9 @@ public class SessionCheck extends HandlerInterceptorAdapter {
 		freeAccessUrls.add("/common/loginProc.do");
 
 
-		
+		// 사용자등록 임시
+		freeAccessUrls.add("/user/addUser.do");
+		freeAccessUrls.add("/admin/pwChange.do");
 
 
 		//권한관계 없이 볼수 있는 페이지
@@ -55,13 +57,14 @@ public class SessionCheck extends HandlerInterceptorAdapter {
 
 		String uri = request.getServletPath();
 
-		//LOGGER.debug("uri >>>> "+uri);
+		LOGGER.debug("uri >>>> "+uri);
 
-		LoginVO loginVO = (LoginVO)request.getSession().getAttribute("loginVO");
+		LoginVO loginVO = (LoginVO) request.getSession().getAttribute("loginVO");
 		//로그인
-		if (loginVO != null && loginVO.getFsiteid() != null && !loginVO.getFsiteid().equals("")) {
+		if (loginVO != null && loginVO.getLogin_id() != null && !loginVO.getLogin_id().equals("")) {
+			String role_id = loginVO.getRole_id();
 			//권한 확인
-			if(!authorManager.is()) setAuthorInfo();
+			if(!authorManager.is()) setAuthorInfo(role_id);
 
 			//공통화면 체크
 			if(defaultAccessUrls.contains(uri)) { 	//index.do
@@ -103,35 +106,39 @@ public class SessionCheck extends HandlerInterceptorAdapter {
 		return ip;
 	}
 
-	public void setAuthorInfo() throws Exception {
+	public void setAuthorInfo(String role_id) throws Exception {
 		HashMap<String, Object> map = new HashMap<String, Object>();
-        map.put("use_yn", "Y");
-    	List<AuthorVO> authorList = menuService.getAuthorList(map);
-    	for(AuthorVO avo : authorList) {
-    		LOGGER.debug("result >>>> "+avo.getAuthorId());
-    		String authorId = avo.getAuthorId();
+        //map.put("role_id", role_id);
+		// 임시 -- 모든 대메뉴접근
+		map.put("role_id", "");
 
-    		//권한별 대메뉴 정보
+		// 권한별 대메뉴 정보
+		List<MenuVO> urlList = menuService.getMenuList(map);
+    	for(MenuVO mvo : urlList) {
+    		LOGGER.debug("result >>>> "+mvo.getMenu_cd());
+    		String menuCd = mvo.getMenu_cd();
+
         	HashMap<String, Object> sMap = new HashMap<String, Object>();
-        	sMap.put("author_id", authorId);
-        	List<MenuClVO> urlList = menuService.getAuthorMenuCl(sMap);
-        	List<MenuClVO> chkClList = new ArrayList<MenuClVO>();
+        	sMap.put("menu_cd", menuCd);
 
-        	//권한별 상세 url 전체 정보
-        	sMap.put("menu_cl_code", "");
-        	List<MenuDetailVO> menuDetailList = menuService.getAuthMenuList(sMap);
-	    	authorManager.setDetailMenu(authorId, menuDetailList);
+			//권한별 sub menu 정보
+    		for(MenuVO vo : urlList) {
+    			//String strClCode = vo.getMenu_cl_code();
+				String strClCode = "left_icon5.png";
+				vo.setIcon_img(strClCode); // todo 임시 - 메뉴로고설정 추후 설계에 따라서 변경
 
-    		for(MenuClVO vo : urlList) {
-    			String strClCode = vo.getMenu_cl_code();
-    			//권한별 sub menu 정보
-    			sMap.put("menu_cl_code", strClCode);
-    			List<MenuDetailVO> menuList = menuService.getAuthMenuList(sMap);
-    	    	//대메뉴 정보
-    	    	vo.setList(menuList);
-    	    	chkClList.add(vo);
+    			sMap.put("parent_menu_cd", vo.getMenu_cd());
+    			List<MenuDetailVO> menuList = menuService.getMenuDetail(sMap);
+
+				// todo 임시 - 메뉴URL 설정 추후 설계에 따라서 변경
+				for(MenuDetailVO mdvo : menuList) {
+					String menuUrl = MenuUrlSetting.getMenuUrl((String) mdvo.getMenu_cd());
+					mdvo.setMenu_url(menuUrl);
+				}
+
+				vo.setList(menuList);
     		}
-    		authorManager.setMenuCl(authorId, chkClList);
+    		authorManager.setMenuList(role_id, urlList);
     	}
 		authorManager.complete();
 	}

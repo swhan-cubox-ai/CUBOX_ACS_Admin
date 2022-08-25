@@ -1,13 +1,12 @@
 package aero.cubox.cmmn.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.core.vo.CodeVO;
 import aero.cubox.core.vo.DateTimeVO;
 import aero.cubox.core.vo.LoginVO;
+//import aero.cubox.core.vo.LoginVO;
 import org.springframework.stereotype.Repository;
 
 import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
@@ -33,9 +32,9 @@ public class CommonDAO extends EgovAbstractMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public int lastConnect(LoginVO vo) throws Exception {
-		return update(sqlNameSpace+"lastConnect", vo);
-	}
+//	public int lastConnect(LoginVO vo) throws Exception {
+//		return update(sqlNameSpace+"lastConnect", vo);
+//	}
 
 	/**
 	 * 코드가져오기

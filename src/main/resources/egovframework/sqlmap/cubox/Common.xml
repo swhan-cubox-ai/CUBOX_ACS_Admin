@@ -3,6 +3,7 @@
 
 <mapper namespace="common">
 	<!-- 일반 로그인 -->
+	<!--
 	<select id="actionLogin" parameterType="aero.cubox.core.vo.LoginVO" resultType="aero.cubox.core.vo.LoginVO">
 		select	tsu.fsiteid
 			,	tsu.fpasswdyn
@@ -34,14 +35,31 @@
 		   and	tsu.fpasswd = #{fpasswd}
 		   and	tsu.fuseyn = 'Y'
 	</select>
+	-->
+	<!-- 일반 로그인 -->
+	<select id="actionLogin" parameterType="aero.cubox.core.vo.LoginVO" resultType="aero.cubox.core.vo.LoginVO">
+		SELECT tus.login_id
+			 , tus.user_nm
+			 , tus.fail_cnt
+			 , tus.active_yn
+			 , tus.delete_yn
+			 , tur.role_id
+		FROM T_USER tus
+			LEFT OUTER JOIN T_USER_ROLE tur ON tus.id = tur.user_id
+		WHERE tus.login_id	= #{login_id}
+		  AND tus.login_pwd	= #{login_pwd}
+		  AND tus.active_yn = 'Y'
+	</select>
 
 	<!-- 마지막접속일 -->
+	<!--
 	<update id="lastConnect" parameterType="aero.cubox.core.vo.LoginVO">
 		update  tsiteuser
 		   set 	flastaccdt = now()
 		   	,	flastaccip = #{flastaccip}
 		 where	fsiteid = #{fsiteid}
 	</update>
+	-->
 
 	<!-- 코드가져오기 -->
 	<select id="getCodeList" parameterType="aero.cubox.core.vo.CodeVO" resultType="aero.cubox.core.vo.CodeVO" >
