@@ -165,8 +165,7 @@
     function initDetail() {
         $("#gatePath").text("");
         $("#gateNm").val("");
-        $("#gateUseYn").val("");
-        $("#gateMode").val("");
+        $("option[name='selected']").prop("selected", true);
         $("#gateCode").val("");
         $("#gateNum").val("");
         $("#gateAuthGroup").val("");
@@ -242,7 +241,7 @@
         initDetail();
         viewDetail();
         $("#gateNm").focus();
-        $("option[name='selected']").prop("selected", true);
+        // $("option[name='selected']").prop("selected", true);
     }
 
     // 출입문 관리 - 취소
