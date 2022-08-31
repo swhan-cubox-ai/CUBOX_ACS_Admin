@@ -236,9 +236,25 @@
         $("[name=gateEdit]").prop("disabled", false);
     }
 
+    // 출입문 관리 - 추가
+    function fnAdd() {
+        fnEdit();
+        initDetail();
+        viewDetail();
+        $("#gateNm").focus();
+        $("option[name='selected']").prop("selected", true);
+    }
+
     // 출입문 관리 - 취소
     function fnCancel() {
-        getGateDetail(tmpSelf);
+        if (tmpSelf == undefined || tmpSelf == null) {
+            // 추가 저장 시 취소
+            initDetail();
+            hideDetail();
+        } else {
+            // 수정 시 취소
+            getGateDetail(tmpSelf);
+        }
     }
 
     // 출입문 관리 - 수정 저장 확인
@@ -365,6 +381,7 @@
                         <th>스케쥴</th>
                         <td>
                             <select name="gateEdit" id="gateUseYn" class="form-control w_400px" style="padding-left:10px;" disabled>
+                                <option value="#" name="selected">선택</option>
                                 <option value="#">12동 현관</option>
                                 <option value="#">4동 현관</option>
                             </select>
@@ -375,6 +392,7 @@
                         <td>
                             <%--  <input type="text" id="gateMode" name="gateMode" maxlength="10" class="w_250px input_com gateMode" value="독립 모드" />--%>
                             <select name="gateEdit" id="gateMode" class="form-control w_400px" style="padding-left:10px;" disabled>
+                                <option value="#" name="selected">선택</option>
                                 <option value="#">알람 그룹1</option>
                                 <option value="#">알람 그룹2</option>
                                 <option value="#">알람 그룹3</option>
