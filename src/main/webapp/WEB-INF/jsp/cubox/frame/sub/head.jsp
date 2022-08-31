@@ -38,6 +38,8 @@ $(document).ready(function() {
 <!-- //왼쪽메뉴 스크립트 -->
 <!-- 달력 input -->
 <script src="/js/datetimepicker.js"></script>
+<!-- 트리구조 dtree -->
+<script type="text/javascript" src="/js/dTree/dtree.js"></script>
 <script>
     jQuery(document).ready(function () {
         'use strict';

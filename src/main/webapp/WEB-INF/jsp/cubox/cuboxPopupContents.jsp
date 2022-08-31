@@ -44,5 +44,6 @@
         <script type="text/javascript" src="/js/common.js"></script>
         <script type="text/javascript" src="/lib/drag_drop/Sortable.js"></script>
         <script type="text/javascript" src="/js/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="/js/dTree/dtree.js"></script>
 	</body>
 </html>
