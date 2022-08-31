@@ -23,6 +23,11 @@
     .gateDetailList tr td select {
         float: none;
     }
+    .gateDetailList tr td input,
+    .gateDetailList tr td select,
+    .gateDetailList tr td textarea {
+        width: 95%;
+    }
     .title_s {
         font-size: 20px;
     }
@@ -38,6 +43,7 @@
         padding: 10px 45px;
         overflow: auto;
     }
+
     .tb_list tr td {
         text-align: center;
     }
@@ -62,8 +68,8 @@
     $(function() {
         $(".title_tx").html("출입문 관리");
 
-        modalPopup("gatePickPopup", "단말기 선택", 900, 510);
-        modalPopup("authPickPopup", "권한그룹 선택", 900, 600);
+        modalPopup("gatePickPopup", "단말기 선택", 910, 520);
+        modalPopup("authPickPopup", "권한그룹 선택", 910, 550);
 
         $("input[name=checkAll]").click(function() {
             if( $(this).prop("checked") ){
@@ -94,6 +100,8 @@
             for(var i = ckd - 1; i > -1; i--) {
                 $("input[name=chkAuth]:checked").eq(i).closest("tr").remove();
             }
+
+            totalCheck();
         });
 
         // 권한그룹 삭제
@@ -108,7 +116,28 @@
             for(var i = ckd - 1; i > -1; i--) {
                 $("input[name=chkAuthConf]:checked").eq(i).closest("tr").remove();
             }
+
+            userCheck();
         });
+
+
+        $("#totalAuthCheckAll").click(function() {
+            if($("#totalAuthCheckAll").prop("checked")) {
+                $("input[name=chkAuth]").prop("checked", true);
+            } else {
+                $("input[name=chkAuth]").prop("checked", false);
+            }
+        });
+
+        $("#userAuthCheckAll").click(function() {
+            if($("#userAuthCheckAll").prop("checked")) {
+                $("input[name=chkAuthConf]").prop("checked", true);
+            } else {
+                $("input[name=chkAuthConf]").prop("checked", false);
+            }
+        });
+
+
 
         // dtree //
         ////////////////////////////////////////////////////////////////////////////////
@@ -296,6 +325,18 @@
         closePopup("authPickPopup");
     }
 
+    function totalCheck() {
+        if ($("#totalAuthCheckAll").prop("checked")) {
+            $("#totalAuthCheckAll").prop("checked", false);
+        }
+    }
+
+    function userCheck() {
+        if ($("#userAuthCheckAll").prop("checked")) {
+            $("#userAuthCheckAll").prop("checked", false);
+        }
+    }
+
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
@@ -361,8 +402,8 @@
                 <%--  <input type="hidden" id="fsiteid2" name="fsiteid" />--%>
                 <table class="tb_write_02 tb_write_p1">
                     <colgroup>
-                        <col style="width:40%">
-                        <col style="width:60%">
+                        <col style="width:30%">
+                        <col style="width:70%">
                     </colgroup>
 
                     <tbody class="gateDetailList" style="display: none;">
@@ -372,14 +413,14 @@
                     <tr>
                         <th>출입문 명</th>
                         <td>
-                            <input type="text" id="gateNm" name="gateEdit" maxlength="30" class="w_400px input_com gateNm" value="" disabled/>
+                            <input type="text" id="gateNm" name="gateEdit" maxlength="30" class="input_com gateNm" value="" disabled/>
                         </td>
                     </tr>
 
                     <tr>
                         <th>스케쥴</th>
                         <td>
-                            <select name="gateEdit" id="gateUseYn" class="form-control w_400px" style="padding-left:10px;" disabled>
+                            <select name="gateEdit" id="gateUseYn" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="#" name="selected">선택</option>
                                 <option value="#">12동 현관</option>
                                 <option value="#">4동 현관</option>
@@ -390,7 +431,7 @@
                         <th>알람 그룹</th>
                         <td>
                             <%--  <input type="text" id="gateMode" name="gateMode" maxlength="10" class="w_250px input_com gateMode" value="독립 모드" />--%>
-                            <select name="gateEdit" id="gateMode" class="form-control w_400px" style="padding-left:10px;" disabled>
+                            <select name="gateEdit" id="gateMode" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="#" name="selected">선택</option>
                                 <option value="#">알람 그룹1</option>
                                 <option value="#">알람 그룹2</option>
@@ -402,19 +443,19 @@
                     <tr>
                         <th>단말기 코드</th>
                         <td>
-                            <input type="text" id="gateCode" name="gateScheduleGroup" maxlength="30" class="w_400px input_com gateScheduleGroup" value="" disabled />
+                            <input type="text" id="gateCode" name="gateScheduleGroup" maxlength="30" class="input_com gateScheduleGroup" value="" disabled />
                         </td>
                     </tr>
                     <tr>
                         <th>단말기 관리번호</th>
                         <td>
-                            <input type="text" id="gateNum" name="gateScheduleGroup" maxlength="30" class="w_400px input_com gateScheduleGroup" value="" disabled />
+                            <input type="text" id="gateNum" name="gateScheduleGroup" maxlength="30" class="input_com gateScheduleGroup" value="" disabled />
                         </td>
                     </tr>
                     <tr>
                         <th>권한 그룹</th>
                         <td>
-                            <textarea id="gateAuthGroup" name="gateEdit" rows="5" cols="33" class="w_400px" style="font-size: 14px; line-height: 1.5; padding: 1px 10px" disabled>보건 복지부 &#10;12동 전체</textarea>
+                            <textarea id="gateAuthGroup" name="gateEdit" rows="5" cols="33" style="font-size: 14px; line-height: 1.5; padding: 1px 10px" disabled>보건 복지부 &#10;12동 전체</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -451,14 +492,14 @@
         <div class="search_box mb_20">
             <div class="search_in">
                 <div class="comm_search mr_10">
-                    <input type="text" class="w_400px input_com" id="srchMachine" name="srchMachine"
-                           value="" placeholder="단말기명 / 관리번호 / 단말기 코드" maxlength="30">
+                    <input type="text" class="input_com" id="srchMachine" name="srchMachine"
+                           value="" placeholder="단말기명 / 관리번호 / 단말기 코드" maxlength="30" style="width: 629px;">
                 </div>
-                <div class="comm_search ml_10 mr_20">
+                <div class="comm_search ml_5 mr_10">
                     <input type="checkbox" id="unregisteredGate" name="unregisteredGate" value="unregistered">
                     <label for="unregisteredGate" class="ml_5" style="position: relative; top: -12px;">출입문 미등록</label><br>
                 </div>
-                <div class="comm_search ml_40 mr_20">
+                <div class="comm_search ml_40">
                     <div class="search_btn2"></div>
                 </div>
             </div>
@@ -514,9 +555,9 @@
         <div class="search_box mb_20">
             <div class="search_in">
                 <div class="comm_search mr_10">
-                    <input type="text" class="w_400px input_com" id="srchAuth" name="srchAuth" value="" placeholder="권한그룹명" maxlength="30">
+                    <input type="text" class="input_com" id="srchAuth" name="srchAuth" value="" placeholder="권한그룹명" maxlength="30" style="width: 765px;">
                 </div>
-                <div class="comm_search ml_40 mr_20">
+                <div class="comm_search ml_40">
                     <div class="search_btn2"></div>
                 </div>
             </div>
@@ -533,7 +574,7 @@
                     </colgroup>
                     <thead>
                     <tr>
-                        <th>선택</th>
+                        <th><input type="checkbox" id="totalAuthCheckAll"></th>
                         <th>권한그룹명</th>
                     </tr>
                     </thead>
@@ -547,13 +588,24 @@
                     </tbody>
                 </table>
             </div>
-            <div class="c_btnbox center">
-                <div style="display: inline-block;" class="mt_20">
-                    <button type="button" id="add_auth" class="comm_btn">추가</button>
-                </div>
-            </div>
+<%--            <div class="c_btnbox center">--%>
+<%--                <div style="display: inline-block;" class="mt_20">--%>
+<%--                    <button type="button" id="add_auth" class="comm_btn">추가</button>--%>
+<%--                </div>--%>
+<%--            </div>--%>
         </div>
         <%--  end of 왼쪽 box  --%>
+
+        <%--  화살표 이동  --%>
+        <div class="box_w3_2" style="height: 250px;">
+            <div class="btn_box">
+                <img src="/img/ar_r.png" alt="" id="add_auth"/>
+            </div>
+            <div class="btn_box">
+                <img src="/img/ar_l.png" alt="" id="delete_auth"/>
+            </div>
+        </div>
+        <%--  end of 화살표 이동  --%>
 
         <%--  오른쪽 box  --%>
         <div style="width:45%;">
@@ -566,7 +618,7 @@
                     </colgroup>
                     <thead>
                     <tr>
-                        <th>선택</th>
+                        <th><input type="checkbox" id="userAuthCheckAll"></th>
                         <th>권한그룹명</th>
                     </tr>
                     </thead>
@@ -583,11 +635,11 @@
                 </table>
             </div>
             <%--  end of 테이블  --%>
-            <div class="c_btnbox center">
-                <div style="display: inline-block;" class="mt_20">
-                    <button type="button" id="delete_auth" class="comm_btn">삭제</button>
-                </div>
-            </div>
+<%--            <div class="c_btnbox center">--%>
+<%--                <div style="display: inline-block;" class="mt_20">--%>
+<%--                    <button type="button" id="delete_auth" class="comm_btn">삭제</button>--%>
+<%--                </div>--%>
+<%--            </div>--%>
         </div>
         <%--  end of 오른쪽 box  --%>
 
