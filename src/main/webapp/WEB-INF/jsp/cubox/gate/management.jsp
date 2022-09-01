@@ -41,6 +41,7 @@
         height: 611px;
         border-bottom: 1px solid #ccc;
         padding: 10px 45px;
+        padding: 10px 45px;
         overflow: auto;
     }
 
