@@ -120,6 +120,22 @@
             userCheck();
         });
 
+        $("#totalAuthCheckAll").click(function() {
+            if($("#totalAuthCheckAll").prop("checked")) {
+                $("input[name=chkAuth]").prop("checked", true);
+            } else {
+                $("input[name=chkAuth]").prop("checked", false);
+            }
+        });
+
+        $("#userAuthCheckAll").click(function() {
+            if($("#userAuthCheckAll").prop("checked")) {
+                $("input[name=chkAuthConf]").prop("checked", true);
+            } else {
+                $("input[name=chkAuthConf]").prop("checked", false);
+            }
+        });
+
 
         $("#totalAuthCheckAll").click(function() {
             if($("#totalAuthCheckAll").prop("checked")) {
@@ -337,6 +353,7 @@
         }
     }
 
+
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
@@ -431,7 +448,7 @@
                         <th>알람 그룹</th>
                         <td>
                             <%--  <input type="text" id="gateMode" name="gateMode" maxlength="10" class="w_250px input_com gateMode" value="독립 모드" />--%>
-                            <select name="gateEdit" id="gateMode" class="form-control" style="padding-left:10px;" disabled>
+                                <select name="gateEdit" id="gateMode" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="#" name="selected">선택</option>
                                 <option value="#">알람 그룹1</option>
                                 <option value="#">알람 그룹2</option>
@@ -569,12 +586,14 @@
             <div class="com_box" style="border: 1px solid black; overflow: auto; height: 250px;">
                 <table class="tb_list tb_write_02 tb_write_p1">
                     <colgroup>
-                        <col style="width:25%">
-                        <col style="width:75%">
+                        <col style="width:15%">
+                        <col style="width:20%">
+                        <col style="width:65%">
                     </colgroup>
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="totalAuthCheckAll"></th>
+                        <th>권한코드</th>
                         <th>권한그룹명</th>
                     </tr>
                     </thead>
@@ -582,17 +601,18 @@
                     <c:forEach var="i" begin="1" end="10" varStatus="status">
                         <tr>
                             <td style="padding: 0 14px;"><input type="checkbox" name="chkAuth"/></td>
+                            <td>CUBOX123</td>
                             <td>보건 복지부</td>
                         </tr>
                     </c:forEach>
                     </tbody>
                 </table>
             </div>
-<%--            <div class="c_btnbox center">--%>
-<%--                <div style="display: inline-block;" class="mt_20">--%>
-<%--                    <button type="button" id="add_auth" class="comm_btn">추가</button>--%>
-<%--                </div>--%>
-<%--            </div>--%>
+            <%--            <div class="c_btnbox center">--%>
+            <%--                <div style="display: inline-block;" class="mt_20">--%>
+            <%--                    <button type="button" id="add_auth" class="comm_btn">추가</button>--%>
+            <%--                </div>--%>
+            <%--            </div>--%>
         </div>
         <%--  end of 왼쪽 box  --%>
 
@@ -613,24 +633,28 @@
             <div class="com_box" style="border: 1px solid black; overflow: auto; height: 250px;">
                 <table class="tb_list tb_write_02 tb_write_p1">
                     <colgroup>
-                        <col style="width:25%">
-                        <col style="width:75%">
+                        <col style="width:15%">
+                        <col style="width:20%">
+                        <col style="width:65%">
                     </colgroup>
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="userAuthCheckAll"></th>
+                        <th>권한코드</th>
                         <th>권한그룹명</th>
                     </tr>
                     </thead>
                     <tbody id="tdAuthConf">
-                    <tr>
-                        <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>
-                        <td>보건 복지부</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>
-                        <td>12동 전체</td>
-                    </tr>
+                        <tr>
+                            <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>
+                            <td>CUBOX123</td>
+                            <td>보건 복지부</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>
+                            <td>CUBOX123</td>
+                            <td>보건 복지부</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
