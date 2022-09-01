@@ -40,5 +40,10 @@ public class GateController {
         return "cubox/gate/schedule";
     }
 
+    @RequestMapping(value="/schedule_add.do")
+    public String schedule_add(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        return "cubox/gate/schedule_add";
+    }
 
 }
