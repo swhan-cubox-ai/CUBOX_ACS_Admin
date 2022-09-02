@@ -5,6 +5,7 @@ import aero.cubox.cmmn.service.CommonService;
 import aero.cubox.gate.service.GateService;
 import aero.cubox.menu.service.MenuService;
 import aero.cubox.util.CommonUtils;
+import aero.cubox.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -40,10 +41,30 @@ public class GateController {
         return "cubox/gate/schedule";
     }
 
-    @RequestMapping(value="/schedule_add.do")
+    @RequestMapping(value = "/schedule_add.do")
     public String schedule_add(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
+        if (commandMap.get("editMode").equals("edit")) {
+            model.addAttribute("schName", commandMap.get("schName"));
+            model.addAttribute("schUseYn", commandMap.get("schUseYn"));
+            model.addAttribute("gateGroup", commandMap.get("gateGroup"));
+        }
+        model.addAttribute("editMode", commandMap.get("editMode"));
+        System.out.println(commandMap.get("editMode"));
+        System.out.println(model.get("editMode"));
+        System.out.println(model.get("schName"));
         return "cubox/gate/schedule_add";
     }
 
+    @RequestMapping(value="/detail.do")
+    public String schedule_detail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        return "cubox/gate/detail";
+    }
+
+    @RequestMapping(value="/schedule_delete.do")
+    public String schedule_delete(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        return "cubox/gate/schedule";
+    }
 }

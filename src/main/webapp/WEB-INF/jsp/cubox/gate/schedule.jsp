@@ -23,8 +23,6 @@
 <script type="text/javascript">
     $(function() {
         $(".title_tx").html("출입문 스케쥴 - 목록");
-
-
     });
 
     // 출입문 신규 등록
@@ -33,44 +31,45 @@
         f.action = "/gate/schedule_add.do";
         f.submit();
     }
+
+    function fnDetail(self) {
+        console.log(self);
+
+        f = document.frmSearch;
+        f.action = "/gate/detail.do";
+        f.submit();
+    }
 </script>
 
 <%--  검색 박스 --%>
 <form id="frmSearch" name="frmSearch" method="post" onsubmit="return false;">
-<%--    <input type="hidden" id="chkValueArray" name="chkValueArray" value=""/>--%>
-<%--    <input type="hidden" id="chkTextArray" name="chkTextArray" value="" >--%>
-<%--    <input type="hidden" id="fdownresn" name="fdownresn" value=""/>--%>
-<%--    <input type="hidden" id="hidExcelImgYn" name="hidExcelImgYn" value=""/>--%>
-<%--    <input type="hidden" id="hidAllLst" name="hidAllLst" value=""/>--%>
-<%--    <input type="hidden" id="hidFuLst" name="hidFuLst"/>--%>
-<%--    <input type="hidden" id="hidNttId" name="hidNttId">--%>
-<%--    <input type="hidden" id="hidbbsId" name="hidbbsId" value="${bbsId}">--%>
+    <input type="hidden" id="editMode" name="editMode" value="add"/>
 </form>
 
-<div class="search_box mb_20 mt_20" style="width: 40%;">
-    <div class="search_in" style="width: 100%;">
-        <div class="comm_search ml_10 mr_10" style="width: 90%;">
-            <input type="text" class="input_com" id="srchGate" name="srchGate" value="" placeholder="출입문 스케쥴 명"/>
-        </div>
-        <div class="comm_search ml_40">
-            <%--                <div class="search_btn2" onclick="pageSearch('1')"></div>--%>
-            <div class="search_btn2"></div>
+<form id="frmSchedule" name="frmSchedule" method="post">
+    <div class="search_box mb_20 mt_20" style="width: 40%;">
+        <div class="search_in" style="width: 100%;">
+            <div class="comm_search ml_10 mr_10" style="width: 90%;">
+                <input type="text" class="input_com" id="srchGate" name="srchGate" value="" placeholder="출입문 스케쥴 명"/>
+            </div>
+            <div class="comm_search ml_40">
+                <%--                <div class="search_btn2" onclick="pageSearch('1')"></div>--%>
+                <div class="search_btn2"></div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="totalbox mb_20 mt_20" style="justify-content: end; width: 60%; height: 65px;">
-    <div class="r_btnbox mb_10">
-        <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="openExcelDownload();">엑셀다운로드</button>
+    <div class="totalbox mb_20 mt_20" style="justify-content: end; width: 60%; height: 65px;">
+        <div class="r_btnbox mb_10">
+            <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="openExcelDownload();">엑셀다운로드</button>
+        </div>
+        <div class="r_btnbox ml_10 mb_10">
+            <button type="button" class="btn_excel" data-toggle="modal" id="" onclick="createSchedule();">신규등록</button>
+        </div>
     </div>
-    <div class="r_btnbox ml_10 mb_10">
-        <button type="button" class="btn_excel" data-toggle="modal" id="" onclick="createSchedule();">신규등록</button>
-    </div>
-</div>
 <%--  end of 검색 박스 --%>
 
     <div class="com_box">
-
         <%--  테이블  --%>
         <div class="tb_outbox">
             <table class="tb_list">
@@ -92,7 +91,7 @@
                 <c:forEach var="i" begin="1" end="10" varStatus="status">
                     <tr>
                         <td><c:out value="${i}" /></td>
-                        <td><a href="#none" data-toggle="modal" onclick="fnGateDetailPopup(this)"><c:out value="${i}"/>동 현관 출입문</a></td>
+                        <td><a href="#none" onclick="fnDetail(this)"><c:out value="${i}"/>동 현관 출입문</a></td>
                         <td>Y</td>
                         <td>2022-09-01</td>
                     </tr>

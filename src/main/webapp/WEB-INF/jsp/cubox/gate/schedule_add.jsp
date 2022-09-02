@@ -15,6 +15,9 @@
         margin-top: 10px;
         margin-bottom: 20px;
     }
+    .box {
+        border: 1px solid #ccc;
+    }
     #tdScheduleAdd tr th {
         text-align: center;
     }
@@ -26,7 +29,11 @@
 
 <script type="text/javascript">
     $(function() {
-        $(".title_tx").html("출입문 스케쥴 - 등록");
+        if (${editMode eq 'edit'}) {
+            $(".title_tx").html("출입문 스케쥴 - 수정");
+        } else {
+            $(".title_tx").html("출입문 스케쥴 - 등록");
+        }
 
         modalPopup("gateAuthPickPopup", "출입문 그룹 선택", 910, 550);
 
@@ -174,13 +181,11 @@
         totalCheck();
         userCheck();
     }
-
-
 </script>
 
 <form id="addForm" name="addForm" method="post" enctype="multipart/form-data">
     <div class="tb_01_box">
-        <table class="tb_write_02 tb_write_p1">
+        <table class="tb_write_02 tb_write_p1 box">
             <colgroup>
                 <col style="width:10%">
                 <col style="width:90%">
@@ -189,25 +194,50 @@
                 <tr>
                     <th>출입문 스케쥴 명</th>
                     <td>
-                        <input type="text" id="schName" name="schName" maxlength="50" size="50" value="" class="w_600px input_com">
+                    <c:choose>
+                        <c:when test="${editMode eq 'edit'}">
+                            <input type="text" id="schName" name="schName" maxlength="50" size="50" value="${schName}" class="w_600px input_com">
+                        </c:when>
+                        <c:otherwise>
+                            <input type="text" id="schName" name="schName" maxlength="50" size="50" value="" class="w_600px input_com">
+                        </c:otherwise>
+                    </c:choose>
                     </td>
                 </tr>
                 <tr>
                     <th>사용</th>
                     <td>
+                    <c:choose>
+                    <c:when test="${editMode eq 'edit'}">
+                        <select id="schUseYn" name="schUseYn" class="form-control w_600px" value="${schUseYn}" style="padding-left:10px;">
+                            <option value="">선택</option>
+                            <option value="yes" selected>Y</option>
+                            <option value="no">N</option>
+                        </select>
+                    </c:when>
+                    <c:otherwise>
                         <select id="schUseYn" name="schUseYn" class="form-control w_600px" style="padding-left:10px;">
                             <option value="" name="selected">선택</option>
                             <option value="yes">Y</option>
                             <option value="no">N</option>
                         </select>
+                    </c:otherwise>
+                    </c:choose>
                     </td>
                 </tr>
                 <tr>
                     <th>출입문 그룹</th>
                     <td style="display: flex;">
-                        <textarea id="gateGroup" name="gateGroup" rows="10" cols="33"
-                                  style="border-color: #ccc; border-radius: 2px; width: 95%; min-width: 95%;
-                                  font-size: 14px; line-height: 1.5; padding: 2px 10px;"></textarea>
+                    <c:choose>
+                    <c:when test="${editMode eq 'edit'}">
+                        <textarea id="gateGroup" name="gateGroup" rows="10" cols="33" style="border-color: #ccc; border-radius: 2px; width: 95%; min-width: 95%;
+                                  font-size: 14px; line-height: 1.5; padding: 2px 10px;">${gateGroup}</textarea>
+                    </c:when>
+                    <c:otherwise>
+                            <textarea id="gateGroup" name="gateGroup" rows="10" cols="33" style="border-color: #ccc; border-radius: 2px; width: 95%; min-width: 95%;
+                            font-size: 14px; line-height: 1.5; padding: 2px 10px;">${gateGroup}</textarea>
+                    </c:otherwise>
+                    </c:choose>
                         <div style="width: 15%; text-align: center;">
                             <button type="button" class="btn_middle color_basic" onclick="openPopup('gateAuthPickPopup')">선택</button>
                         </div>
@@ -219,8 +249,8 @@
 </form>
 
 <div class="right_btn mt_20">
-    <button id="btnClear" onClick="fnAdd();" class="btn_middle color_basic">확인</button>
-    <button id="btnAdd" onClick="fnCancel();" class="btn_middle ml_5 color_basic">취소</button>
+    <button class="btn_middle color_basic" onClick="fnAdd();">확인</button>
+    <button class="btn_middle ml_5 color_basic" onClick="fnCancel();">취소</button>
 </div>
 
 
