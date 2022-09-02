@@ -130,31 +130,12 @@
         });
 
         $("#userAuthCheckAll").click(function() {
-            if($("#userAuthCheckAll").prop("checked")) {
+            if ($("#userAuthCheckAll").prop("checked")) {
                 $("input[name=chkAuthConf]").prop("checked", true);
             } else {
                 $("input[name=chkAuthConf]").prop("checked", false);
             }
         });
-
-
-        $("#totalAuthCheckAll").click(function() {
-            if($("#totalAuthCheckAll").prop("checked")) {
-                $("input[name=chkAuth]").prop("checked", true);
-            } else {
-                $("input[name=chkAuth]").prop("checked", false);
-            }
-        });
-
-        $("#userAuthCheckAll").click(function() {
-            if($("#userAuthCheckAll").prop("checked")) {
-                $("input[name=chkAuthConf]").prop("checked", true);
-            } else {
-                $("input[name=chkAuthConf]").prop("checked", false);
-            }
-        });
-
-
 
         // dtree //
         ////////////////////////////////////////////////////////////////////////////////
@@ -370,6 +351,8 @@
         } else if (popupNm == "authPickPopup") {
             $("input[name='chkAuth']:checked").attr("checked", false);
             $("input[name='chkAuthConf']:checked").attr("checked", false);
+            totalCheck();
+            userCheck();
         }
     }
 
@@ -670,8 +653,8 @@
 
         <div class="c_btnbox center mt_30">
             <div style="display: inline-block;">
-                <button type="button" id="" class="comm_btn mr_20" onclick="authSave();">확인</button>
-                <button type="button" id="" class="comm_btn" onclick="closePopup('authPickPopup');">취소</button>
+                <button type="button" class="comm_btn mr_20" onclick="authSave();">확인</button>
+                <button type="button" class="comm_btn" onclick="closePopup('authPickPopup');">취소</button>
             </div>
         </div>
     </div>

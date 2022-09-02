@@ -8,7 +8,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/><html>
+<jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
 
 <style>
     .title_box {
@@ -19,6 +19,7 @@
         height: 55px;
     }
 </style>
+
 <script type="text/javascript">
     $(function() {
         $(".title_tx").html("출입문 스케쥴 - 목록");
@@ -69,7 +70,6 @@
 <%--  end of 검색 박스 --%>
 
     <div class="com_box">
-
 
         <%--  테이블  --%>
         <div class="tb_outbox">
