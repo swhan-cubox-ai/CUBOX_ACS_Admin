@@ -14,7 +14,7 @@ public class MenuUrlSetting {
 
         if("0100".equals(menu_cd)) return  "";    // 시스템관리
         else if ("0101".equals(menu_cd)) return  "";           // 환경설정
-        else if ("0102".equals(menu_cd)) return "";           // 사용자관리
+        else if ("0102".equals(menu_cd)) return "/user/userManagement.do";           // 사용자관리
         else if ("0103".equals(menu_cd)) return "/role/test.do";           // 메뉴권한관리
         else if ("0104".equals(menu_cd)) return "";           // 사용자 활동 로그
         else if ("0105".equals(menu_cd)) return "";           // 개인정보폐기

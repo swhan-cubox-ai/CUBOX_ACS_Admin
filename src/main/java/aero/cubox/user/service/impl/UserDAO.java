@@ -1,6 +1,8 @@
 package aero.cubox.user.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.core.vo.*;
@@ -23,4 +25,27 @@ public class UserDAO extends EgovAbstractMapper {
         return insert(sqlNameSpace+"addUser", vo);
     }
 
+    /**
+	 * 비밀번호체크
+	 * @return int
+	 * @throws Exception
+	 */
+    public int checkPwd(UserVO vo){
+        return (Integer)selectOne(sqlNameSpace+"checkPwd", vo);
+    }
+
+
+    /**
+     * 계정비밀번호변경저장
+     * @return int
+     * @throws Exception
+     */
+	public int passwdChangeSave(UserVO vo) throws Exception {
+        return insert(sqlNameSpace+"passwdChangeSave", vo);
+    }
+
+
+    public List<UserVO> getUserList(Map<String, Object> map) throws Exception {
+        return selectList ("user.getUserList", map);
+    }
 }

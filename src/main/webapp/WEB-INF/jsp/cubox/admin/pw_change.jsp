@@ -65,7 +65,7 @@
 		if(confirm("비밀번호를 변경하시겠습니까?")){
 			$.ajax({
 				type:"POST",
-				url:"<c:url value='/admin/passwdChangeSave.do' />",
+				url:"<c:url value='/user/passwdChangeSave.do' />",
 				data:{
 					"currentpasswd": currentpasswd,
 					"fpasswd": fpasswd
