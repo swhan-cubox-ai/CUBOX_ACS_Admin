@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Array;
 import java.util.Map;
 
 @Controller
@@ -59,6 +60,10 @@ public class GateController {
     @RequestMapping(value="/detail.do")
     public String schedule_detail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
+        String[] days = {"월", "화", "수", "목", "금", "토", "일"};
+        String[] days_eng = {"mon", "tue", "wed", "thu", "fri", "sat", "sun"};
+        model.addAttribute("days", days);
+        model.addAttribute("days_eng", days_eng);
         return "cubox/gate/detail";
     }
 
@@ -67,4 +72,5 @@ public class GateController {
 
         return "cubox/gate/schedule";
     }
+
 }
