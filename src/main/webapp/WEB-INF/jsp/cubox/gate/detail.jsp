@@ -63,49 +63,114 @@
             change: function() {
 
                 let el = $(this);
-                let startId = this.id.replace("end", "start");
                 let day = this.id.split("_")[0];
                 let schNum = this.id.split("_")[1];
                 let ifEnd = this.id.split("_")[2] == "end";
-
+                let start = "";
+                let end = "";
 
                 // console.log("this val= " + $(this).val()); //00:01:00
                 // console.log("this id= " + this.id); //tue_2_end
 
-                console.log("시작 시간 val = " + $("#" + startId).val());
+                // console.log("시작 시간 val = " + $("#" + startId).val());
+                // console.log("종료 시간 val = " + el.val());
 
-                if (ifEnd) {  // 끝나는 시간 선택 시
-                    if ($("#" + startId).val() != "") { // 시작시간 값 있을 경우
-                        // color 반영
-                        let start_hour = $("#" + startId).val().split(":")[0];      // 시작시간
-                        let end_hour = el.val().split(":")[0];                      // 종료시간
+                // let start_hour = $("#" + startId).val().split(":")[0];      // 시작시간
+                // let end_hour = el.val().split(":")[0];
 
-                        if (start_hour < end_hour) { // 시작시간이 종료시간보다 작을 때,
-                            if (ifValid(start_hour, end_hour, day)) {
-                                console.log("색칠하기");
-                                colorSchedule(start_hour, end_hour, day, schNum);
+                if (ifEnd) {
+                    console.log("ifEnd");
 
-                            } else {
-                                console.log("색칠안하기");
-                                alert("중복된 시간대가 존재합니다.");
-                                initTimepicker(startId, el);
-                            }
+                    let startId = this.id.replace("end", "start");
+                    start = $("#" + startId).val().split(":")[0];      // 시작시간
+                    end = el.val().split(":")[0];
 
+                    console.log("start : " + start);
+                    console.log("end : " + end);
+
+                    if (timeValid(this.id, start, end, startId)) {
+                        if (ifValid(this.id, start, end, day, schNum, startId)) {
+                            console.log("색칠하기");
+                            colorSchedule(start, end, day, schNum);
                         } else {
-                            alert("종료시간이 시작시간보다 빠릅니다. 다시 선택해주세요.");
-                            initTimepicker(startId, el);
+                            console.log("색칠안하기");
+                            alert("중복된 시간대가 존재합니다.");
+                            initTimepicker(startId, this.id);
                             return;
                         }
-
-                    } else { // 시작시간 값 없을 경우
-                        alert("시작 시간을 먼저 선택해주세요.");
-                        initTimepicker(startId, el);
-                        return;
                     }
 
-                } else { // 시작시간 선택 시
+                } else {  // 수정
+                    console.log("ifStart");
+                    console.log(el); //start
 
+                    let endId = this.id.replace("start", "end");
+                    console.log("endId=" + endId);
+                    console.log($("#" + endId));
+
+                    start = el.val().split(":")[0];
+                    end = $("#" + endId).val().split(":")[0];
+
+                    if (start != "") {
+                        console.log("색칠하기2");
+                        colorSchedule(start, end, day, schNum);
+                    }
                 }
+
+
+                // if ((start_hour != "" && end_hour != "") && start_hour < end_hour) { // 시작시간이 종료시간보다 작을 때,
+                //
+                //     if (ifValid(start_hour, end_hour, day)) {
+                //         console.log("색칠하기");
+                //     } else {
+                //         console.log("색칠안하기");
+                //         // alert("중복된 시간대가 존재합니다.");
+                //         // initTimepicker(startId, el);
+                //         // return;
+                //     }
+                //
+                // } else { // 시작시간 값 없을 경우
+                //
+                //     alert("시작 시간을 먼저 선택해주세요.");
+                //     initTimepicker(startId, el);
+                //     return;
+                //
+                // }
+
+
+                // if (ifEnd) {  // 끝나는 시간 선택 시
+                //     if ($("#" + startId).val() != "") { // 시작시간 값 있을 경우
+                //         // color 반영
+                //         let start_hour = $("#" + startId).val().split(":")[0];      // 시작시간
+                //         let end_hour = el.val().split(":")[0];                      // 종료시간
+                //
+                //         if (start_hour < end_hour) { // 시작시간이 종료시간보다 작을 때,
+                //             if (ifValid(start_hour, end_hour, day)) {
+                //                 console.log("색칠하기");
+                //                 colorSchedule(start_hour, end_hour, day, schNum);
+                //
+                //             } else {
+                //                 console.log("색칠안하기");
+                //                 alert("중복된 시간대가 존재합니다.");
+                //                 initTimepicker(startId, el);
+                //                 return;
+                //             }
+                //
+                //         } else {
+                //             alert("종료시간이 시작시간보다 빠릅니다. 다시 선택해주세요.");
+                //             initTimepicker(startId, el);
+                //             return;
+                //         }
+                //
+                //     } else { // 시작시간 값 없을 경우
+                //         alert("시작 시간을 먼저 선택해주세요.");
+                //         initTimepicker(startId, el);
+                //         return;
+                //     }
+                //
+                // } else { // 시작시간 선택 시
+                //
+                // }
             }
         });
 
@@ -113,32 +178,85 @@
 
     // time선택 초기화
     function initTimepicker(start, end) {
+        console.log("start = " + start);
+        console.log("end = " + end);
         $("#" + start).val("");
-        end.val("");
+        $("#" + end).val("");
+        // end.val("");
     }
 
     // 이미 색칠되어 있는지 여부확인
-    function ifValid(start, end, day) {
+    function ifValid(el, start, end, day, schNum, startId) {
+        console.log("ifValid");
+
         let result = true;
         for (let i = start; i < end; i++) {
             let divToColor = $(".timeline_" + day + ("00" + i).slice(-2));
 
-            // 이미 색칠되어 있는 경우, 중복 시간대로 인식
+            // 이미 색칠되어 있는 경우
             if (divToColor.hasClass("colored")) {
-                result = false;
-                break;
+                if (divToColor.hasClass(day + "_" + schNum)) { // 해당 스케쥴인 경우
+                    console.log("변경을 원함");
+                    // 수정로직
+                    result = timeValid(el, start, end, startId); // true 반환하면 시간 체크 완료, false 반환하면 alert창 띄우고 init완료
+                } else { // 다른 스케쥴인 경우 중복으로 간주
+                    console.log("중복 스케쥴");
+                    result = false;
+                    break;
+                }
             }
         }
+        console.log("ifValid 결과: " + result);
+        return result;
+    }
+
+    // 시간 유효성 체크
+    function timeValid(el, start, end, startId) {
+        console.log("timeValid");
+
+        let result = true;
+        if (start == "") {
+            alert("시작 시간을 먼저 선택해주세요.");
+            initTimepicker(startId, el);
+            result = false;
+        } else if (start != "" && (start > end)) { // 시작 시간이 종료시간보다 클 때
+            alert("종료시간이 시작시간보다 빠릅니다. 다시 선택해주세요!!!!.");
+            initTimepicker(startId, el);
+            result = false;
+        }
+        console.log("timeValid 결과: " + result);
         return result;
     }
 
     // 해당 범위 색칠
     function colorSchedule(start, end, day, schNum) {
+        console.log("colorschedule");
+        console.log(start);
+        console.log(end);
+
+        initColor(day, schNum);
+
         for (let i = start; i < end; i++) {
             let divToColor = $(".timeline_" + day + ("00" + i).slice(-2)); // 색칠할 div
             divToColor.addClass("colored");
             divToColor.addClass(day + "_" + schNum); // mon_2
         }
+    }
+
+    // 색칠 초기화
+    function initColor(day, schNum) {
+        console.log("initColor");
+
+        let editSch = $("." + day + "_" + schNum);
+        console.log("editSch length = " + editSch.length);
+
+        if (editSch.length != 0) {
+            for (let i in editSch) {
+                editSch.eq(i).removeClass("colored");
+                editSch.eq(i).removeClass(day + "_" + schNum);
+            }
+        }
+
     }
 
 
