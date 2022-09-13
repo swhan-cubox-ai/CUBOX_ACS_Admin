@@ -41,6 +41,7 @@
     }
     #tb_SchTimepick tr th, #tb_SchTimepick tr td {
         border: none;
+        text-align: end;
     }
     .tb_list tbody tr:nth-child(2n) td {
         background-color: transparent !important;
@@ -66,8 +67,10 @@
                 let day = this.id.split("_")[0];
                 let schNum = this.id.split("_")[1];
                 let ifEnd = this.id.split("_")[2] == "end";
-                let start = "";
-                let end = "";
+                let start = {hour : "", min : ""};
+                let end = {hour : "", min : ""};
+                // let start = "";
+                // let end = "";
 
                 // console.log("this val= " + $(this).val()); //00:01:00
                 // console.log("this id= " + this.id); //tue_2_end
@@ -82,18 +85,22 @@
                     console.log("ifEnd");
 
                     let startId = this.id.replace("end", "start");
-                    start = $("#" + startId).val().split(":")[0];      // 시작시간
-                    end = el.val().split(":")[0];
+                    // start = $("#" + startId).val().split(":")[0];      // 시작시간
+                    // end = el.val().split(":")[0];
 
-                    console.log("start : " + start);
-                    console.log("end : " + end);
+                    start.hour = $("#" + startId).val().split(":")[0];
+                    start.min = $("#" + startId).val().split(":")[1];
+                    start.sec = $("#" + startId).val().split(":")[2];
+                    end.hour = el.val().split(":")[0];
+                    end.min = el.val().split(":")[1];
+                    end.sec = el.val().split(":")[2];
 
-                    if (timeValid(this.id, start, end, startId)) {
+                    if (timeValid(this.id, start, end, startId, day, schNum)) {
                         if (ifValid(this.id, start, end, day, schNum, startId)) {
-                            console.log("색칠하기");
+                            console.log("색칠하기_ifEnd");
                             colorSchedule(start, end, day, schNum);
                         } else {
-                            console.log("색칠안하기");
+                            console.log("색칠안하기_ifEnd");
                             alert("중복된 시간대가 존재합니다.");
                             initTimepicker(startId, this.id);
                             return;
@@ -102,18 +109,32 @@
 
                 } else {  // 수정
                     console.log("ifStart");
-                    console.log(el); //start
 
                     let endId = this.id.replace("start", "end");
-                    console.log("endId=" + endId);
-                    console.log($("#" + endId));
 
-                    start = el.val().split(":")[0];
-                    end = $("#" + endId).val().split(":")[0];
+                    // start = el.val().split(":")[0];
+                    // end = $("#" + endId).val().split(":")[0];
 
-                    if (start != "") {
-                        console.log("색칠하기2");
+                    start.hour = el.val().split(":")[0];
+                    start.min = el.val().split(":")[1];
+                    start.sec = el.val().split(":")[2];
+                    end.hour = $("#" + endId).val().split(":")[0];
+                    end.min = $("#" + endId).val().split(":")[1];
+                    end.sec = $("#" + endId).val().split(":")[2];
+
+                    // if (start.hour != "" || start.min != "") {
+                    //     console.log("색칠하기2");
+                    //     colorSchedule(start, end, day, schNum);
+                    // }
+
+                    if (ifValid(endId, start, end, day, schNum, this.id)) {
+                        console.log("색칠하기_ifStart");
                         colorSchedule(start, end, day, schNum);
+                    } else {
+                        console.log("색칠안하기_ifStart");
+                        alert("중복된 시간대가 존재합니다.");
+                        initTimepicker(this.id, endId);
+                        return;
                     }
                 }
 
@@ -178,50 +199,97 @@
 
     // time선택 초기화
     function initTimepicker(start, end) {
-        console.log("start = " + start);
-        console.log("end = " + end);
+        console.log("initTimepicker");
+        // console.log("start = " + start);
+        // console.log("end = " + end);
         $("#" + start).val("");
         $("#" + end).val("");
         // end.val("");
     }
 
     // 이미 색칠되어 있는지 여부확인
-    function ifValid(el, start, end, day, schNum, startId) {
+    function ifValid(endId, start, end, day, schNum, startId) {
         console.log("ifValid");
 
         let result = true;
-        for (let i = start; i < end; i++) {
-            let divToColor = $(".timeline_" + day + ("00" + i).slice(-2));
 
-            // 이미 색칠되어 있는 경우
-            if (divToColor.hasClass("colored")) {
-                if (divToColor.hasClass(day + "_" + schNum)) { // 해당 스케쥴인 경우
-                    console.log("변경을 원함");
-                    // 수정로직
-                    result = timeValid(el, start, end, startId); // true 반환하면 시간 체크 완료, false 반환하면 alert창 띄우고 init완료
-                } else { // 다른 스케쥴인 경우 중복으로 간주
-                    console.log("중복 스케쥴");
-                    result = false;
-                    break;
+        for (let i = start.hour; i <= end.hour; i++) {
+
+            if (i == start.hour) { // 시작 hour 칸 (분단위 coloring)
+                for (let j = start.min; j < 60; j++) {
+                    let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + j); // 색칠할 div
+                    if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
+                        console.log("1. 색칠되어있고 같은 스케쥴 아님");
+                        result = false;
+                        break;
+                    }
+                }
+            } else if (i == end.hour) { // 종료 hour 칸 (분단위 coloring)
+                for (let j = 0; j < end.min; j++) {
+                    let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + j); // 색칠할 div
+                    if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
+                        console.log("2. 색칠되어있고 같은 스케쥴 아님");
+                        result = false;
+                        break;
+                    }
+                }
+            } else {
+                for (let j = 0; j < 60; j++) { // (분단위 coloring)
+                    let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + j); // 색칠할 div
+                    if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
+                        console.log("3. 색칠되어있고 같은 스케쥴 아님");
+                        result = false;
+                        break;
+                    }
                 }
             }
         }
+
+            // let divToColor = $(".timeline_" + day + ("00" + i).slice(-2));
+            // console.log("divToColor = " +  ".timeline_" + day + ("00" + i).slice(-2));
+
+            // // 이미 색칠되어 있는 경우
+            // if (divToColor.hasClass("colored")) {
+            //     // if (divToColor.hasClass(day + "_" + schNum)) { // 해당 스케쥴인 경우
+            //     //     console.log("변경을 원함");
+            //     //     // result = true;
+            //     //     // 수정로직
+            //     //     // result = timeValid(endId, start, end, startId, day, schNum); // true 반환하면 시간 체크 완료, false 반환하면 alert창 띄우고 init완료
+            //     // } else { // 다른 스케쥴인 경우 중복으로 간주
+            //     //     console.log("다른 스케쥴");
+            //     //     result = false;
+            //     //     break;
+            //     // }
+            //     console.log(divToColor.hasClass(day + "_" + schNum));
+            //     if (!divToColor.hasClass(day + "_" + schNum)) { // 다른 스케쥴인 경우 중복으로 간주
+            //         console.log("중복 스케쥴");
+            //         result = false;
+            //         break;
+            //     }
+            // }
+        // }
+
         console.log("ifValid 결과: " + result);
         return result;
     }
 
     // 시간 유효성 체크
-    function timeValid(el, start, end, startId) {
+    function timeValid(endId, start, end, startId, day, schNum) {
         console.log("timeValid");
 
         let result = true;
-        if (start == "") {
+        // if (start.hour == "") {
+        if ($("#" + startId).val() == "") {
             alert("시작 시간을 먼저 선택해주세요.");
-            initTimepicker(startId, el);
+            initTimepicker(startId, endId);
             result = false;
-        } else if (start != "" && (start > end)) { // 시작 시간이 종료시간보다 클 때
-            alert("종료시간이 시작시간보다 빠릅니다. 다시 선택해주세요!!!!.");
-            initTimepicker(startId, el);
+        // } else if (start.hour != "" && (start.hour > end.hour)) { // 시작 시간이 종료시간보다 클 때
+        } else if ($("#" + startId).val() != "" && $("#" + startId).val() >= $("#" + endId).val()) { // 시작 시간이 종료시간보다 클 때
+            alert("시작시간은 종료시간보다 빨라야합니다.");
+
+            $("#" + startId).val(start.hour + ":" + start.min + ":" + start.sec); // 수정 시
+            $("#" + endId).val(end.hour + ":" + end.min + ":" + end.sec);
+            initTimepicker(startId, endId);  // 추후에 스케쥴 리로드로 대체 - 최초 등록 시
             result = false;
         }
         console.log("timeValid 결과: " + result);
@@ -231,15 +299,44 @@
     // 해당 범위 색칠
     function colorSchedule(start, end, day, schNum) {
         console.log("colorschedule");
-        console.log(start);
-        console.log(end);
+        // console.log(start);
+        // console.log(end);
 
         initColor(day, schNum);
 
-        for (let i = start; i < end; i++) {
-            let divToColor = $(".timeline_" + day + ("00" + i).slice(-2)); // 색칠할 div
-            divToColor.addClass("colored");
-            divToColor.addClass(day + "_" + schNum); // mon_2
+        // for (let i = start.hour; i < end.hour; i++) {  // hour
+        //     // let divToColor = $(".timeline_" + day + ("00" + i).slice(-2)); // 색칠할 div
+        //     let divToColor = $(".timeline_" + day + ("00" + i).slice(-2)); // 색칠할 div
+        //     divToColor.addClass("colored");
+        //     divToColor.addClass(day + "_" + schNum); // mon_2
+        // }
+        console.log("colorSchedule2");
+        for (let i = start.hour; i <= end.hour; i++) {  // hour
+            // let divToColor = $(".timeline_" + day + ("00" + i).slice(-2)); // 색칠할 div
+
+            if (i == start.hour) { // 시작 hour 칸 (분단위 coloring)
+                console.log("i === start.hour  " + i);
+                for (let j = start.min; j < 60; j++) {
+                    let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + j); // 색칠할 div
+                    divToColor.addClass("colored");
+                    divToColor.addClass(day + "_" + schNum); // mon_2
+                }
+            } else if (i == end.hour) { // 종료 hour 칸 (분단위 coloring)
+                console.log("i === end.hour  " + i);
+                for (let j = 0; j < end.min; j++) {
+                    let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + j); // 색칠할 div
+                    divToColor.addClass("colored");
+                    divToColor.addClass(day + "_" + schNum); // mon_2
+                }
+            } else { // (시단위 coloring)
+                // $(".timeline_" + day + ("00" + i).slice(-2)).addClass("colored");
+                // $(".timeline_" + day + ("00" + i).slice(-2)).addClass(day + "_" + schNum);
+                for (let j = 0; j < 60; j++) { // (분단위 coloring)
+                    let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + j); // 색칠할 div
+                    divToColor.addClass("colored");
+                    divToColor.addClass(day + "_" + schNum); // mon_2
+                }
+            }
         }
     }
 
@@ -307,97 +404,9 @@
         // });
     }
 
-    function scheduleLoad(self) {
-        //
-        // //
-        // // $('input.form-control').timepicker({
-        // //     timeFormat: 'HH:mm:ss p',
-        // //     startTime: '0',
-        // //     maxTime: '23:59:59',
-        // //     // defaultTime: '0', // 나중에 옵션 off
-        // //     interval: 30,
-        // //     dynamic: false,
-        // //     change: function(time) {
-        //         let el = $(this);
-        //         let startId = el.attr("id").replace("end", "start");
-        //         let day = el.attr("id").split("_")[0];
-        //         let ifEnd = el.attr("id").split("_")[2] == "end";
-        //         console.log(el);
-        //         // console.log(el.val()); // 12:00:00 AM
-        //         // console.log(time); // Sun Dec 31 1899 01:30:00 GMT+0827 (한국 표준시)
-        //         // console.log(time);
-        //
-        //         // if (day == "mon") {
-        //         //     console.log("월");
-        //         // } else if (day == "tue") {
-        //         //     console.log("화");
-        //         // } else if (day == "wed") {
-        //         //     console.log("수");
-        //         // } else if (day == "thu") {
-        //         //     console.log("목");
-        //         // } else if (day == "fri") {
-        //         //     console.log("금");
-        //         // } else if (day == "sat") {
-        //         //     console.log("토");
-        //         // } else if (day == "sun") {
-        //         //     console.log("일");
-        //         // }
-        //
-        //         console.log("시작 시간 val = " + $("#" + startId).val());
-        //
-        //         if (ifEnd) {  // 끝나는 시간 선택 시
-        //             if ($("#" + startId).val() != "") { // 시작시간 값 있을 경우
-        //                 // color 반영
-        //                 let start_hour = $("#" + startId).val().split(":")[0]; // 시작시간
-        //                 let end_hour = el.val().split(":")[0]; // 종료시간
-        //                 // console.log(start_hour);
-        //                 // console.log(end_hour);
-        //
-        //                 if (start_hour < end_hour) { // 시작시간이 종료시간보다 작을 때,
-        //
-        //                     for (let i = start_hour; i < end_hour; i++) { // 해당 범위 색칠
-        //                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2)); // 색칠할 div
-        //
-        //                         if (divToColor.hasClass("colored")) { // 이미 색칠되어 있는 경우, 중복 시간대로 인식
-        //                             alert("중복된 시간대가 존재합니다.");
-        //                             // initialize timepicker
-        //                             $("#" + startId).val("");
-        //                             el.val("");
-        //                             return;
-        //
-        //                         } else {
-        //                             divToColor.addClass("colored");
-        //                         }
-        //
-        //                     }
-        //
-        //                 } else {
-        //                     alert("중복된 스케쥴이 존재합니다.");
-        //                     return;
-        //                 }
-        //
-        //             } else { // 시작시간 값 없을 경우
-        //                 alert("시작 시간을 먼저 선택해주세요.");
-        //                 // initialize timepicker
-        //                 $("#" + startId).val("");
-        //                 el.val("");
-        //                 return;
-        //             }
-        //
-        //         } else { // 시작시간 선택 시
-        //
-        //         }
-        //
-        //         //중복된 시간대가 있는 경우 팝업 출력
-        // //     }
-        // // });
-
-    }
-
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
-        // scheduleLoad();
     }
 
     // popup close (공통)
@@ -497,7 +506,18 @@
                             <td class="col_days" style="background-color:#EAECF0 !important;">${day}</td>
                             <c:forEach var="j" begin="0" end="23" varStatus="status">
                                 <fmt:formatNumber var="no" minIntegerDigits="2" value="${status.index}" type="number"/>
-                                <td><div name="timeline" class="timeline_${day_eng}${no}" style="height:50%;"></div></td>
+                                <td>
+                                    <div name="timeline" class="timeline_${day_eng}${no}" style="height:50%;display:flex;flex-wrap:wrap;">
+                                        <c:forEach var="min" begin="0" end="59" varStatus="status">
+                                            <div name="timeline" class="timeline_${day_eng}${no}_${min}" style="height:100%;flex-basis:1.666%;"></div>
+                                        </c:forEach>
+<%--                                        <div name="timeline" class="timeline_${day_eng}${no}" style="height:100%;flex-basis:16.6%;"></div>--%>
+<%--                                        <div name="timeline" class="timeline_${day_eng}${no}" style="height:100%;flex-basis:16.6%;"></div>--%>
+<%--                                        <div name="timeline" class="timeline_${day_eng}${no}" style="height:100%;flex-basis:16.6%;"></div>--%>
+<%--                                        <div name="timeline" class="timeline_${day_eng}${no}" style="height:100%;flex-basis:16.6%;"></div>--%>
+<%--                                        <div name="timeline" class="timeline_${day_eng}${no}" style="height:100%;flex-basis:16.6%;"></div>--%>
+                                    </div>
+                                </td>
                             </c:forEach>
                         </tr>
                     </c:forEach>
@@ -508,7 +528,7 @@
         <%--  end of 왼쪽 box  --%>
 
         <%--  오른쪽 box  --%>
-        <div class="mt_20" style="width:26%;">
+        <div class="mt_20 mr_10" style="width:26%;">
             <%--  테이블  --%>
             <div class="com_box">
                 <table id="tb_SchTimepick" class="tb_list" style="height:750px;">
@@ -532,7 +552,7 @@
 
 <%--                                <form>--%>
                                 <td>
-                                    <input type="time" id="${day}_${no}_start" name="${day}_${no}_start" value="" min="00:00:00" max="23:59:59" step="1">
+                                    <input type="time" id="${day}_${no}_start" name="${day}_${no}_start" value="" min="00:00:00" max="23:59:59" step="1"><br>~
                                     <input type="time" id="${day}_${no}_end" name="${day}_${no}_end" value="" min="00:00:00" max="23:59:59" step="1" >
 <%--                                    <input type="submit" value="-" style="display: none;">--%>
                                 </td>
