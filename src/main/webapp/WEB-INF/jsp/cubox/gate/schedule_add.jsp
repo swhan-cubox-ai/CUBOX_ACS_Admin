@@ -124,7 +124,7 @@
 
         // 데이터 저장
         // 출입문 목록으로 페이지 이동
-        location.href = "/gate/schedule.do";
+        location.href = "/gate/detail.do";
         // $.ajax({
         //     url: "gate/schedule_save.do",
         //     type: "POST",
