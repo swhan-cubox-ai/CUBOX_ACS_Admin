@@ -84,16 +84,8 @@
                     end.min = el.val().split(":")[1];
                     end.sec = el.val().split(":")[2];
 
-                    if (timeValid(this.id, start, end, startId, day, schNum)) {
-                        if (ifValid(startId, this.id, start, end, day, schNum)) {
-                            console.log("색칠하기_ifEnd");
-                            colorSchedule(start, end, day, schNum);
-                        } else {
-                            console.log("색칠안하기_ifEnd");
-                            // alert("중복된 시간대가 존재합니다.");
-                            // initTimepicker(startId, this.id);
-                            // return;
-                        }
+                    if (timeValid(startId, this.id, start, end, day, schNum)) {
+                        validCheck(startId, this.id, start, end, day, schNum);
                     }
 
                 } else {  // 수정
@@ -108,15 +100,7 @@
                     end.min = $("#" + endId).val().split(":")[1];
                     end.sec = $("#" + endId).val().split(":")[2];
 
-                    if (ifValid(this.id, endId, start, end, day, schNum)) {
-                        console.log("색칠하기_ifStart");
-                        colorSchedule(start, end, day, schNum);
-                    } else {
-                        console.log("색칠안하기_ifStart");
-                        // alert("중복된 시간대가 존재합니다.");
-                        // initTimepicker(this.id, endId);
-                        // return;
-                    }
+                    validCheck(this.id, endId, start, end, day, schNum);
                 }
             }
         });
@@ -130,30 +114,51 @@
         $("#" + end).val("");
     }
 
+    // 색칠 초기화
+    function initColor(day, schNum) {
+        console.log("initColor");
+
+        let editSch = $("." + day + "_" + schNum);
+
+        if (editSch.length != 0) {
+            for (let i in editSch) {
+                if (i == 0) editSch.eq(i).val("");
+                if (i == editSch.length - 1) editSch.eq(i).val("");
+                editSch.eq(i).removeClass("colored");
+                editSch.eq(i).removeClass(day + "_" + schNum);
+            }
+        }
+    }
+
+    function validCheck(startId, endId, start, end, day, schNum) {
+        if (ifValid(startId, endId, start, end, day, schNum)) {
+            console.log("색칠하기_ifEnd");
+            colorSchedule(start, end, day, schNum);
+        } else {
+            console.log("색칠안하기_ifEnd");
+        }
+    }
+
     // 이미 색칠되어 있는지 여부확인
     function ifValid(startId, endId, start, end, day, schNum) {
         console.log("ifValid");
 
         let result = true;
 
-        if (start.hour != end.hour) {
+        if (start.hour != end.hour) { // 시작시간과 종료시간이 다른 hour 칸에 있을 때
             for (let i = Number(start.hour); i <= Number(end.hour); i++) {
 
-                console.log("i (hour) = " + i);
-                if (i == Number(start.hour)) { // 시작 hour 칸 (분단위 coloring)
+                if (i == Number(start.hour)) { // 시작 hour 칸
                     for (let j = Number(start.min); j < 60; j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
-
-                        console.log(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
-
                             console.log("1. 색칠되어있고 같은 스케쥴 아님");
                             console.log(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                             result = false;
                             break;
                         }
                     }
-                } else if (i == end.hour) { // 종료 hour 칸 (분단위 coloring)
+                } else if (i == end.hour) { // 종료 hour 칸
                     for (let j = 0; j <= Number(end.min); j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
                         if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
@@ -163,7 +168,7 @@
                         }
                     }
                 } else {
-                    for (let j = 0; j < 60; j++) { // (분단위 coloring)
+                    for (let j = 0; j < 60; j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
                         if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
                             console.log("3. 색칠되어있고 같은 스케쥴 아님");
@@ -174,8 +179,7 @@
                 }
             }
 
-        } else if (start.hour == end.hour) {  // 같은 hour 칸에 있을 때
-            console.log("1111111111111111111111111111111111111111");
+        } else if (start.hour == end.hour) {  // 시작시간과 종료시간이 같은 hour 칸에 있을 때
             for (let i = Number(start.hour); i <= Number(end.hour); i++) {
                 for (let j = Number(start.min); j <= Number(end.min); j++) {
                     let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
@@ -201,7 +205,6 @@
 
         let isFirst = ($("." + day + "_" + schNum).length > 0) ? false : true;  // 최츠 등록?
 
-        // tmp.length가 0이면 최초 등록, tmp.length가 0이 아니면 수정
         if (isFirst) {
             console.log("최초등록");
             alert("중복된 스케쥴이 존재합니다. 다시 선택해주세요.");
@@ -220,7 +223,7 @@
 
 
     // 시간 유효성 체크
-    function timeValid(endId, start, end, startId, day, schNum) {
+    function timeValid(startId, endId, start, end, day, schNum) {
         console.log("timeValid");
 
         let result = true;
@@ -232,11 +235,11 @@
 
             if (!($("." + day + "_" + schNum).length > 0)) { // 최초등록
                 console.log("timevalid 최초등록");
-                alert("1 시작시간은 종료시간보다 빨라야합니다.");
+                alert("시작시간은 종료시간보다 빨라야합니다.");
                 initTimepicker(startId, endId);
             } else {
                 console.log("timevalid 최초등록 아님");
-                alert("2 시작시간은 종료시간보다 빨라야합니다.");
+                alert("시작시간은 종료시간보다 빨라야합니다.");
                 let tmpStart = $("div." + day + "_" + schNum).first().val();
                 let tmpEnd = $("div." + day + "_" + schNum).last().val();
                 $("#" + startId).val(tmpStart.hour + ":" + tmpStart.min + ":" + tmpStart.sec); // 수정 시
@@ -285,7 +288,6 @@
             }
         } else if (start.hour == end.hour) {
             for (let i = Number(start.hour); i <= Number(end.hour); i++) {  // hour
-                console.log("2222222222222222222222");
                 // 분단위 coloring
                 if (i == Number(start.hour)) { // 시작 hour 칸
                     console.log("i === start.hour  " + i);
@@ -296,23 +298,6 @@
                         divToColor.addClass(day + "_" + schNum); // mon_2
                     }
                 }
-            }
-        }
-
-    }
-
-    // 색칠 초기화
-    function initColor(day, schNum) {
-        console.log("initColor");
-
-        let editSch = $("." + day + "_" + schNum);
-
-        if (editSch.length != 0) {
-            for (let i in editSch) {
-                if (i == 0) editSch.eq(i).val("");
-                if (i == editSch.length - 1) editSch.eq(i).val("");
-                editSch.eq(i).removeClass("colored");
-                editSch.eq(i).removeClass(day + "_" + schNum);
             }
         }
     }
@@ -362,6 +347,11 @@
         //         }
         //     }
         // });
+    }
+
+    // 스케쥴 저장
+    function saveSchedule() {
+        closePopup("addByDayPopup");
     }
 
     // popup open (공통)
@@ -524,7 +514,7 @@
 
         <div class="c_btnbox center mt_30">
             <div style="display: inline-block;">
-                <button type="button" class="comm_btn mr_20" onclick="authSave();">확인</button>
+                <button type="button" class="comm_btn mr_20" onclick="saveSchedule();">확인</button>
                 <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">취소</button>
             </div>
         </div>
