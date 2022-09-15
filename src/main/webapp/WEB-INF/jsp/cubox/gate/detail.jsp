@@ -11,8 +11,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
 
-<script src="/js/timepicker/jquery.timepicker.min.js"></script>
-<link rel="stylesheet" href="/js/timepicker/jquery.timepicker.min.css" />
+<%--<script src="/js/timepicker/jquery.timepicker.min.js"></script>--%>
+<%--<link rel="stylesheet" href="/js/timepicker/jquery.timepicker.min.css" />--%>
 
 <style>
     .title_box {
@@ -352,8 +352,15 @@
         $("#" + popupNm).PopupWindow("close");
 
         if (popupNm == "addByDayPopup") {
-            // 단말기 선택 팝업창 초기화
-            // $("input[name='checkOne']:checked").attr("checked", false);
+            console.log($("#formSchedule"));
+
+            // let timeList = $("#formSchedule");
+            // for (i in timeList) {
+            //     console.log(timeList.eq(i));
+            // }
+
+            // for ()
+            // $("#formSchedule").
         }
     }
 
@@ -405,7 +412,7 @@
 </div>
 
 <%--  요일 별 스케쥴 등록 modal  --%>
-<div id="addByDayPopup" class="example_content">
+<div id="addByDayPopup" class="example_content" style="display: none;">
     <div class="popup_box box_w3">
         <%--  검색 박스 --%>
         <div class="search_box mb_20">
@@ -476,6 +483,7 @@
                     </tr>
                     </thead>
                     <tbody id="tdTimePick">
+                    <form id="formSchedule">
                     <c:forEach var="day" items="${days_eng}" varStatus="status">
                         <tr>
                             <c:forEach begin="1" end="3" varStatus="status">
@@ -487,6 +495,7 @@
                             </c:forEach>
                         </tr>
                     </c:forEach>
+                    </form>
                     </tbody>
                 </table>
             </div>
