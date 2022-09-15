@@ -351,17 +351,36 @@
     function closePopup(popupNm) {
         $("#" + popupNm).PopupWindow("close");
 
-        if (popupNm == "addByDayPopup") {
-            console.log($("#formSchedule"));
+        // if (popupNm == "addByDayPopup") {
+        console.log($("input[type=time]"));
 
-            // let timeList = $("#formSchedule");
-            // for (i in timeList) {
-            //     console.log(timeList.eq(i));
+        let timeList = $("input[type=time]");
+
+        for (let i = 0; i < timeList.length; i++) {
+
+            let isStart = timeList.eq(i).hasClass("start");
+            console.log(timeList.eq(i).val());
+
+            if (isStart) {
+                let endVal = timeList.eq(i).parent();
+                console.log(endVal);
+                if (timeList.eq(i).val() != "" && endVal == "") { // start 값 있음, end 값 없음
+                    console.log("startVal 있음, endVal 없음");
+                }
+            } else {
+
+            }
+
+
+            // if (timeList.eq(i).val() == "" || timeList.eq(i).val() == undefined) {
+            //
             // }
+        }
+
 
             // for ()
             // $("#formSchedule").
-        }
+        // }
     }
 
 </script>
@@ -483,14 +502,14 @@
                     </tr>
                     </thead>
                     <tbody id="tdTimePick">
-                    <form id="formSchedule">
+                    <form id="formSchedule" name="formSchedule">
                     <c:forEach var="day" items="${days_eng}" varStatus="status">
                         <tr>
                             <c:forEach begin="1" end="3" varStatus="status">
                                 <fmt:formatNumber var="no" value="${status.index}" type="number"/>
                                 <td>
-                                    <input type="time" id="${day}_${no}_start" name="${day}_${no}_start" value="" min="00:00:00" max="23:59:59" step="1"><br>~
-                                    <input type="time" id="${day}_${no}_end" name="${day}_${no}_end" value="" min="00:00:00" max="23:59:59" step="1" >
+                                    <input type="time" id="${day}_${no}_start" name="${day}_${no}_start" class="start" value="" min="00:00:00" max="23:59:59" step="1"><br>~
+                                    <input type="time" id="${day}_${no}_end" name="${day}_${no}_end" class="end" value="" min="00:00:00" max="23:59:59" step="1" >
                                 </td>
                             </c:forEach>
                         </tr>
