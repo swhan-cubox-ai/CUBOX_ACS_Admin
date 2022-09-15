@@ -109,15 +109,12 @@
 
     // time선택 초기화
     function initTimepicker(start, end) {
-        console.log("initTimepicker");
         $("#" + start).val("");
         $("#" + end).val("");
     }
 
     // 색칠 초기화
     function initColor(day, schNum) {
-        console.log("initColor");
-
         let editSch = $("." + day + "_" + schNum);
 
         if (editSch.length != 0) {
@@ -141,8 +138,6 @@
 
     // 이미 색칠되어 있는지 여부확인
     function ifValid(startId, endId, start, end, day, schNum) {
-        console.log("ifValid");
-
         let result = true;
 
         if (start.hour != end.hour) { // 시작시간과 종료시간이 다른 hour 칸에 있을 때
@@ -153,7 +148,6 @@
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
                         if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
                             console.log("1. 색칠되어있고 같은 스케쥴 아님");
-                            console.log(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                             result = false;
                             break;
                         }
@@ -183,7 +177,6 @@
             for (let i = Number(start.hour); i <= Number(end.hour); i++) {
                 for (let j = Number(start.min); j <= Number(end.min); j++) {
                     let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
-                    console.log(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
 
                     if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
                         console.log("4. 색칠되어있고 같은 스케쥴 아님");
@@ -224,9 +217,8 @@
 
     // 시간 유효성 체크
     function timeValid(startId, endId, start, end, day, schNum) {
-        console.log("timeValid");
-
         let result = true;
+
         if ($("#" + startId).val() == "") {
             alert("시작 시간을 먼저 선택해주세요.");
             initTimepicker(startId, endId);
@@ -254,8 +246,6 @@
 
     // 해당 범위 색칠
     function colorSchedule(start, end, day, schNum) {
-        console.log("colorschedule");
-
         initColor(day, schNum);
 
         if (start.hour != end.hour) {
@@ -263,7 +253,6 @@
 
                 // 분단위 coloring
                 if (i == start.hour) { // 시작 hour 칸
-                    console.log("i === start.hour  " + i);
                     for (let j = Number(start.min); j < 60; j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         if (j == Number(start.min)) divToColor.val(start); // 첫번째 div에 시작시간 value 넣기
@@ -271,7 +260,6 @@
                         divToColor.addClass(day + "_" + schNum); // mon_2
                     }
                 } else if (i == end.hour) { // 종료 hour 칸
-                    console.log("i === end.hour  " + i);
                     for (let j = 0; j <= Number(end.min); j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         if (j == Number(end.min)) divToColor.val(end); // 마지막 div에 종료시간 value 넣기
@@ -290,10 +278,10 @@
             for (let i = Number(start.hour); i <= Number(end.hour); i++) {  // hour
                 // 분단위 coloring
                 if (i == Number(start.hour)) { // 시작 hour 칸
-                    console.log("i === start.hour  " + i);
                     for (let j = Number(start.min); j <= Number(end.min); j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         if (j == Number(start.min)) divToColor.val(start); // 첫번째 div에 시작시간 value 넣기
+                        if (j == Number(end.min)) divToColor.val(end); // 마지막 div에 종료시간 value 넣기
                         divToColor.addClass("colored");
                         divToColor.addClass(day + "_" + schNum); // mon_2
                     }
@@ -416,7 +404,6 @@
     <button class="btn_middle ml_5 color_basic" onClick="openPopup('addByDayPopup');">요일 별 스케쥴 등록</button>
 </div>
 
-
 <%--  요일 별 스케쥴 등록 modal  --%>
 <div id="addByDayPopup" class="example_content">
     <div class="popup_box box_w3">
@@ -493,16 +480,10 @@
                         <tr>
                             <c:forEach begin="1" end="3" varStatus="status">
                                 <fmt:formatNumber var="no" value="${status.index}" type="number"/>
-<%--                                <td><input type="text" id="${day}_${no}_start" name="${day}_${no}_start" class="form-control"> ~--%>
-<%--                                <input type="text" id="${day}_${no}_end" name="${day}_${no}_end" class="form-control"></td>--%>
-
-<%--                                <form>--%>
                                 <td>
                                     <input type="time" id="${day}_${no}_start" name="${day}_${no}_start" value="" min="00:00:00" max="23:59:59" step="1"><br>~
                                     <input type="time" id="${day}_${no}_end" name="${day}_${no}_end" value="" min="00:00:00" max="23:59:59" step="1" >
-<%--                                    <input type="submit" value="-" style="display: none;">--%>
                                 </td>
-<%--                                </form>--%>
                             </c:forEach>
                         </tr>
                     </c:forEach>
