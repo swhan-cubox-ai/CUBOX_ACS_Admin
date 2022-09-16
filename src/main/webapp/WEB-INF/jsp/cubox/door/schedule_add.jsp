@@ -125,9 +125,9 @@
         // 데이터 저장
         // 출입문 목록으로 페이지 이동
         if (${editMode eq 'edit'}) {
-            location.href = "/gate/detail.do";
+            location.href = "/door/detail.do";
         } else {
-            location.href = "/gate/schedule.do";
+            location.href = "/door/schedule.do";
         }
 
         // $.ajax({
@@ -141,7 +141,7 @@
         //     dataType: "json",
         //     success: function(data) {
         //         if(data.result == "1") {
-        //             location.href = "/gate/schedule.do";
+        //             location.href = "/door/schedule.do";
         //         } else {
         //             alert(data.message);
         //         }
@@ -158,9 +158,9 @@
     // 출입문 스케줄 등록 취소
     function fnCancel() {
         if (${editMode eq 'edit'}) {
-            $("#addForm").attr("action", "/gate/detail.do");
+            $("#addForm").attr("action", "/door/detail.do");
         } else {
-            $("#addForm").attr("action", "/gate/schedule.do");
+            $("#addForm").attr("action", "/door/schedule.do");
         }
         $("#addForm").submit();
     }
