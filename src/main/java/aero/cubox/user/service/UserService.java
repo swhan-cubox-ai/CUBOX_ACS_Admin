@@ -1,5 +1,6 @@
 package aero.cubox.user.service;
 
+import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.core.vo.*;
 
 import java.util.HashMap;
@@ -27,12 +28,14 @@ public interface UserService {
 	 */
 	public int passwdChangeSave(UserVO vo) throws Exception;
 
+	int getUserListCount(UserVO vo) throws Exception;
+
 	/**
 	 * 사용자목록 조회
-	 * @param map
+	 * @param UserVO
 	 * @return
 	 * @throws Exception
 	 */
-	public List<UserVO> getUserList(Map<String, Object> map) throws Exception;
+	public List<UserVO> getUserList(UserVO vo) throws Exception;
 
 }

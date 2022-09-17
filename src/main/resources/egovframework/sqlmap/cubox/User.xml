@@ -38,7 +38,12 @@
           and	login_pwd = #{login_pwd}
     </select>
 
-    <select id="getUserList" parameterType="aero.cubox.core.vo.UserVO" resultType="int">
+    <select id="getUserListCount" parameterType="aero.cubox.core.vo.UserVO" resultType="java.lang.Integer">
+        select count(1)
+        from T_USER
+    </select>
+
+    <select id="getUserList" parameterType="aero.cubox.core.vo.UserVO" resultType="aero.cubox.core.vo.UserVO">
         select	*
         from	T_USER
         limit	#{srchCnt} offset #{offset}

@@ -104,50 +104,81 @@ public class UserController {
 
 	}
 
+	/**
+	 *	시스템관리 - 사용자관리
+	 */
 	@RequestMapping(value="/user/userManagement.do")
 	public String userManagement(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
 
-		UserVO vo = new UserVO();
-
-//		String srchPage       = StringUtil.nvl(commandMap.get("srchPage"), "1");
-//		String srchRecPerPage = StringUtil.nvl(commandMap.get("srchRecPerPage"), "10");
-//
-//		vo.setSrchPage(Integer.parseInt(srchPage));
-//		vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
-//		vo.autoOffset();
-//
-//
-//
-//		List<UserVO> list = userService.getUserList(commandMap);
-//
-//		PaginationVO pageVO = new PaginationVO();
-//		pageVO.setCurPage(vo.getSrchPage());
-//		pageVO.setRecPerPage(vo.getSrchCnt());
-//		pageVO.setTotRecord(totalCnt);
-//		pageVO.setUnitPage(vo.getCurPageUnit());
-//		pageVO.calcPageList();
-//
-//
-//
-//		model.addAttribute("option", option);
-//		model.addAttribute("userList", userList);
-//		model.addAttribute("cntPerPage", cntPerPage);
-//		model.addAttribute("pagination", pageVO);
-
-		return "cubox/systemManagement/user_management";
-
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/user/getUserList.do")
-	public ModelAndView getUserList(HttpServletRequest request, @RequestParam Map<String, Object> param) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 
 		try {
-			List<UserVO> list = userService.getUserList(param);
+			UserVO vo = new UserVO();
 
-			modelAndView.addObject("list", list);
+			String srchPage       = StringUtil.nvl(commandMap.get("srchPage"), "1");
+			String srchRecPerPage = StringUtil.nvl(commandMap.get("srchRecPerPage"), "10");
+
+			vo.setSrchPage(Integer.parseInt(srchPage));
+			vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
+			vo.autoOffset();
+
+			List<UserVO> list = userService.getUserList(vo);
+			int totalCnt = userService.getUserListCount(vo);
+
+			PaginationVO pageVO = new PaginationVO();
+			pageVO.setCurPage(vo.getSrchPage());
+			pageVO.setRecPerPage(vo.getSrchCnt());
+			pageVO.setTotRecord(totalCnt);
+			pageVO.setUnitPage(vo.getCurPageUnit());
+			pageVO.calcPageList();
+
+			//model.addAttribute("option", option);
+			model.addAttribute("userList", list);
+			model.addAttribute("cntPerPage", "10");
+			//model.addAttribute("cntPerPage", cntPerPage);
+			model.addAttribute("pagination", pageVO);
+
+		} catch(Exception e) {
+			e.printStackTrace();
+			modelAndView.addObject("message", e.getMessage());
+		}
+
+		return "cubox/systemManagement/user_management";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/user/getUserList.do")
+	public ModelAndView getUserList(@RequestParam Map<String, Object> param, ModelMap model) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+
+		try {
+			UserVO vo = new UserVO();
+
+			String srchPage       = StringUtil.nvl(param.get("srchPage"), "1");
+			String srchRecPerPage = StringUtil.nvl(param.get("srchRecPerPage"), "10");
+
+			vo.setSrchPage(Integer.parseInt(srchPage));
+			vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
+			vo.autoOffset();
+
+			List<UserVO> list = userService.getUserList(vo);
+			int totalCnt = userService.getUserListCount(vo);
+
+			PaginationVO pageVO = new PaginationVO();
+			pageVO.setCurPage(vo.getSrchPage());
+			pageVO.setRecPerPage(vo.getSrchCnt());
+			pageVO.setTotRecord(totalCnt);
+			pageVO.setUnitPage(vo.getCurPageUnit());
+			pageVO.calcPageList();
+
+			//model.addAttribute("option", option);
+			modelAndView.addObject("userList", list);
+			model.addAttribute("userList", list);
+			model.addAttribute("cntPerPage", "10");
+			//model.addAttribute("cntPerPage", cntPerPage);
+			model.addAttribute("pagination", pageVO);
 
 		} catch(Exception e) {
 			e.printStackTrace();

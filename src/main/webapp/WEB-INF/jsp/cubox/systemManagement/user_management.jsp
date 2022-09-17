@@ -17,7 +17,7 @@
 
 		$.ajax({
 			type:"POST",
-			url:"<c:url value='/user/getUserList.do' />",
+			url:"<c:url value='/user/userManagement.do' />",
 			data:{
 				"srchCond": srchCond,
 				"keyword": keyword
@@ -25,9 +25,12 @@
 			dataType:'json',
 			//timeout:(1000*30),
 			success:function(returnData, status){
+				console.log(returnData);
 				if(status == "success") {
-					location.reload();
-				}else{ alert("ERROR!");return;}
+					console.log(returnData.list);
+					//location.reload();
+				}
+				//else{ alert("ERROR!");return;}
 			}
 		});
 	}
@@ -59,7 +62,8 @@
 				<input type="text" class="w_150px input_com" id="keyword" name="keyword">
 			</div>
 			<div class="comm_search ml_40">
-				<div class="search_btn2" onclick="pageSearch('1')"></div>
+				<!--<div class="search_btn2" onclick="pageSearch('1')"></div>-->
+				<div class="search_btn2" onclick="fnGetUserList()"></div>
 			</div>
 		</div>
 	</div>
@@ -72,9 +76,9 @@
 			<b class="fl mr_10">전체 : <c:out value="${pagination.totRecord}"/>건</b>
 			<!-- 건수 -->
 			<select name="srchRecPerPage" id="srchRecPerPage" class="input_com w_80px">
-				<c:forEach items="${cntPerPage}" var="cntPerPage" varStatus="status">
-					<option value='<c:out value="${cntPerPage.fvalue}"/>' <c:if test="${cntPerPage.fvalue eq pagination.recPerPage}">selected</c:if>><c:out value="${cntPerPage.fkind3}"/></option>
-				</c:forEach>
+				<!--<c:forEach items="${cntPerPage}" var="cntPerPage" varStatus="status">
+
+				</c:forEach>-->
 			</select>
 		</div>	<!--버튼 -->
 		<div class="r_btnbox  mb_10">
@@ -87,7 +91,7 @@
 	<div class="tb_outbox">
 		<table class="tb_list">
 			<colgroup>
-				<col width="20px" />
+				<col width="5%" />
 				<col width="9%"/>
 				<col width="9%" />
 				<col width="9%" />
@@ -107,29 +111,20 @@
 			</tr>
 			</thead>
 			<tbody>
-			<c:if test="${siteUserList == null || fn:length(siteUserList) == 0}">
+			<c:if test="${userList == null || fn:length(userList) == 0}">
 				<tr>
 					<td class="h_35px" colspan="13">조회 목록이 없습니다.</td>
 				</tr>
 			</c:if>
-			<c:forEach items="${siteUserList}" var="sList" varStatus="status">
+			<c:forEach items="${userList}" var="uList" varStatus="status">
 				<tr>
 					<td>${(pagination.totRecord - (pagination.totRecord-status.index)+1)  + ( (pagination.curPage - 1)  *  pagination.recPerPage ) }</td>
-					<td><c:out value="${sList.fsiteid}"/></td>
-					<td><c:out value="${sList.fname}"/></td>
-					<td><c:out value="${sList.fphone}"/></td>
-					<td><c:out value="${sList.fuid}"/></td>
-					<td><c:out value="${sList.funm}"/></td>
-					<td><c:out value="${sList.site_nm}"/></td>
-					<td><c:out value="${sList.author_nm}"/></td>
-					<td><c:out value="${sList.fpasswdyn}"/></td>
-					<td><c:out value="${sList.fregdt2}"/></td>
-					<td>
-						<c:if test="${sList.fuseyn eq 'Y'}"><button type="button" class="btn_small color_basic" onclick="fnSiteUserFuseynChangeSave('<c:out value="${sList.fsiteid}"/>','<c:out value="${sList.fuseyn}"/>');">사용중</button></c:if>
-						<c:if test="${sList.fuseyn eq 'N'}"><button type="button" class="btn_small color_gray" onclick="fnSiteUserFuseynChangeSave('<c:out value="${sList.fsiteid}"/>','<c:out value="${sList.fuseyn}"/>');">사용안함</button></c:if>
-					</td>
-					<td><button type="button" class="btn_small color_basic" data-toggle="modal" onclick="fnSiteUserInfoChange('<c:out value="${sList.fsiteid}"/>','<c:out value="${sList.fkind3}"/>','<c:out value="${sList.femergency}"/>','<c:out value="${sList.fname}"/>','<c:out value="${sList.fphone}"/>','<c:out value="${sList.fauthcd}"/>','<c:out value="${sList.fuid}"/>','<c:out value="${sList.funm}"/>','<c:out value="${sList.site_id}"/>','<c:out value="${sList.author_id}"/>');">편집</button></td>
-					<td><button type="button" class="btn_small color_color1" onclick="fnSiteUserPasswdReset('<c:out value="${sList.fsiteid}"/>');">초기화</button></td>
+					<td><c:out value="${uList.login_id}"/></td>
+					<td><c:out value="${uList.user_nm}"/></td>
+					<td><c:out value="${uList.dept_nm}"/></td>
+					<td><c:out value="${uList.contact_no}"/></td>
+					<td><c:out value="${uList.create_at}"/></td>
+					<td><c:out value="${uList.active_yn}"/></td>
 				</tr>
 			</c:forEach>
 			</tbody>

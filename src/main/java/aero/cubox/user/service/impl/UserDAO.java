@@ -45,7 +45,11 @@ public class UserDAO extends EgovAbstractMapper {
     }
 
 
-    public List<UserVO> getUserList(Map<String, Object> map) throws Exception {
-        return selectList ("user.getUserList", map);
+    public int getUserListCount(UserVO vo) {
+        return selectOne(sqlNameSpace+"getUserListCount", vo);
+    }
+
+    public List<UserVO> getUserList(UserVO vo) throws Exception {
+        return selectList ("user.getUserList", vo);
     }
 }

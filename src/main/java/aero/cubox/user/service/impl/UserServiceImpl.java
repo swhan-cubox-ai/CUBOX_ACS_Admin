@@ -64,8 +64,13 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
 	}
 
     @Override
-    public List<UserVO> getUserList(Map<String, Object> map) throws Exception {
-        return userDAO.getUserList(map);
+    public int getUserListCount(UserVO vo) throws Exception {
+        return userDAO.getUserListCount(vo);
+    }
+
+    @Override
+    public List<UserVO> getUserList(UserVO vo) throws Exception {
+        return userDAO.getUserList(vo);
     }
 
 }
