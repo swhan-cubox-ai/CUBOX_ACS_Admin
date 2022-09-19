@@ -38,7 +38,6 @@
     }
     #tb_SchTimepick tr th, #tb_SchTimepick tr td {
         border: none;
-        text-align: end;
     }
     .tb_list tbody tr:nth-child(2n) td {
         background-color: transparent !important;
@@ -55,7 +54,8 @@
 <script type="text/javascript">
     $(function() {
         $(".title_tx").html("출입문 스케쥴 - 상세");
-        modalPopup("addByDayPopup", "요일 별 스케쥴 등록", 2000, 1100);
+        modalPopup("addByDayPopup", "요일 별 스케쥴 등록", 1650, 1040);
+        // modalPopup("addByDayPopup", "요일 별 스케쥴 등록", 2000, 1100);
 
         $("input[type=time]").on({
             change: function() {
@@ -137,7 +137,7 @@
     // 이미 색칠되어 있는지 여부확인
     function ifValid(startId, endId, start, end, day, schNum) {
         console.log("ifValid");
-        let result = true;
+        let result = true; // 다른 스케쥴과 겹치는지 여부
 
         if (start.hour != end.hour) { // 시작시간과 종료시간이 다른 hour 칸에 있을 때
             for (let i = Number(start.hour); i <= Number(end.hour); i++) {
@@ -447,8 +447,8 @@
             <tr>
                 <th>출입문 그룹</th>
                 <td style="display: flex;">
-                    <textarea id="gateGroup" name="gateGroup" rows="10" cols="33"
-                              style="border-color: #ccc; border-radius: 2px; width: 95%; min-width: 95%;
+                    <textarea id="gateGroup" name="gateGroup" rows="10" cols="33" class="w_600px"
+                              style="border-color: #ccc; border-radius: 2px;
                               font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>출입문 그룹 A</textarea>
                 </td>
             </tr>
@@ -466,9 +466,9 @@
 
 <%--  요일 별 스케쥴 등록 modal  --%>
 <div id="addByDayPopup" class="example_content" style="display: none;">
-    <div class="popup_box box_w3">
+    <div class="popup_box box_w3" style="margin-top:0px;">
         <%--  검색 박스 --%>
-        <div class="search_box mb_20">
+        <div class="search_box mb_10">
             <div class="search_in">
                 <div class="comm_search mr_10">
                     <label for="gateSchNm" class="mr_10">출입문 스케쥴 명</label>
@@ -521,7 +521,7 @@
         <%--  end of 왼쪽 box  --%>
 
         <%--  오른쪽 box  --%>
-        <div class="mt_20 mr_10" style="width:26%;">
+        <div class="mt_20" style="width:26%;">
             <%--  테이블  --%>
             <div class="com_box">
                 <table id="tb_SchTimepick" class="tb_list" style="height:750px;">

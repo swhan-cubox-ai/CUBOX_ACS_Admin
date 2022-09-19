@@ -203,14 +203,8 @@
                 <tr>
                     <th>출입문 스케쥴 명</th>
                     <td>
-                    <c:choose>
-                        <c:when test="${editMode eq 'edit'}">
-                            <input type="text" id="schName" name="schName" maxlength="50" size="50" value="${schName}" class="w_600px input_com">
-                        </c:when>
-                        <c:otherwise>
-                            <input type="text" id="schName" name="schName" maxlength="50" size="50" value="" class="w_600px input_com">
-                        </c:otherwise>
-                    </c:choose>
+                        <input type="text" id="schName" name="schName" maxlength="50" size="50"
+                               value='<c:if test="${editMode eq 'edit'}">${schName}</c:if>' class="w_600px input_com">
                     </td>
                 </tr>
                 <tr>
@@ -237,17 +231,9 @@
                 <tr>
                     <th>출입문 그룹</th>
                     <td style="display: flex;">
-                    <c:choose>
-                    <c:when test="${editMode eq 'edit'}">
-                        <textarea id="gateGroup" name="gateGroup" rows="10" cols="33" style="border-color: #ccc; border-radius: 2px; width: 95%; min-width: 95%;
-                                  font-size: 14px; line-height: 1.5; padding: 2px 10px;">${gateGroup}</textarea>
-                    </c:when>
-                    <c:otherwise>
-                            <textarea id="gateGroup" name="gateGroup" rows="10" cols="33" style="border-color: #ccc; border-radius: 2px; width: 95%; min-width: 95%;
-                            font-size: 14px; line-height: 1.5; padding: 2px 10px;">${gateGroup}</textarea>
-                    </c:otherwise>
-                    </c:choose>
-                        <div style="width: 15%; text-align: center;">
+                        <textarea id="gateGroup" name="gateGroup" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
+                                    font-size: 14px; line-height: 1.5; padding: 2px 10px;"><c:if test="${editMode eq 'edit'}">${gateGroup}</c:if></textarea>
+                        <div class="ml_10">
                             <button type="button" class="btn_middle color_basic" onclick="openPopup('gateAuthPickPopup')">선택</button>
                         </div>
                     </td>
