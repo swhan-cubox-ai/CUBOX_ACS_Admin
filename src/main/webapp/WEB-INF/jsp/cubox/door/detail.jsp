@@ -11,9 +11,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
 
-<%--<script src="/js/timepicker/jquery.timepicker.min.js"></script>--%>
-<%--<link rel="stylesheet" href="/js/timepicker/jquery.timepicker.min.css" />--%>
-
 <style>
     .title_box {
         margin-top: 10px;
@@ -41,7 +38,6 @@
     }
     #tb_SchTimepick tr th, #tb_SchTimepick tr td {
         border: none;
-        text-align: end;
     }
     .tb_list tbody tr:nth-child(2n) td {
         background-color: transparent !important;
@@ -58,7 +54,8 @@
 <script type="text/javascript">
     $(function() {
         $(".title_tx").html("출입문 스케쥴 - 상세");
-        modalPopup("addByDayPopup", "요일 별 스케쥴 등록", 2000, 1100);
+        modalPopup("addByDayPopup", "요일 별 스케쥴 등록", 1650, 1040);
+        // modalPopup("addByDayPopup", "요일 별 스케쥴 등록", 2000, 1100);
 
         $("input[type=time]").on({
             change: function() {
@@ -67,15 +64,16 @@
                 let day = this.id.split("_")[0];
                 let schNum = this.id.split("_")[1];
                 let ifEnd = this.id.split("_")[2] == "end";
-                let start = {hour : "", min : ""};
-                let end = {hour : "", min : ""};
-
-                // console.log("this val= " + $(this).val()); //00:01:00
+                let startId = "";
+                let endId = "";
+                let start = {hour : "", min : "", sec: ""};
+                let end = {hour : "", min : "", sec: ""};
 
                 if (ifEnd) {
                     console.log("ifEnd");
 
-                    let startId = this.id.replace("end", "start");
+                    startId = this.id.replace("end", "start");
+                    endId = this.id;
 
                     start.hour = $("#" + startId).val().split(":")[0];
                     start.min = $("#" + startId).val().split(":")[1];
@@ -84,14 +82,11 @@
                     end.min = el.val().split(":")[1];
                     end.sec = el.val().split(":")[2];
 
-                    if (timeValid(startId, this.id, start, end, day, schNum)) {
-                        validCheck(startId, this.id, start, end, day, schNum);
-                    }
-
-                } else {  // 수정
+                } else {
                     console.log("ifStart");
 
-                    let endId = this.id.replace("start", "end");
+                    startId = this.id;
+                    endId = this.id.replace("start", "end");
 
                     start.hour = el.val().split(":")[0];
                     start.min = el.val().split(":")[1];
@@ -99,8 +94,10 @@
                     end.hour = $("#" + endId).val().split(":")[0];
                     end.min = $("#" + endId).val().split(":")[1];
                     end.sec = $("#" + endId).val().split(":")[2];
+                }
 
-                    validCheck(this.id, endId, start, end, day, schNum);
+                if (timeValid(startId, endId, start, end, day, schNum)) {
+                    validCheck(startId, endId, start, end, day, schNum);
                 }
             }
         });
@@ -133,12 +130,14 @@
             colorSchedule(start, end, day, schNum);
         } else {
             console.log("색칠안하기_ifEnd");
+            alert("중복된 스케쥴이 존재합니다. 다시 선택해주세요.");
         }
     }
 
     // 이미 색칠되어 있는지 여부확인
     function ifValid(startId, endId, start, end, day, schNum) {
-        let result = true;
+        console.log("ifValid");
+        let result = true; // 다른 스케쥴과 겹치는지 여부
 
         if (start.hour != end.hour) { // 시작시간과 종료시간이 다른 hour 칸에 있을 때
             for (let i = Number(start.hour); i <= Number(end.hour); i++) {
@@ -146,8 +145,10 @@
                 if (i == Number(start.hour)) { // 시작 hour 칸
                     for (let j = Number(start.min); j < 60; j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
+                        // console.log("1___ .timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
-                            console.log("1. 색칠되어있고 같은 스케쥴 아님");
+                            console.log("1. 색칠되어있고 같은 스케쥴 아님"); ///// 걸리는 애가 시작
+                            // 칠하고자 하는 시작점과 지금 확인중인 시작점 비교
                             result = false;
                             break;
                         }
@@ -155,6 +156,7 @@
                 } else if (i == end.hour) { // 종료 hour 칸
                     for (let j = 0; j <= Number(end.min); j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
+                        // console.log("2___ .timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
                             console.log("2. 색칠되어있고 같은 스케쥴 아님");
                             result = false;
@@ -164,6 +166,7 @@
                 } else {
                     for (let j = 0; j < 60; j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
+                        // console.log("3___ .timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
                             console.log("3. 색칠되어있고 같은 스케쥴 아님");
                             result = false;
@@ -196,48 +199,95 @@
     // 최초 등록인지 체크
     function isFirstReg(day, schNum, startId, endId) {
 
-        let isFirst = ($("." + day + "_" + schNum).length > 0) ? false : true;  // 최츠 등록?
+        let isFirst = ($("." + day + "_" + schNum).length > 0) ? false : true;  // 최초등록?
 
         if (isFirst) {
-            console.log("최초등록");
-            alert("중복된 스케쥴이 존재합니다. 다시 선택해주세요.");
-            initTimepicker(startId, endId); // timepicker 초기화
+            console.log("최초 등록");
+            let sameDaySch = $("." + day + "_timepick");
+            let schTime = [];
+            let startVal = $("#" + startId).val();
+            let endVal = $("#" + endId).val();
+
+            // 다른 스케쥴들 schTime에 담기
+            for (let i = 0; i < sameDaySch.length; i++) {
+                let thisId = sameDaySch.eq(i).attr("id");
+                if (thisId.split("_")[1] != schNum) {
+                    console.log("다른 스케쥴=======================================");
+
+                    console.log($("#" + thisId).val());
+                    console.log(startId);
+                    console.log(endId);
+
+                    let isStart = sameDaySch.eq(i).hasClass("start");
+                    if ((isStart && $("#" + thisId.replace("start", "end")).val() != "") || (!isStart && $("#" + thisId.replace("end", "start")).val())) {
+                        schTime.push($("#" + thisId).val());
+                    }
+
+                }
+            }
+            console.log(schTime);
+
+            console.log($("#" + startId).val());
+            console.log($("#" + endId).val());
+
+            console.log($("#" + startId).val() >= schTime[0] && $("#" + startId).val() <= schTime[1]);
+            console.log($("#" + startId).val() >= schTime[2] && $("#" + startId).val() <= schTime[3]);
+            console.log($("#" + endId).val() >= schTime[0] && $("#" + endId).val() <= schTime[1]);
+            console.log($("#" + endId).val() >= schTime[2] && $("#" + endId).val() <= schTime[3]);
+            console.log(($("#" + startId).val() <= schTime[0] && $("#" + endId).val() >= schTime[1]));
+            console.log(($("#" + startId).val() <= schTime[2] && $("#" + endId).val() >= schTime[3]));
+
+            if ((startVal <= schTime[0] && endVal >= schTime[1]) || (startVal <= schTime[2] && endVal >= schTime[3])) {
+                console.log("둘다 오버된 시간");
+                initTimepicker(startId, endId);
+            }
+
+            if ((startVal >= schTime[0] && startVal <= schTime[1]) || (startVal >= schTime[2] && startVal <= schTime[3])) {
+                console.log("시작시간 겹침");
+                $("#" + startId).val("");
+            }
+
+            if ((endVal >= schTime[0] && endVal <= schTime[1]) || (endVal >= schTime[2] && endVal <= schTime[3])) {
+                console.log("종료시간 겹침");
+                $("#" + endId).val("");
+            }
 
         } else {
-            console.log("이미 같은 시간대에 존재");
-            alert("중복된 스케쥴이 존재합니다."); // timepicker 초기화 아닌 원상복구
+            console.log("이미 같은 시간대에 다른 스케쥴 존재");
             let tmpStart = $("div." + day + "_" + schNum).first().val();
             let tmpEnd = $("div." + day + "_" + schNum).last().val();
             $("#" + startId).val(tmpStart.hour + ":" + tmpStart.min + ":" + tmpStart.sec); // 수정 시
             $("#" + endId).val(tmpEnd.hour + ":" + tmpEnd.min + ":" + tmpEnd.sec);
-            return;
         }
+
     }
 
 
     // 시간 유효성 체크
     function timeValid(startId, endId, start, end, day, schNum) {
         let result = true;
+        let startVal = $("#" + startId).val();
+        let endVal = $("#" + endId).val();
 
-        if ($("#" + startId).val() == "") {
+        if (startVal == "" && endVal != "") { // 시작 시간 입력 안했을 때
             alert("시작 시간을 먼저 선택해주세요.");
             initTimepicker(startId, endId);
             result = false;
-        } else if ($("#" + startId).val() != "" && $("#" + startId).val() >= $("#" + endId).val()) { // 시작 시간이 종료시간보다 클 때
 
-            if (!($("." + day + "_" + schNum).length > 0)) { // 최초등록
+        } else if ((startVal != "" && endVal !== "") && startVal >= endVal) { // 시작 시간이 종료시간보다 클 때
+
+            if (!($("." + day + "_" + schNum).length > 0)) {    // 최초등록
                 console.log("timevalid 최초등록");
-                alert("시작시간은 종료시간보다 빨라야합니다.");
-                initTimepicker(startId, endId);
-            } else {
+                alert("종료시간이 시작시간보다 빠릅니다.");
+                $("#" + endId).val("");
+            } else {                                            // 수정 시
                 console.log("timevalid 최초등록 아님");
-                alert("시작시간은 종료시간보다 빨라야합니다.");
+                alert("종료시간이 시작시간보다 빠릅니다.");
                 let tmpStart = $("div." + day + "_" + schNum).first().val();
                 let tmpEnd = $("div." + day + "_" + schNum).last().val();
-                $("#" + startId).val(tmpStart.hour + ":" + tmpStart.min + ":" + tmpStart.sec); // 수정 시
+                $("#" + startId).val(tmpStart.hour + ":" + tmpStart.min + ":" + tmpStart.sec);
                 $("#" + endId).val(tmpEnd.hour + ":" + tmpEnd.min + ":" + tmpEnd.sec);
             }
-
             result = false;
         }
         console.log("timeValid 결과: " + result);
@@ -293,14 +343,14 @@
     // 목록 버튼
     function fnList() {
         // 출입문 목록으로 페이지 이동
-        location.href = "//schedule.do";
+        location.href = "/door/schedule.do";
     }
 
     // 수정 버튼
     function fnEdit() {
-        // location.href = "/gate/schedule_add.do?mode=edit";
+        // location.href = "/door/schedule_add.do?mode=edit";
         f = document.detailForm;
-        f.action = "/gate/schedule_add.do";
+        f.action = "/door/schedule_add.do";
         $("input[name=schName]").attr("disabled", false);
         $("select[name=schUseYn]").attr("disabled", false);
         $("textarea[name=gateGroup]").attr("disabled", false);
@@ -318,18 +368,18 @@
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-        location.href = "/gate/schedule_delete.do";
+        location.href = "/door/schedule_delete.do";
 
         // $.ajax({
         //     type : "post",
-        //     url  : "/gate/schedule_delete.do",
+        //     url  : "/door/schedule_delete.do",
         //     data : {
         //        "id" = id
         //     },
         //     dataType :'json',
         //     success  : function(data, status) {
         //         if(data.result == "Y"){
-        //             location.href = "/gate/schedule.do";
+        //             location.href = "/door/schedule.do";
         //         } else {
         //             alert("삭제 중 오류가 발생하였습니다.");
         //         }
@@ -351,16 +401,19 @@
     function closePopup(popupNm) {
         $("#" + popupNm).PopupWindow("close");
 
-        if (popupNm == "addByDayPopup") {
-            console.log($("#formSchedule"));
+        // 종료시간 없는 스케쥴은 종료시간 clear
+        let timeList = $("input[type=time]");
+        for (let i = 0; i <= timeList.length; i++) {
+            let isStart = timeList.eq(i).hasClass("start");
+            if (isStart) {
+                let endId = timeList.eq(i).attr("id").replace("start", "end");
+                let endPick = $("#" + endId).val();
 
-            // let timeList = $("#formSchedule");
-            // for (i in timeList) {
-            //     console.log(timeList.eq(i));
-            // }
-
-            // for ()
-            // $("#formSchedule").
+                if (timeList.eq(i).val() != "" && endPick == "") { // start 값 있음, end 값 없음
+                    console.log("startVal 있음, endVal 없음");
+                    timeList.eq(i).val("");
+                }
+            }
         }
     }
 
@@ -394,8 +447,8 @@
             <tr>
                 <th>출입문 그룹</th>
                 <td style="display: flex;">
-                    <textarea id="gateGroup" name="gateGroup" rows="10" cols="33"
-                              style="border-color: #ccc; border-radius: 2px; width: 95%; min-width: 95%;
+                    <textarea id="gateGroup" name="gateGroup" rows="10" cols="33" class="w_600px"
+                              style="border-color: #ccc; border-radius: 2px;
                               font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>출입문 그룹 A</textarea>
                 </td>
             </tr>
@@ -413,9 +466,9 @@
 
 <%--  요일 별 스케쥴 등록 modal  --%>
 <div id="addByDayPopup" class="example_content" style="display: none;">
-    <div class="popup_box box_w3">
+    <div class="popup_box box_w3" style="margin-top:0px;">
         <%--  검색 박스 --%>
-        <div class="search_box mb_20">
+        <div class="search_box mb_10">
             <div class="search_in">
                 <div class="comm_search mr_10">
                     <label for="gateSchNm" class="mr_10">출입문 스케쥴 명</label>
@@ -468,7 +521,7 @@
         <%--  end of 왼쪽 box  --%>
 
         <%--  오른쪽 box  --%>
-        <div class="mt_20 mr_10" style="width:26%;">
+        <div class="mt_20" style="width:26%;">
             <%--  테이블  --%>
             <div class="com_box">
                 <table id="tb_SchTimepick" class="tb_list" style="height:750px;">
@@ -483,14 +536,14 @@
                     </tr>
                     </thead>
                     <tbody id="tdTimePick">
-                    <form id="formSchedule">
+                    <form id="formSchedule" name="formSchedule">
                     <c:forEach var="day" items="${days_eng}" varStatus="status">
                         <tr>
                             <c:forEach begin="1" end="3" varStatus="status">
                                 <fmt:formatNumber var="no" value="${status.index}" type="number"/>
                                 <td>
-                                    <input type="time" id="${day}_${no}_start" name="${day}_${no}_start" value="" min="00:00:00" max="23:59:59" step="1"><br>~
-                                    <input type="time" id="${day}_${no}_end" name="${day}_${no}_end" value="" min="00:00:00" max="23:59:59" step="1" >
+                                    <input type="time" id="${day}_${no}_start" name="${day}_${no}_start" class="start ${day}_timepick" value="" min="00:00:00" max="23:59:59" step="1"><br>~
+                                    <input type="time" id="${day}_${no}_end" name="${day}_${no}_end" class="end ${day}_timepick" value="" min="00:00:00" max="23:59:59" step="1" >
                                 </td>
                             </c:forEach>
                         </tr>

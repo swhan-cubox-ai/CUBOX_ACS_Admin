@@ -28,7 +28,7 @@
     // 출입문 신규 등록
     function createSchedule() {
         f = document.frmSearch;
-        f.action = "/gate/schedule_add.do";
+        f.action = "/door/schedule_add.do";
         f.submit();
     }
 
@@ -36,7 +36,7 @@
         console.log(self);
 
         f = document.frmSearch;
-        f.action = "/gate/detail.do";
+        f.action = "/door/detail.do";
         f.submit();
     }
 </script>
