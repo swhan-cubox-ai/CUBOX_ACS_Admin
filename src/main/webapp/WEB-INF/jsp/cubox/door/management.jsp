@@ -58,7 +58,6 @@
     }
     .title_box {
         margin-top: 10px;
-        margin-bottom: 20px;
     }
 </style>
 
@@ -293,6 +292,8 @@
     function fnDelete() {
         if (confirm("삭제 하시겠습니까?")) {
             alert("해당 출입문 정보를 삭제하였습니다.");
+            initDetail();
+            hideDetail();
         } else {
             alert("취소하였습니다.");
         }
@@ -304,8 +305,6 @@
         //     alert("취소하였습니다.");
         // }
 
-        initDetail();
-        hideDetail();
     }
 
     // 권한그룹 선택 저장
@@ -367,10 +366,10 @@
     </div>
 </div>
 
-<div class="box_w3 mb_20" style="width:100%">
+<div class="box_w3 mb_20" style="width:1200px; margin-top:0;">
 
     <%--  출입문  --%>
-    <div style="width:58%">
+    <div style="width:550px;">
         <div class="totalbox mb_20">
             <div class="title_s w_50p fl" style="margin-bottom:7px;">
                 <img src="/img/title_icon1.png" alt="" />출입문
@@ -390,7 +389,7 @@
     <%--  end of 출입문  --%>
 
     <%--  속성  --%>
-    <div style="width:38%">
+    <div style="width:550px;">
         <div class="totalbox mb_20">
             <div class="title_s w_50p fl">
                 <img src="/img/title_icon1.png" alt="" />속성
@@ -456,11 +455,11 @@
                     <tr>
                         <th>권한 그룹</th>
                         <td>
-                            <textarea id="gateAuthGroup" name="gateEdit" rows="5" cols="33" style="font-size: 14px; line-height: 1.5; padding: 1px 10px" disabled>보건 복지부 &#10;12동 전체</textarea>
+                            <textarea id="gateAuthGroup" name="gateEdit" rows="5" cols="33" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled>보건 복지부 &#10;12동 전체</textarea>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="c_btnbox center">
+                        <td colspan="2" class="c_btnbox center" style="border:none;">
                             <div style="display: inline-block">
                                 <button type="button" id="btnGatePick" class="comm_btn mr_20" onclick="openPopup('gatePickPopup');" style="display:none;">단말기 선택</button>
                                 <button type="button" id="btnAuthPick" class="comm_btn" onclick="openPopup('authPickPopup');" style="display:none;">권한그룹 선택</button>
@@ -470,7 +469,7 @@
                     </tbody>
                 </table>
 
-                <div class="c_btnbox center mt_20 mb_20" id="btn_wrapper" style="position: absolute; bottom: 0; display: none">
+                <div class="c_btnbox center mt_20 mb_20" id="btn_wrapper" style="position: absolute; bottom: 0; display: none;">
                     <div style="display: inline-block;">
                         <button type="button" id="btnEdit" class="comm_btn mr_20" onclick="fnEdit();">수정</button>
                         <button type="button" id="btnDelete" class="comm_btn" onclick="fnDelete();">삭제</button>
