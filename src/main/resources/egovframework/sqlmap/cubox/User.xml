@@ -16,4 +16,37 @@
               )
 	</insert>
 
+    <!-- 비밀번호 체크  -->
+    <select id="checkPwd" parameterType="aero.cubox.core.vo.UserVO" resultType="int">
+        select	COUNT(1) as cnt
+        from	T_USER
+        where  login_id = #{login_id}
+          and	login_pwd = #{login_pwd}
+    </select>
+
+    <!-- 계정비밀번호변경저장 -->
+    <update id="passwdChangeSave" parameterType="aero.cubox.core.vo.UserVO">
+        update  T_USER
+        set 	login_pwd = #{login_pwd}
+        where	login_id = #{login_id}
+    </update>
+
+    <select id="get" parameterType="aero.cubox.core.vo.UserVO" resultType="int">
+        select	COUNT(1) as cnt
+        from	T_USER
+        where  login_id = #{login_id}
+          and	login_pwd = #{login_pwd}
+    </select>
+
+    <select id="getUserListCount" parameterType="aero.cubox.core.vo.UserVO" resultType="java.lang.Integer">
+        select count(1)
+        from T_USER
+    </select>
+
+    <select id="getUserList" parameterType="aero.cubox.core.vo.UserVO" resultType="aero.cubox.core.vo.UserVO">
+        select	*
+        from	T_USER
+        limit	#{srchCnt} offset #{offset}
+    </select>
+
 </mapper>

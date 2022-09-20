@@ -37,4 +37,40 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
 
         return userDAO.addUser(vo);
     }
+
+    @Override
+    public int checkPwd(UserVO vo) throws Exception {
+        String loginPwd = DataScrty.encryptPassword(vo.getLogin_pwd(), vo.getLogin_id());
+		LOGGER.debug("vo.getLogin_id() : " + vo.getLogin_id());
+		vo.setLogin_pwd(loginPwd);
+
+		return userDAO.checkPwd(vo);
+    }
+
+    /**
+ 	 * 비밀번호변경저장
+ 	 * @return int
+ 	 * @throws Exception
+ 	 */
+	@Override
+	public int passwdChangeSave(UserVO vo) throws Exception {
+
+		String loginPwd = DataScrty.encryptPassword(vo.getLogin_pwd(), vo.getLogin_id());
+		LOGGER.debug("vo.getLogin_id() : " + vo.getLogin_id());
+		LOGGER.debug("loginPwd : " + loginPwd);
+		vo.setLogin_pwd(loginPwd);
+
+		return userDAO.passwdChangeSave(vo);
+	}
+
+    @Override
+    public int getUserListCount(UserVO vo) throws Exception {
+        return userDAO.getUserListCount(vo);
+    }
+
+    @Override
+    public List<UserVO> getUserList(UserVO vo) throws Exception {
+        return userDAO.getUserList(vo);
+    }
+
 }

@@ -10,9 +10,21 @@ public class UserVO {
 
     private String user_nm;
 
+    private String contact_no;
+
+    private String dept_nm;
+
+    private String active_yn;
+
     private String create_at;
 
     private String update_at;
+
+    private int srchPage			= 1;	//조회할 페이지 번호 기본 1페이지
+    private int srchCnt				= 10;	//조회할 페이지 수
+    private int offset				= 0;
+    private int curPage				= 1;	//조회할 페이지 번호 기본 1페이지
+    private int curPageUnit			= 10;	//한번에 표시할 페이지 번호 개수
 
     public int getId() {
         return id;
@@ -62,14 +74,92 @@ public class UserVO {
         this.update_at = update_at;
     }
 
+    public int getSrchPage() {
+        return srchPage;
+    }
+
+    public void setSrchPage(int srchPage) {
+        this.srchPage = srchPage;
+    }
+
+    public String getContact_no() {
+        return contact_no;
+    }
+
+    public void setContact_no(String contact_no) {
+        this.contact_no = contact_no;
+    }
+
+    public String getDept_nm() {
+        return dept_nm;
+    }
+
+    public void setDept_nm(String dept_nm) {
+        this.dept_nm = dept_nm;
+    }
+
+    public String getActive_yn() {
+        return active_yn;
+    }
+
+    public void setActive_yn(String active_yn) {
+        this.active_yn = active_yn;
+    }
+
+    public int getSrchCnt() {
+        return srchCnt;
+    }
+
+    public void setSrchCnt(int srchCnt) {
+        this.srchCnt = srchCnt;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public int getCurPage() {
+        return curPage;
+    }
+
+    public void setCurPage(int curPage) {
+        this.curPage = curPage;
+    }
+
+    public int getCurPageUnit() {
+        return curPageUnit;
+    }
+
+    public void setCurPageUnit(int curPageUnit) {
+        this.curPageUnit = curPageUnit;
+    }
+
+    public void autoOffset(){
+        int off = (this.srchPage - 1) * this.srchCnt;
+        if(off<0) off = 0;
+        this.offset = off;
+    }
+
     @Override
     public String toString() {
         return "UserVO [" + "     id=" + id +
                 ",     login_id=" + login_id +
                 ",     login_pwd=" + login_pwd +
                 ",     user_nm=" + user_nm +
+                ",     contact_no=" + contact_no +
+                ",     dept_nm=" + dept_nm +
+                ",     active_yn=" + active_yn +
                 ",     create_at=" + create_at +
                 ",     update_at=" + update_at +
+                ",     srchPage=" + srchPage +
+                ",     srchCnt=" + srchCnt +
+                ",     offset=" + offset +
+                ",     curPage=" + curPage +
+                ",     curPageUnit=" + curPageUnit +
                 "]";
     }
 }
