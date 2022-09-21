@@ -28,7 +28,7 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
     /**
      * 사용자 등록 임시
      */
-    @Override
+    /*@Override
     public int addUser(UserVO vo) throws Exception {
         String loginPwd = DataScrty.encryptPassword(vo.getLogin_pwd(), vo.getLogin_id());
         LOGGER.debug("vo.getLoginId() : " + vo.getLogin_id());
@@ -36,32 +36,44 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
         vo.setUser_nm(vo.getLogin_id() + "사용자");
 
         return userDAO.addUser(vo);
+    }*/
+
+    @Override
+    public int addUser(UserVO vo) throws Exception {
+        String loginPwd = DataScrty.encryptPassword(vo.getLoginPwd(), vo.getLoginId());
+        vo.setLoginPwd(loginPwd);
+        return userDAO.addUser(vo);
+    }
+
+    @Override
+    public int modifyUser(UserVO vo) throws Exception {
+        return userDAO.modifyUser(vo);
     }
 
     @Override
     public int checkPwd(UserVO vo) throws Exception {
         String loginPwd = DataScrty.encryptPassword(vo.getLogin_pwd(), vo.getLogin_id());
-		LOGGER.debug("vo.getLogin_id() : " + vo.getLogin_id());
-		vo.setLogin_pwd(loginPwd);
+        LOGGER.debug("vo.getLogin_id() : " + vo.getLogin_id());
+        vo.setLogin_pwd(loginPwd);
 
-		return userDAO.checkPwd(vo);
+        return userDAO.checkPwd(vo);
     }
 
     /**
- 	 * 비밀번호변경저장
- 	 * @return int
- 	 * @throws Exception
- 	 */
-	@Override
-	public int passwdChangeSave(UserVO vo) throws Exception {
+     * 비밀번호변경저장
+     * @return int
+     * @throws Exception
+     */
+    @Override
+    public int passwdChangeSave(UserVO vo) throws Exception {
 
-		String loginPwd = DataScrty.encryptPassword(vo.getLogin_pwd(), vo.getLogin_id());
-		LOGGER.debug("vo.getLogin_id() : " + vo.getLogin_id());
-		LOGGER.debug("loginPwd : " + loginPwd);
-		vo.setLogin_pwd(loginPwd);
+        String loginPwd = DataScrty.encryptPassword(vo.getLogin_pwd(), vo.getLogin_id());
+        LOGGER.debug("vo.getLogin_id() : " + vo.getLogin_id());
+        LOGGER.debug("loginPwd : " + loginPwd);
+        vo.setLogin_pwd(loginPwd);
 
-		return userDAO.passwdChangeSave(vo);
-	}
+        return userDAO.passwdChangeSave(vo);
+    }
 
     @Override
     public int getUserListCount(UserVO vo) throws Exception {
@@ -71,6 +83,21 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
     @Override
     public List<UserVO> getUserList(UserVO vo) throws Exception {
         return userDAO.getUserList(vo);
+    }
+
+    @Override
+    public UserVO getUserDetail(int id) throws Exception {
+        return userDAO.getUserDetail(id);
+    }
+
+    @Override
+    public int getUserId(UserVO vo) throws Exception {
+        return userDAO.getUserId(vo);
+    }
+
+    @Override
+    public int checkLoginId(Map<String, Object> map) throws Exception {
+        return userDAO.checkLoginId(map);
     }
 
 }

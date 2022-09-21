@@ -3,10 +3,10 @@
 
 <mapper namespace="user">
 
-	<!-- 사용자등록 임시 -->
-	<insert id="addUser" parameterType="HashMap" >
-		INSERT
-		  INTO T_USER
+    <!-- 사용자등록 임시 -->
+    <!--<insert id="addUser" parameterType="HashMap" >
+        INSERT
+          INTO T_USER
               ( login_id
               , login_pwd
               , user_nm)
@@ -14,7 +14,41 @@
               , #{login_pwd}
               , #{user_nm}
               )
-	</insert>
+    </insert>-->
+
+    <insert id="addUser" parameterType="HashMap" >
+        INSERT
+        INTO T_USER
+        (
+            login_id
+        , login_pwd
+        , user_nm
+        , dept_nm
+        , contact_no
+        , active_yn
+        )
+        VALUES(
+                  #{loginId}
+              , #{loginPwd}
+              , #{userNm}
+              , #{deptNm}
+              , #{contactNo}
+              , #{activeYn}
+              )
+    </insert>
+
+    <update id="modifyUser" parameterType="aero.cubox.core.vo.UserVO" >
+        UPDATE
+            T_USER
+        SET
+            user_nm = #{userNm},
+            contact_no = #{contactNo},
+            dept_nm = #{deptNm},
+            active_yn = #{activeYn},
+            updated_at = NOW()
+        WHERE
+            id = #{id}
+    </update>
 
     <!-- 비밀번호 체크  -->
     <select id="checkPwd" parameterType="aero.cubox.core.vo.UserVO" resultType="int">
@@ -41,12 +75,72 @@
     <select id="getUserListCount" parameterType="aero.cubox.core.vo.UserVO" resultType="java.lang.Integer">
         select count(1)
         from T_USER
+        where
+        delete_yn = 'N'
+        <choose>
+            <when test="srchCond == 'loginId'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    AND login_id = #{keyword}
+                </if>
+            </when>
+            <when test="srchCond == 'userNm'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    AND user_nm = #{keyword}
+                </if>
+            </when>
+        </choose>
     </select>
 
     <select id="getUserList" parameterType="aero.cubox.core.vo.UserVO" resultType="aero.cubox.core.vo.UserVO">
-        select	*
+        select
+        id as id,
+        login_id as loginId,
+        user_nm as userNm,
+        contact_no as contactNo,
+        dept_nm as deptNm,
+        active_Yn as activeYn,
+        DATE_FORMAT(created_at, '%Y-%m-%d') as createdAt,
+        updated_at as updatedAt
         from	T_USER
+        where
+        delete_yn = 'N'
+
+        <choose>
+            <when test="srchCond == 'loginId'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    AND login_id = #{keyword}
+                </if>
+            </when>
+            <when test="srchCond == 'userNm'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    AND user_nm like CONCAT('%',#{keyword},'%')
+                </if>
+            </when>
+        </choose>
+
         limit	#{srchCnt} offset #{offset}
+    </select>
+
+    <select id="getUserDetail" parameterType="int" resultType="aero.cubox.core.vo.UserVO">
+        SELECT
+            id as id,
+            login_id as loginId,
+            user_nm as userNm,
+            dept_nm as deptNm,
+            contact_no as contactNo,
+            DATE_FORMAT(created_at, '%Y-%m-%d %H:%i') as createdAt,
+            active_yn as activeYn
+        FROM T_USER
+        WHERE
+            id = #{id}
+    </select>
+
+    <select id="getUserId" parameterType="aero.cubox.core.vo.UserVO" resultType="int">
+        SELECT id FROM T_USER WHERE login_id = #{loginId}
+    </select>
+
+    <select id="checkLoginId" parameterType="HashMap" resultType="int">
+        SELECT COUNT(id) FROM T_USER WHERE login_id = #{checkId}
     </select>
 
 </mapper>
