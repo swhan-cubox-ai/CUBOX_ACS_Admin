@@ -27,7 +27,7 @@
         top: 0;
     }
     #tdTimePick tr td input {
-        width: 130px;
+        width: 125px;
         height: 25px;
         text-align: center;
         margin: 0 auto;
@@ -54,7 +54,7 @@
 <script type="text/javascript">
     $(function() {
         $(".title_tx").html("출입문 스케쥴 - 상세");
-        modalPopup("addByDayPopup", "요일 별 스케쥴 등록", 1650, 1040);
+        modalPopup("addByDayPopup", "요일 별 스케쥴 등록", 1590, 915);
         // modalPopup("addByDayPopup", "요일 별 스케쥴 등록", 2000, 1100);
 
         $("input[type=time]").on({
@@ -466,9 +466,9 @@
 
 <%--  요일 별 스케쥴 등록 modal  --%>
 <div id="addByDayPopup" class="example_content" style="display: none;">
-    <div class="popup_box box_w3" style="margin-top:0px;">
+    <div class="popup_box box_w3" style="margin-top:0px; padding:20px;">
         <%--  검색 박스 --%>
-        <div class="search_box mb_10">
+        <div class="search_box">
             <div class="search_in">
                 <div class="comm_search mr_10">
                     <label for="gateSchNm" class="mr_10">출입문 스케쥴 명</label>
@@ -481,7 +481,7 @@
         <%--  왼쪽 box  --%>
         <div class="mt_20" style="width:73%;">
             <div class="com_box" style="border:1px solid black;">
-                <table class="tb_list" id="tb_Schedule" style="height:750px;">
+                <table class="tb_list" id="tb_Schedule" style="height:665px;">
                     <colgroup>
                     <c:forEach var="i" begin="0" end="24" varStatus="status">
                         <col style="width:3%">
@@ -524,7 +524,7 @@
         <div class="mt_20" style="width:26%;">
             <%--  테이블  --%>
             <div class="com_box">
-                <table id="tb_SchTimepick" class="tb_list" style="height:750px;">
+                <table id="tb_SchTimepick" class="tb_list" style="height:665px;">
                     <colgroup>
                         <c:forEach var="i" begin="0" end="2" varStatus="status">
                             <col style="width:33%">
@@ -555,7 +555,7 @@
         </div>
         <%--  end of 오른쪽 box  --%>
 
-        <div class="c_btnbox center mt_30">
+        <div class="c_btnbox center mt_20">
             <div style="display: inline-block;">
                 <button type="button" class="comm_btn mr_20" onclick="saveSchedule();">확인</button>
                 <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">취소</button>
