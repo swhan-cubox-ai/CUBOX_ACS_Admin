@@ -244,4 +244,35 @@ public class DoorController {
         return "cubox/door/schedule";
     }
 
+    // 출입문 알람 그룹
+    @RequestMapping(value="/alarm.do")
+    public String alarm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+        //todo 세션처리
+
+        return "cubox/door/alarm";
+    }
+
+    // 출입문 알람 그룹 상세
+    @RequestMapping(value="/alarm_detail.do")
+    public String alarm_detail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        return "cubox/door/alarm_detail";
+    }
+
+    // 출입문 알람 그룹 등록
+    @RequestMapping(value = "/alarm_add.do")
+    public String alarm_add(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        if (commandMap.get("editMode").equals("edit")) {
+            model.addAttribute("alNm", commandMap.get("alNm"));
+            model.addAttribute("alType", commandMap.get("alType"));
+            model.addAttribute("alTime", commandMap.get("alTime"));
+            model.addAttribute("alUseYn", commandMap.get("alUseYn"));
+            model.addAttribute("alDoorCnt", commandMap.get("alDoorCnt"));
+        }
+        model.addAttribute("editMode", commandMap.get("editMode"));
+
+        return "cubox/door/alarm_add";
+    }
+
 }
