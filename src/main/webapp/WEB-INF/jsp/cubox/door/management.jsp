@@ -60,7 +60,8 @@
         margin-top: 10px;
     }
 </style>
-
+<!-- 트리구조 dtree -->
+<script type="text/javascript" src="/js/dTree/dtree.js"></script>
 <script type="text/javascript">
 
     var tmpSelf;
@@ -431,7 +432,7 @@
                         <th>알람 그룹</th>
                         <td>
                             <%--  <input type="text" id="gateMode" name="gateMode" maxlength="10" class="w_250px input_com gateMode" value="독립 모드" />--%>
-                                <select name="gateEdit" id="gateMode" class="form-control" style="padding-left:10px;" disabled>
+                            <select name="gateEdit" id="gateMode" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="#" name="selected">선택</option>
                                 <option value="#">알람 그룹1</option>
                                 <option value="#">알람 그룹2</option>
@@ -628,25 +629,25 @@
                     </tr>
                     </thead>
                     <tbody id="tdAuthConf">
-                        <tr>
-                            <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>
-                            <td>CUBOX123</td>
-                            <td>보건 복지부</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>
-                            <td>CUBOX123</td>
-                            <td>보건 복지부</td>
-                        </tr>
+                    <tr>
+                        <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>
+                        <td>CUBOX123</td>
+                        <td>보건 복지부</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>
+                        <td>CUBOX123</td>
+                        <td>보건 복지부</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
             <%--  end of 테이블  --%>
-<%--            <div class="c_btnbox center">--%>
-<%--                <div style="display: inline-block;" class="mt_20">--%>
-<%--                    <button type="button" id="delete_auth" class="comm_btn">삭제</button>--%>
-<%--                </div>--%>
-<%--            </div>--%>
+            <%--            <div class="c_btnbox center">--%>
+            <%--                <div style="display: inline-block;" class="mt_20">--%>
+            <%--                    <button type="button" id="delete_auth" class="comm_btn">삭제</button>--%>
+            <%--                </div>--%>
+            <%--            </div>--%>
         </div>
         <%--  end of 오른쪽 box  --%>
 
