@@ -20,8 +20,8 @@ public class MenuUrlSetting {
         else if ("0105".equals(menu_cd)) return "";           // 개인정보폐기
 
         if ("0200".equals(menu_cd)) return "";                // 출입문관리
-        else if ("0201".equals(menu_cd)) return "";           // 출입문관리
-        else if ("0202".equals(menu_cd)) return "";           // 출입문스케쥴
+        else if ("0201".equals(menu_cd)) return "/door/management.do";           // 출입문관리
+        else if ("0202".equals(menu_cd)) return "/door/schedule.do";           // 출입문스케쥴
         else if ("0203".equals(menu_cd)) return "";           // 출입문 알람그룹
         else if ("0204".equals(menu_cd)) return "";           // 공휴일관리
         else if ("0205".equals(menu_cd)) return "";           // 단말기관리

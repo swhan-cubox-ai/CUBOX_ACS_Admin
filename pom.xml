@@ -41,9 +41,20 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>cubrid</id>
+			<url>https://maven.cubrid.org/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
+
+		<!-- https://mvnrepository.com/artifact/cubrid/cubrid-jdbc -->
+		<dependency>
+			<groupId>cubrid</groupId>
+			<artifactId>cubrid-jdbc</artifactId>
+			<version>11.1.1.0028</version>
+		</dependency>
 		<!-- 표준프레임워크 실행환경 -->
 		<dependency>
 			<groupId>egovframework.rte</groupId>
@@ -314,6 +325,8 @@
 			<artifactId>sitemesh</artifactId>
 			<version>2.4.2</version>
 		</dependency>
+
+
 
 	</dependencies>
 

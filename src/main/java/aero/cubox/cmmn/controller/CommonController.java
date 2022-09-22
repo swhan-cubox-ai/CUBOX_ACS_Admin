@@ -1,8 +1,8 @@
 package aero.cubox.cmmn.controller;
 
-import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.cmmn.service.CommonService;
 import aero.cubox.core.vo.LoginVO;
+import aero.cubox.link.service.MdmService;
 import aero.cubox.menu.service.MenuService;
 import aero.cubox.util.AuthorManager;
 import aero.cubox.util.CommonUtils;
@@ -13,13 +13,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,11 +37,18 @@ public class CommonController {
 	private MenuService menuService;
 
 
+	@Resource(name="MdmService")
+	private MdmService mdmService;
+
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommonController.class);
 
 	@RequestMapping(value="/login.do")
 	public String login(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
-		
+
+		String mdmTest = mdmService.getTmMdmCpgnList();
+		model.addAttribute("mdmTest", mdmTest);
+
 		return "cubox/common/login";
 	}
 
@@ -89,8 +95,12 @@ public class CommonController {
 
 		model.addAttribute("reloadYn", reloadYn);
 		model.addAttribute("intervalSecond", intervalSecond);
-		
+
 		String ssAuthorId = ((LoginVO)session.getAttribute("loginVO")).getRole_id();
+
+
+
+
 
 		//사용자가 해당 메뉴(근태관리)에 접근 권한이 있는지 조회
 //		List<MenuDetailVO> result =  menuService.getUserMenuList(new HashMap<String, Object>() {
@@ -101,6 +111,9 @@ public class CommonController {
 //		});
 		
 		//model.addAttribute("isMenu", (result != null && result.size() > 0) ? true : false );
+
+
+
 		
 
 		return "cubox/common/main";
