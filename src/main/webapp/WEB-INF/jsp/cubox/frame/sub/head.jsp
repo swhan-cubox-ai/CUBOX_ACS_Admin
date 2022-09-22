@@ -13,40 +13,49 @@
 <script type="text/javascript" src="/js/jquery.blockUI.js"></script>
 <script type="text/javascript" src="/js/common.js?version=<%= Math.random()%>"></script>
 
-<!-- 왼쪽메뉴 스크립트 -->
-<script src="/js/leftmenu/jquery.cookie.js"></script>
-<script type="text/javascript" src="/js/leftmenu/jquery.navgoco.js"></script>
-<script type="text/javascript" id="demo1-javascript">
-$(document).ready(function() {
-	$("#demo1").navgoco({
-		caret: '<span class="caret"></span>',
-		accordion: true,
-		openClass: 'open',
-		save: true,
-		cookie: {
-			name: 'navgoco',
-			expires: false,
-			path: '/'
-		},
-		slide: {
-			duration: 400,
-			easing: 'swing'
-		}
-	});
-});
-</script>
-<!-- //왼쪽메뉴 스크립트 -->
-<!-- 달력 input -->
-<script src="/js/datetimepicker.js"></script>
-<!-- 트리구조 dtree -->
-<script type="text/javascript" src="/js/dTree/dtree.js"></script>
-<script>
-    jQuery(document).ready(function () {
-        'use strict';
-        //$('#startDate, #expireDate').datetimepicker();
-    });
-</script>
-<!-- //달력 input -->
+    <!-- sweet alert -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+    <!-- date picker -->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <!-- 왼쪽메뉴 스크립트 -->
+    <script src="/js/leftmenu/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/js/leftmenu/jquery.navgoco.js"></script>
+    <script type="text/javascript" id="demo1-javascript">
+
+
+        $(document).ready(function() {
+            $("#demo1").navgoco({
+                caret: '<span class="caret"></span>',
+                accordion: true,
+                openClass: 'open',
+                save: true,
+                cookie: {
+                    name: 'navgoco',
+                    expires: false,
+                    path: '/'
+                },
+                slide: {
+                    duration: 400,
+                    easing: 'swing'
+                }
+            });
+        });
+    </script>
+    <!-- //왼쪽메뉴 스크립트 -->
+    <!-- 달력 input -->
+    <script src="/js/datetimepicker.js"></script>
+    <script>
+        jQuery(document).ready(function () {
+            'use strict';
+            //$('#startDate, #expireDate').datetimepicker();
+        });
+    </script>
+    <!-- //달력 input -->
 
 <!-- 탭 -->
 <script src="/js/tabcontent.js" type="text/javascript"></script>

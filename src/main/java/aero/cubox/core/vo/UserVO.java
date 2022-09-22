@@ -3,28 +3,38 @@ package aero.cubox.core.vo;
 public class UserVO {
 
     private int id;
-
     private String login_id;
-
     private String login_pwd;
-
     private String user_nm;
-
     private String contact_no;
-
     private String dept_nm;
-
     private String active_yn;
-
     private String create_at;
-
     private String update_at;
+
+
+
+    private String loginId;
+    private String loginPwd;
+    private String userNm;
+    private String deptNm;
+    private String contactNo;
+    private String createdAt;
+    private String updatedAt;
+    private String activeYn;
+
+
+    private String srchCond;
+    private String keyword;
 
     private int srchPage			= 1;	//조회할 페이지 번호 기본 1페이지
     private int srchCnt				= 10;	//조회할 페이지 수
     private int offset				= 0;
     private int curPage				= 1;	//조회할 페이지 번호 기본 1페이지
     private int curPageUnit			= 10;	//한번에 표시할 페이지 번호 개수
+
+
+
 
     public int getId() {
         return id;
@@ -106,6 +116,71 @@ public class UserVO {
         this.active_yn = active_yn;
     }
 
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
+    }
+
+    public String getLoginPwd() {
+        return loginPwd;
+    }
+
+    public void setLoginPwd(String loginPwd) {
+        this.loginPwd = loginPwd;
+    }
+
+    public String getUserNm() {
+        return userNm;
+    }
+
+    public void setUserNm(String userNm) {
+        this.userNm = userNm;
+    }
+
+    public String getDeptNm() {
+        return deptNm;
+    }
+
+    public void setDeptNm(String deptNm) {
+        this.deptNm = deptNm;
+    }
+
+    public String getContactNo() {
+        return contactNo;
+    }
+
+    public void setContactNo(String contactNo) {
+        this.contactNo = contactNo;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getActiveYn() {
+        return activeYn;
+    }
+
+    public void setActiveYn(String activeYn) {
+        this.activeYn = activeYn;
+    }
+
     public int getSrchCnt() {
         return srchCnt;
     }
@@ -136,6 +211,22 @@ public class UserVO {
 
     public void setCurPageUnit(int curPageUnit) {
         this.curPageUnit = curPageUnit;
+    }
+
+    public String getSrchCond() {
+        return srchCond;
+    }
+
+    public void setSrchCond(String srchCond) {
+        this.srchCond = srchCond;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 
     public void autoOffset(){

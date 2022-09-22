@@ -2,9 +2,7 @@ package aero.cubox.user.controller;
 
 import aero.cubox.cmmn.service.CommonService;
 //import aero.cubox.core.vo.LoginVO;
-import aero.cubox.core.vo.LoginVO;
-import aero.cubox.core.vo.PaginationVO;
-import aero.cubox.core.vo.UserVO;
+import aero.cubox.core.vo.*;
 import aero.cubox.menu.service.MenuService;
 import aero.cubox.user.service.UserService;
 import aero.cubox.util.CommonUtils;
@@ -13,9 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -28,26 +24,26 @@ import java.util.Map;
 @Controller
 public class UserController {
 
-    /** commonService */
-    @Resource(name = "commonService")
-    private CommonService commonService;
+	/** commonService */
+	@Resource(name = "commonService")
+	private CommonService commonService;
 
-    @Resource(name = "commonUtils")
-    private CommonUtils commonUtils;
+	@Resource(name = "commonUtils")
+	private CommonUtils commonUtils;
 
-    @Resource(name = "MenuService")
-    private MenuService menuService;
+	@Resource(name = "MenuService")
+	private MenuService menuService;
 
-    @Resource(name = "userService")
-    private UserService userService;
+	@Resource(name = "userService")
+	private UserService userService;
 
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-    /**
-     * 사용자등록 임시
-     */
-    @RequestMapping(value="/user/addUser.do")
+	/**
+	 * 사용자등록 임시
+	 */
+   /* @RequestMapping(value="/user/addUser.do")
     public String actionLogin(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
 
         String login_id = (String) commandMap.get("login_id");
@@ -61,20 +57,20 @@ public class UserController {
 
         return "cubox/common/login";
 
-    }
+    }*/
 
-    /**
-     //	 * 비밀번호변경
-     //	 * @param commandMap 파라메터전달용 commandMap
-     //	 * @return modelAndView
-     //	 * @throws Exception
-     //	 */
+	/**
+	 //	 * 비밀번호변경
+	 //	 * @param commandMap 파라메터전달용 commandMap
+	 //	 * @return modelAndView
+	 //	 * @throws Exception
+	 //	 */
 	@ResponseBody
 	@RequestMapping(value = "/user/passwdChangeSave.do")
 	public ModelAndView passwdChangeSave(@RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
 
 		ModelAndView modelAndView = new ModelAndView();
-    	modelAndView.setViewName("jsonView");
+		modelAndView.setViewName("jsonView");
 
 		String currentpasswd = (String) commandMap.get("currentpasswd");
 		String fpasswd = (String) commandMap.get("fpasswd");
@@ -107,8 +103,8 @@ public class UserController {
 	/**
 	 *	시스템관리 - 사용자관리
 	 */
-	@RequestMapping(value="/user/userManagement.do")
-	public String userManagement(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
+	@RequestMapping(value="/user/list.do")
+	public String list(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
 
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
@@ -118,6 +114,12 @@ public class UserController {
 
 			String srchPage       = StringUtil.nvl(commandMap.get("srchPage"), "1");
 			String srchRecPerPage = StringUtil.nvl(commandMap.get("srchRecPerPage"), "10");
+
+			String srchCond = StringUtil.nvl(commandMap.get("srchCond"), "");
+			String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+
+			vo.setSrchCond(srchCond);
+			vo.setKeyword(keyword);
 
 			vo.setSrchPage(Integer.parseInt(srchPage));
 			vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
@@ -144,8 +146,41 @@ public class UserController {
 			modelAndView.addObject("message", e.getMessage());
 		}
 
-		return "cubox/systemManagement/user_management";
+		return "cubox/user/list";
 	}
+
+
+	@RequestMapping(value="/user/detail/{id}", method= RequestMethod.GET)
+	public String detail(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
+
+		System.out.println("################## id : " + id);
+
+		UserVO data = userService.getUserDetail(id);
+
+		model.addAttribute("isModify", false);
+		model.addAttribute("data", data);
+
+		return "cubox/user/detail";
+	}
+
+	@RequestMapping(value="/user/modify/{id}", method= RequestMethod.GET)
+	public String modify(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
+
+		System.out.println("################## id : " + id);
+
+		UserVO data = userService.getUserDetail(id);
+
+		model.addAttribute("isModify", true);
+		model.addAttribute("data", data);
+
+		return "cubox/user/detail";
+	}
+
+	@RequestMapping(value="/user/add.do", method= RequestMethod.GET)
+	public String add(ModelMap model, HttpServletRequest request) throws Exception {
+		return "cubox/user/add";
+	}
+
 
 	@ResponseBody
 	@RequestMapping(value = "/user/getUserList.do")
@@ -189,5 +224,93 @@ public class UserController {
 	}
 
 
+	@ResponseBody
+	@RequestMapping(value="/user/modifyUser.do")
+	public ModelAndView modifyUser(HttpServletRequest request, @RequestParam HashMap<String, Object> param) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+
+		try{
+			String userId = (String) param.get("userId");
+			String userNm = (String) param.get("userNm");
+			String deptNm = (String) param.get("deptNm");
+			String contactNo = (String) param.get("contactNo");
+			String activeYn = (String) param.get("activeYn");
+			String roleStr = (String) param.get("roleStr");
+			String isModRole = (String) param.get("isModRole");
+
+			UserVO userVO = new UserVO();
+			userVO.setId(Integer.parseInt(userId));
+			userVO.setUserNm(userNm);
+			userVO.setDeptNm(deptNm);
+			userVO.setContactNo(contactNo);
+			userVO.setActiveYn(activeYn);
+
+			userService.modifyUser(userVO);
+
+		}catch (Exception e){
+			e.printStackTrace();
+			modelAndView.addObject("message", e.getMessage());
+		}
+
+		return modelAndView;
+	}
+
+
+	@ResponseBody
+	@RequestMapping(value="/user/addUser.do")
+	public ModelAndView addUser(HttpServletRequest request, @RequestParam HashMap<String, Object> param) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+
+		try{
+			String loginId = (String) param.get("loginId");
+			String userNm = (String) param.get("userNm");
+			String deptNm = (String) param.get("deptNm");
+			String contactNo = (String) param.get("contactNo");
+			String activeYn = (String) param.get("activeYn");
+			String roleStr = (String) param.get("roleStr");
+			String isAddRole = (String) param.get("isAddRole");
+
+			String pwd = "1234";
+
+			UserVO userVO = new UserVO();
+			userVO.setLoginId(loginId);
+			userVO.setLoginPwd(pwd);
+			userVO.setUserNm(userNm);
+			userVO.setDeptNm(deptNm);
+			userVO.setContactNo(contactNo);
+			userVO.setActiveYn(activeYn);
+
+			userService.addUser(userVO);
+
+			int userId = userService.getUserId(userVO);
+
+		}catch (Exception e){
+			e.printStackTrace();
+			modelAndView.addObject("message", e.getMessage());
+		}
+
+		return modelAndView;
+	}
+
+	@ResponseBody
+	@RequestMapping(value="/user/checkLoginId.do")
+	public ModelAndView checkLoginId(HttpServletRequest request, @RequestParam HashMap<String, Object> param) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+
+		try{
+			int dupCnt = userService.checkLoginId(param);
+			String isDup = (dupCnt > 0) ? "Y" : "N";
+
+			modelAndView.addObject("isDup", isDup);
+		}catch (Exception e){
+			e.printStackTrace();
+			modelAndView.addObject("message", e.getMessage());
+		}
+
+		return modelAndView;
+	}
 
 }

@@ -26,10 +26,17 @@ public class UserDAO extends EgovAbstractMapper {
     }
 
     /**
-	 * 비밀번호체크
-	 * @return int
-	 * @throws Exception
-	 */
+     * 일반 사용자 수정
+     */
+    public int modifyUser(UserVO vo) throws Exception {
+        return insert(sqlNameSpace+"modifyUser", vo);
+    }
+
+    /**
+     * 비밀번호체크
+     * @return int
+     * @throws Exception
+     */
     public int checkPwd(UserVO vo){
         return (Integer)selectOne(sqlNameSpace+"checkPwd", vo);
     }
@@ -40,7 +47,7 @@ public class UserDAO extends EgovAbstractMapper {
      * @return int
      * @throws Exception
      */
-	public int passwdChangeSave(UserVO vo) throws Exception {
+    public int passwdChangeSave(UserVO vo) throws Exception {
         return insert(sqlNameSpace+"passwdChangeSave", vo);
     }
 
@@ -51,5 +58,17 @@ public class UserDAO extends EgovAbstractMapper {
 
     public List<UserVO> getUserList(UserVO vo) throws Exception {
         return selectList ("user.getUserList", vo);
+    }
+
+    public UserVO getUserDetail(int id) throws Exception {
+        return selectOne("user.getUserDetail", id);
+    }
+
+    public int getUserId(UserVO vo) throws Exception {
+        return selectOne("user.getUserId", vo);
+    }
+
+    public int checkLoginId(Map<String, Object> map) throws Exception {
+        return selectOne("user.checkLoginId", map);
     }
 }
