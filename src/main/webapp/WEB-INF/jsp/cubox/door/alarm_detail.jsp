@@ -45,6 +45,7 @@
     function fnEdit() {
         f = document.detailForm;
         f.action = "/door/alarm_add.do";
+        $("#tdAlarmDetail input").attr("disabled", false);
         f.submit();
     }
 
@@ -86,31 +87,31 @@
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
-                    <input type="text" id="alNm" name="alNm" maxlength="50" size="50" value="작업자 통로" class="input_com" disabled>
+                    <input type="text" id="alNm" name="alNm" maxlength="50" value="작업자 통로" class="input_com w_600px" disabled>
                 </td>
             </tr>
             <tr>
                 <th>유형</th>
                 <td>
-                    <input type="text" id="alType" name="alType" maxlength="50" size="50" value="기본시간" class="input_com" disabled>
+                    <input type="text" id="alType" name="alType" maxlength="50" value="기본시간" class="input_com w_600px" disabled>
                 </td>
             </tr>
             <tr>
                 <th>시간</th>
                 <td>
-                    <input type="text" id="alTime" name="alTime" maxlength="10" size="50" value="30" class="input_com" disabled>&ensp;초
+                    <input type="text" id="alTime" name="alTime" maxlength="10" value="30" class="input_com w_600px" disabled>&ensp;초
                 </td>
             </tr>
             <tr>
                 <th>사용</th>
                 <td>
-                    <input type="text" id="alUseYn" name="alUseYn" maxlength="5" size="50" value="Y" class="input_com" disabled>
+                    <input type="text" id="alUseYn" name="alUseYn" maxlength="5" value="Y" class="input_com w_600px" disabled>
                 </td>
             </tr>
             <tr>
                 <th>출입문 수</th>
                 <td>
-                    <input type="text" id="alDoorCnt" name="alDoorCnt" maxlength="50" size="50" value="2" class="input_com" disabled>&ensp;
+                    <input type="text" id="alDoorCnt" name="alDoorCnt" maxlength="50" value="2" class="input_com w_600px" disabled>&ensp;
                     <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>
                 </td>
             </tr>
