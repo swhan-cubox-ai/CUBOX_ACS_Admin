@@ -275,4 +275,32 @@ public class DoorController {
         return "cubox/door/alarm_add";
     }
 
+    // 출입문 그룹 관리 목록
+    @RequestMapping(value="/group.do")
+    public String group(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+        //todo 세션처리
+
+        return "cubox/door/group";
+    }
+
+    // 출입문 그룹 관리 상세
+    @RequestMapping(value="/group_detail.do")
+    public String group_detail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        return "cubox/door/group_detail";
+    }
+
+    // 출입문 그룹 관리 등록/수정
+    @RequestMapping(value = "/group_add.do")
+    public String group_add(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        if (commandMap.get("editMode").equals("edit")) {
+
+        }
+        model.addAttribute("editMode", commandMap.get("editMode"));
+
+        return "cubox/door/group_add";
+    }
+
+
 }
