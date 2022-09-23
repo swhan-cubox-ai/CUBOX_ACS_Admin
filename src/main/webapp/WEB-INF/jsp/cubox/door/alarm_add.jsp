@@ -194,11 +194,8 @@
             return;
         }
 
-        if (${editMode eq 'edit'}) {
-            location.href = "/door/alarm_detail.do";
-        } else {
-            location.href = "/door/detail.do";
-        }
+        location.href = "/door/alarm_detail.do";
+
     }
 
     // 알람그룹 수정 취소

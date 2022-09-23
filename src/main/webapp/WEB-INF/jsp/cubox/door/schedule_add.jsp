@@ -124,11 +124,7 @@
 
         // 데이터 저장
         // 출입문 목록으로 페이지 이동
-        if (${editMode eq 'edit'}) {
-            location.href = "/door/detail.do";
-        } else {
-            location.href = "/door/schedule.do";
-        }
+        location.href = "/door/detail.do";
 
         // $.ajax({
         //     url: "gate/schedule_save.do",
