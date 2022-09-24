@@ -3,6 +3,7 @@ package aero.cubox.cmmn.service.impl;
 import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.cmmn.service.CommonService;
 import aero.cubox.core.vo.CodeVO;
+import aero.cubox.core.vo.CommonVO;
 import aero.cubox.core.vo.DateTimeVO;
 import aero.cubox.core.vo.LoginVO;
 //import aero.cubox.core.vo.LoginVO;
@@ -228,6 +229,11 @@ public class CommonServiceImpl extends EgovAbstractServiceImpl implements Common
 	public List<BoardVO> getMainQaList() throws Exception {
 
 		return commonDAO.getMainQaList();
+	}
+
+	@Override
+	public List<CommonVO> getCommonCodeList(String cdType) throws Exception {
+		return commonDAO.getCommonCodeList(cdType);
 	}
 
 	public List<CodeVO> selectAuthorList() throws Exception {

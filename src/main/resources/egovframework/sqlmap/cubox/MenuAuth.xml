@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="menuAuth">
+
+    <select id="getMenuAuthList" parameterType="aero.cubox.core.vo.MenuAuthVO" resultType="aero.cubox.core.vo.MenuAuthVO">
+        SELECT
+            id
+            ,role_nm AS roleNm
+            ,(SELECT COUNT(*) FROM T_USER_ROLE WHERE role_id = id) AS userCnt
+            ,DATE_FORMAT(created_at, '%Y-%m-%d') AS createdAt
+        FROM
+            T_ROLE
+        WHERE
+            1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(roleNm)'>
+            and role_nm like CONCAT('%',#{roleNm},'%')
+        </if>
+
+        limit	#{srchCnt} offset #{offset}
+    </select>
+
+    <select id="getMenuAuthListCount" parameterType="aero.cubox.core.vo.MenuAuthVO" resultType="int">
+        select
+            count(*)
+        from	T_ROLE
+        WHERE
+            1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(roleNm)'>
+            and role_nm like CONCAT('%',#{roleNm},'%')
+        </if>
+    </select>
+
+    <select id="getUserRoleList" parameterType="HashMap" resultType="aero.cubox.core.vo.MenuAuthVO">
+        SELECT
+            A.id AS id
+           , A.login_id AS userId
+           , A.user_nm AS userNm
+           , A.dept_nm AS deptNm
+        FROM
+            T_USER A JOIN T_USER_ROLE B
+            ON A.id = B.user_id
+        WHERE
+            B.role_id = #{roleId}
+
+    </select>
+
+    <select id="getAuthMyMenuTree" parameterType="HashMap" resultType="aero.cubox.core.vo.AuthMenuTreeVO">
+        SELECT
+            CAST(menu_cd AS CHAR(10)) as menuId,
+            A.menu_nm as menuNm,
+            CAST(parent_menu_cd AS CHAR(10)) as parentMenuId,
+            A.depth as depth
+        FROM
+            (
+                SELECT P.id, P.menu_cd, P.menu_nm, '#' as parent_menu_cd,'1' as depth
+                FROM T_MENU P
+                JOIN T_ROLE_MENU PT
+                    ON P.menu_cd = PT.menu_cd
+                        <if test='@aero.cubox.util.CommonUtils@notEmpty(roleId)'>
+                           AND PT.role_id = #{roleId}
+                        </if>
+                WHERE parent_menu_cd = ''
+
+                UNION ALL
+
+                SELECT C.id, C.menu_cd, C.menu_nm, C.parent_menu_cd, '2' as depth
+                FROM T_MENU C
+                JOIN T_ROLE_MENU CT
+                    ON C.menu_cd = CT.menu_cd
+                        <if test='@aero.cubox.util.CommonUtils@notEmpty(roleId)'>
+                           AND CT.role_id = #{roleId}
+                        </if>
+                WHERE parent_menu_cd != ''
+            )A
+        ORDER BY A.id, A.menu_cd
+    </select>
+
+    <select id="getAuthMenuTree" parameterType="HashMap" resultType="aero.cubox.core.vo.AuthMenuTreeVO">
+        SELECT
+            CAST(menu_cd AS CHAR(10)) as menuId,
+            A.menu_nm as menuNm,
+            CAST(parent_menu_cd AS CHAR(10)) as parentMenuId,
+            A.depth as depth
+        FROM
+        (
+            SELECT P.id, P.menu_cd, P.menu_nm, '#' as parent_menu_cd,'1' as depth
+            FROM T_MENU P
+            WHERE parent_menu_cd = ''
+
+            UNION ALL
+
+            SELECT C.id, C.menu_cd, C.menu_nm, C.parent_menu_cd, '2' as depth
+            FROM T_MENU C
+            WHERE parent_menu_cd != ''
+        )A
+        ORDER BY A.id, A.menu_cd
+    </select>
+
+    <select id="getMenuAuthDetail" parameterType="aero.cubox.core.vo.MenuAuthVO" resultType = "HashMap">
+        select
+            id as id
+             ,role_nm as roleNm
+        from
+            T_ROLE
+        where
+            id = #{id}
+    </select>
+
+    <select id="getRoleList" resultType="aero.cubox.core.vo.MenuAuthVO">
+        SELECT
+            id as id,
+            role_nm as roleNm
+        FROM T_ROLE
+        WHERE
+            delete_yn = 'N'
+            AND
+            system_yn = 'Y'
+    </select>
+
+    <select id="getRoleListByUser" parameterType="HashMap" resultType="aero.cubox.core.vo.MenuAuthVO">
+        SELECT role_id as id FROM T_USER_ROLE WHERE user_id = #{userId}
+    </select>
+
+    <select id="getUserAuthList" parameterType="HashMap" resultType="aero.cubox.core.vo.MenuAuthVO">
+        SELECT
+            A.id as id,
+            A.role_nm as roleNm
+        FROM T_ROLE A
+                 JOIN T_USER_ROLE B
+                      ON A.id = B.role_id
+        WHERE B.user_id = #{id}
+    </select>
+
+    <insert id="addUserRole" parameterType="HashMap" >
+        INSERT INTO T_USER_ROLE(
+            user_id,
+            role_id,
+            created_at
+        )VALUES(
+                   #{userId},
+                   #{roleId},
+                   NOW()
+        )
+    </insert>
+
+    <delete id="delUserRole" parameterType="HashMap">
+        DELETE FROM T_USER_ROLE
+        WHERE
+           user_id = #{userId}
+    </delete>
+
+    <delete id="delMenuAuth" parameterType="HashMap">
+        DELETE FROM T_ROLE_MENU
+        WHERE
+            role_id = #{id}
+    </delete>
+
+    <insert id="addMenuAuth" parameterType="HashMap">
+        INSERT INTO T_ROLE_MENU(
+            role_id,
+            menu_cd,
+            created_at
+        )VALUES(
+                   #{id},
+                   #{menuCd},
+                   NOW()
+               )
+    </insert>
+
+    <insert id="addRole" parameterType="HashMap" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO T_ROLE(
+            role_nm,
+            system_yn,
+            created_at
+        )VALUES(
+                   #{roleNm},
+                   'Y',
+                   NOW()
+               )
+    </insert>
+
+    <delete id="delRole" parameterType="HashMap">
+        DELETE FROM T_ROLE
+        WHERE
+            id = #{id}
+    </delete>
+
+</mapper>

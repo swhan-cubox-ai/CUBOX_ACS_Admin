@@ -257,4 +257,13 @@
 		limit 6 offset 0
 	</select>
 
+	<select id="getCommonCodeList" parameterType="String"  resultType="aero.cubox.core.vo.CommonVO">
+		SELECT
+			cd as cd,
+			cd_nm as cdNm
+		FROM T_CMMN_CD
+		WHERE cd_typ = #{cdType}
+		ORDER BY order_no;
+	</select>
+
 </mapper>
