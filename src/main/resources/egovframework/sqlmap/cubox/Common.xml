@@ -43,9 +43,7 @@
 			 , tus.fail_cnt
 			 , tus.active_yn
 			 , tus.delete_yn
-			 , tur.role_id
 		FROM T_USER tus
-			LEFT OUTER JOIN T_USER_ROLE tur ON tus.id = tur.user_id
 		WHERE tus.login_id	= #{login_id}
 		  AND tus.login_pwd	= #{login_pwd}
 		  AND tus.active_yn = 'Y'
