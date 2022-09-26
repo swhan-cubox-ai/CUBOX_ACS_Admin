@@ -33,7 +33,6 @@
 
 </style>
 
-<script type="text/javascript" src="/js/dTree/dtree.js"></script>
 <script type="text/javascript">
 
     const defaultTime = 60; // 기본 시간 설정
@@ -52,42 +51,9 @@
         modalPopup("doorListPopup", "출입문 목록", 450, 550);
         modalPopup("doorEditPopup", popupNm, 900, 600);
 
-        d = new dTree('d'); //dtree선언
-        d.add("root", -1, '사업장'); //최상위 루트, 참조가 없기때문에 -1
-        d.add("node_1", "root", '사업장 1');
-        d.add("node_1_1", "node_1", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장1 > 사업장1_1">사업장 1_1</span>', '#');
-        d.add("node_2", "root", '사업장 2');
-        d.add("node_2_1", "node_2", '사업장 2_1');
-        d.add("node_2_1_1", "node_2_1", '사업장 2_1_1');
-        d.add("node_2_1_1_1", "node_2_1_1", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장2 > 사업장2_1 > 사업장2_1_1 > 사업장2_1_1_1">사업장 2_1_1_1</span>', '#');
-        d.add("node_2_1_1_2", "node_2_1_1", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장2 > 사업장2_1 > 사업장2_1_1 > 사업장2_1_1_2">사업장 2_1_1_2</span>', '#');
-        d.add("node_3", "root", '사업장 3');
-        d.add("node_3_1", "node_3", '사업장 3_1');
-        d.add("node_3_1_1", "node_3_1", '사업장 3_1_1');
-        d.add("node_3_1_1_1", "node_3_1_1", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장3 > 사업장3_1 > 사업장3_1_1 > 사업장3_1_1_1">사업장 3_1_1_1</span>', '#');
-        d.add("node_3_1_1_2", "node_3_1_1", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장3 > 사업장3_1 > 사업장3_1_1 > 사업장3_1_1_2">사업장 3_1_1_2</span>', '#');
-        d.add("node_3_1_1_3", "node_3_1_1", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장3 > 사업장3_1 > 사업장3_1_1 > 사업장3_1_1_3">사업장 3_1_1_3</span>', '#');
-        d.add("node_3_1_1_4", "node_3_1_1", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장3 > 사업장3_1 > 사업장3_1_1 > 사업장3_1_1_4">사업장 3_1_1_4</span>', '#');
-        d.add("node_4", "root", '사업장 4');
-        d.add("node_4_1", "node_4", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장4 > 사업장4_1">사업장 4_1</span>', '#');
-        d.add("node_4_2", "node_4", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장4 > 사업장4_2">사업장 4_2</span>', '#');
-        d.add("node_4_3", "node_4", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장4 > 사업장4_3">사업장 4_3</span>', '#');
-        d.add("node_4_4", "node_4", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장4 > 사업장4_4">사업장 4_4</span>', '#');
-        d.add("node_4_5", "node_4", '사업장 4_5');
-        d.add("node_4_5_1", "node_4_5", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장4 > 사업장4_5 > 사업장4_5_1">사업장 4_5_1</span>', '#');
-        d.add("node_4_5_2", "node_4_5", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장4 > 사업장4_5 > 사업장4_5_2">사업장 4_5_2</span>', '#');
-        d.add("node_4_5_3", "node_4_5", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장4 > 사업장4_5 > 사업장4_5_3">사업장 4_5_3</span>', '#');
-        d.add("node_4_5_4", "node_4_5", '사업장 4_5_4');
-        d.add("node_4_5_4_1", "node_4_5_4", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장4 > 사업장4_5 > 사업장4_5_4 > 사업장4_5_4_1">사업장 4_5_4_1</span>', '#');
-        d.add("node_4_5_4_2", "node_4_5_4", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장4 > 사업장4_5 > 사업장4_5_4 > 사업장4_5_4_2">사업장 4_5_4_2</span>', '#');
-        d.add("node_4_5_4_3", "node_4_5_4", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장4 > 사업장4_5 > 사업장4_5_4 > 사업장4_5_4_3">사업장 4_5_4_3</span>', '#');
-        d.add("node_4_5_4_4", "node_4_5_4", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장4 > 사업장4_5 > 사업장4_5_4 > 사업장4_5_4_4">사업장 4_5_4_4</span>', '#');
-        d.add("node_4_5_4_5", "node_4_5_4", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장4 > 사업장4_5 > 사업장4_5_4 > 사업장4_5_4_5">사업장 4_5_4_5</span>', '#');
-        d.add("node_5", "root", '사업장 5');
-        d.add("node_5_1", "node_5", '<span onclick="javascript:selectDoor(this);" value="사업장 > 사업장5 > 사업장5_1">사업장 5_1</span>', '#');
-
-        $("#treeDiv").html(d.toString());
-        d.openAll();
+        // dTree
+        let fnName = "selectDoor(this);";
+        createTree($("#treeDiv"), fnName);
 
         chkAlType();
 
