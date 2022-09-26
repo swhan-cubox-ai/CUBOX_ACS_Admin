@@ -1,7 +1,5 @@
 package aero.cubox.door.controller;
 
-import aero.cubox.cmmn.controller.CommonController;
-
 import aero.cubox.door.service.DoorService;
 import aero.cubox.util.CommonUtils;
 import org.slf4j.Logger;
@@ -31,7 +29,7 @@ public class DoorController {
     @Resource(name = "commonUtils")
     private CommonUtils commonUtils;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommonController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DoorController.class);
 
     /**
      * 출입문관리 - view
@@ -68,8 +66,12 @@ public class DoorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
+        List<Map> areaList = doorService.getAreaList(commandMap);
+        List<Map> buildingList = doorService.getBuildingList(commandMap);
         List<Map> doorList = doorService.getDoorList(commandMap);
 
+        modelAndView.addObject("areaList", areaList);
+        modelAndView.addObject("buildingList", buildingList);
         modelAndView.addObject("doorList", doorList);
 
         return modelAndView;
@@ -79,19 +81,38 @@ public class DoorController {
     @RequestMapping(value="/getDoorInformation.do")
     public ModelAndView getDoorInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("jsonView");
+        modelAndView.setViewName("jsonView");
 
         HashMap doorInfo = (HashMap) doorService.getDoorInformation(commandMap);
 
-		modelAndView.addObject("doorInfo", doorInfo);
+        modelAndView.addObject("doorInfo", doorInfo);
 
-		return modelAndView;
+        return modelAndView;
+    }
+
+    //출입문 등록
+    @RequestMapping(value="/addDoorInformation.do")
+    public ModelAndView addDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+            doorService.addDoorInformation(commandMap);
+
+        } catch(Exception e) {
+            e.getStackTrace();
+            modelAndView.addObject("result", "N");
+        }
+        modelAndView.addObject("result", "Y");
+
+
+        return modelAndView;
     }
 
 
-    // 출입문 정보 수정 / 추가
+    // 출입문 수정
     @RequestMapping(value="/updateDoorInformation.do")
-    public ModelAndView updatedoorInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    public ModelAndView updateDoorInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
@@ -107,6 +128,8 @@ public class DoorController {
 
         return modelAndView;
     }
+
+
 
 
 
@@ -209,9 +232,20 @@ public class DoorController {
 
 
 
+    // 스케쥴 목록 가져오기
+    @RequestMapping(value="/getScheduleList.do")
+    public ModelAndView getScheduleList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
-    //todo 리스트
-    //todo
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        List<HashMap> scheduleList = doorService.getScheduleList(commandMap);
+        modelAndView.addObject("scheduleList", scheduleList);
+
+        return modelAndView;
+    }
+
+
     @RequestMapping(value = "/schedule_add.do")
     public String schedule_add(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -221,9 +255,9 @@ public class DoorController {
             model.addAttribute("gateGroup", commandMap.get("gateGroup"));
         }
         model.addAttribute("editMode", commandMap.get("editMode"));
-        System.out.println(commandMap.get("editMode"));
-        System.out.println(model.get("editMode"));
-        System.out.println(model.get("schName"));
+
+        LOGGER.debug("editMode : " + model.get("editMode"));
+        LOGGER.debug("schName : " + model.get("schName"));
         return "cubox/door/schedule_add";
     }
     //todo

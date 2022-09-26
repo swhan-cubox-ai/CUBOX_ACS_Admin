@@ -6,6 +6,19 @@
 	<select id="selectDoorList" parameterType="HashMap" resultType="HashMap">
 		SELECT *
 		  FROM T_DOOR
+		 WHERE 1=1
+	</select>
+
+	<select id="selectAreaList" parameterType="HashMap" resultType="HashMap">
+		SELECT *
+		  FROM T_AREA
+		 WHERE 1=1
+	</select>
+
+	<select id="selectBuildingList" parameterType="HashMap" resultType="HashMap">
+		SELECT *
+		  FROM T_BUILDING
+		  WHERE 1=1
 	</select>
 
 	<select id="selectDoorInformation"  parameterType="HashMap" resultType="HashMap">
@@ -24,33 +37,58 @@
 	<select id="selectPermissionGroup"   parameterType="HashMap" resultType="HashMap">
 		SELECT *
 		  FROM T_DOOR
+		 WHERE 1=1
 	</select>
 
 	<select id="selectTerminalInformationList"  parameterType="HashMap" resultType="HashMap">
 		SELECT *
 		  FROM T_TERMINAL
+         WHERE 1=1
 	</select>
 
 	<select id="selectTerminalInformation" parameterType="HashMap" resultType="HashMap">
-		SELECT *
+		SELECT
 		  FROM T_TERMINAL
+         WHERE 1=1
  	</select>
-	<delete id="deleteDoor" parameterType="HashMap" >
-		DELETE
-		  FROM T_DOOR
-		 WHERE id = 100
 
-	</delete>
+
+	<insert id="insertDoorInformation" parameterType="HashMap">
+		insert
+		  into
+		T_DOOR (   areaid
+		         , alarm_typ
+		         , door_nm
+		         , floor_id
+		         , created_at
+		         , updated_at
+		         )
+		 values  ( #{areaid}
+				 , #{alarm_typ}
+				 , #{door_nm}
+				 , #{floor_id}
+				 , SYSDATE
+				 , SYSDATE
+		         )
+
+	</insert>
 
 	<update id="updateDoorInformation" parameterType="HashMap">
 		UPDATE T_DOOR
 		   SET buildingid = ''
 			 , areaid = ''
-			 ,  alarm_typ = ''
+			 , alarm_typ = ''
 			 , door_nm = ''
 			 , floor_id = ''
 			 , updated_at = SYSDATE
 		 WHERE id = #{id}
 	</update>
+
+	<delete id="deleteDoor" parameterType="HashMap" >
+		DELETE
+		FROM T_DOOR
+		WHERE id = 100
+
+	</delete>
 
 </mapper>
