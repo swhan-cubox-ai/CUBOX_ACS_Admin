@@ -22,4 +22,12 @@ public interface DoorService {
     void updateDoorInformation(Map<String, Object> commandMap);
 
     HashMap getTerminalInformation(Map<String, Object> commandMap);
+
+    List<Map> getAreaList(Map<String, Object> commandMap);
+
+    List<Map> getBuildingList(Map<String, Object> commandMap);
+
+    void addDoorInformation(Map<String, Object> commandMap);
+
+    List<HashMap> getScheduleList(Map<String, Object> commandMap);
 }
