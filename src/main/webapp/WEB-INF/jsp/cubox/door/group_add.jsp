@@ -37,18 +37,15 @@
     const defaultTime = 60; // 기본 시간 설정
 
     $(function() {
-        let popupNm = "";
 
         if (${editMode eq 'edit'}) {
-            $(".title_tx").html("출입문 알람 그룹 - 수정");
-            popupNm = "출입문 수정";
+            $(".title_tx").html("출입문 그룹 관리 - 수정");
         } else {
-            $(".title_tx").html("출입문 알람 그룹 - 등록");
-            popupNm = "출입문 등록";
+            $(".title_tx").html("출입문 그룹 관리 - 등록");
+            $("#gpNm").focus();
         }
 
-        modalPopup("doorListPopup", "출입문 목록", 450, 550);
-        modalPopup("doorEditPopup", popupNm, 900, 600);
+        modalPopup("doorEditPopup", "출입문 선택", 900, 600);
 
         d = new dTree('d'); //dtree선언
         d.add("root", -1, '사업장'); //최상위 루트, 참조가 없기때문에 -1
@@ -86,8 +83,6 @@
 
         $("#treeDiv").html(d.toString());
         d.openAll();
-
-        chkAlType();
 
         // 출입문 추가
         $("#add_door").click(function() {
@@ -130,32 +125,14 @@
             }
         });
 
-        // 출입문 알람그룹 명 유효성 체크
-        $("#alNm").focusout(function() {
+        // 출입문 그룹 명 유효성 체크
+        $("#gpNm").focusout(function() {
             console.log("이름 input을 벗어남");
 
-            // TODO : 출입문스케쥴명 유효성 체크 (ajax)
-        });
-
-        // 유형 - 기본시간
-        $("#alType").change(function() {
-            console.log("유형");
-            console.log(this);
-            console.log($(this).val());
-
-            chkAlType();
+            // TODO : 출입문 그룹 명 유효성 체크 (ajax)
         });
 
     });
-
-    // 유형:기본시간 --> 시간 고정
-    function chkAlType() {
-        if ($("#alType").val() == "default") {
-            $("#alTime").val(defaultTime).attr("disabled", true);
-        } else {
-            $("#alTime").val("").attr("disabled", false);
-        }
-    }
 
     // 수정 버튼
     function fnEdit() {
@@ -167,31 +144,24 @@
     // 출입문 저장, 등록
     function fnSave() {
         console.log("fnSave");
-        let alNm = $("#alNm").val();
-        let alType = $("#alType").val();
-        let alTime = $("#alTime").val();
-        let alUseYn = $("#alUseYn").val();
-        let alDoorCnt = $("#alDoorCnt").val();
-        // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
+        let gpNm = $("#gpNm").val();
+        let gpSchedule = $("#gpSchedule").val();
+        let gpDoor = $("#gpDoor").val();
+        console.log(gpNm);
 
         // 입력값 유효성 체크
-        if (alNm == "") {
-            alert("출입문 알람 그룹 명을 입력해주세요.");
-            $("#alNm").focus(); return;
-        } else if (alType == "") {
-            alert("유형을 선택해주세요.");
-            $("#alType").focus(); return;
-        } else if (alTime == "") {
-            alert("시간을 입력해주세요.");
-            $("#alTime").focus(); return;
-        } else if (alUseYn == "") {
-            alert("사용여부를 선택해주세요.");
-            $("#alUseYn").focus(); return;
-        } else if (alDoorCnt == "" || alDoorCnt == 0) {
+        if (fnIsEmpty(gpNm)) {
+            alert("출입문 그룹 명을 입력해주세요.");
+            $("#gpNm").focus(); return;
+        } else if (fnIsEmpty(gpSchedule)) {
+            alert("출입문 스케쥴을 선택해주세요.");
+            $("#gpSchedule").focus(); return;
+        } else if (fnIsEmpty(gpDoor)) {
             alert("출입문을 선택해주세요.");
             return;
         }
 
+        // TODO : gpDoor 출입문 disabled 해제!
         location.href = "/door/group_detail.do";
 
     }
@@ -209,8 +179,6 @@
     // 출입문 선택
     function selectDoor(self) {
         let door = $(self);
-        console.log(door);
-        console.log(door.html());
         console.log(door.attr("value"));
     }
 
@@ -221,14 +189,15 @@
 
     // popup close (공통)
     function closePopup(popupNm) {
+        let doorGroup = [];
+
+        $("input[name=chkDoorConf]").each(function(i) {
+            let chkDoor = $(this).closest("tr").children().eq(1).html().replaceAll("&gt;", ">");
+            doorGroup.push(chkDoor);
+        });
+        $("#gpDoor").val(doorGroup.join("\r\n"));
+
         $("#" + popupNm).PopupWindow("close");
-
-        if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
-            // TODO : 출입문 저장 로직
-
-            let cntDoor = $("#doorSelected").children().length - 1;
-            $("#alDoorCnt").val(cntDoor);
-        }
     }
 
 </script>
@@ -240,75 +209,43 @@
                 <col style="width:10%">
                 <col style="width:90%">
             </colgroup>
-            <tbody id="tdAlarmDetail">
+            <tbody id="tdGroupDetail">
             <tr>
-                <th>출입문 알람 그룹 명</th>
+                <th>출입문 그룹 명</th>
                 <td>
-                    <input type="text" id="alNm" name="alNm" maxlength="50" value="<c:if test="${editMode eq 'edit'}">${alNm}</c:if>" class="input_com w_600px">
+                    <input type="text" id="gpNm" name="gpNm" maxlength="50" value="<c:if test="${editMode eq 'edit'}">3동 현관</c:if>" class="input_com w_600px">
                 </td>
             </tr>
             <tr>
-                <th>유형</th>
+                <th>출입문 스케쥴</th>
                 <td>
-                    <c:choose>
-                        <c:when test="${editMode eq 'edit'}">
-                            <select id="alType" name="alType" class="form-control input_com w_600px" value=${alType} style="padding-left:10px;">
-                                <option value="">선택</option>
-                                <option value="default" selected>기본 시간</option>
-                                <option value="setTime">지정시간</option>
-                            </select>
-                        </c:when>
-                        <c:otherwise>
-                            <select id="alType" name="alType" class="form-control input_com w_600px" style="padding-left:10px;">
-                                <option value="" selected>선택</option>
-                                <option value="default">기본 시간</option>
-                                <option value="setTime">지정시간</option>
-                            </select>
-                        </c:otherwise>
-                    </c:choose>
+                <c:choose>
+                    <c:when test="${editMode eq 'edit'}">
+                        <select id="gpSchedule" name="gpSchedule" class="form-control input_com w_600px" value=${alType} style="padding-left:10px;">
+                            <option value="">선택</option>
+                            <option value="default" selected>3동 평일</option>
+                            <option value="setTime">3동 주말</option>
+                        </select>
+                    </c:when>
+                    <c:otherwise>
+                        <select id="gpSchedule" name="gpSchedule" class="form-control input_com w_600px" style="padding-left:10px;">
+                            <option value="" selected>선택</option>
+                            <option value="default">3동 평일</option>
+                            <option value="setTime">3동 주말</option>
+                        </select>
+                    </c:otherwise>
+                </c:choose>
                 </td>
             </tr>
             <tr>
-                <th>시간</th>
-                <td>
-                    <input type="number" id="alTime" name="alTime" maxlength="10" min="1" value="<c:if test="${editMode eq 'edit'}">${alTime}</c:if>" class="input_com w_600px">&ensp;초
-                </td>
-            </tr>
-            <tr>
-                <th>사용</th>
-                <td>
-                    <c:choose>
-                        <c:when test="${editMode eq 'edit'}">
-                            <select id="alUseYn" name="alUseYn" class="form-control input_com w_600px" value="${alUseYn}" style="padding-left:10px;">
-                                <option value="">선택</option>
-                                <option value="yes" selected>Y</option>
-                                <option value="no">N</option>
-                            </select>
-                        </c:when>
-                        <c:otherwise>
-                            <select id="alUseYn" name="alUseYn" class="form-control input_com w_600px" style="padding-left:10px;">
-                                <option value="" selected>선택</option>
-                                <option value="yes">Y</option>
-                                <option value="no">N</option>
-                            </select>
-                        </c:otherwise>
-                    </c:choose>
-                </td>
-            </tr>
-            <tr>
-                <th>출입문 수</th>
-                <td>
-                    <input type="number" id="alDoorCnt" name="alDoorCnt" maxlength="50"
-                           value="<c:if test="${editMode eq 'edit'}">${alDoorCnt}</c:if>" class="input_com w_600px" disabled>&ensp;
-                    <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>
-                    <c:choose>
-                        <c:when test="${editMode eq 'edit'}">
-                            <button type="button" class="btn_small color_basic" onclick="openPopup('doorEditPopup')">출입문 수정</button>
-                        </c:when>
-                        <c:otherwise>
-                            <button type="button" class="btn_small color_basic" onclick="openPopup('doorEditPopup')">출입문 등록</button>
-                        </c:otherwise>
-                    </c:choose>
+                <th>출입문</th>
+                <td style="display: flex;">
+                    <textarea id="gpDoor" name="gpDoor" rows="10" cols="33" class="w_600px"
+                              style="border-color: #ccc; border-radius: 2px;
+                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:if test="${editMode eq 'edit'}">16동 현관</c:if></textarea>
+                    <div class="ml_10" style="position: relative;">
+                        <button type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px;" onclick="openPopup('doorEditPopup')">출입문 선택</button>
+                    </div>
                 </td>
             </tr>
             </tbody>
@@ -317,51 +254,13 @@
 </form>
 
 <div class="right_btn mt_20">
-    <c:choose>
-        <c:when test="${editMode eq 'edit'}">
-            <button class="btn_middle ml_5 color_basic" onClick="fnSave();">저장</button>
-        </c:when>
-        <c:otherwise>
-            <button class="btn_middle ml_5 color_basic" onClick="fnSave();">등록</button>
-        </c:otherwise>
-    </c:choose>
+    <button class="btn_middle ml_5 color_basic" onClick="fnSave();">등록</button>
     <button class="btn_middle ml_5 color_basic" onClick="fnCancel();">취소</button>
 </div>
 
 
-<%--  출입문 목록 modal  --%>
-<div id="doorListPopup" class="example_content">
-    <div class="popup_box box_w3">
-
-        <%--  테이블  --%>
-        <div style="width:100%;">
-            <div class="com_box" style="border: 1px solid black; background-color: white; overflow: auto; height: 330px;">
-                <table class="tb_list tb_write_02 tb_write_p1">
-                    <tbody>
-                    <tr>
-                        <td>12동 > C구역 > 1층 > 현관 출입문</td>
-                    </tr>
-                    <tr>
-                        <td>12동 > D구역 > 2층 > 계단</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <%--  end of 테이블  --%>
-
-        <div class="c_btnbox center mt_30">
-            <div style="display: inline-block;">
-                <button type="button" class="comm_btn mr_20" onclick="closePopup('doorListPopup');">확인</button>
-            </div>
-        </div>
-    </div>
-</div>
-<%--  end of 출입문 목록 modal  --%>
-
-
-<%--  출입문 수정 modal  --%>
-<div id="doorEditPopup" class="example_content">
+<%--  출입문 선택 modal  --%>
+<div id="doorEditPopup" class="example_content" style="display: none;">
     <div class="popup_box box_w3">
         <div style="width:45%;">
             <div class="com_box" style="border: 1px solid black; background-color: white; overflow: auto; height: 400px; padding: 2px 10px;">
@@ -417,4 +316,4 @@
         </div>
     </div>
 </div>
-<%--  end of 출입문 수정 modal  --%>
+<%--  end of 출입문 선택 modal  --%>
