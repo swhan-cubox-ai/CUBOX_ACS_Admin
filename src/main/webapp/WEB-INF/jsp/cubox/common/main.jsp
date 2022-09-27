@@ -436,6 +436,9 @@ canvas {
 		</div>
 	</div>
 	<div class="w_200px"></div>
+<%-- 임시 메뉴 버튼 --%>
+	<button type="button" id="btnGroup" onclick="location='/door/group.do'" class="btn_middle color_gray">출입문 그룹 관리</button>
+<%-- // 임시 메뉴 버튼 --%>
 	<form id="frmSearch" name="frmSearch" method="post" onsubmit="return false;">
 	<input type="hidden" id="hidNttId" name="hidNttId">
 		<input type="hidden" id="reloadYn" name="reloadYn" value='<c:out value="${reloadYn}"/>'>

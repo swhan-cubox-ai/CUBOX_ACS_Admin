@@ -30,15 +30,29 @@ public class DoorDAO extends EgovAbstractMapper {
 		return selectList(sqlNameSpace+"selectTerminalInformation", commandMap);
 	}
 
-	public void deleteDoor(Map<String, Object> commandMap) {
-		delete(sqlNameSpace+"deleteDoor", commandMap);
+
+	public void insertDoorInformation(Map<String, Object> commandMap) {
+		update(sqlNameSpace+"insertDoorInformation", commandMap);
 	}
 
 	public void updateDoorInformation(Map<String, Object> commandMap) {
 		update(sqlNameSpace+"updateDoorInformation", commandMap);
 	}
+	public void deleteDoor(Map<String, Object> commandMap) {
+
+		delete(sqlNameSpace+"deleteDoor", commandMap);
+	}
 
 	public HashMap getTerminalInformation(Map<String, Object> commandMap) {
 		return selectOne(sqlNameSpace+"selectTerminalInformation", commandMap);
 	}
+
+	public List<Map> getAreaList(Map<String, Object> commandMap) {
+		return selectList(sqlNameSpace+"selectAreaList", commandMap);
+	}
+
+	public List<Map> getBuildingList(Map<String, Object> commandMap) {
+		return selectList(sqlNameSpace+"selectBuildingList", commandMap);
+	}
+
 }
