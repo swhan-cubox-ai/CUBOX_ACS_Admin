@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="holiday">
+
+    <select id="getHolidayList" parameterType="aero.cubox.core.vo.HolidayVO" resultType="aero.cubox.core.vo.HolidayVO">
+        select
+            id as id
+            ,(SELECT cd_nm from T_CMMN_CD WHERE cd_typ = 'HolidayTyp' AND cd = holiday_typ) as holidayTypNm
+            ,holiday_typ as holidayTyp
+            ,holiday_nm as holidayNm
+            ,holiday as holiday
+            ,holiday_end as holidayEnd
+            ,use_yn as useYn
+            ,DATE_FORMAT(created_at, '%Y-%m-%d') as createdAt
+            ,DATE_FORMAT(updated_at, '%Y-%m-%d') as updatedAt
+        from	T_HOLIDAY
+        where
+            1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(holidayTyp)'>
+            and holiday_typ = #{holidayTyp}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(holidayNm)'>
+            and holiday_nm like CONCAT('%',#{holidayNm},'%')
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(startDt) and @aero.cubox.util.CommonUtils@notEmpty(endDt)'>
+            and holiday between #{startDt} and #{endDt}
+        </if>
+
+        limit	#{srchCnt} offset #{offset}
+    </select>
+
+    <select id="getHolidayListCount" parameterType="aero.cubox.core.vo.HolidayVO" resultType="int">
+        select
+           count(*)
+        from	T_HOLIDAY
+        where
+            1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(holidayTyp)'>
+            and holiday_typ = #{holidayTyp}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(holidayNm)'>
+            and holiday_nm like CONCAT('%',#{holidayNm},'%')
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(startDt) and @aero.cubox.util.CommonUtils@notEmpty(endDt)'>
+            and holiday between #{startDt} and #{endDt}
+        </if>
+    </select>
+
+    <select id="getHolidayDetail" parameterType="int" resultType = "HashMap">
+        select
+            id as id
+            ,holiday_typ as holidayTyp
+            ,(SELECT cd_nm from T_CMMN_CD WHERE cd_typ = 'HolidayTyp' AND cd = holiday_typ) as holidayTypNm
+            ,holiday_nm as holidayNm
+            ,holiday as holiday
+            ,holiday_end as holidayEnd
+            ,use_yn as useYn
+        from
+            T_HOLIDAY
+        where
+            id = #{id}
+    </select>
+
+    <update id="modifyHoliday" parameterType="HashMap" >
+        UPDATE
+            T_HOLIDAY
+        SET
+            holiday = #{holiday},
+            holiday_end = #{holidayEnd},
+            use_yn = #{useYn},
+            updated_at = NOW()
+        WHERE
+            id = #{id}
+    </update>
+
+    <insert id="addHoliday" parameterType="HashMap">
+        INSERT INTO T_HOLIDAY(
+            holiday_typ,
+            holiday_cd,
+            holiday,
+            holiday_end,
+            holiday_nm,
+            use_yn,
+            created_at
+        )VALUES(
+                   #{holidayTyp},
+                   #{holidayCd},
+                <choose>
+                    <when test="holidayTyp == 'HD0003'">
+                        #{holiday2},
+                    </when>
+                    <otherwise>
+                        #{holiday1},
+                    </otherwise>
+                </choose>
+                   #{holiday3},
+                <choose>
+                    <when test="holidayTyp == 'HD0002'">
+                        #{holidayNm},
+                    </when>
+                    <otherwise>
+                        (SELECT cd_nm FROM T_CMMN_CD WHERE cd_typ = 'HolidayCd' AND cd = #{holidayCd}),
+                    </otherwise>
+                </choose>
+                   #{useYn},
+                   NOW()
+               )
+    </insert>
+
+    <select id="getHolidayNmList" parameterType="HashMap" resultType="HashMap">
+        SELECT
+            holiday_cd as holidayCd,
+            holiday_nm as holidayNm,
+            holiday_typ as holidayTyp
+        FROM T_HOLIDAY
+        WHERE
+            holiday_typ = #{holidayTyp}
+    </select>
+
+    <delete id="deleteHoliday" parameterType="HashMap">
+        DELETE FROM T_HOLIDAY
+        WHERE
+            id = #{id}
+    </delete>
+
+</mapper>

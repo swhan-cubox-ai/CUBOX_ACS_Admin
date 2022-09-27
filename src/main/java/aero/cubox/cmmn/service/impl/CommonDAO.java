@@ -4,6 +4,7 @@ import java.util.List;
 
 import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.core.vo.CodeVO;
+import aero.cubox.core.vo.CommonVO;
 import aero.cubox.core.vo.DateTimeVO;
 import aero.cubox.core.vo.LoginVO;
 //import aero.cubox.core.vo.LoginVO;
@@ -171,4 +172,7 @@ public class CommonDAO extends EgovAbstractMapper {
 		return selectList(sqlNameSpace+"selectAuthorList");
 	}
 
+	public List<CommonVO> getCommonCodeList(String cdType) throws Exception {
+		return selectList(sqlNameSpace+"getCommonCodeList", cdType);
+	}
 }
