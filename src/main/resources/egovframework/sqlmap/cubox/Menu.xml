@@ -52,7 +52,7 @@
 
 	<select id="getMenuList" parameterType="HashMap" resultType="aero.cubox.core.vo.MenuVO">
 		SELECT
-			TRM.menu_cd ,
+			DISTINCT TRM.menu_cd ,
 			TM.menu_nm ,
 			TM.order_no,
 			TM.parent_menu_cd
@@ -68,7 +68,7 @@
 
 	<select id="getMenuDetailList" parameterType="HashMap" resultType="aero.cubox.core.vo.MenuDetailVO">
 		SELECT
-			TRM.menu_cd ,
+			DISTINCT TRM.menu_cd ,
 			TM.menu_nm ,
 			TM.order_no
 		FROM T_ROLE_MENU TRM
