@@ -279,11 +279,11 @@ public class DoorController {
     }
 
     // 출입문 알람 그룹
-    @RequestMapping(value="/alarm.do")
+    @RequestMapping(value="/alarmGroup.do")
     public String alarm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
         //todo 세션처리
 
-        return "cubox/door/alarm";
+        return "cubox/door/alarmGroup";
     }
 
     // 출입문 알람 그룹 상세

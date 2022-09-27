@@ -38,7 +38,7 @@
 
     // 목록 버튼
     function fnList() {
-        location.href = "/door/alarm.do";
+        location.href = "/door/alarmGroup.do";
     }
 
     // 수정 버튼
@@ -61,7 +61,7 @@
             return;
         }
         // location.href = "/door/alarm_delete.do";
-        location.href = "/door/alarm.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
+        location.href = "/door/alarmGroup.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
     }
 
     // popup open (공통)
