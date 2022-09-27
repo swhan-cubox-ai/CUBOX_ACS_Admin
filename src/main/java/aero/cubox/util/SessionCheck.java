@@ -120,26 +120,24 @@ public class SessionCheck extends HandlerInterceptorAdapter {
 
         	HashMap<String, Object> sMap = new HashMap<String, Object>();
         	sMap.put("menu_cd", menuCd);
-
 			//권한별 sub menu 정보
-    		for(MenuVO vo : urlList) {
-    			//String strClCode = vo.getMenu_cl_code();
-				String strClCode = "left_icon5.png";
-				vo.setIcon_img(strClCode); // todo 임시 - 메뉴로고설정 추후 설계에 따라서 변경
 
-    			sMap.put("parent_menu_cd", vo.getMenu_cd());
-    			List<MenuDetailVO> menuList = menuService.getMenuDetail(sMap);
+			//String strClCode = vo.getMenu_cl_code();
+			String strClCode = "left_icon5.png";
+			mvo.setIcon_img(strClCode); // todo 임시 - 메뉴로고설정 추후 설계에 따라서 변경
 
-				// todo 임시 - 메뉴URL 설정 추후 설계에 따라서 변경
-				for(MenuDetailVO mdvo : menuList) {
-					String menuUrl = MenuUrlSetting.getMenuUrl((String) mdvo.getMenu_cd());
-					mdvo.setMenu_url(menuUrl);
-				}
+			sMap.put("parent_menu_cd", mvo.getMenu_cd());
+			List<MenuDetailVO> menuList = menuService.getMenuDetail(sMap);
 
-				vo.setList(menuList);
-    		}
-    		authorManager.setMenuList(role_id, urlList);
+			// todo 임시 - 메뉴URL 설정 추후 설계에 따라서 변경
+			for(MenuDetailVO mdvo : menuList) {
+				String menuUrl = MenuUrlSetting.getMenuUrl((String) mdvo.getMenu_cd());
+				mdvo.setMenu_url(menuUrl);
+			}
+
+			mvo.setList(menuList);
     	}
+		authorManager.setMenuList(role_id, urlList);
 		authorManager.complete();
 	}
 }

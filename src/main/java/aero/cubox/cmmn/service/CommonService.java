@@ -131,4 +131,12 @@ public interface CommonService {
 
 	List<BoardVO> getMainQaList() throws Exception;
 
+
+	/**
+	 * 공통코드 목록 가져오기
+	 * @return List<CommonVO>
+	 * @throws Exception
+	 */
+	List<CommonVO> getCommonCodeList(String cdType) throws  Exception;
+
 }
