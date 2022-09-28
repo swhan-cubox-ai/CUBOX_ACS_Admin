@@ -228,7 +228,7 @@
                     <th>출입문 그룹</th>
                     <td style="display: flex;">
                         <textarea id="gateGroup" name="gateGroup" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
-                                    font-size: 14px; line-height: 1.5; padding: 2px 10px;"><c:if test="${editMode eq 'edit'}">${gateGroup}</c:if></textarea>
+                                    font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:if test="${editMode eq 'edit'}">${gateGroup}</c:if></textarea>
                         <div class="ml_10" style="position:relative;">
                             <button type="button" class="btn_middle color_basic" onclick="openPopup('gateAuthPickPopup')" style="position:absolute; bottom:0;">선택</button>
                         </div>

@@ -376,7 +376,7 @@
                         <th>스케쥴</th>
                         <td>
                             <select name="gateEdit" id="gateUseYn" class="form-control" style="padding-left:10px;" disabled>
-                                <option value="#" name="selected">선택</option>
+                                <option value="" name="selected">선택</option>
                                 <option value="#">12동 현관</option>
                                 <option value="#">4동 현관</option>
                             </select>
@@ -387,7 +387,7 @@
                         <td>
                             <%--  <input type="text" id="gateMode" name="gateMode" maxlength="10" class="w_250px input_com gateMode" value="독립 모드" />--%>
                             <select name="gateEdit" id="gateMode" class="form-control" style="padding-left:10px;" disabled>
-                                <option value="#" name="selected">선택</option>
+                                <option value="" name="selected">선택</option>
                                 <option value="#">알람 그룹1</option>
                                 <option value="#">알람 그룹2</option>
                                 <option value="#">알람 그룹3</option>
@@ -398,19 +398,19 @@
                     <tr>
                         <th>단말기 코드</th>
                         <td>
-                            <input type="text" id="gateCode" name="gateScheduleGroup" maxlength="30" class="input_com gateScheduleGroup" value="" disabled />
+                            <input type="text" id="gateCode" name="gateCode" maxlength="30" class="input_com" value="" disabled />
                         </td>
                     </tr>
                     <tr>
                         <th>단말기 관리번호</th>
                         <td>
-                            <input type="text" id="gateNum" name="gateScheduleGroup" maxlength="30" class="input_com gateScheduleGroup" value="" disabled />
+                            <input type="text" id="gateNum" name="gateNum" maxlength="30" class="input_com" value="" disabled />
                         </td>
                     </tr>
                     <tr>
                         <th>권한 그룹</th>
                         <td>
-                            <textarea id="gateAuthGroup" name="gateEdit" rows="5" cols="33" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled>보건 복지부 &#10;12동 전체</textarea>
+                            <textarea id="gateAuthGroup" name="gateAuthGroup" rows="5" cols="33" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled>보건 복지부 &#10;12동 전체</textarea>
                         </td>
                     </tr>
                     <tr>
