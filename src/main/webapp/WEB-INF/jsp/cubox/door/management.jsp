@@ -69,6 +69,9 @@
     $(function() {
         $(".title_tx").html("출입문 관리");
 
+        fnGetDoorListAjax();    //출입문 목록
+        fnGetTerminalListAjax();//단말기 목록
+
         modalPopup("gatePickPopup", "단말기 선택", 910, 520);
         modalPopup("authPickPopup", "권한그룹 선택", 910, 550);
 
@@ -218,6 +221,18 @@
         fnCancelEdit();
         viewDetail();
 
+
+        //출입문 정보
+        $.ajax({
+            type:"GET",
+            url:"<c:url value='/door/getDoorInformation.do' />",
+            data:{doorId : "1"},
+            dataType: "json",
+            success:function(result) {
+                console.log(result.doorInfo.id + "/" + result.doorInfo.building_id+ "/" +result.doorInfo.area_id + "/"+result.doorInfo.floor_id+ "/" +result.doorInfo.door_nm+ "/" +result.doorInfo.alarm_typ);
+            }
+        });
+
         // $.ajax({
         //     type: "GET",
         //     url: '',
@@ -355,6 +370,69 @@
             userCheck();
         }
     }
+
+
+    /////////////////  출입문 목록 ajax - start  /////////////////////
+
+
+    function fnGetDoorListAjax() {
+        console.log( "fnGetDoorListAjax");
+
+        $.ajax({
+            type : "GET",
+            data : { },
+            dataType : "json",
+            url : "<c:url value='/door/getDoorList.do' />",
+            success : function(result){
+
+                if(result.workplaceList.length > 0){
+
+                    console.log( "workplaceList>>");
+                    $.each(result.workplaceList, function(i){
+                        console.log(result.workplaceList[i].id +" / "+ result.workplaceList[i].workplace_nm);
+                    });
+                }
+
+                console.log( "buildingList>>");
+                if(result.buildingList.length > 0){
+                    $.each(result.buildingList, function(i){
+                       console.log(result.buildingList[i].id +" / "+ result.buildingList[i].building_nm);
+                    });
+                }
+                console.log( "doorList>>");
+
+                if(result.doorList.length > 0){
+                    $.each(result.doorList, function(i){
+                       console.log(result.doorList[i].id +" / "+ result.doorList[i].door_nm);
+                    });
+                }
+            }
+        });
+    }
+    /////////////////  출입문 목록 ajax - end  /////////////////////
+
+
+    /////////////////  단말기 목록 ajax - start  /////////////////////
+
+
+    function fnGetTerminalListAjax() {
+        console.log("fnGetTerminalListAjax");
+        let checkYn = "Y";
+        $.ajax({
+            type: "GET",
+            url: "<c:url value='/door/getTerminalList.do' />",
+            data: {checkYn: checkYn},
+            dataType: "json",
+            success: function (result) {
+                if(result.terminalList.length > 0) {
+                    console.log(result.terminalList[i].id + "/" + result.terminalList[i].terminal_cd + "/" + result.terminalList[i].terminal_typ + "/" + result.terminalList[i].door_id);
+                }
+            }
+        });
+    }
+    /////////////////  단말기 목록 조회 ajax - end  /////////////////////
+
+
 
 </script>
 

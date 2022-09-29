@@ -2,61 +2,134 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="door">
-
-	<select id="selectDoorList" parameterType="HashMap" resultType="HashMap">
-		SELECT *
-		  FROM T_DOOR
-		 WHERE 1=1
+	<select id="selectDoorInformation"  parameterType="HashMap" resultType="HashMap">
+		SELECT id
+			 , building_id
+			 , area_id
+			 , floor_id
+			 , door_nm
+			 , alarm_typ
+			 , created_at
+			 , updated_at
+		FROM T_DOOR TD
+		WHERE id = #{id}
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+			AND TD.id = #{id}
+		</if>
 	</select>
 
-	<select id="selectAreaList" parameterType="HashMap" resultType="HashMap">
-		SELECT *
-		  FROM T_AREA
-		 WHERE 1=1
+	<select id="selectDoorList" parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+			   building_id,
+			   area_id,
+			   floor_id,
+			   door_nm,
+			   alarm_typ,
+			   created_at,
+			   updated_at
+		FROM T_DOOR TD
+		WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(building_id)'>
+		  AND TD.building_id = #{building_id}
+		</if>
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(area_id)'>
+		  AND TD.area_id = #{area_id}
+		</if>
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(floor_id)'>
+		  AND TD.floor_id = #{floor_id}
+		</if>
 	</select>
 
 	<select id="selectBuildingList" parameterType="HashMap" resultType="HashMap">
-		SELECT *
-		  FROM T_BUILDING
-		  WHERE 1=1
+		SELECT id,
+		       workplace_id,
+		       building_nm,
+		       created_at,
+		       updated_at
+		  FROM T_BUILDING TB
+		 WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(workplace_id)'>
+		  AND TB.workplace_id = #{workplace_id}
+		</if>
 	</select>
 
-	<select id="selectDoorInformation"  parameterType="HashMap" resultType="HashMap">
-		SELECT id
-		     , buildingid
-             , areaid
-             , floor_id
-             , door_nm
-             , alarm_typ
-             , created_at
-             , updated_at
-		  FROM T_DOOR
-		 WHERE id = #{id}
+	<select id="selectAreaList" parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+		       building_id,
+		       area_nm,
+		       created_at,
+		       updated_at
+		  FROM T_AREA TA
+		 WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(building_id)'>
+		   AND TA.building_id = #{building_id}
+		</if>
 	</select>
+
+	<select id="selectWorkplaceList" parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+               workplace_nm,
+		       created_at,
+		       updated_at
+		  FROM T_WORKPLACE TW
+		 WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+		   AND TW.id = #{id}
+		</if>
+	</select>
+
 
 	<select id="selectPermissionGroup"   parameterType="HashMap" resultType="HashMap">
-		SELECT *
-		  FROM T_DOOR
-		 WHERE 1=1
+		SELECT id,
+			   building_id,
+			   area_id,
+			   floor_id,
+			   door_nm,
+			   alarm_typ,
+			   created_at,
+			   updated_at
+		FROM T_DOOR TD
+		WHERE 1 = 1
 	</select>
 
 	<select id="selectTerminalInformationList"  parameterType="HashMap" resultType="HashMap">
-		SELECT *
-		  FROM T_TERMINAL
-         WHERE 1=1
+		SELECT id,
+			   terminal_cd,
+			   terminal_typ,
+			   door_id,
+			   mgmt_num,
+			   ip_addr,
+			   complex_auth_typ,
+			   face_auth_typ,
+			   created_at,
+			   updated_at
+		FROM T_TERMINAL TT
+		WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(building_id)'>
+			AND TT.id = #{id}
+		</if>
 	</select>
 
 	<select id="selectTerminalInformation" parameterType="HashMap" resultType="HashMap">
-		SELECT
-		  FROM T_TERMINAL
-         WHERE 1=1
- 	</select>
+		SELECT id,
+			   terminal_cd,
+			   terminal_typ,
+			   door_id,
+			   mgmt_num,
+			   ip_addr,
+			   complex_auth_typ,
+			   face_auth_typ,
+			   created_at,
+			   updated_at
+		FROM T_TERMINAL TT
+		WHERE 1 = 1
+	</select>
 
 
 	<insert id="insertDoorInformation" parameterType="HashMap">
 		insert
 		  into
-		T_DOOR (   areaid
+		T_DOOR (   area_id
 		         , alarm_typ
 		         , door_nm
 		         , floor_id
@@ -75,8 +148,8 @@
 
 	<update id="updateDoorInformation" parameterType="HashMap">
 		UPDATE T_DOOR
-		   SET buildingid = ''
-			 , areaid = ''
+		   SET building_id = ''
+			 , area_id = ''
 			 , alarm_typ = ''
 			 , door_nm = ''
 			 , floor_id = ''

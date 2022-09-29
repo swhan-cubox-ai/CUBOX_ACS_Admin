@@ -66,11 +66,12 @@ public class DoorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        List<Map> areaList = doorService.getAreaList(commandMap);
-        List<Map> buildingList = doorService.getBuildingList(commandMap);
-        List<Map> doorList = doorService.getDoorList(commandMap);
+        //List<Map> areaList = doorService.getAreaList(commandMap);
+        List<Map> workplaceList = doorService.getWorkplaceList(commandMap); //사업장 목록
+        List<Map> buildingList = doorService.getBuildingList(commandMap);   //빌딩 목록
+        List<Map> doorList = doorService.getDoorList(commandMap);           //출입문 목록
 
-        modelAndView.addObject("areaList", areaList);
+        modelAndView.addObject("workplaceList", workplaceList);
         modelAndView.addObject("buildingList", buildingList);
         modelAndView.addObject("doorList", doorList);
 
@@ -80,10 +81,17 @@ public class DoorController {
     // 출입문 상세정보 가져오기
     @RequestMapping(value="/getDoorInformation.do")
     public ModelAndView getDoorInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        LOGGER.debug("getDoorInformation");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        HashMap doorInfo = (HashMap) doorService.getDoorInformation(commandMap);
+        LOGGER.debug("param doorId="+commandMap.get("doorId"));
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("id", commandMap.get("doorId") );
+
+        HashMap doorInfo = (HashMap) doorService.getDoorInformation(param);
 
         modelAndView.addObject("doorInfo", doorInfo);
 
@@ -165,7 +173,7 @@ public class DoorController {
     }
 
     // 단말기 검색 (단말기명 / 관리번호 / 단말기코드로)
-    @RequestMapping(value="/searchTerminalInformation.do")
+    @RequestMapping(value="/getTerminalList.do")
     public ModelAndView searchTerminalInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();

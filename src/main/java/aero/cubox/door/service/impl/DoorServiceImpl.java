@@ -22,6 +22,7 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
      */
     @Override
     public List<Map> getDoorList(Map<String, Object> commandMap) {
+
         return doorDAO.getDoorList(commandMap);
     }
 
@@ -35,6 +36,41 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
 
         return doorDAO.getDoorInformation(commandMap);
     }
+
+    /**
+     * 사업장 목록 조회
+     * @param commandMap
+     * @return
+     */
+    @Override
+    public List<Map> getWorkplaceList(Map<String, Object> commandMap) {
+
+        return doorDAO.getWorkplaceList(commandMap);
+    }
+
+    /**
+     * 구역 목록 조회
+     * @param commandMap
+     * @return
+     */
+    @Override
+    public List<Map> getAreaList(Map<String, Object> commandMap) {
+
+        return doorDAO.getAreaList(commandMap);
+    }
+
+    /**
+     * 빌딩 목록 조회
+     * @param commandMap
+     * @return
+     */
+    @Override
+    public List<Map> getBuildingList(Map<String, Object> commandMap) {
+
+        return doorDAO.getBuildingList(commandMap);
+    }
+
+
 
     /**
      * 권한 그룹 검색
@@ -107,25 +143,6 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         return doorDAO.getTerminalInformation(commandMap);
     }
 
-    /**
-     * 구역 목록 조회
-     * @param commandMap
-     * @return
-     */
-    @Override
-    public List<Map> getAreaList(Map<String, Object> commandMap) {
-        return null;
-    }
-
-    /**
-     * 빌딩 목록 조회
-     * @param commandMap
-     * @return
-     */
-    @Override
-    public List<Map> getBuildingList(Map<String, Object> commandMap) {
-        return null;
-    }
 
 
 }

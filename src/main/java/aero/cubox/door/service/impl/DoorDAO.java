@@ -21,14 +21,22 @@ public class DoorDAO extends EgovAbstractMapper {
 		return selectOne(sqlNameSpace+"selectDoorInformation", commandMap);
 	}
 
+	public List<Map> getAreaList(Map<String, Object> commandMap) {
+		return selectList(sqlNameSpace+"selectAreaList", commandMap);
+	}
+
+	public List<Map> getBuildingList(Map<String, Object> commandMap) {
+		return selectList(sqlNameSpace+"selectBuildingList", commandMap);
+	}
+
+	public List<Map> getWorkplaceList(Map<String, Object> commandMap) {
+		return selectList(sqlNameSpace+"selectWorkplaceList", commandMap);
+	}
+
 	public List<HashMap> getPermissionGroups(Map<String, Object> commandMap) {
 		return selectList(sqlNameSpace+"selectPermissionGroup", commandMap);
 	}
 
-
-	public List<HashMap> searchTerminalInformation(Map<String, Object> commandMap) {
-		return selectList(sqlNameSpace+"selectTerminalInformation", commandMap);
-	}
 
 
 	public void insertDoorInformation(Map<String, Object> commandMap) {
@@ -47,12 +55,9 @@ public class DoorDAO extends EgovAbstractMapper {
 		return selectOne(sqlNameSpace+"selectTerminalInformation", commandMap);
 	}
 
-	public List<Map> getAreaList(Map<String, Object> commandMap) {
-		return selectList(sqlNameSpace+"selectAreaList", commandMap);
-	}
 
-	public List<Map> getBuildingList(Map<String, Object> commandMap) {
-		return selectList(sqlNameSpace+"selectBuildingList", commandMap);
+	public List<HashMap> searchTerminalInformation(Map<String, Object> commandMap) {
+		return selectList(sqlNameSpace+"selectTerminalInformation", commandMap);
 	}
 
 }
