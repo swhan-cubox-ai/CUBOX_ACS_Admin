@@ -27,7 +27,7 @@
         position: sticky;
         top: 0;
     }
-    #doorSelected tr th {
+    #selDoorEdit tr th {
         text-align: center;
     }
 
@@ -63,19 +63,19 @@
             let path = nodeSel.attr("value");
             console.log(nodeSel.html()); // door name
 
-            let doorSelected = $("#doorSelected").children();
+            let selDoorEdit = $("#selDoorEdit").children();
 
             // 이미 같은 출입문 있을 경우 return
-            for (let i = 1; i < doorSelected.length; i++) {
+            for (let i = 1; i < selDoorEdit.length; i++) {
 
-                let doorPath = doorSelected.eq(i).children().last().html().replaceAll("&gt;", ">");
+                let doorPath = selDoorEdit.eq(i).children().last().html().replaceAll("&gt;", ">");
                 if (doorPath == path) { // TODO : id로 비교?
                     return;
                 }
             }
 
             let tag = "<tr><td><input type='checkbox' name='chkDoorConf'></td><td>" + path + "</td></tr>";
-            $("#doorSelected").append(tag);
+            $("#selDoorEdit").append(tag);
         });
 
         // 출입문 삭제
@@ -177,7 +177,6 @@
     // 출입문 선택
     function selectDoor(self) {
         let door = $(self);
-        console.log(door);
         console.log(door.html());
         console.log(door.attr("value"));
     }
@@ -194,8 +193,13 @@
         if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
             // TODO : 출입문 저장 로직
 
-            let cntDoor = $("#doorSelected").children().length - 1;
-            $("#alDoorCnt").val(cntDoor);
+            let doorSel = $("input[name=chkDoorConf]");
+            doorSel.each(function(i) {
+                let el = doorSel.eq(i).closest("tr").children().last().html();
+                let tag = "<tr><td>" + el + "</td></tr>";
+                $("#selDoorList").append(tag);
+            });
+            $("#alDoorCnt").val(doorSel.length);
         }
     }
 
@@ -305,13 +309,15 @@
         <div style="width:100%;">
             <div class="com_box" style="border: 1px solid black; background-color: white; overflow: auto; height: 330px;">
                 <table class="tb_list tb_write_02 tb_write_p1">
-                    <tbody>
+                    <tbody id="selDoorList">
+                    <c:if test="${editMode eq 'edit'}">
                     <tr>
                         <td>12동 > C구역 > 1층 > 현관 출입문</td>
                     </tr>
                     <tr>
                         <td>12동 > D구역 > 2층 > 계단</td>
                     </tr>
+                    </c:if>
                     </tbody>
                 </table>
             </div>
@@ -356,12 +362,12 @@
                         <col style="width:10%">
                         <col style="width:90%">
                     </colgroup>
-                    <tbody id="doorSelected">
+                    <tbody id="selDoorEdit">
                     <tr>
                         <th><input type="checkbox" id="chkDoorConfAll"></th>
                         <th>출입문</th>
                     </tr>
-                    <c:if test="${editMode eq 'edit'}">${schName}
+                    <c:if test="${editMode eq 'edit'}">
                     <tr>
                         <td><input type="checkbox" name="chkDoorConf"></td>
                         <td>12동 > C구역 > 1층 > 현관 출입문</td>
