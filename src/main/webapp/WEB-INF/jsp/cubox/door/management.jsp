@@ -60,8 +60,7 @@
         margin-top: 10px;
     }
 </style>
-<!-- 트리구조 dtree -->
-<script type="text/javascript" src="/js/dTree/dtree.js"></script>
+
 <script type="text/javascript">
 
     var tmpSelf;
@@ -140,55 +139,10 @@
             }
         });
 
-        // dtree //
-        ////////////////////////////////////////////////////////////////////////////////
-        // p1 : id값
-        // p2 : 부모참조 id값. 여기에 적힌 id가 부모노드가 된다
-        // p3 : 표시될 노드의 이름
-        // p4 : 해당 노드를 클릭했을때 이동될 페이지 주소
-        // p5 : 해당노드의 이름에 마우스를 가져다 대면 뜨는 설명
-        // p6 : a태그의 target에 해당하는값. 보통 새창에서 열리게 할때 쓰임
-        // p7 : 이미지경로및 이름. 여기에 적힌 이미지가 표시된다. 안적을경우엔 기본값으로 표시
-        // d.add(4, 0, '사업장 1_4', 'example.html', '', '', 'img/cd.gif');
-        ////////////////////////////////////////////////////////////////////////////////
+        // dTree
+        let fnName = "getGateDetail(this);";
+        createTree($("#treeDiv"), fnName);
 
-        // last node에만 링크를 걸어줌.
-        d = new dTree('d'); //dtree선언
-        d.add("root", -1, '사업장'); //최상위 루트, 참조가 없기때문에 -1
-        d.add("node_1", "root", '사업장 1');
-        d.add("node_1_1", "node_1", '<span onclick="javascript:getGateDetail(this);">사업장 1_1</span>', '#');
-        d.add("node_2", "root", '사업장 2');
-        d.add("node_2_1", "node_2", '사업장 2_1');
-        d.add("node_2_1_1", "node_2_1", '사업장 2_1_1');
-        d.add("node_2_1_1_1", "node_2_1_1", '<span onclick="javascript:getGateDetail(this);">사업장 2_1_1_1</span>', '#');
-        d.add("node_2_1_1_2", "node_2_1_1", '<span onclick="javascript:getGateDetail(this);">사업장 2_1_1_2</span>', '#');
-        d.add("node_3", "root", '사업장 3');
-        d.add("node_3_1", "node_3", '사업장 3_1');
-        d.add("node_3_1_1", "node_3_1", '사업장 3_1_1');
-        d.add("node_3_1_1_1", "node_3_1_1", '<span onclick="javascript:getGateDetail(this);">사업장 3_1_1_1</span>', '#');
-        d.add("node_3_1_1_2", "node_3_1_1", '<span onclick="javascript:getGateDetail(this);">사업장 3_1_1_2</span>', '#');
-        d.add("node_3_1_1_3", "node_3_1_1", '<span onclick="javascript:getGateDetail(this);">사업장 3_1_1_3</span>', '#');
-        d.add("node_3_1_1_4", "node_3_1_1", '<span onclick="javascript:getGateDetail(this);">사업장 3_1_1_4</span>', '#');
-        d.add("node_4", "root", '사업장 4');
-        d.add("node_4_1", "node_4", '<span onclick="javascript:getGateDetail(this);">사업장 4_1</span>', '#');
-        d.add("node_4_2", "node_4", '<span onclick="javascript:getGateDetail(this);">사업장 4_2</span>', '#');
-        d.add("node_4_3", "node_4", '<span onclick="javascript:getGateDetail(this);">사업장 4_3</span>', '#');
-        d.add("node_4_4", "node_4", '<span onclick="javascript:getGateDetail(this);">사업장 4_4</span>', '#');
-        d.add("node_4_5", "node_4", '사업장 4_5');
-        d.add("node_4_5_1", "node_4_5", '<span onclick="javascript:getGateDetail(this);">사업장 4_5_1</span>', '#');
-        d.add("node_4_5_2", "node_4_5", '<span onclick="javascript:getGateDetail(this);">사업장 4_5_2</span>', '#');
-        d.add("node_4_5_3", "node_4_5", '<span onclick="javascript:getGateDetail(this);">사업장 4_5_3</span>', '#');
-        d.add("node_4_5_4", "node_4_5", '사업장 4_5_4');
-        d.add("node_4_5_4_1", "node_4_5_4", '사업장 4_5_4_1');
-        d.add("node_4_5_4_2", "node_4_5_4_1", '<span onclick="javascript:getGateDetail(this);">사업장 4_5_4_2</span>', '#');
-        d.add("node_4_5_4_3", "node_4_5_4_1", '<span onclick="javascript:getGateDetail(this);">사업장 4_5_4_3</span>', '#');
-        d.add("node_4_5_5", "node_4_5", '<span onclick="javascript:getGateDetail(this);">사업장 4_5_5</span>', '#');
-        d.add("node_4_5_6", "node_4_5", '<span onclick="javascript:getGateDetail(this);">사업장 4_5_6</span>', '#');
-        d.add("node_5", "root", '사업장 5');
-        d.add("node_5_1", "node_5", '<span onclick="javascript:getGateDetail(this);">사업장 5_1</span>', '#');
-
-        $("#treeDiv").html(d.toString());
-        d.openAll();
     });
 
     // 속성 값 초기화
@@ -500,7 +454,7 @@
                         <th>스케쥴</th>
                         <td>
                             <select name="gateEdit" id="gateUseYn" class="form-control" style="padding-left:10px;" disabled>
-                                <option value="#" name="selected">선택</option>
+                                <option value="" name="selected">선택</option>
                                 <option value="#">12동 현관</option>
                                 <option value="#">4동 현관</option>
                             </select>
@@ -511,7 +465,7 @@
                         <td>
                             <%--  <input type="text" id="gateMode" name="gateMode" maxlength="10" class="w_250px input_com gateMode" value="독립 모드" />--%>
                             <select name="gateEdit" id="gateMode" class="form-control" style="padding-left:10px;" disabled>
-                                <option value="#" name="selected">선택</option>
+                                <option value="" name="selected">선택</option>
                                 <option value="#">알람 그룹1</option>
                                 <option value="#">알람 그룹2</option>
                                 <option value="#">알람 그룹3</option>
@@ -522,19 +476,19 @@
                     <tr>
                         <th>단말기 코드</th>
                         <td>
-                            <input type="text" id="gateCode" name="gateScheduleGroup" maxlength="30" class="input_com gateScheduleGroup" value="" disabled />
+                            <input type="text" id="gateCode" name="gateCode" maxlength="30" class="input_com" value="" disabled />
                         </td>
                     </tr>
                     <tr>
                         <th>단말기 관리번호</th>
                         <td>
-                            <input type="text" id="gateNum" name="gateScheduleGroup" maxlength="30" class="input_com gateScheduleGroup" value="" disabled />
+                            <input type="text" id="gateNum" name="gateNum" maxlength="30" class="input_com" value="" disabled />
                         </td>
                     </tr>
                     <tr>
                         <th>권한 그룹</th>
                         <td>
-                            <textarea id="gateAuthGroup" name="gateEdit" rows="5" cols="33" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled>보건 복지부 &#10;12동 전체</textarea>
+                            <textarea id="gateAuthGroup" name="gateAuthGroup" rows="5" cols="33" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled>보건 복지부 &#10;12동 전체</textarea>
                         </td>
                     </tr>
                     <tr>

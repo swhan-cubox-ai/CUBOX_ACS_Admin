@@ -219,3 +219,87 @@ function fnvalichk (event) {
 		}
 	}
 }
+
+
+/**
+ * dTree 트리구조 만들기
+ *    ////////////////////////////////////////////////////////////////////////////////
+ *    // p1 : id값
+ *    // p2 : 부모참조 id값. 여기에 적힌 id가 부모노드가 된다
+ *    // p3 : 표시될 노드의 이름
+ *    // p4 : 해당 노드를 클릭했을때 이동될 페이지 주소
+ *    // p5 : 해당노드의 이름에 마우스를 가져다 대면 뜨는 설명
+ *    // p6 : a태그의 target에 해당하는값. 보통 새창에서 열리게 할때 쓰임
+ *    // p7 : 이미지경로및 이름. 여기에 적힌 이미지가 표시된다. 안적을경우엔 기본값으로 표시
+ *    // d.add(4, 0, '사업장 1_4', 'example.html', '', '', 'img/cd.gif');
+ *    ////////////////////////////////////////////////////////////////////////////////
+**/
+
+function createTree(treeDiv, fnName) {
+
+	d = new dTree('d'); //dtree선언
+	d.add("root", -1, '세종청사'); //최상위 루트, 참조가 없기때문에 -1
+	d.add("node_1", "root", '10동');
+	d.add("node_1_1", "node_1", 'A구역');
+	d.add("node_1_1_1", "node_1_1", '1층');
+	d.add("node_1_1_1_1", "node_1_1_1", '<span onclick="' + fnName + '" value="세종청사 > 10동 > A구역 > 1층 > 현관">현관</span>', '#');
+	d.add("node_2", "root", '11동');
+	d.add("node_2_1", "node_2", 'A구역');
+	d.add("node_2_1_1", "node_2_1", '1층');
+	d.add("node_2_1_1_1", "node_2_1_1", '<span onclick="' + fnName + '" value="세종청사 > 11동 > A구역 > 1층 > 현관">현관</span>', '#');
+	d.add("node_2_1_1_2", "node_2_1_1", '<span onclick="' + fnName + '" value="세종청사 > 11동 > A구역 > 1층 > 계단">계단</span>', '#');
+	d.add("node_2_1_2", "node_2_1", '2층');
+	d.add("node_2_1_2_1", "node_2_1_2", '<span onclick="' + fnName + '" value="세종청사 > 11동 > A구역 > 2층 > 현관">현관</span>', '#');
+	d.add("node_2_1_2_2", "node_2_1_2", '<span onclick="' + fnName + '" value="세종청사 > 11동 > A구역 > 2층 > 계단">계단</span>', '#');
+	d.add("node_2_2", "node_2", 'B구역');
+	d.add("node_2_2_1", "node_2_2", 'B1층');
+	d.add("node_2_2_1_1", "node_2_2_1", '<span onclick="' + fnName + '" value="세종청사 > 11동 > B구역 > B1층 > 계단">계단</span>', '#');
+	d.add("node_3", "root", '12동');
+	d.add("node_3_1", "node_3", 'A구역');
+	d.add("node_3_1_1", "node_3_1", '1층');
+	d.add("node_3_1_1_1", "node_3_1_1", '<span onclick="' + fnName + '" value="세종청사 > 12동 > A구역 > 1층 > 현관">현관</span>', '#');
+	d.add("node_3_1_1_2", "node_3_1_1", '<span onclick="' + fnName + '" value="세종청사 > 12동 > A구역 > 1층 > 계단">계단</span>', '#');
+	d.add("node_3_1_1_3", "node_3_1_1", '<span onclick="' + fnName + '" value="세종청사 > 12동 > A구역 > 1층 > 출입문">출입문</span>', '#');
+	d.add("node_3_1_1_4", "node_3_1_1", '<span onclick="' + fnName + '" value="세종청사 > 12동 > A구역 > 1층 > 복도">복도</span>', '#');
+	d.add("node_4", "root", '13동');
+	d.add("node_4_1", "node_4", 'A구역');
+	d.add("node_4_1_1", "node_4_1", '1층');
+	d.add("node_4_1_1_1", "node_4_1_1", '<span onclick="' + fnName + '" value="세종청사 > 13동 > A구역 > 1층 > 현관">현관</span>', '#');
+	d.add("node_4_1_1_2", "node_4_1_1", '<span onclick="' + fnName + '" value="세종청사 > 13동 > A구역 > 1층 > 계단">계단</span>', '#');
+	d.add("node_4_1_1_3", "node_4_1_1", '<span onclick="' + fnName + '" value="세종청사 > 13동 > A구역 > 1층 > 출입문">출입문</span>', '#');
+	d.add("node_4_1_1_4", "node_4_1_1", '<span onclick="' + fnName + '" value="세종청사 > 13동 > A구역 > 1층 > 복도">복도</span>', '#');
+	d.add("node_4_1_2", "node_4_1", '2층');
+	d.add("node_4_1_2_1", "node_4_1_2", '<span onclick="' + fnName + '" value="세종청사 > 13동 > A구역 > 2층 > 현관">현관</span>', '#');
+	d.add("node_4_1_2_2", "node_4_1_2", '<span onclick="' + fnName + '" value="세종청사 > 13동 > A구역 > 2층 > 계단">계단</span>', '#');
+	d.add("node_4_1_2_3", "node_4_1_2", '<span onclick="' + fnName + '" value="세종청사 > 13동 > A구역 > 2층 > 출입문">출입문</span>', '#');
+	d.add("node_4_1_2_4", "node_4_1_2", '<span onclick="' + fnName + '" value="세종청사 > 13동 > A구역 > 2층 > 복도">복도</span>', '#');
+	d.add("node_4_2", "node_4", 'B구역');
+	d.add("node_4_2_1", "node_4_2", '1층');
+	d.add("node_4_2_1_1", "node_4_2_1", '<span onclick="' + fnName + '" value="세종청사 > 13동 > B구역 > 1층 > 현관">현관</span>', '#');
+	d.add("node_4_2_1_2", "node_4_2_1", '<span onclick="' + fnName + '" value="세종청사 > 13동 > B구역 > 1층 > 계단">계단</span>', '#');
+	d.add("node_4_2_1_3", "node_4_2_1", '<span onclick="' + fnName + '" value="세종청사 > 13동 > B구역 > 1층 > 출입문">출입문</span>', '#');
+	d.add("node_4_2_1_4", "node_4_2_1", '<span onclick="' + fnName + '" value="세종청사 > 13동 > B구역 > 1층 > 복도">복도</span>', '#');
+	d.add("node_4_2_2", "node_4_2", '2층');
+	d.add("node_4_2_2_1", "node_4_2_2", '<span onclick="' + fnName + '" value="세종청사 > 13동 > B구역 > 2층 > 현관">현관</span>', '#');
+	d.add("node_4_2_2_2", "node_4_2_2", '<span onclick="' + fnName + '" value="세종청사 > 13동 > B구역 > 2층 > 계단">계단</span>', '#');
+	d.add("node_4_2_2_3", "node_4_2_2", '<span onclick="' + fnName + '" value="세종청사 > 13동 > B구역 > 2층 > 출입문">출입문</span>', '#');
+	d.add("node_4_2_2_4", "node_4_2_2", '<span onclick="' + fnName + '" value="세종청사 > 13동 > B구역 > 2층 > 복도">복도</span>', '#');
+	d.add("node_4_3", "node_4", 'C구역');
+	d.add("node_4_3_1", "node_4_3", '1층');
+	d.add("node_4_3_1_1", "node_4_3_1", '<span onclick="' + fnName + '" value="세종청사 > 13동 > C구역 > 1층 > 출입문">출입문</span>', '#');
+	d.add("node_4_3_1_2", "node_4_3_1", '<span onclick="' + fnName + '" value="세종청사 > 13동 > C구역 > 1층 > 계단">계단</span>', '#');
+	d.add("node_4_3_1_3", "node_4_3_1", '<span onclick="' + fnName + '" value="세종청사 > 13동 > C구역 > 1층 > 현관">현관</span>', '#');
+	d.add("node_5", "root", '14동');
+	d.add("node_5_1", "node_5", 'A구역');
+	d.add("node_5_1_1", "node_5_1", '1층');
+	d.add("node_5_1_1_1", "node_5_1_1", '<span onclick="' + fnName + '" value="세종청사 > 14동 > A구역 > 1층 > 현관">현관</span>', '#');
+	d.add("node_5_1_1_2", "node_5_1_1", '<span onclick="' + fnName + '" value="세종청사 > 14동 > A구역 > 1층 > 계단">계단</span>', '#');
+	d.add("node_6", "root", '15동');
+	d.add("node_6_1", "node_6", 'A구역');
+	d.add("node_6_1_1", "node_6_1", 'B1층');
+	d.add("node_6_1_1_1", "node_6_1_1", '<span onclick="' + fnName + '" value="세종청사 > 15동 > A구역 > B1층 > 출입문">출입문</span>', '#');
+
+	treeDiv.html(d.toString());
+	d.openAll();
+
+}
