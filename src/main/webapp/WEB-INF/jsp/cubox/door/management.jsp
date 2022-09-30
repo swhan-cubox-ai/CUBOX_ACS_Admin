@@ -64,6 +64,7 @@
 <script type="text/javascript">
 
     var tmpSelf;
+    let fnName = "getGateDetail(this);";
 
     $(function() {
         $(".title_tx").html("출입문 관리");
@@ -140,8 +141,8 @@
         });
 
         // dTree
-        let fnName = "getGateDetail(this);";
-        createTree($("#treeDiv"), fnName);
+        // let fnName = "getGateDetail(this);";
+        // createTree($("#treeDiv"), fnName);
 
     });
 
@@ -169,7 +170,7 @@
 
     // 속성 뿌려주기
     function getGateDetail(self) {
-        tmpSelf = $(self);
+        tmpSelf = $(self); // TODO : id 넘기기
 
         initDetail();
         fnCancelEdit();
@@ -338,12 +339,37 @@
             dataType : "json",
             url : "<c:url value='/door/getDoorList.do' />",
             success : function(result){
-
+                console.log(result);
+                d = new dTree('d');
                 if(result.workplaceList.length > 0){
 
                     console.log( "workplaceList>>");
-                    $.each(result.workplaceList, function(i){
+                    $.each(result.workplaceList, function(i) {
                         console.log(result.workplaceList[i].id +" / "+ result.workplaceList[i].workplace_nm);
+                        let wList = result.workplaceList[i];
+                        console.log(wList);
+                        d.add("w_" + wList.id, -1, wList.workplace_nm);
+
+                        if(result.buildingList.length > 0) {
+                            $.each(result.buildingList, function(j) {
+                                let bList = result.buildingList[j];
+                                if (bList.workplace_id === wList.id) {
+                                    console.log(bList);
+                                    d.add("b_" + bList.id, "w_" + wList.id, bList.building_nm);
+
+                                    if (result.doorList.length > 0) {
+                                        $.each(result.doorList, function(k) {
+                                            let dList = result.doorList[k];
+                                            if (dList.building_id === bList.id) {
+                                                console.log(dList);
+                                                let tag = '<span onclick="' + fnName + '">' + dList.door_nm + '</span>';
+                                                d.add("d_" + dList.id, "b_" + bList.id, tag, "#");
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
                     });
                 }
 
@@ -360,6 +386,9 @@
                        console.log(result.doorList[i].id +" / "+ result.doorList[i].door_nm);
                     });
                 }
+
+                $("#treeDiv").html(d.toString());
+                d.openAll();
             }
         });
     }
@@ -378,6 +407,7 @@
             data: {checkYn: checkYn},
             dataType: "json",
             success: function (result) {
+                console.log(result);
                 if(result.terminalList.length > 0) {
                     console.log(result.terminalList[i].id + "/" + result.terminalList[i].terminal_cd + "/" + result.terminalList[i].terminal_typ + "/" + result.terminalList[i].door_id);
                 }
