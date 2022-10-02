@@ -24,7 +24,7 @@ public class MenuUrlSetting {
         else if ("0202".equals(menu_cd)) return "/door/schedule.do";   // 출입문스케쥴
         else if ("0203".equals(menu_cd)) return "/door/alarmGroup.do"; // 출입문 알람그룹
         else if ("0204".equals(menu_cd)) return "/holiday/list.do";    // 공휴일관리
-        else if ("0205".equals(menu_cd)) return "";           // 단말기관리
+        else if ("0205".equals(menu_cd)) return "/terminal/list.do";   // 단말기관리
 
         if ("0300".equals(menu_cd)) return "";                // 권한관리
         else if ("0301".equals(menu_cd)) return "";           // 인사정보관리
