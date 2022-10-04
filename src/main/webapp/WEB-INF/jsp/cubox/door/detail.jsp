@@ -388,20 +388,48 @@
     }
 
     // 스케쥴 저장
+    // ======== T_DOOR TABLE ==========
+    // === T_DOOR_SCH_WEEKDAY ===
+    // id(출입문스케쥴요일id), door_sch_id(출입문스케쥴id), weekday(요일), beg_tm, end_tm
+    // === T_DOOR_SCH ===
+    // id(출입문스케쥴id), door_sch_nm(출입문스케쥴명)
+    // ================================
     function saveSchedule() {
+        const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+        const schNums = ["1", "2", "3"];
+        let data = [];
+        let schSet = {};
+
+        clearPickers();
         closePopup("addByDayPopup");
+
+        $.each($("input[name=timepicker]"), function (i, pick) {
+            let pId = $(pick).attr("id");
+            let weekday = pId.split("_")[0]; // 요일
+            let schNum = pId.split("_")[1]; // 스케쥴번호
+
+            $.each(days, function (j, day) {
+                $.each(schNums, function (k, num) {
+                    if (weekday === day && schNum === num) { // 같은 요일, 같은 번호
+                        schSet.id = weekday + "_" + schNum;
+                        schSet.weekday = weekday;
+                        if ($(pick).hasClass("start")) {
+                            schSet.beg_tm = $(pick).val();
+                        } else if ($(pick).hasClass("end")) {
+                            schSet.end_tm = $(pick).val();
+                            data.push(schSet);
+                            schSet = {};
+                        }
+                    }
+                });
+            });
+        });
+        console.log("data");
+        console.log(data);
     }
 
-    // popup open (공통)
-    function openPopup(popupNm) {
-        $("#" + popupNm).PopupWindow("open");
-    }
-
-    // popup close (공통)
-    function closePopup(popupNm) {
-        $("#" + popupNm).PopupWindow("close");
-
-        // 종료시간 없는 스케쥴은 종료시간 clear
+    // start 또는 end 시간만 있는 스케쥴 clear
+    function clearPickers() {
         let timeList = $("input[type=time]");
         for (let i = 0; i <= timeList.length; i++) {
             let isStart = timeList.eq(i).hasClass("start");
@@ -412,13 +440,36 @@
                 if (timeList.eq(i).val() != "" && endPick == "") { // start 값 있음, end 값 없음
                     console.log("startVal 있음, endVal 없음");
                     timeList.eq(i).val("");
+                } else if (timeList.eq(i).val() == "" && endPick != "") { // start 값 없음, end 값 있음
+                    console.log("startVal 없음, endVal 있음");
+                    $("#" + endId).val("");
                 }
             }
         }
     }
 
+    // popup open (공통)
+    function openPopup(popupNm) {
+        $("#" + popupNm).PopupWindow("open");
+
+        if (popupNm === "addByDayPopup") {
+            // let timepickers = $("input[name=timepicker]");
+            //
+            // $.each(timepickers, function(i, pick) {
+            //     console.log(pick);
+            // });
+        }
+    }
+
+    // popup close (공통)
+    function closePopup(popupNm) {
+        $("#" + popupNm).PopupWindow("close");
+        clearPickers();
+    }
+
 </script>
-<div id="timepicker-wrapper"></div>
+
+<%--<div id="timepicker-wrapper"></div>--%>
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
     <input type="hidden" id="editMode" name="editMode" value="edit"/>
     <div class="tb_01_box">
@@ -542,8 +593,8 @@
                             <c:forEach begin="1" end="3" varStatus="status">
                                 <fmt:formatNumber var="no" value="${status.index}" type="number"/>
                                 <td>
-                                    <input type="time" id="${day}_${no}_start" name="${day}_${no}_start" class="start ${day}_timepick" value="" min="00:00:00" max="23:59:59" step="1"><br>~
-                                    <input type="time" id="${day}_${no}_end" name="${day}_${no}_end" class="end ${day}_timepick" value="" min="00:00:00" max="23:59:59" step="1" >
+                                    <input type="time" id="${day}_${no}_start" name="timepicker" class="start ${day}_timepick" value="" min="00:00:00" max="23:59:59" step="1"><br>~
+                                    <input type="time" id="${day}_${no}_end" name="timepicker" class="end ${day}_timepick" value="" min="00:00:00" max="23:59:59" step="1" >
                                 </td>
                             </c:forEach>
                         </tr>
