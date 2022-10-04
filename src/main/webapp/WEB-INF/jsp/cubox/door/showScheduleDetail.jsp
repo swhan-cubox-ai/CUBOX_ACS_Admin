@@ -368,7 +368,7 @@
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-        location.href = "/door/schedule_delete.do";
+        location.href = "/door/deleteSchedule.do";
 
         // $.ajax({
         //     type : "post",

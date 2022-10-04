@@ -175,11 +175,10 @@
         fnCancelEdit();
         viewDetail();
 
-
         //출입문 정보
         $.ajax({
             type:"GET",
-            url:"<c:url value='/door/getDoorInformation.do' />",
+            url:"<c:url value='/door/getDoor.do' />",
             data:{doorId : "1"},
             dataType: "json",
             success:function(result) {
@@ -187,17 +186,6 @@
             }
         });
 
-        // $.ajax({
-        //     type: "GET",
-        //     url: '',
-        //     data: {
-        //        "gateNm": $(self).html()
-        //     },
-        //     dataType: "json",
-        //     success: function(result) {
-        //
-        //     }
-        // });
 
         // 데이터 가지고 와서 뿌려주기
         $("#gatePath").text("12 동 > D 구역 > 1층 > " + tmpSelf.html());

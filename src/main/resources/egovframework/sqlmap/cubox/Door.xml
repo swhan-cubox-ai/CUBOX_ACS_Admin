@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="door">
-	<select id="selectDoorInformation"  parameterType="HashMap" resultType="HashMap">
+	<select id="selectDoor"  parameterType="HashMap" resultType="HashMap">
 		SELECT id
 			 , building_id
 			 , area_id
@@ -53,6 +53,20 @@
 		</if>
 	</select>
 
+	<select id="selectFloorList" parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+		       building_id,
+		       area_id,
+		       floor_nm,
+		       created_at,
+		       updated_at
+		  FROM T_FLOOR TF
+		 WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+		  AND TF.id = #{id}
+		</if>
+	</select>
+
 	<select id="selectAreaList" parameterType="HashMap" resultType="HashMap">
 		SELECT id,
 		       building_id,
@@ -92,7 +106,7 @@
 		WHERE 1 = 1
 	</select>
 
-	<select id="selectTerminalInformationList"  parameterType="HashMap" resultType="HashMap">
+	<select id="selectTerminalList"  parameterType="HashMap" resultType="HashMap">
 		SELECT id,
 			   terminal_cd,
 			   terminal_typ,
@@ -110,7 +124,23 @@
 		</if>
 	</select>
 
-	<select id="selectTerminalInformation" parameterType="HashMap" resultType="HashMap">
+
+	<select id="selectDoorSchList"  parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+		       door_sch_nm,
+		       created_at,
+		       updated_at
+		  FROM T_DOOR_SCH TDS
+		 WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+			AND TDS.id = #{id}
+		</if>
+	</select>
+
+
+
+
+	<select id="selectTerminal" parameterType="HashMap" resultType="HashMap">
 		SELECT id,
 			   terminal_cd,
 			   terminal_typ,
@@ -126,7 +156,7 @@
 	</select>
 
 
-	<insert id="insertDoorInformation" parameterType="HashMap">
+	<insert id="insertDoor" parameterType="HashMap">
 		insert
 		  into
 		T_DOOR (   area_id
@@ -146,7 +176,7 @@
 
 	</insert>
 
-	<update id="updateDoorInformation" parameterType="HashMap">
+	<update id="updateDoor" parameterType="HashMap">
 		UPDATE T_DOOR
 		   SET building_id = ''
 			 , area_id = ''
@@ -157,11 +187,20 @@
 		 WHERE id = #{id}
 	</update>
 
-	<delete id="deleteDoor" parameterType="HashMap" >
+	<delete id="deleteDoorInformation" parameterType="HashMap" >
 		DELETE
-		FROM T_DOOR
-		WHERE id = 100
+		  FROM T_DOOR
+		 WHERE id = #{id}
 
 	</delete>
+
+
+	<select id="selectDoorGroup"   parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+		       nm,
+		       doorSchId
+		FROM T_DOORGRP TD
+		WHERE 1 = 1
+	</select>
 
 </mapper>
