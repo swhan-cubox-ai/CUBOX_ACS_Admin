@@ -52,6 +52,30 @@
 </style>
 
 <script type="text/javascript">
+    let tmp = [
+        {id : "mon_1", weekday : "mon", beg_tm : "13:40:27", end_tm : "19:40:30"},
+        {id : "mon_2", weekday : "mon", beg_tm : "09:00:00", end_tm : "10:00:30"},
+        {id : "mon_3", weekday : "mon", beg_tm : "", end_tm : ""},
+        {id : "tue_1", weekday : "tue", beg_tm : "13:00:00", end_tm : "15:00:00"},
+        {id : "tue_2", weekday : "tue", beg_tm : "", end_tm : ""},
+        {id : "tue_3", weekday : "tue", beg_tm : "19:40:27", end_tm : "22:00:20"},
+        {id : "wed_1", weekday : "wed", beg_tm : "01:50:00", end_tm : "08:20:30"},
+        {id : "wed_2", weekday : "wed", beg_tm : "11:40:00", end_tm : "12:00:00"},
+        {id : "wed_3", weekday : "wed", beg_tm : "13:40:50", end_tm : "23:59:59"},
+        {id : "thu_1", weekday : "thu", beg_tm : "", end_tm : ""},
+        {id : "thu_2", weekday : "thu", beg_tm : "", end_tm : ""},
+        {id : "thu_3", weekday : "thu", beg_tm : "", end_tm : ""},
+        {id : "fri_1", weekday : "fri", beg_tm : "10:30:00", end_tm : "19:30:00"},
+        {id : "fri_2", weekday : "fri", beg_tm : "", end_tm : ""},
+        {id : "fri_3", weekday : "fri", beg_tm : "", end_tm : ""},
+        {id : "sat_1", weekday : "sat", beg_tm : "", end_tm : ""},
+        {id : "sat_2", weekday : "sat", beg_tm : "07:00:00", end_tm : "16:30:30"},
+        {id : "sat_3", weekday : "sat", beg_tm : "17:40:20", end_tm : "20:20:00"},
+        {id : "sun_1", weekday : "sun", beg_tm : "", end_tm : ""},
+        {id : "sun_2", weekday : "sun", beg_tm : "", end_tm : ""},
+        {id : "sun_3", weekday : "sun", beg_tm : "01:00:00", end_tm : "23:59:59"}
+    ];
+
     $(function() {
         $(".title_tx").html("출입문 스케쥴 - 상세");
         modalPopup("addByDayPopup", "요일 별 스케쥴 등록", 1590, 915);
@@ -145,7 +169,6 @@
                 if (i == Number(start.hour)) { // 시작 hour 칸
                     for (let j = Number(start.min); j < 60; j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
-                        // console.log("1___ .timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
                             console.log("1. 색칠되어있고 같은 스케쥴 아님"); ///// 걸리는 애가 시작
                             // 칠하고자 하는 시작점과 지금 확인중인 시작점 비교
@@ -156,7 +179,6 @@
                 } else if (i == end.hour) { // 종료 hour 칸
                     for (let j = 0; j <= Number(end.min); j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
-                        // console.log("2___ .timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
                             console.log("2. 색칠되어있고 같은 스케쥴 아님");
                             result = false;
@@ -166,7 +188,6 @@
                 } else {
                     for (let j = 0; j < 60; j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
-                        // console.log("3___ .timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
                             console.log("3. 색칠되어있고 같은 스케쥴 아님");
                             result = false;
@@ -180,7 +201,6 @@
             for (let i = Number(start.hour); i <= Number(end.hour); i++) {
                 for (let j = Number(start.min); j <= Number(end.min); j++) {
                     let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
-
                     if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
                         console.log("4. 색칠되어있고 같은 스케쥴 아님");
                         result = false;
@@ -198,7 +218,6 @@
 
     // 최초 등록인지 체크
     function isFirstReg(day, schNum, startId, endId) {
-
         let isFirst = ($("." + day + "_" + schNum).length > 0) ? false : true;  // 최초등록?
 
         if (isFirst) {
@@ -212,30 +231,16 @@
             for (let i = 0; i < sameDaySch.length; i++) {
                 let thisId = sameDaySch.eq(i).attr("id");
                 if (thisId.split("_")[1] != schNum) {
-                    console.log("다른 스케쥴=======================================");
-
+                    console.log("=다른 스케쥴=");
                     console.log($("#" + thisId).val());
-                    console.log(startId);
-                    console.log(endId);
 
                     let isStart = sameDaySch.eq(i).hasClass("start");
                     if ((isStart && $("#" + thisId.replace("start", "end")).val() != "") || (!isStart && $("#" + thisId.replace("end", "start")).val())) {
                         schTime.push($("#" + thisId).val());
                     }
-
                 }
             }
             console.log(schTime);
-
-            console.log($("#" + startId).val());
-            console.log($("#" + endId).val());
-
-            console.log($("#" + startId).val() >= schTime[0] && $("#" + startId).val() <= schTime[1]);
-            console.log($("#" + startId).val() >= schTime[2] && $("#" + startId).val() <= schTime[3]);
-            console.log($("#" + endId).val() >= schTime[0] && $("#" + endId).val() <= schTime[1]);
-            console.log($("#" + endId).val() >= schTime[2] && $("#" + endId).val() <= schTime[3]);
-            console.log(($("#" + startId).val() <= schTime[0] && $("#" + endId).val() >= schTime[1]));
-            console.log(($("#" + startId).val() <= schTime[2] && $("#" + endId).val() >= schTime[3]));
 
             if ((startVal <= schTime[0] && endVal >= schTime[1]) || (startVal <= schTime[2] && endVal >= schTime[3])) {
                 console.log("둘다 오버된 시간");
@@ -261,7 +266,6 @@
         }
 
     }
-
 
     // 시간 유효성 체크
     function timeValid(startId, endId, start, end, day, schNum) {
@@ -388,12 +392,6 @@
     }
 
     // 스케쥴 저장
-    // ======== T_DOOR TABLE ==========
-    // === T_DOOR_SCH_WEEKDAY ===
-    // id(출입문스케쥴요일id), door_sch_id(출입문스케쥴id), weekday(요일), beg_tm, end_tm
-    // === T_DOOR_SCH ===
-    // id(출입문스케쥴id), door_sch_nm(출입문스케쥴명)
-    // ================================
     function saveSchedule() {
         const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
         const schNums = ["1", "2", "3"];
@@ -453,11 +451,20 @@
         $("#" + popupNm).PopupWindow("open");
 
         if (popupNm === "addByDayPopup") {
-            // let timepickers = $("input[name=timepicker]");
-            //
-            // $.each(timepickers, function(i, pick) {
-            //     console.log(pick);
-            // });
+
+            // 스케쥴 뿌려주기
+            $.each(tmp, function(i, sch) {
+                let beg_tm = sch.beg_tm.split(":");
+                let end_tm = sch.end_tm.split(":");
+                let start = {hour : beg_tm[0], min : beg_tm[1], sec: beg_tm[2]};
+                let end = {hour : end_tm[0], min : end_tm[1], sec: end_tm[2]};
+                let day = sch.weekday;
+                let schNum = sch.id.split("_")[1];
+                $("#" + sch.id + "_start").val(sch.beg_tm);
+                $("#" + sch.id + "_end").val(sch.end_tm);
+
+                colorSchedule(start, end, day, schNum);
+            });
         }
     }
 
