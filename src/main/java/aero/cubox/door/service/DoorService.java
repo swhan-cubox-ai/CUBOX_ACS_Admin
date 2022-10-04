@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface DoorService {
 
-    Map getDoorInformation(Map<String, Object> commandMap);
+    Map getDoor(Map<String, Object> commandMap);
 
     List<Map> getDoorList(Map<String, Object> commandMap);
 
@@ -17,23 +17,20 @@ public interface DoorService {
 
     List<Map> getWorkplaceList(Map<String, Object> commandMap);
 
-    List<HashMap> searchPermissionGroup(Map<String, Object> commandMap);
-
-    List<HashMap> getPermissionGroups(Map<String, Object> commandMap);
-
-    List<HashMap> searchTerminalInformation(Map<String, Object> commandMap);
+    List<HashMap> getDoorGroupList(Map<String, Object> commandMap);
 
 
 
-    void addDoorInformation(Map<String, Object> commandMap);
+    void addDoor(Map<String, Object> commandMap);
 
-    void updateDoorInformation(Map<String, Object> commandMap);
+    void updateDoor(Map<String, Object> commandMap);
 
-    void deleteDoor(Map<String, Object> commandMap);
+    void deleteDoorInformation(Map<String, Object> commandMap);
 
-
-
-    HashMap getTerminalInformation(Map<String, Object> commandMap);
+    HashMap getTerminal(Map<String, Object> commandMap);
+    List<HashMap> getTerminalList(Map<String, Object> commandMap);
 
     List<HashMap> getScheduleList(Map<String, Object> commandMap);
+
+    List<HashMap> getFloorList(Map<String, Object> commandMap);
 }

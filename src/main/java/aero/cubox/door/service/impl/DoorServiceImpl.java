@@ -32,9 +32,9 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
      * @return
      */
     @Override
-    public Map getDoorInformation(Map<String, Object> commandMap) {
+    public Map getDoor(Map<String, Object> commandMap) {
 
-        return doorDAO.getDoorInformation(commandMap);
+        return doorDAO.getDoor(commandMap);
     }
 
     /**
@@ -73,53 +73,37 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
 
 
     /**
-     * 권한 그룹 검색
+     * 출입문 그룹 검색
      * @param commandMap
      * @return
      */
     @Override
-    public List<HashMap> searchPermissionGroup(Map<String, Object> commandMap) {
+    public List<HashMap> getDoorGroupList(Map<String, Object> commandMap) {
 
-        return doorDAO.getPermissionGroups(commandMap);
-    }
-
-    /**
-     * 권한 그룹 조회
-     * @param commandMap
-     * @return
-     */
-    @Override
-    public List<HashMap> getPermissionGroups(Map<String, Object> commandMap) {
-
-        return doorDAO.getPermissionGroups(commandMap);
-    }
-
-    /**
-     * 단말기 검색
-     * @param commandMap
-     * @return
-     */
-    @Override
-    public List<HashMap> searchTerminalInformation(Map<String, Object> commandMap) {
-
-        return doorDAO.searchTerminalInformation(commandMap);
+        return doorDAO.getDoorGroupList(commandMap);
     }
 
 
+
     @Override
-    public void addDoorInformation(Map<String, Object> commandMap) {
-        doorDAO.insertDoorInformation(commandMap);
+    public void addDoor(Map<String, Object> commandMap) {
+        doorDAO.insertDoor(commandMap);
     }
 
     @Override
     public List<HashMap> getScheduleList(Map<String, Object> commandMap) {
-        return null;
+        return doorDAO.getScheduleList(commandMap);
+    }
+
+    @Override
+    public List<HashMap> getFloorList(Map<String, Object> commandMap) {
+        return doorDAO.getFloorList(commandMap);
     }
 
 
     @Override
-    public void updateDoorInformation(Map<String, Object> commandMap) {
-        doorDAO.updateDoorInformation(commandMap);
+    public void updateDoor(Map<String, Object> commandMap) {
+        doorDAO.updateDoor(commandMap);
 
     }
 
@@ -128,21 +112,27 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
      * @param commandMap
      */
     @Override
-    public void deleteDoor(Map<String, Object> commandMap) {
-        doorDAO.deleteDoor(commandMap);
+    public void deleteDoorInformation(Map<String, Object> commandMap) {
+        doorDAO.deleteDoorInformation(commandMap);
     }
 
 
     /**
      * 단말기 정보 조회
+     *
      * @param commandMap
      * @return
      */
     @Override
-    public HashMap getTerminalInformation(Map<String, Object> commandMap) {
-        return doorDAO.getTerminalInformation(commandMap);
+    public HashMap getTerminal(Map<String, Object> commandMap) {
+        return doorDAO.getTerminal(commandMap);
     }
 
+
+    @Override
+    public List<HashMap> getTerminalList(Map<String, Object> commandMap) {
+        return doorDAO.getTerminalList(commandMap);
+    }
 
 
 }
