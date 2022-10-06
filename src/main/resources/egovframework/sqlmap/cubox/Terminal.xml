@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="terminal">
+
+    <select id="getTerminalList" parameterType="aero.cubox.core.vo.TerminalVO" resultType="aero.cubox.core.vo.TerminalVO">
+        SELECT
+            TM.id as id,
+            TB.building_nm as buildingNm,
+            TA.area_nm as areaNm,
+            TF.floor_nm as floorNm,
+            TD.door_nm as doorNm,
+            TM.mgmt_num as mgmtNum,
+            TM.terminal_cd as terminalCd,
+            TM.terminal_typ as terminalTyp,
+            (SELECT
+                 cd_nm
+             FROM
+                 T_CMMN_CD
+             WHERE
+                 cd_typ = 'TerminalTyp'
+               AND cd = TM.terminal_typ) AS terminalTypNm,
+            TM.ip_addr as ipAddr,
+            TM.complex_auth_typ as complexAuthTyp,
+            (SELECT
+                 cd_nm
+             FROM
+                 T_CMMN_CD
+             WHERE
+                 cd_typ = 'ComplexAuthTyp'
+               AND cd = TM.complex_auth_typ) AS complexAuthTypNm,
+            TM.face_auth_typ as faceAuthTyp,
+            (SELECT
+                 cd_nm
+             FROM
+                 T_CMMN_CD
+             WHERE
+                 cd_typ = 'FaceAuthTyp'
+               AND cd = TM.face_auth_typ) AS faceAuthTypNm,
+            (SELECT
+                 COUNT(*)
+             FROM
+                 T_WB_LIST
+             WHERE
+                 terminal_id = TM.id AND wb_typ = 'BLACK') AS blackListCnt,
+            (SELECT
+                 COUNT(*)
+             FROM
+                 T_WB_LIST
+             WHERE
+                 terminal_id = TM.id AND wb_typ = 'WHITE') AS whiteListCnt,
+            DATE_FORMAT(TM.created_at, '%Y-%m-%d') AS createdAt,
+            TM.use_yn as useYn
+        FROM
+            T_TERMINAL TM
+                LEFT OUTER JOIN
+            T_DOOR TD ON TM.door_id = TD.id
+                JOIN
+            T_BUILDING TB ON TD.building_id = TB.id
+                LEFT OUTER JOIN
+            T_AREA TA ON TD.area_id = TA.id
+                LEFT OUTER JOIN
+            T_FLOOR TF ON TD.floor_id = TF.id
+        WHERE
+            1=1
+
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond1)'>
+            AND TB.id = #{srchCond1}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
+            AND TM.terminal_typ = #{srchCond2}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            AND (TM.terminal_cd like CONCAT('%',#{keyword},'%') OR TM.mgmt_num like CONCAT('%',#{keyword},'%'))
+        </if>
+
+        limit	#{srchCnt} offset #{offset}
+    </select>
+
+    <select id="getTerminalListCount" parameterType="aero.cubox.core.vo.TerminalVO" resultType="int">
+        select
+           count(*)
+        from  T_TERMINAL TM
+                  LEFT OUTER JOIN
+              T_DOOR TD ON TM.door_id = TD.id
+                  JOIN
+              T_BUILDING TB ON TD.building_id = TB.id
+                  LEFT OUTER JOIN
+              T_AREA TA ON TD.area_id = TA.id
+                  LEFT OUTER JOIN
+              T_FLOOR TF ON TD.floor_id = TF.id
+        WHERE
+        1=1
+
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond1)'>
+            AND TB.id = #{srchCond1}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
+            AND TM.terminal_typ = #{srchCond2}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            AND (TM.terminal_cd like CONCAT('%',#{keyword},'%') OR TM.mgmt_num like CONCAT('%',#{keyword},'%'))
+        </if>
+
+    </select>
+
+    <select id="getBuildingList" resultType="aero.cubox.core.vo.CommonVO">
+        SELECT
+            id as cd,
+            building_nm as cdNm
+        FROM
+            T_BUILDING
+        WHERE
+            workplace_id = 1
+        ORDER BY
+            id ASC
+    </select>
+
+    <select id="getDoorList" resultType="aero.cubox.core.vo.CommonVO">
+        SELECT
+            id as cd,
+            door_nm as cdNm
+        FROM
+            T_DOOR
+        ORDER BY
+            id ASC
+    </select>
+
+    <select id="getDoorInfo" parameterType="HashMap" resultType = "HashMap">
+        SELECT
+            TD.id AS id,
+            TD.door_nm AS doorNm,
+            TB.building_nm AS buildingNm,
+            TF.floor_nm AS floorNm,
+            TA.area_nm AS areaNm
+        FROM
+            T_DOOR TD
+                LEFT OUTER JOIN
+            T_BUILDING TB ON TD.building_id = TB.id
+                LEFT OUTER JOIN
+            T_FLOOR TF ON TD.floor_id = TF.id
+                LEFT OUTER JOIN
+            T_AREA TA ON TD.area_id = TA.id
+        WHERE
+            TD.id = #{doorId}
+    </select>
+
+    <select id="getTerminalDetail" parameterType="int" resultType = "HashMap">
+        SELECT
+            TM.id as id,
+            TB.building_nm as buildingNm,
+            TA.area_nm as areaNm,
+            TM.door_id as doorId,
+            TF.floor_nm as floorNm,
+            TD.door_nm as doorNm,
+            TM.terminal_cd as terminalCd,
+            TM.terminal_typ as terminalTyp,
+            TM.model_nm as modelNm,
+            TM.mgmt_num as mgmtNum,
+            (SELECT
+                 cd_nm
+             FROM
+                 T_CMMN_CD
+             WHERE
+                 cd_typ = 'TerminalTyp'
+               AND cd = TM.terminal_typ) AS terminalTypNm,
+            TM.ip_addr as ipAddr,
+            TM.complex_auth_typ as complexAuthTyp,
+            (SELECT
+                 cd_nm
+             FROM
+                 T_CMMN_CD
+             WHERE
+                 cd_typ = 'ComplexAuthTyp'
+               AND cd = TM.complex_auth_typ) AS complexAuthTypNm,
+            TM.face_auth_typ as faceAuthTyp,
+            (SELECT
+                 cd_nm
+             FROM
+                 T_CMMN_CD
+             WHERE
+                 cd_typ = 'FaceAuthTyp'
+               AND cd = TM.face_auth_typ) AS faceAuthTypNm,
+            (SELECT
+                 COUNT(*)
+             FROM
+                 T_WB_LIST
+             WHERE
+                 terminal_id = TM.id AND wb_typ = 'BLACK') AS blackListCnt,
+            (SELECT
+                 COUNT(*)
+             FROM
+                 T_WB_LIST
+             WHERE
+                 terminal_id = TM.id AND wb_typ = 'WHITE') AS whiteListCnt,
+            DATE_FORMAT(TM.created_at, '%Y-%m-%d') AS createdAt,
+            TM.use_yn as useYn
+        FROM
+            T_TERMINAL TM
+                LEFT OUTER JOIN
+            T_DOOR TD ON TM.door_id = TD.id
+                JOIN
+            T_BUILDING TB ON TD.building_id = TB.id
+                LEFT OUTER JOIN
+            T_AREA TA ON TD.area_id = TA.id
+                LEFT OUTER JOIN
+            T_FLOOR TF ON TD.floor_id = TF.id
+        WHERE
+            TM.id = #{id}
+    </select>
+
+    <select id="getBlackList" parameterType="Map" resultType="Map">
+        SELECT
+            TE.id AS id, TE.emp_no AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
+        FROM
+            T_WB_LIST TB
+                JOIN
+            T_EMP TE ON TB.emp_id = TE.id
+
+        WHERE
+            TB.terminal_id = #{id}
+            AND TB.wb_typ = 'BLACK'
+    </select>
+
+    <select id="getWhiteList" parameterType="Map" resultType="Map">
+        SELECT
+            TE.id AS id, TE.emp_no AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
+        FROM
+            T_WB_LIST TW
+                JOIN
+            T_EMP TE ON TW.emp_id = TE.id
+
+        WHERE
+            TW.terminal_id = #{id}
+            AND TW.wb_typ = 'WHITE'
+
+    </select>
+
+    <select id="getEmpSourceList" parameterType="Map" resultType="Map">
+        SELECT
+            TE.id AS id, TE.emp_no AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
+        FROM
+            T_EMP TE
+                LEFT OUTER JOIN
+            T_WB_LIST TB
+                ON TE.id = TB.emp_id
+                       AND TB.wb_typ = #{wbTyp} AND TB.terminal_id = #{id}
+        WHERE
+            TB.id IS NULL
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword1)'>
+            AND (TE.belong_nm like CONCAT('%',#{keyword1},'%') OR TE.dept_nm like CONCAT('%',#{keyword1},'%'))
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword2)'>
+            AND (TE.emp_no = #{keyword2} OR TE.emp_nm like CONCAT('%',#{keyword2},'%'))
+        </if>
+    </select>
+
+    <select id="getEmpTargetList" parameterType="Map" resultType="Map">
+        SELECT
+            TE.id AS id, TE.emp_no AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
+        FROM
+            T_EMP TE
+                LEFT OUTER JOIN
+            T_WB_LIST TB
+                ON TE.id = TB.emp_id
+                    AND TB.wb_typ = #{wbTyp} AND TB.terminal_id = #{id}
+        WHERE
+            TB.id IS NOT NULL
+    </select>
+
+    <select id="getEmpListForWhite" parameterType="Map" resultType="Map">
+        SELECT
+        TE.id AS id, TE.emp_no AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
+        FROM
+        T_EMP TE
+        LEFT OUTER JOIN
+        T_WB_LIST TB
+        ON TE.id = TB.emp_id
+        WHERE
+        TB.id IS NULL
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword1)'>
+            and (TE.belong_nm like CONCAT('%',#{keyword1},'%') or TE.dept_nm like CONCAT('%',#{keyword1},'%'))
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword2)'>
+            and (TE.emp_no = #{keyword2} or TE.emp_nm like CONCAT('%',#{keyword2},'%'))
+        </if>
+
+    </select>
+
+    <insert id="addWbList" parameterType="HashMap" >
+        INSERT INTO T_WB_LIST(
+            wb_typ,
+            emp_id,
+            terminal_id,
+            created_at
+        )VALUES(
+                   #{wbTyp},
+                   #{empId},
+                   #{id},
+                   NOW()
+               )
+    </insert>
+
+    <delete id="delWbList" parameterType="HashMap">
+        DELETE FROM T_WB_LIST
+        WHERE
+            wb_typ = #{wbTyp}
+            AND terminal_id = #{id}
+    </delete>
+
+    <update id="modifyTerminal" parameterType="HashMap" >
+        UPDATE
+            T_TERMINAL
+        SET
+            terminal_cd = #{terminalCd},
+            terminal_typ = #{terminalTyp},
+            door_id = #{doorId},
+            ip_addr = #{ipAddr},
+            mgmt_num = #{mgmtNum},
+            model_nm = #{modelNm},
+            complex_auth_typ = #{complexAuthTyp},
+            face_auth_typ = #{faceAuthTyp},
+            use_yn = #{useYn},
+            updated_at = NOW()
+        WHERE
+            id = #{id}
+    </update>
+
+    <insert id="addTerminal" parameterType="HashMap">
+        INSERT INTO T_TERMINAL(
+            terminal_cd,
+            terminal_typ,
+            door_id,
+            model_nm,
+            mgmt_num,
+            ip_addr,
+            complex_auth_typ,
+            face_auth_typ,
+            use_yn,
+            created_at
+        )VALUES(
+            #{terminalCd},
+            #{terminalTyp},
+            #{doorId},
+            #{modelNm},
+            #{mgmtNum},
+            #{ipAddr},
+            #{complexAuthTyp},
+            #{faceAuthTyp},
+            #{useYn},
+            NOW()
+        )
+    </insert>
+
+    <delete id="deleteTerminal" parameterType="HashMap">
+        DELETE FROM T_TERMINAL
+        WHERE
+            id = #{id}
+    </delete>
+
+</mapper>
