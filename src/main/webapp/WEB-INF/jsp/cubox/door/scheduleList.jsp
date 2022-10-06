@@ -34,7 +34,6 @@
 
     function fnDetail(self) {
         console.log(self);
-
         f = document.frmSearch;
         f.action = "/door/schedule/detail.do";
         f.submit();
@@ -42,7 +41,7 @@
 </script>
 
 <%--  검색 박스 --%>
-<form id="frmSearch" name="frmSearch" method="get" onsubmit="return false;">
+<form id="frmSearch" name="frmSearch" method="post" onsubmit="return false;">
     <input type="hidden" id="editMode" name="editMode" value="add"/>
 </form>
 
