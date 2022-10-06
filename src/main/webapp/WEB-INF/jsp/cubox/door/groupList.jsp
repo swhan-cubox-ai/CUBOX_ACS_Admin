@@ -27,14 +27,22 @@
     // 출입문 신규 등록
     function createGroup() {
         f = document.frmSearch;
-        f.action = "/door/group_add.do";
+        f.action = "/door/group/add.do";
         f.submit();
     }
 
     function fnDetail(self) {
         console.log(self); // 추후에 정보 넘김
         f = document.frmSearch;
-        f.action = "/door/group_detail.do";
+        f.action = "/door/group/detail.do";
+        f.submit();
+    }
+
+
+    function fnGetList(self) {
+        console.log(self); // 추후에 정보 넘김
+        f = document.frmSearch;
+        f.action = "/door/group/list.do";
         f.submit();
     }
 </script>

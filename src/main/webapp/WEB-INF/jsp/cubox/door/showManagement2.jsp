@@ -64,7 +64,6 @@
 <script type="text/javascript">
 
     var tmpSelf;
-    let fnName = "getGateDetail(this);";
 
     $(function() {
         $(".title_tx").html("출입문 관리");
@@ -76,7 +75,7 @@
         modalPopup("authPickPopup", "권한그룹 선택", 910, 550);
 
         $("input[name=checkAll]").click(function() {
-            if($(this).prop("checked")){
+            if( $(this).prop("checked") ){
                 $("input[name=excelColumn]").prop("checked", true);
             } else {
                 $("input[name=excelColumn]").prop("checked", false);
@@ -86,11 +85,9 @@
         // 단말기 선택 확인
         $('#gatePickConfirm').click(function() {
             // 이미 등록된 단말기 일 경우, 체크가 되어있을 때,
-            if ($("input[name='checkOne']:checked").is(":checked")) {
+            if($("input[name='checkOne']:checked").is(":checked")) {
                 alert("이미 등록된 단말기입니다.");
                 $("input[name='checkOne']:checked").attr("checked", false);
-            } else {
-
             }
         });
 
@@ -103,7 +100,7 @@
             });
 
             var ckd = $("input[name=chkAuth]:checked").length;
-            for (var i = ckd - 1; i > -1; i--) {
+            for(var i = ckd - 1; i > -1; i--) {
                 $("input[name=chkAuth]:checked").eq(i).closest("tr").remove();
             }
 
@@ -119,7 +116,7 @@
             });
 
             var ckd = $("input[name=chkAuthConf]:checked").length;
-            for (var i = ckd - 1; i > -1; i--) {
+            for(var i = ckd - 1; i > -1; i--) {
                 $("input[name=chkAuthConf]:checked").eq(i).closest("tr").remove();
             }
 
@@ -127,7 +124,7 @@
         });
 
         $("#totalAuthCheckAll").click(function() {
-            if ($("#totalAuthCheckAll").prop("checked")) {
+            if($("#totalAuthCheckAll").prop("checked")) {
                 $("input[name=chkAuth]").prop("checked", true);
             } else {
                 $("input[name=chkAuth]").prop("checked", false);
@@ -141,6 +138,10 @@
                 $("input[name=chkAuthConf]").prop("checked", false);
             }
         });
+
+        // dTree
+        let fnName = "getGateDetail(this);";
+        createTree($("#treeDiv"), fnName);
 
     });
 
@@ -168,7 +169,7 @@
 
     // 속성 뿌려주기
     function getGateDetail(self) {
-        tmpSelf = $(self); // TODO : id 넘기기
+        tmpSelf = $(self);
 
         initDetail();
         fnCancelEdit();
@@ -176,28 +177,15 @@
 
         //출입문 정보
         $.ajax({
-            type: "GET",
-            url: "<c:url value='/door/getDoorInformation.do' />",
-            data: {doorId : "1"},
+            type:"GET",
+            url:"<c:url value='/door/getDoor.do' />",
+            data:{doorId : "1"},
             dataType: "json",
-            success: function(result) {
-                $.each(result.doorInfo, function(i, dInfo) {
-                    console.log(dInfo.id + "/" + dInfo.building_id + "/" + dInfo.area_id + "/" + dInfo.floor_id + "/" + dInfo.door_nm + "/" + dInfo.alarm_typ);
-                });
+            success:function(result) {
+                console.log(result.doorInfo.id + "/" + result.doorInfo.building_id+ "/" +result.doorInfo.area_id + "/"+result.doorInfo.floor_id+ "/" +result.doorInfo.door_nm+ "/" +result.doorInfo.alarm_typ);
             }
         });
 
-        // $.ajax({
-        //     type: "GET",
-        //     url: '',
-        //     data: {
-        //        "gateNm": $(self).html()
-        //     },
-        //     dataType: "json",
-        //     success: function(result) {
-        //
-        //     }
-        // });
 
         // 데이터 가지고 와서 뿌려주기
         $("#gatePath").text("12 동 > D 구역 > 1층 > " + tmpSelf.html());
@@ -337,49 +325,29 @@
             data : { },
             dataType : "json",
             url : "<c:url value='/door/getDoorList.do' />",
-            success : function(result) {
-                d = new dTree('d');
+            success : function(result){
 
-                if(result.workplaceList.length > 0) {
+                if(result.workplaceList.length > 0){
+
                     console.log( "workplaceList>>");
-                    $.each(result.workplaceList, function(i, workplace) {
-                        d.add("w_" + workplace.id, -1, workplace.workplace_nm);
-
-                        if(result.buildingList.length > 0) {
-                            $.each(result.buildingList, function(j, building) {
-                                if (building.workplace_id === workplace.id) {
-                                    d.add("b_" + building.id, "w_" + workplace.id, building.building_nm);
-
-                                    if (result.doorList.length > 0) {
-                                        $.each(result.doorList, function(k, door) {
-                                            if (door.building_id === building.id) {
-                                                let tag = '<span onclick="' + fnName + '">' + door.door_nm + '</span>';
-                                                d.add("d_" + door.id, "b_" + building.id, tag, "#");
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        }
+                    $.each(result.workplaceList, function(i){
+                        console.log(result.workplaceList[i].id +" / "+ result.workplaceList[i].workplace_nm);
                     });
                 }
 
                 console.log( "buildingList>>");
-                if(result.buildingList.length > 0) {
+                if(result.buildingList.length > 0){
                     $.each(result.buildingList, function(i){
                        console.log(result.buildingList[i].id +" / "+ result.buildingList[i].building_nm);
                     });
                 }
-
                 console.log( "doorList>>");
-                if(result.doorList.length > 0) {
+
+                if(result.doorList.length > 0){
                     $.each(result.doorList, function(i){
                        console.log(result.doorList[i].id +" / "+ result.doorList[i].door_nm);
                     });
                 }
-
-                $("#treeDiv").html(d.toString());
-                d.openAll();
             }
         });
     }
@@ -399,19 +367,7 @@
             dataType: "json",
             success: function (result) {
                 if(result.terminalList.length > 0) {
-                    $.each(result.terminalList, function(i, terminal) {
-                        console.log(terminal.id + "/" + terminal.terminal_cd + "/" + terminal.terminal_typ + "/" + terminal.door_id);
-                        // 단말기 코드, 관리번호, 단말기 유형, 출입문명
-                        // terminal_cd, mgmt_num, terminal_typ, door_id
-                        // TODO : 출입문명 가져오기 (현재는 door_id로 되어있음)
-                        let tag = "<tr class='h_35px' style='text-align:center'><td style='padding:0 14px;'><input type='radio' name='checkOne'></td>";
-                        tag += "<td>" + terminal.terminal_cd + "</td>";
-                        tag += "<td>" + terminal.mgmt_num + "</td>";
-                        tag += "<td>" + terminal.terminal_typ + "</td>";
-                        tag += "<td>" + terminal.door_id + "</td></tr>";
-
-                        $("#tbTerminal").append(tag);
-                    });
+                    console.log(result.terminalList[i].id + "/" + result.terminalList[i].terminal_cd + "/" + result.terminalList[i].terminal_typ + "/" + result.terminalList[i].door_id);
                 }
             }
         });
@@ -551,7 +507,7 @@
 </div>
 
 <%--  단말기 선택 modal  --%>
-<div id="gatePickPopup" class="example_content" style="display: none;">
+<div id="gatePickPopup" class="example_content">
     <div class="popup_box">
         <%--  검색 박스 --%>
         <div class="search_box mb_20">
@@ -589,16 +545,16 @@
                     <th>출입문명</th>
                 </tr>
                 </thead>
-                <tbody id="tbTerminal">
-<%--                <c:forEach var="i" begin="1" end="10" varStatus="status">--%>
-<%--                    <tr class="h_35px" style="text-align: center">--%>
-<%--                        <td style="padding: 0 14px;"><input type="radio" name="checkOne"/></td>--%>
-<%--                        <td>CU22T00<c:out value="${i}"/></td>--%>
-<%--                        <td>CUBOX_<c:out value="${i}"/></td>--%>
-<%--                        <td></td>--%>
-<%--                        <td>3동 B1 계단</td>--%>
-<%--                    </tr>--%>
-<%--                </c:forEach>--%>
+                <tbody>
+                <c:forEach var="i" begin="1" end="10" varStatus="status">
+                    <tr class="h_35px" style="text-align: center">
+                        <td style="padding: 0 14px;"><input type="radio" name="checkOne"/></td>
+                        <td>CU22T00<c:out value="${i}"/></td>
+                        <td>CUBOX_<c:out value="${i}"/></td>
+                        <td></td>
+                        <td>3동 B1 계단</td>
+                    </tr>
+                </c:forEach>
                 </tbody>
             </table>
         </div>
@@ -614,7 +570,7 @@
 <%--  end of 단말기 선택 modal  --%>
 
 <%--  권한그룹 선택 modal  --%>
-<div id="authPickPopup" class="example_content" style="display: none;">
+<div id="authPickPopup" class="example_content">
     <div class="popup_box box_w3">
         <%--  검색 박스 --%>
         <div class="search_box mb_20">

@@ -17,7 +17,7 @@ public class DoorDAO extends EgovAbstractMapper {
 		return selectList(sqlNameSpace+"selectDoorList", commandMap);
 	}
 
-	public Map getDoor(Map<String, Object> commandMap) {
+	public Map getDoorInformation(Map<String, Object> commandMap) {
 		return selectOne(sqlNameSpace+"selectDoor", commandMap);
 	}
 

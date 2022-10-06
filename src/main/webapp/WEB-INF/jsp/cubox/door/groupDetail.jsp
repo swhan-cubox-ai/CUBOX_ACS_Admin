@@ -36,7 +36,7 @@
     // 수정 버튼
     function fnEdit() {
         f = document.detailForm;
-        f.action = "/door/group_add.do";
+        f.action = "/door/group/add.do";
         $("#tdGroupDetail input").attr("disabled", false);
         $("textarea[name=gpDoor]").attr("disabled", false);
         f.submit();
@@ -54,7 +54,7 @@
             return;
         }
         // location.href = "/door/group_delete.do";
-        location.href = "/door/group.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
+        location.href = "/door/group/listView.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
     }
 
     // popup open (공통)
@@ -103,7 +103,7 @@
 </form>
 
 <div class="right_btn mt_20">
-    <button class="btn_middle color_basic" onClick="location='/door/group.do'">목록</button>
+    <button class="btn_middle color_basic" onClick="location='/door/group/listView.do'">목록</button>
     <button class="btn_middle ml_5 color_basic" onClick="fnEdit();">수정</button>
     <button class="btn_middle ml_5 color_basic" onClick="fnDelete();">삭제</button>
 </div>

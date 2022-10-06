@@ -19,11 +19,12 @@ public class MenuUrlSetting {
         else if ("0104".equals(menu_cd)) return "";           // 사용자 활동 로그
         else if ("0105".equals(menu_cd)) return "";           // 개인정보폐기
 
-        if ("0200".equals(menu_cd)) return "";                         // 출입문관리
-        else if ("0201".equals(menu_cd)) return "/door/showmanagement.do"; // 출입문관리
-        else if ("0202".equals(menu_cd)) return "/door/schedule.do";   // 출입문스케쥴
-        else if ("0203".equals(menu_cd)) return "/door/alarmGroup.do"; // 출입문 알람그룹
-        else if ("0204".equals(menu_cd)) return "/holiday/list.do";    // 공휴일관리
+        if ("0200".equals(menu_cd)) return "";                         // 출입문 관리
+        else if ("0201".equals(menu_cd)) return "/door/management.do"; // 출입문 관리
+        else if ("0206".equals(menu_cd)) return "/door/group/listView.do"; // 출입문 그룹관리
+        else if ("0202".equals(menu_cd)) return "/door/schedule/list.do";   // 출입문 스케쥴
+        else if ("0203".equals(menu_cd)) return "/door/alarmGroup/list.do"; // 출입문 알람그룹
+        else if ("0204".equals(menu_cd)) return "/holiday/list.do";    // 공휴일 관리
         else if ("0205".equals(menu_cd)) return "";           // 단말기관리
 
         if ("0300".equals(menu_cd)) return "";                // 권한관리

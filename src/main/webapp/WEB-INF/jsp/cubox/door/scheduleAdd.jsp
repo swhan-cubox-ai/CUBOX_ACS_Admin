@@ -124,7 +124,7 @@
 
         // 데이터 저장
         // 출입문 목록으로 페이지 이동
-        location.href = "/door/detail.do";
+        location.href = "/door/schdule/listView.do";
 
         // $.ajax({
         //     url: "gate/schedule_save.do",
@@ -153,10 +153,10 @@
 
     // 출입문 스케줄 등록 취소
     function fnCancel() {
-        if (${editMode eq 'edit'}) {
-            $("#addForm").attr("action", "/door/detail.do");
+        if (${editMode eq 'edit'}) { //
+            $("#addForm").attr("action", "/door/schdule/detail.do");
         } else {
-            $("#addForm").attr("action", "/door/schedule.do");
+            $("#addForm").attr("action", "/door/schedule/detail.do");
         }
         $("#addForm").submit();
     }

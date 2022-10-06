@@ -347,14 +347,14 @@
     // 목록 버튼
     function fnList() {
         // 출입문 목록으로 페이지 이동
-        location.href = "/door/schedule.do";
+        location.href = "/door/schedule/listView.do";
     }
 
     // 수정 버튼
     function fnEdit() {
         // location.href = "/door/schedule_add.do?mode=edit";
         f = document.detailForm;
-        f.action = "/door/schedule_add.do";
+        f.action = "/door/schedule/add.do";
         $("input[name=schName]").attr("disabled", false);
         $("select[name=schUseYn]").attr("disabled", false);
         $("textarea[name=gateGroup]").attr("disabled", false);
@@ -372,7 +372,7 @@
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-        location.href = "/door/deleteSchedule.do";
+        location.href = "/door/schedule/delete.do";
 
         // $.ajax({
         //     type : "post",

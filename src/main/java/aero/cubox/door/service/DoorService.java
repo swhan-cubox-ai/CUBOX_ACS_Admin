@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface DoorService {
 
-    Map getDoor(Map<String, Object> commandMap);
+    Map getDoorInformation(Map<String, Object> commandMap);
 
     List<Map> getDoorList(Map<String, Object> commandMap);
 
