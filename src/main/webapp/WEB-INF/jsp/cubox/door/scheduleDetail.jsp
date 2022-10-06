@@ -9,7 +9,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
-<jsp:include page="/jsp/cubox/common/doorGroupPick.jsp" flush="false"/> <!-- 출입문 선택 popup -->
+<jsp:include page="/WEB-INF/jsp/cubox/common/doorGroupPick.jsp" flush="false"/> <!-- 출입문 선택 popup -->
 
 <style>
     .title_box {
