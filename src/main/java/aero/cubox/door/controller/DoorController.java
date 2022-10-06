@@ -270,7 +270,7 @@ public class DoorController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/schedule.do")
+    @RequestMapping(value="/schedule.do", method= RequestMethod.GET)
     public String schedule(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
         //todo 세션처리
 
@@ -285,7 +285,7 @@ public class DoorController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/schedule/list.do", method= RequestMethod.GET)
+    @RequestMapping(value="/schedule/list.do")
     public ModelAndView getScheduleList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
@@ -305,7 +305,7 @@ public class DoorController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/schedule/add.do", method= RequestMethod.POST)
+    @RequestMapping(value = "/schedule/add.do")
     public String scheduleAdd(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         if (commandMap.get("editMode").equals("edit")) {
@@ -328,7 +328,7 @@ public class DoorController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/schedule/detail.do", method= RequestMethod.GET)
+    @RequestMapping(value="/schedule/detail.do")
     public String showScheduleDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         String[] days = {"월", "화", "수", "목", "금", "토", "일"};

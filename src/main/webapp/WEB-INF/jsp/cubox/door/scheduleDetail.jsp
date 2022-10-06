@@ -344,12 +344,6 @@
         }
     }
 
-    // 목록 버튼
-    function fnList() {
-        // 출입문 목록으로 페이지 이동
-        location.href = "/door/schedule/listView.do";
-    }
-
     // 수정 버튼
     function fnEdit() {
         // location.href = "/door/schedule_add.do?mode=edit";
@@ -372,23 +366,23 @@
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-        location.href = "/door/schedule/delete.do";
+        location.href = "";
 
-        // $.ajax({
-        //     type : "post",
-        //     url  : "/door/schedule_delete.do",
-        //     data : {
-        //        "id" = id
-        //     },
-        //     dataType :'json',
-        //     success  : function(data, status) {
-        //         if(data.result == "Y"){
-        //             location.href = "/door/schedule.do";
-        //         } else {
-        //             alert("삭제 중 오류가 발생하였습니다.");
-        //         }
-        //     }
-        // });
+        $.ajax({
+            type : "post",
+            url  : "/door/schedule/delete.do",
+            data : {
+               // "id" : id
+            },
+            dataType :'json',
+            success  : function(data, status) {
+                if(data.result == "Y"){
+                    location.href = "/door/schedule.do";
+                } else {
+                    alert("삭제 중 오류가 발생하였습니다.");
+                }
+            }
+        });
     }
 
     // 스케쥴 저장
@@ -516,10 +510,10 @@
 </form>
 
 <div class="right_btn mt_20">
-    <button class="btn_middle color_basic" onClick="fnList();">목록</button>
-    <button class="btn_middle ml_5 color_basic" onClick="fnEdit();">수정</button>
-    <button class="btn_middle ml_5 color_basic" onClick="fnDelete();">삭제</button>
-    <button class="btn_middle ml_5 color_basic" onClick="openPopup('addByDayPopup');">요일 별 스케쥴 등록</button>
+    <button class="btn_middle color_basic" onclick="location='/door/schedule.do'">목록</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnEdit();">수정</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
+    <button class="btn_middle ml_5 color_basic" onclick="openPopup('addByDayPopup');">요일 별 스케쥴 등록</button>
 </div>
 
 <%--  요일 별 스케쥴 등록 modal  --%>
