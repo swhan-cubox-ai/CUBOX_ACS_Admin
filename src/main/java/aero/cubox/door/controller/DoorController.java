@@ -267,7 +267,7 @@ public class DoorController {
         }
         model.addAttribute("editMode", commandMap.get("editMode"));
 
-        return "cubox/door/addGgroup";
+        return "cubox/door/addGroup";
     }
 
 
