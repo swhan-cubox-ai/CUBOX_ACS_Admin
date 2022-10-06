@@ -1,7 +1,13 @@
 package aero.cubox.door.controller;
 
+import aero.cubox.cmmn.service.CommonService;
+import aero.cubox.core.vo.CommonVO;
+import aero.cubox.core.vo.PaginationVO;
+import aero.cubox.core.vo.TerminalVO;
 import aero.cubox.door.service.DoorService;
+import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.CommonUtils;
+import aero.cubox.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -29,6 +35,12 @@ public class DoorController {
 
     @Resource(name = "commonUtils")
     private CommonUtils commonUtils;
+
+    @Resource(name = "terminalService")
+    private TerminalService terminalService;
+
+    @Resource(name = "commonService")
+    private CommonService commonService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DoorController.class);
 
@@ -92,7 +104,7 @@ public class DoorController {
 
         param.put("id", commandMap.get("doorId") );
 
-        HashMap doorInfo = (HashMap) doorService.getDoorInformation(param);
+        HashMap doorInfo = (HashMap) doorService.getDoorDetail(param);
 
         modelAndView.addObject("doorInfo", doorInfo);
 
@@ -135,7 +147,6 @@ public class DoorController {
             modelAndView.addObject("result", "N");
         }
         modelAndView.addObject("result", "Y");
-
 
         return modelAndView;
     }
@@ -188,7 +199,7 @@ public class DoorController {
         modelAndView.setViewName("jsonView");
 
         try {
-            doorService.deleteDoorInformation(commandMap);
+            doorService.deleteDoor(commandMap);
         } catch(Exception e) {
             e.getStackTrace();
             modelAndView.addObject("result", "N");
@@ -242,6 +253,7 @@ public class DoorController {
     @RequestMapping(value="/group/detail.do")
     public String groupDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
+        HashMap doorGroupDetail = doorService.getDoorGroupDetail(commandMap);
 
         return "cubox/door/groupDetail";
     }
@@ -413,31 +425,95 @@ public class DoorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        List<HashMap> terminalList = doorService.getTerminalList(commandMap);
+        try {
+            TerminalVO vo = new TerminalVO();
 
-        modelAndView.addObject("terminalList", terminalList);
+            String srchPage = StringUtil.nvl(commandMap.get("srchPage"), "1");
+            String srchRecPerPage = StringUtil.nvl(commandMap.get("srchRecPerPage"), "10");
+            String srchCond1 = StringUtil.nvl(commandMap.get("srchCond1"), "");
+            String srchCond2 = StringUtil.nvl(commandMap.get("srchCond2"), "");
+            String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+
+            vo.setSrchPage(Integer.parseInt(srchPage));
+            vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
+            vo.autoOffset();
+
+            vo.setSrchCond1(srchCond1);
+            vo.setSrchCond2(srchCond2);
+            vo.setKeyword(keyword);
+
+            List<CommonVO> terminalTypCombList = commonService.getCommonCodeList("TerminalTyp");
+            List<CommonVO> buildingCombList = terminalService.getBuildingList();
+
+            int totalCnt = terminalService.getTerminalListCount(vo);
+            List<TerminalVO> terminalList = terminalService.getTerminalList(vo);
+
+            PaginationVO pageVO = new PaginationVO();
+            pageVO.setCurPage(vo.getSrchPage());
+            pageVO.setRecPerPage(vo.getSrchCnt());
+            pageVO.setTotRecord(totalCnt);
+            pageVO.setUnitPage(vo.getCurPageUnit());
+            pageVO.calcPageList();
+
+            model.addAttribute("terminalTypCombList", terminalTypCombList);
+            model.addAttribute("buildingCombList", buildingCombList);
+            model.addAttribute("terminalList", terminalList);
+            model.addAttribute("data", vo);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
 
         return modelAndView;
     }
 
 
     /**
-     * 단말기 정보 조회
+     * 권한 그룹 목록 조회
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/terminal/detail.do", method= RequestMethod.GET)
-    public ModelAndView getTerminal(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value="/authGroup/list.do", method= RequestMethod.GET)
+    public ModelAndView authGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        HashMap terminalInfo= doorService.getTerminal(commandMap);
-        modelAndView.addObject("terminalInfo", terminalInfo);
+        try {
+            TerminalVO vo = new TerminalVO();
+
+            String srchPage = StringUtil.nvl(commandMap.get("srchPage"), "1");
+            String srchRecPerPage = StringUtil.nvl(commandMap.get("srchRecPerPage"), "10");
+            String srchCond1 = StringUtil.nvl(commandMap.get("srchCond1"), "");
+            String srchCond2 = StringUtil.nvl(commandMap.get("srchCond2"), "");
+            String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+
+            vo.setSrchPage(Integer.parseInt(srchPage));
+            vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
+            vo.autoOffset();
+
+            vo.setSrchCond1(srchCond1);
+            vo.setSrchCond2(srchCond2);
+            vo.setKeyword(keyword);
+
+            List<CommonVO> authGroupTypCombList = commonService.getCommonCodeList("");
+
+            List<TerminalVO> authGroupList = null;
+
+            model.addAttribute("authGroupList", authGroupList);
+            model.addAttribute("data", vo);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
 
         return modelAndView;
+
     }
 
 

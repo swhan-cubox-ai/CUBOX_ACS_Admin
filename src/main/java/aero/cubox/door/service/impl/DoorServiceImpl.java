@@ -32,9 +32,37 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
      * @return
      */
     @Override
-    public Map getDoorInformation(Map<String, Object> commandMap) {
+    public Map getDoorDetail(Map<String, Object> commandMap) {
 
         return doorDAO.getDoorInformation(commandMap);
+    }
+
+    /**
+     * 출입문 등록
+     * @param commandMap
+     */
+    @Override
+    public void addDoor(Map<String, Object> commandMap) {
+        doorDAO.insertDoor(commandMap);
+    }
+
+    /**
+     * 출입문 수정
+     * @param commandMap
+     */
+    @Override
+    public void updateDoor(Map<String, Object> commandMap) {
+        doorDAO.updateDoor(commandMap);
+
+    }
+
+    /**
+     * 출입문 삭제
+     * @param commandMap
+     */
+    @Override
+    public void deleteDoor(Map<String, Object> commandMap) {
+        doorDAO.deleteDoorInformation(commandMap);
     }
 
     /**
@@ -57,6 +85,16 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     public List<Map> getAreaList(Map<String, Object> commandMap) {
 
         return doorDAO.getAreaList(commandMap);
+    }
+
+    /**
+     * 층 목록
+     * @param commandMap
+     * @return
+     */
+    @Override
+    public List<HashMap> getFloorList(Map<String, Object> commandMap) {
+        return doorDAO.getFloorList(commandMap);
     }
 
     /**
@@ -83,52 +121,135 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         return doorDAO.getDoorGroupList(commandMap);
     }
 
-
-
-    @Override
-    public void addDoor(Map<String, Object> commandMap) {
-        doorDAO.insertDoor(commandMap);
-    }
-
-    @Override
-    public List<HashMap> getScheduleList(Map<String, Object> commandMap) {
-        return doorDAO.getScheduleList(commandMap);
-    }
-
-    @Override
-    public List<HashMap> getFloorList(Map<String, Object> commandMap) {
-        return doorDAO.getFloorList(commandMap);
-    }
-
-
-    @Override
-    public void updateDoor(Map<String, Object> commandMap) {
-        doorDAO.updateDoor(commandMap);
-
-    }
-
     /**
-     * 출입문 삭제
-     * @param commandMap
-     */
-    @Override
-    public void deleteDoorInformation(Map<String, Object> commandMap) {
-        doorDAO.deleteDoorInformation(commandMap);
-    }
-
-
-    /**
-     * 단말기 정보 조회
-     *
+     * 출압문 그룹 상세
      * @param commandMap
      * @return
      */
     @Override
-    public HashMap getTerminal(Map<String, Object> commandMap) {
-        return doorDAO.getTerminal(commandMap);
+    public HashMap getDoorGroupDetail(Map<String, Object> commandMap) {
+        return  doorDAO.getDoorGroupDetail(commandMap);
+    }
+
+    /**
+     * 출입문 그룹 추가
+     * @param commandMap
+     */
+    @Override
+    public void addDoorGroup(Map<String, Object> commandMap) {
+        doorDAO.addDoorGroup(commandMap);
+    }
+
+    /**
+     * 출입문 그룹 수정
+     * @param commandMap
+     */
+    @Override
+    public void updateDoorGroup(Map<String, Object> commandMap) {
+        doorDAO.updateDoorGroup(commandMap);
+    }
+
+    /**
+     * 출입문 그룹 삭제
+     * @param commandMap
+     */
+    @Override
+    public void deleteDoorGroup(Map<String, Object> commandMap) {
+        doorDAO.deleteDoorGroup(commandMap);
+    }
+
+    /**
+     * 출입문 스케줄 목록 조회
+     * @param commandMap
+     * @return
+     */
+    @Override
+    public List<HashMap> getScheduleList(Map<String, Object> commandMap) {
+
+        return doorDAO.getScheduleList(commandMap);
+    }
+
+    /**
+     * 출입문 스케줄 상세
+     * @param commandMap
+     * @return
+     */
+    @Override
+    public HashMap getScheduleDetail(Map<String, Object> commandMap) {
+        return  doorDAO.getScheduleDetail(commandMap);
+    }
+
+    /**
+     * 출입문 스케줄 등록
+     * @param commandMap
+     */
+    @Override
+    public void addSchedule(Map<String, Object> commandMap) {
+        doorDAO.addSchedule(commandMap);
+    }
+
+    /**
+     * 출입문 스케쥴 수정
+     * @param commandMap
+     */
+    @Override
+    public void updateSchedule(Map<String, Object> commandMap) {
+        doorDAO.updateSchedule(commandMap);
+    }
+
+    /**
+     * 출입문 스케쥴 삭제
+     * @param commandMap
+     */
+    @Override
+    public void deleteSchedule(Map<String, Object> commandMap) {
+        doorDAO.deleteSchedule(commandMap);
+    }
+
+    /**
+     * 요일별 스게쥴 상세
+     * @param commandMap
+     * @return
+     */
+    @Override
+    public HashMap getScheduleByDayDetail(Map<String, Object> commandMap) {
+        return  doorDAO.getScheduleByDayDetail(commandMap);
+    }
+
+    /**
+     * 요일별 스케쥴 등록
+     * @param commandMap
+     */
+    @Override
+    public void addScheduleByDay(Map<String, Object> commandMap) {
+        doorDAO.addScheduleByDay(commandMap);
+    }
+
+    /**
+     * 요일별 스케쥴 수정
+     * @param commandMap
+     */
+    @Override
+    public void updateScheduleByDay(Map<String, Object> commandMap) {
+        doorDAO.updateScheduleByDay(commandMap);
+    }
+
+    /**
+     * 요일별 스케쥴 삭제
+     * @param commandMap
+     */
+    @Override
+    public void deleteScheduleByDay(Map<String, Object> commandMap) {
+        doorDAO.deleteScheduleByDay(commandMap);
     }
 
 
+    /**
+     * 단말기 목록 조회
+     *
+     * @param commandMap
+     * @return
+     */
     @Override
     public List<HashMap> getTerminalList(Map<String, Object> commandMap) {
         return doorDAO.getTerminalList(commandMap);
