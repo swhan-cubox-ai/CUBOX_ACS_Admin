@@ -38,12 +38,13 @@ public class DoorDAO extends EgovAbstractMapper {
 	}
 
 
-
 	public void insertDoor(Map<String, Object> commandMap) {
-		update(sqlNameSpace+"insertDoor", commandMap);
+
+		insert(sqlNameSpace+"insertDoor", commandMap);
 	}
 
 	public void updateDoor(Map<String, Object> commandMap) {
+
 		update(sqlNameSpace+"updateDoor", commandMap);
 	}
 	public void deleteDoorInformation(Map<String, Object> commandMap) {
@@ -66,5 +67,57 @@ public class DoorDAO extends EgovAbstractMapper {
 
 	public List<HashMap> getFloorList(Map<String, Object> commandMap) {
 		return selectList(sqlNameSpace+"selectFloorList", commandMap);
+	}
+
+	public HashMap getDoorGroupDetail(Map<String, Object> commandMap) {
+		return selectOne(sqlNameSpace+"", commandMap);
+	}
+
+	public void addDoorGroup(Map<String, Object> commandMap) {
+		insert(sqlNameSpace+"", commandMap);
+	}
+
+	public void updateDoorGroup(Map<String, Object> commandMap) {
+		update(sqlNameSpace+"", commandMap);
+	}
+
+	public void deleteDoorGroup(Map<String, Object> commandMap) {
+
+		delete(sqlNameSpace+"", commandMap);
+	}
+
+	public HashMap getScheduleDetail(Map<String, Object> commandMap) {
+		return selectOne(sqlNameSpace+"", commandMap);
+	}
+
+	public void addSchedule(Map<String, Object> commandMap) {
+		insert(sqlNameSpace+"", commandMap);
+	}
+
+	public void updateSchedule(Map<String, Object> commandMap) {
+		update(sqlNameSpace+"", commandMap);
+	}
+
+	public void deleteSchedule(Map<String, Object> commandMap) {
+
+		delete(sqlNameSpace+"", commandMap);
+	}
+
+	public HashMap getScheduleByDayDetail(Map<String, Object> commandMap) {
+		return selectOne(sqlNameSpace+"", commandMap);
+
+	}
+
+	public void addScheduleByDay(Map<String, Object> commandMap) {
+		insert(sqlNameSpace+"", commandMap);
+	}
+
+	public void updateScheduleByDay(Map<String, Object> commandMap) {
+		update(sqlNameSpace+"", commandMap);
+	}
+
+	public void deleteScheduleByDay(Map<String, Object> commandMap) {
+
+		delete(sqlNameSpace+"", commandMap);
 	}
 }
