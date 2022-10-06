@@ -177,7 +177,7 @@
         //출입문 정보
         $.ajax({
             type: "GET",
-            url: "<c:url value='/door/getDoorInformation.do' />",
+            url: "<c:url value='/door/list.do' />",
             data: {doorId : "1"},
             dataType: "json",
             success: function(result) {
@@ -329,17 +329,9 @@
     /////////////////  출입문 목록 ajax - start  /////////////////////
 
 
-    /**
-     * 출입문 리스트 조회
-     */
     function fnGetDoorListAjax() {
         console.log( "fnGetDoorListAjax");
 
-        //return 목록
-        //workplaceList - 사업장
-        //buildingList - 빌딩
-        //floorList - 층
-        //doorList - 출입문
         $.ajax({
             type : "GET",
             data : { },
@@ -425,6 +417,42 @@
         });
     }
     /////////////////  단말기 목록 조회 ajax - end  /////////////////////
+
+
+    /////////////////  권한그룹 목록 ajax - start  /////////////////////
+
+
+    function fnGetTerminalListAjax() {
+        console.log("fnGetTerminalListAjax");
+        let checkYn = "Y";
+        $.ajax({
+            type: "GET",
+            url: "<c:url value='/door/terminal/list.do' />",
+            data: {checkYn: checkYn},
+            dataType: "json",
+            success: function (result) {
+                if(result.terminalList.length > 0) {
+                    $.each(result.terminalList, function(i, terminal) {
+                        console.log(terminal.id + "/" + terminal.terminal_cd + "/" + terminal.terminal_typ + "/" + terminal.door_id);
+                        // 단말기 코드, 관리번호, 단말기 유형, 출입문명
+                        // terminal_cd, mgmt_num, terminal_typ, door_id
+                        // TODO : 출입문명 가져오기 (현재는 door_id로 되어있음)
+                        let tag = "<tr class='h_35px' style='text-align:center'><td style='padding:0 14px;'><input type='radio' name='checkOne'></td>";
+                        tag += "<td>" + terminal.terminal_cd + "</td>";
+                        tag += "<td>" + terminal.mgmt_num + "</td>";
+                        tag += "<td>" + terminal.terminal_typ + "</td>";
+                        tag += "<td>" + terminal.door_id + "</td></tr>";
+
+                        $("#tbTerminal").append(tag);
+                    });
+                }
+            }
+        });
+    }
+    /////////////////  단말기 목록 조회 ajax - end  /////////////////////
+
+
+
 
 
 

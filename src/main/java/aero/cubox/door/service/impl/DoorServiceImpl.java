@@ -32,9 +32,9 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
      * @return
      */
     @Override
-    public Map getDoor(Map<String, Object> commandMap) {
+    public Map getDoorInformation(Map<String, Object> commandMap) {
 
-        return doorDAO.getDoor(commandMap);
+        return doorDAO.getDoorInformation(commandMap);
     }
 
     /**
