@@ -255,7 +255,7 @@ public class DoorController {
         }
         model.addAttribute("editMode", commandMap.get("editMode"));
 
-        return "groupAdd";
+        return "cubox/door/addGgroup";
     }
 
 
@@ -317,7 +317,7 @@ public class DoorController {
 
         LOGGER.debug("editMode : " + model.get("editMode"));
         LOGGER.debug("schName : " + model.get("schName"));
-        return "scheduleAdd";
+        return "cubox/door/scheduleAdd";
     }
 
     /**

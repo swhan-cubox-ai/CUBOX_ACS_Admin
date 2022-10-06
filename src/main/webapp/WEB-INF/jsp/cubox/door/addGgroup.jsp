@@ -103,7 +103,7 @@
     // 수정 버튼
     function fnEdit() {
         f = document.detailForm;
-        f.action = "/door/group_add.do";
+        f.action = "/door/group/add.do";
         f.submit();
     }
 
@@ -128,18 +128,8 @@
         }
 
         // TODO : gpDoor 출입문 disabled 해제!
-        location.href = "/door/group_detail.do";
+        location.href = "/door/group/detail.do";
 
-    }
-
-    // 알람그룹 수정 취소
-    function fnCancel() {
-        if (${editMode eq 'edit'}) {
-            $("#detailForm").attr("action", "/door/group_detail.do");
-        } else {
-            $("#detailForm").attr("action", "/door/group.do");
-        }
-        $("#detailForm").submit();
     }
 
     // 출입문 선택
@@ -221,7 +211,7 @@
 
 <div class="right_btn mt_20">
     <button class="btn_middle ml_5 color_basic" onClick="fnSave();">등록</button>
-    <button class="btn_middle ml_5 color_basic" onClick="fnCancel();">취소</button>
+    <button class="btn_middle ml_5 color_basic" onClick="location='/door/group/listView.do'">취소</button>
 </div>
 
 
