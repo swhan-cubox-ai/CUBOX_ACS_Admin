@@ -428,15 +428,9 @@ public class DoorController {
         try {
             TerminalVO vo = new TerminalVO();
 
-            String srchPage = StringUtil.nvl(commandMap.get("srchPage"), "1");
-            String srchRecPerPage = StringUtil.nvl(commandMap.get("srchRecPerPage"), "10");
             String srchCond1 = StringUtil.nvl(commandMap.get("srchCond1"), "");
             String srchCond2 = StringUtil.nvl(commandMap.get("srchCond2"), "");
             String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
-
-            vo.setSrchPage(Integer.parseInt(srchPage));
-            vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
-            vo.autoOffset();
 
             vo.setSrchCond1(srchCond1);
             vo.setSrchCond2(srchCond2);
@@ -448,13 +442,7 @@ public class DoorController {
             int totalCnt = terminalService.getTerminalListCount(vo);
             List<TerminalVO> terminalList = terminalService.getTerminalList(vo);
 
-            PaginationVO pageVO = new PaginationVO();
-            pageVO.setCurPage(vo.getSrchPage());
-            pageVO.setRecPerPage(vo.getSrchCnt());
-            pageVO.setTotRecord(totalCnt);
-            pageVO.setUnitPage(vo.getCurPageUnit());
-            pageVO.calcPageList();
-
+            System.out.println("terminalList.size()" + terminalList.size());
             model.addAttribute("terminalTypCombList", terminalTypCombList);
             model.addAttribute("buildingCombList", buildingCombList);
             model.addAttribute("terminalList", terminalList);
