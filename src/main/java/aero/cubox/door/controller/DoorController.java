@@ -377,7 +377,7 @@ public class DoorController {
     @RequestMapping(value="/alarmGroup/detail.do")
     public String viewAlarmDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
-        return "alarmGroupDetail";
+        return "cubox/door/alarmGroupDetail";
     }
 
     // 출입문 알람 그룹 등록
@@ -393,7 +393,7 @@ public class DoorController {
         }
         model.addAttribute("editMode", commandMap.get("editMode"));
 
-        return "addAlarm";
+        return "cubox/door/addAlarm";
     }
 
 

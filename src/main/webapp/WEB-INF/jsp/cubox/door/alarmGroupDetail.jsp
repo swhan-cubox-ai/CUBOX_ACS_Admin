@@ -38,13 +38,13 @@
 
     // 목록 버튼
     function fnList() {
-        location.href = "/door/alarmGroup.do";
+        location.href = "/door/alarmGroup/list.do";
     }
 
     // 수정 버튼
     function fnEdit() {
         f = document.detailForm;
-        f.action = "/door/alarm_add.do";
+        f.action = "/door/alarmGroup/add.do";
         $("#tdAlarmDetail input").attr("disabled", false);
         f.submit();
     }
@@ -60,8 +60,7 @@
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-        // location.href = "/door/alarm_delete.do";
-        location.href = "/door/alarmGroup.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
+        location.href = "/door/alarmGroup/list.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
     }
 
     // popup open (공통)

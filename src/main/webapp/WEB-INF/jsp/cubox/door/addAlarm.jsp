@@ -128,7 +128,7 @@
     // 수정 버튼
     function fnEdit() {
         f = document.detailForm;
-        f.action = "/door/alarm_add.do";
+        f.action = "/door/alarmGroup/add.do";
         f.submit();
     }
 
@@ -160,16 +160,16 @@
             return;
         }
 
-        location.href = "/door/alarm_detail.do";
+        location.href = "/door/alarmGroup/detail.do";
 
     }
 
     // 알람그룹 수정 취소
     function fnCancel() {
         if (${editMode eq 'edit'}) {
-            $("#detailForm").attr("action", "/door/alarm_detail.do");
+            $("#detailForm").attr("action", "/door/alarmGroup/detail.do");
         } else {
-            $("#detailForm").attr("action", "/door/alarm.do");
+            $("#detailForm").attr("action", "/door/alarmGroup/list.do");
         }
         $("#detailForm").submit();
     }
