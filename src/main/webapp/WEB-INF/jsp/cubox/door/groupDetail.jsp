@@ -53,7 +53,6 @@
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-        // location.href = "/door/group_delete.do";
         location.href = "/door/group/listView.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
     }
 

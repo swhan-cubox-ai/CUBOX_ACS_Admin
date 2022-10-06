@@ -28,14 +28,14 @@
     // 출입문 신규 등록
     function createAlarm() {
         f = document.frmSearch;
-        f.action = "/door/alarm_add.do";
+        f.action = "/door/alarmGroup/add.do";
         f.submit();
     }
 
     function fnDetail(self) {
         console.log(self); // 추후에 정보 넘김
         f = document.frmSearch;
-        f.action = "/door/alarm_detail.do";
+        f.action = "/door/alarmGroup/detail.do";
         f.submit();
     }
 </script>

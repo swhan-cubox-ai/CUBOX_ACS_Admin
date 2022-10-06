@@ -124,7 +124,7 @@
 
         // 데이터 저장
         // 출입문 목록으로 페이지 이동
-        location.href = "/door/schdule/listView.do";
+        location.href = "/door/schedule/detail.do";
 
         // $.ajax({
         //     url: "gate/schedule_save.do",
@@ -154,11 +154,13 @@
     // 출입문 스케줄 등록 취소
     function fnCancel() {
         if (${editMode eq 'edit'}) { //
-            $("#addForm").attr("action", "/door/schdule/detail.do");
-        } else {
             $("#addForm").attr("action", "/door/schedule/detail.do");
+            $("#addForm").submit();
+        } else {
+            // $("#addForm").attr("action", "/door/schedule.do");
+            location.href = "/door/schedule.do";
         }
-        $("#addForm").submit();
+
     }
 
     function totalCheck() {
@@ -189,6 +191,7 @@
 </script>
 
 <form id="addForm" name="addForm" method="post" enctype="multipart/form-data">
+    <input type="hidden" id="editMode" name="editMode" value="edit"/>
     <div class="tb_01_box">
         <table class="tb_write_02 tb_write_p1 box">
             <colgroup>
@@ -240,8 +243,8 @@
 </form>
 
 <div class="right_btn mt_20">
-    <button class="btn_middle color_basic" onClick="fnAdd();">확인</button>
-    <button class="btn_middle ml_5 color_basic" onClick="fnCancel();">취소</button>
+    <button class="btn_middle color_basic" onclick="fnAdd();">확인</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnCancel();">취소</button>
 </div>
 
 
