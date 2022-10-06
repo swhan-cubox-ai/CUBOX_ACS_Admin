@@ -17,9 +17,22 @@ public class DoorDAO extends EgovAbstractMapper {
 		return selectList(sqlNameSpace+"selectDoorList", commandMap);
 	}
 
-	public Map getDoorInformation(Map<String, Object> commandMap) {
+	public Map getDoorDetail(Map<String, Object> commandMap) {
 		return selectOne(sqlNameSpace+"selectDoorDetail", commandMap);
 	}
+
+
+	public void insertDoor(Map<String, Object> commandMap) {
+		insert(sqlNameSpace+"insertDoor", commandMap);
+	}
+
+	public void updateDoor(Map<String, Object> commandMap) {
+		update(sqlNameSpace+"updateDoor", commandMap);
+	}
+	public void deleteDoor(Map<String, Object> commandMap) {
+		delete(sqlNameSpace+"deleteDoor", commandMap);
+	}
+
 
 	public List<Map> getAreaList(Map<String, Object> commandMap) {
 		return selectList(sqlNameSpace+"selectAreaList", commandMap);
@@ -33,38 +46,14 @@ public class DoorDAO extends EgovAbstractMapper {
 		return selectList(sqlNameSpace+"selectWorkplaceList", commandMap);
 	}
 
+	public List<HashMap> getFloorList(Map<String, Object> commandMap) {
+		return selectList(sqlNameSpace+"selectFloorList", commandMap);
+	}
+
 	public List<HashMap> getDoorGroupList(Map<String, Object> commandMap) {
 		return selectList(sqlNameSpace+"selectDoorGroupList", commandMap);
 	}
 
-
-	public void insertDoor(Map<String, Object> commandMap) {
-		insert(sqlNameSpace+"insertDoor", commandMap);
-	}
-
-	public void updateDoor(Map<String, Object> commandMap) {
-		update(sqlNameSpace+"updateDoor", commandMap);
-	}
-	public void deleteDoorInformation(Map<String, Object> commandMap) {
-		delete(sqlNameSpace+"deleteDoorInformation", commandMap);
-	}
-
-	public HashMap getTerminal(Map<String, Object> commandMap) {
-		return selectOne(sqlNameSpace+"selectTerminal", commandMap);
-	}
-
-
-	public List<HashMap> getTerminalList(Map<String, Object> commandMap) {
-		return selectList(sqlNameSpace+"selectTerminal", commandMap);
-	}
-
-	public List<HashMap> getScheduleList(Map<String, Object> commandMap) {
-		return selectList(sqlNameSpace+"selectDoorSchList", commandMap);
-	}
-
-	public List<HashMap> getFloorList(Map<String, Object> commandMap) {
-		return selectList(sqlNameSpace+"selectFloorList", commandMap);
-	}
 
 	public HashMap getDoorGroupDetail(Map<String, Object> commandMap) {
 		return selectOne(sqlNameSpace+"selectDoorGroupDetail", commandMap);
@@ -80,6 +69,12 @@ public class DoorDAO extends EgovAbstractMapper {
 
 	public void deleteDoorGroup(Map<String, Object> commandMap) {
 		delete(sqlNameSpace+"deleteDoorGroup", commandMap);
+	}
+
+
+
+	public List<HashMap> getScheduleList(Map<String, Object> commandMap) {
+		return selectList(sqlNameSpace+"selectDoorSchList", commandMap);
 	}
 
 	public HashMap getScheduleDetail(Map<String, Object> commandMap) {
@@ -115,5 +110,15 @@ public class DoorDAO extends EgovAbstractMapper {
 	public void deleteScheduleByDay(Map<String, Object> commandMap) {
 
 		delete(sqlNameSpace+"deleteScheduleByDay", commandMap);
+	}
+
+
+	public HashMap getTerminalDetail(Map<String, Object> commandMap) {
+		return selectOne(sqlNameSpace+"selectTerminalDetail", commandMap);
+	}
+
+
+	public List<HashMap> getTerminalList(Map<String, Object> commandMap) {
+		return selectList(sqlNameSpace+"selectTerminalList", commandMap);
 	}
 }
