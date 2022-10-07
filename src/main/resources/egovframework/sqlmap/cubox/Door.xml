@@ -12,7 +12,10 @@
 			 , created_at
 			 , updated_at
 		FROM T_DOOR TD
-		WHERE id = #{id}
+		T_DOOR_SCH TDS
+		T_DOORALARM_GRP TDG
+		WHERE TD.
+		    id = #{id}
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
 			AND TD.id = #{id}
 		</if>
@@ -132,23 +135,27 @@
 	</select>
 
 	<select id="selectDoorGroupList"  parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-		nm,
-		doorSchId
-		FROM T_DOORGRP TD
-		WHERE 1=1
+		SELECT TD.id
+		     , TD.nm
+		     , TD.doorSchId
+		     , TDS.door_sch_nm
+		  FROM T_DOORGRP TD
+		     , T_DOOR_SCH TDS
+		 WHERE TD.doorSchId = TDS.id
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-			AND TD.id = #{id}
+		   AND TD.id = #{id}
 		</if>
 	</select>
 
 
 	<select id="selectDoorGroupDetail"   parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-			   nm,
-			   doorSchId
-		FROM T_DOORGRP TD
-		WHERE 1 = 1
+		SELECT TD.id
+			 , TD.nm
+			 , TD.doorSchId
+			 , TDS.door_sch_nm
+		  FROM T_DOORGRP TD
+			 , T_DOOR_SCH TDS
+		 WHERE TD.doorSchId = TDS.id
 	</select>
 
 

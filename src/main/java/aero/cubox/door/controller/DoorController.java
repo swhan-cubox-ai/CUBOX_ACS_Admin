@@ -94,7 +94,6 @@ public class DoorController {
     @RequestMapping(value="/detail.do", method= RequestMethod.GET)
     public ModelAndView getDoorInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
-        System.out.println("getDoorInformation");
         LOGGER.debug("getDoor");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -246,6 +245,8 @@ public class DoorController {
 
         return modelAndView;
     }
+
+
 
 
 
