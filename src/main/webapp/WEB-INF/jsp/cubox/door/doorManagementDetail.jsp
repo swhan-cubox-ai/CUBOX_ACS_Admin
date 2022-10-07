@@ -76,7 +76,7 @@
         modalPopup("authPickPopup", "권한그룹 선택", 910, 550);
 
         $("input[name=checkAll]").click(function() {
-            if($(this).prop("checked")){
+            if ($(this).prop("checked")) {
                 $("input[name=excelColumn]").prop("checked", true);
             } else {
                 $("input[name=excelColumn]").prop("checked", false);
@@ -85,13 +85,14 @@
 
         // 단말기 선택 확인
         $('#gatePickConfirm').click(function() {
-            // 이미 등록된 단말기 일 경우, 체크가 되어있을 때,
-            if ($("input[name='checkOne']:checked").is(":checked")) {
-                alert("이미 등록된 단말기입니다.");
-                $("input[name='checkOne']:checked").attr("checked", false);
-            } else {
+            let chkTerminal = $("input[name=checkOne]:checked").closest("tr").children();
 
-            }
+            // TODO : 등록된 단말기 여부 확인
+            //  alert("이미 등록된 단말기입니다.");
+
+            $("#gateCode").val(chkTerminal.eq(1).html());
+            $("#gateNum").val(chkTerminal.eq(2).html());
+            closePopup('gatePickPopup');
         });
 
         // 권한그룹 추가
@@ -169,6 +170,7 @@
     // 속성 뿌려주기
     function getGateDetail(self) {
         tmpSelf = $(self); // TODO : id 넘기기
+        console.log(tmpSelf);
 
         initDetail();
         fnCancelEdit();
@@ -177,27 +179,18 @@
         //출입문 정보
         $.ajax({
             type: "GET",
-            url: "<c:url value='/door/list.do' />",
+            url: "<c:url value='/door/detail.do' />",
             data: {doorId : "1"},
             dataType: "json",
             success: function(result) {
-                $.each(result.doorInfo, function(i, dInfo) {
-                    console.log(dInfo.id + "/" + dInfo.building_id + "/" + dInfo.area_id + "/" + dInfo.floor_id + "/" + dInfo.door_nm + "/" + dInfo.alarm_typ);
-                });
+                // TODO : 스케쥴, 알람그룹, 단말기코드, 단말기 관리번호, 권한그룹 가져오기
+                console.log(result);
+                // $.each(result.doorList, function(i, dInfo) {
+                //     console.log(dInfo.id + "/" + dInfo.building_id + "/" + dInfo.floor_id + "/" + dInfo.door_nm);
+                // });
+                // $("#gateNm").val(dInfo.door_nm);
             }
         });
-
-        // $.ajax({
-        //     type: "GET",
-        //     url: '',
-        //     data: {
-        //        "gateNm": $(self).html()
-        //     },
-        //     dataType: "json",
-        //     success: function(result) {
-        //
-        //     }
-        // });
 
         // 데이터 가지고 와서 뿌려주기
         $("#gatePath").text("12 동 > D 구역 > 1층 > " + tmpSelf.html());
@@ -255,7 +248,13 @@
     // 출입문 관리 - 수정 저장 확인
     function fnSave() {
         alert("수정사항을 저장하시겠습니까?");
-        if(fnIsEmpty($("#gateNm").val())){alert ("출입문 명칭을 입력하세요."); $("#gateNm").focus(); return;}
+        if (fnIsEmpty($("#gateNm").val())) {
+            alert ("출입문 명칭을 입력하세요.");
+            $("#gateNm").focus();
+            return;
+        }
+        // TODO : 출입문 속성 저장 ajax
+        // getGateDetail();
     }
 
     // 출입문 관리 - 삭제
@@ -318,6 +317,7 @@
             // 단말기 선택 팝업창 초기화
             $("input[name='checkOne']:checked").attr("checked", false);
         } else if (popupNm == "authPickPopup") {
+            fnGetAuthGroupListAjax();
             $("input[name='chkAuth']:checked").attr("checked", false);
             $("input[name='chkAuthConf']:checked").attr("checked", false);
             totalCheck();
@@ -400,10 +400,9 @@
             success: function (result) {
                 if(result.terminalList.length > 0) {
                     $.each(result.terminalList, function(i, terminal) {
-                        console.log("단말기 목록 : " + terminal.id + "/" + terminal.terminalCd + "/" + terminal.terminalTyp + "/" + terminal.mgmtNum);
+                        console.log("단말기 목록 : " + terminal.id + "/" + terminal.doorNm + "/" + terminal.terminalCd + "/" + terminal.terminalTyp + "/" + terminal.mgmtNum);
                         // 단말기 코드, 관리번호, 단말기 유형, 출입문명
-                        // terminal_cd, mgmt_num, terminal_typ, door_id
-                        // TODO : 출입문명 가져오기 (현재는 door_id로 되어있음)
+                        // terminalCd, mgmtNum, terminalTyp, doorNm
                         let tag = "<tr class='h_35px' style='text-align:center'><td style='padding:0 14px;'><input type='radio' name='checkOne'></td>";
                         tag += "<td>" + terminal.terminalCd + "</td>";
                         tag += "<td>" + terminal.mgmtNum + "</td>";
@@ -432,10 +431,10 @@
             data: {checkYn: checkYn},
             dataType: "json",
             success: function (result) {
+                console.log(result);
                 if(result.authGroupList.length > 0) {
                     $.each(result.authGroupList, function(i, authGroup) {
                         console.log(authGroup.id + "/" + authGroup.authNm + "/" + authGroup.deptAuthYn );
-
                     });
                 }
             }
