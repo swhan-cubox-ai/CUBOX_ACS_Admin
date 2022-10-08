@@ -48,7 +48,7 @@
         </p>
       </div>
       <div class="comm_search  mr_10">
-        <input type="text" class="w_150px input_com" id="keyword" name="keyword">
+        <input type="text" class="w_150px input_com" id="keyword" name="keyword" value="<c:out value="${data.keyword}"/>" placeholder="공휴일명">
       </div>
       <div class="comm_search ml_40">
         <div class="search_btn2" onclick="pageSearch('1')"></div>

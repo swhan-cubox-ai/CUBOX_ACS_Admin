@@ -63,14 +63,12 @@ public class HolidayController {
 			vo.setSrchCond(srchCond);
 			vo.setKeyword(keyword);
 
+			vo.setStartDt(startDt);
+			vo.setEndDt(endDt);
+
 			vo.setSrchPage(Integer.parseInt(srchPage));
 			vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
 			vo.autoOffset();
-
-			vo.setHolidayTyp(srchCond);
-			vo.setHolidayNm(keyword);
-			vo.setStartDt(startDt);
-			vo.setEndDt(endDt);
 
 			List<CommonVO> holidayTypList = commonService.getCommonCodeList("HolidayTyp");
 			int totalCnt = holidayService.getHolidayListCount(vo);
@@ -86,7 +84,6 @@ public class HolidayController {
 			model.addAttribute("holidayTypList", holidayTypList);
 			model.addAttribute("holidayList", holidayList);
 			model.addAttribute("data", vo);
-			//model.addAttribute("cntPerPage", cntPerPage);
 			model.addAttribute("pagination", pageVO);
 
 		} catch(Exception e) {

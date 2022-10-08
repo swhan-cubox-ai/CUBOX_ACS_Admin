@@ -32,8 +32,8 @@ public class MenuUrlSetting {
         else if ("0303".equals(menu_cd)) return "";           // 출입문 권한그룹 관리
 
         if ("0400".equals(menu_cd)) return "";                // 보고서
-        else if ("0401".equals(menu_cd)) return "";           // 출입이력
-        else if ("0402".equals(menu_cd)) return "";           // 알람이력
+        else if ("0401".equals(menu_cd)) return "/report/entHist/list.do";           // 출입이력
+        else if ("0402".equals(menu_cd)) return "/report/alarmHist/list.do";           // 알람이력
         else if ("0403".equals(menu_cd)) return "";           // 시간대별 출입이력
         else if ("0404".equals(menu_cd)) return "";           // 장시간개방 알람이력
         else if ("0405".equals(menu_cd)) return "";           // 대량조회신청결과
