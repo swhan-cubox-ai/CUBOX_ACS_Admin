@@ -27,9 +27,9 @@ public class MenuUrlSetting {
         else if ("0205".equals(menu_cd)) return "/terminal/list.do";   // 단말기관리
 
         if ("0300".equals(menu_cd)) return "";                // 권한관리
-        else if ("0301".equals(menu_cd)) return "";           // 인사정보관리
-        else if ("0302".equals(menu_cd)) return "";           // 부서관리
-        else if ("0303".equals(menu_cd)) return "";           // 출입문 권한그룹 관리
+        else if ("0301".equals(menu_cd)) return "/auth/emp/list.do";           // 인사정보관리
+        else if ("0302".equals(menu_cd)) return "/auth/dept/list.do";           // 부서관리
+        else if ("0303".equals(menu_cd)) return "/auth/door/list.do";           // 출입문 권한그룹 관리
 
         if ("0400".equals(menu_cd)) return "";                // 보고서
         else if ("0401".equals(menu_cd)) return "";           // 출입이력

@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="auth">
+
+    <select id="getEmpList" parameterType="aero.cubox.core.vo.EmpVO" resultType="aero.cubox.core.vo.EmpVO">
+        select
+        id as id
+        ,emp_nm as empNm
+        ,emp_cd as empCd
+        ,dept_cd as deptCd
+        ,dept_nm as deptNm
+        ,instt_cd as insttCd
+        ,instt_nm as insttNm
+        ,belong_nm as belongNm
+        ,DATE_FORMAT(expired_dt, '%Y-%m-%d') as expiredDt
+        ,DATE_FORMAT(created_at, '%Y-%m-%d') as createdAt
+        ,DATE_FORMAT(updated_at, '%Y-%m-%d') as updatedAt
+        from	T_EMP
+        where
+        1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword1)'>
+            AND (instt_nm like CONCAT('%',#{keyword1},'%') OR dept_nm like CONCAT('%',#{keyword1},'%'))
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword2)'>
+            AND (emp_cd = #{keyword2} OR emp_nm like CONCAT('%',#{keyword2},'%'))
+        </if>
+
+        limit	#{srchCnt} offset #{offset}
+    </select>
+
+    <select id="getEmpListCount" parameterType="aero.cubox.core.vo.EmpVO" resultType="int">
+        select
+        count(*)
+        from	T_EMP
+        where
+        1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword1)'>
+            AND (instt_nm like CONCAT('%',#{keyword1},'%') OR dept_nm like CONCAT('%',#{keyword1},'%'))
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword2)'>
+            AND (emp_cd = #{keyword2} OR emp_nm like CONCAT('%',#{keyword2},'%'))
+        </if>
+    </select>
+
+    <select id="getDeptList" parameterType="aero.cubox.core.vo.DeptVO" resultType="aero.cubox.core.vo.DeptVO">
+        select
+        id as id
+        ,dept_cd as deptCd
+        ,dept_nm as deptNm
+        ,instt_cd as insttCd
+        ,instt_nm as insttNm
+        ,DATE_FORMAT(created_at, '%Y-%m-%d') as createdAt
+        ,DATE_FORMAT(updated_at, '%Y-%m-%d') as updatedAt
+        from	T_DEPT
+        where
+        1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            AND (instt_nm like CONCAT('%',#{keyword},'%') OR dept_nm like CONCAT('%',#{keyword},'%'))
+        </if>
+
+        limit	#{srchCnt} offset #{offset}
+    </select>
+
+    <select id="getDeptListCount" parameterType="aero.cubox.core.vo.DeptVO" resultType="int">
+        select
+        count(*)
+        from	T_DEPT
+        where
+        1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            AND (instt_nm like CONCAT('%',#{keyword},'%') OR dept_nm like CONCAT('%',#{keyword},'%'))
+        </if>
+    </select>
+
+    <select id="getAuthList" parameterType="aero.cubox.core.vo.AuthVO" resultType="aero.cubox.core.vo.AuthVO">
+        select
+        id as id
+        ,auth_nm as authNm
+        ,auth_typ as authTyp
+        ,(SELECT cd_nm FROM T_CMMN_CD WHERE cd_typ = 'AuthTyp' AND cd = auth_typ) as authTypNm
+        ,dept_auth_yn as deptAuthYn
+        ,dept_cd as deptCd
+        ,(SELECT COUNT(*) FROM T_EMP_AUTH WHERE auth_id = id) as authEmpCnt
+        ,use_yn as useYn
+        ,DATE_FORMAT(created_at, '%Y-%m-%d') as createdAt
+        ,DATE_FORMAT(update_at, '%Y-%m-%d') as updatedAt
+        from	T_AUTH
+        where
+        1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond)'>
+            AND auth_typ = #{srchCond}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            AND auth_nm like CONCAT('%',#{keyword},'%')
+        </if>
+
+        limit	#{srchCnt} offset #{offset}
+    </select>
+
+    <select id="getAuthListCount" parameterType="aero.cubox.core.vo.AuthVO" resultType="int">
+        select
+        count(*)
+        from	T_AUTH
+        where
+        1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond)'>
+            AND auth_typ = #{srchCond}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            AND auth_nm like CONCAT('%',#{keyword},'%')
+        </if>
+    </select>
+
+    <select id="getEmpDetail" parameterType="int" resultType = "HashMap">
+        select
+            id as id
+             ,emp_nm as empNm
+             ,emp_cd as empCd
+             ,dept_cd as deptCd
+             ,dept_nm as deptNm
+             ,instt_cd as insttCd
+             ,instt_nm as insttNm
+             ,belong_nm as belongNm
+             ,expired_dt as expiredDt
+        from
+            T_EMP
+        where
+            id = #{id}
+    </select>
+
+    <select id="getDoorDetail" parameterType="int" resultType = "HashMap">
+        select
+            id as id
+             ,auth_nm as authNm
+             ,auth_typ as authTyp
+             ,use_yn as useYn
+        from
+            T_AUTH
+        where
+            id = #{id}
+    </select>
+
+    <select id="getAuthBuildingItem" parameterType="int" resultType = "HashMap">
+        SELECT
+            TAB.auth_id as id
+             , TB.building_nm as itemNm
+        FROM
+            T_AUTH_BUILDING TAB
+                JOIN
+            T_BUILDING TB ON TAB.building_id = TB.id
+        WHERE
+            TAB.auth_id = #{id}
+    </select>
+
+    <select id="getAuthDoorGrpItem" parameterType="int" resultType = "HashMap">
+        SELECT
+            TADG.auth_id as id
+             , TDG.nm as itemNm
+        FROM
+            T_AUTH_DOORGRP TADG
+                JOIN
+            T_DOORGRP TDG ON TADG.doorgrp_id = TDG.id
+        WHERE
+            TADG.auth_id = #{id}
+    </select>
+
+    <select id="getAuthDoorItem" parameterType="int" resultType = "HashMap">
+        SELECT
+            TAD.auth_id as id
+             , TD.door_nm as itemNm
+        FROM
+            T_AUTH_DOOR TAD
+                JOIN
+            T_DOOR TD ON TAD.door_id = TD.id
+        WHERE
+            TAD.auth_id = #{id}
+    </select>
+
+    <select id="getAuthEntMyList" parameterType="int" resultType="HashMap">
+        SELECT
+            TA.id as authId,
+            TA.auth_nm as authNm,
+            TEA.emp_id as empId
+        FROM
+            T_EMP_AUTH TEA
+                JOIN
+            T_AUTH TA ON TEA.auth_id = TA.id
+        WHERE
+            TEA.emp_id = #{id}
+    </select>
+
+    <select id="getAuthEntAllList" resultType="HashMap">
+        SELECT
+            id as authId,
+            auth_nm as authNm
+        FROM
+            T_AUTH
+    </select>
+
+    <select id="getBuildingList" resultType="HashMap">
+        SELECT
+            id as id,
+            building_nm as buildingNm
+        FROM
+            T_BUILDING
+        WHERE
+            workplace_id = 1
+    </select>
+
+    <select id="getDoorGrpList" resultType="HashMap">
+        SELECT
+        id as id,
+        nm as doorGrpNm,
+        (SELECT COUNT(*) FROM T_DOORGRP_DOOR WHERE doorgrp_id = id) as doorCnt
+        FROM
+        T_DOORGRP
+        WHERE
+        1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            AND nm like CONCAT('%',#{keyword},'%')
+        </if>
+    </select>
+
+    <select id="getDoorList" parameterType="int" resultType="HashMap">
+        SELECT
+            TDD.doorgrp_id AS id,
+            TD.door_nm AS doorNm
+        FROM
+            T_DOORGRP_DOOR TDD
+                JOIN
+            T_DOOR TD ON TDD.door_id = TD.id
+        WHERE
+            TDD.doorgrp_id = #{id}
+    </select>
+
+    <update id="modifyEmp" parameterType="HashMap" >
+
+    </update>
+
+    <update id="modifyDoor" parameterType="HashMap" >
+        UPDATE
+            T_AUTH
+        SET
+            auth_nm = #{authNm},
+            use_yn = #{useYn},
+            update_at = NOW()
+        WHERE
+            id = #{id}
+    </update>
+
+    <delete id="deleteEmp" parameterType="HashMap">
+        DELETE FROM T_EMP
+        WHERE
+            id = #{id}
+    </delete>
+
+    <delete id="delAuthEmp" parameterType="HashMap">
+        DELETE FROM T_EMP_AUTH
+        WHERE
+            emp_id = #{id}
+    </delete>
+
+    <insert id="addAuthEmp" parameterType="HashMap">
+        INSERT INTO T_EMP_AUTH(
+            emp_id,
+            auth_id,
+            created_at
+        )VALUES(
+                   #{id},
+                   #{authId},
+                   NOW()
+               )
+    </insert>
+
+    <insert id="addAuth" parameterType="HashMap" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO T_AUTH(
+            auth_nm,
+            auth_typ,
+            dept_auth_yn,
+            dept_cd,
+            use_yn,
+            created_at
+        )VALUES(
+                   #{authNm},
+                   #{rdoAuthTyp},
+                   #{deptAuthYn},
+                   #{deptCd},
+                   #{useYn},
+                   NOW()
+               )
+    </insert>
+
+    <insert id="addAuthBuilding" parameterType="HashMap">
+        INSERT INTO T_AUTH_BUILDING(
+            auth_id,
+            building_id,
+            created_at
+        )VALUES(
+                   #{id},
+                   #{item},
+                   NOW()
+               )
+    </insert>
+
+    <insert id="addAuthDoorGrp" parameterType="HashMap">
+        INSERT INTO T_AUTH_DOORGRP(
+            auth_id,
+            doorgrp_id,
+            created_at
+        )VALUES(
+                   #{id},
+                   #{item},
+                   NOW()
+               )
+    </insert>
+
+</mapper>
