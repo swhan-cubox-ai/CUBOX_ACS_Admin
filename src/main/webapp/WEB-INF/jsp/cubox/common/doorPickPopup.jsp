@@ -19,23 +19,17 @@
 
         // 출입문 추가
         $("#add_door").click(function () {
-            let nodeSel = $(".nodeSel").children(); // span
-            let path = nodeSel.attr("value");  // TODO : value 대신 이름을 넣어줘야함
-            console.log(path);
-            console.log(nodeSel.html()); // door name
-
+            let nodeSel = $(".nodeSel").html();
             let doorSelected = $("#doorSelected").children();
 
             // 이미 같은 출입문 있을 경우 return
             for (let i = 1; i < doorSelected.length; i++) {
-
-                let doorPath = doorSelected.eq(i).children().last().html().replaceAll("&gt;", ">");
-                if (doorPath == path) { // TODO : id로 비교?
+                let doorPath = doorSelected.eq(i).children().last().html();
+                if (doorPath == nodeSel) {
                     return;
                 }
             }
-
-            let tag = "<tr><td><input type='checkbox' name='chkDoorConf'></td><td>" + path + "</td></tr>";
+            let tag = "<tr><td><input type='checkbox' name='chkDoorConf'></td><td>" + nodeSel + "</td></tr>";
             $("#doorSelected").append(tag);
         });
 
