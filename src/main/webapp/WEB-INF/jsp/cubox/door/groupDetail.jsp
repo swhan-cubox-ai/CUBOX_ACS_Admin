@@ -32,13 +32,38 @@
 <script type="text/javascript">
     $(function() {
         $(".title_tx").html("출입문 그룹 관리 - 상세");
+        $("#gpNm").focus();
+
         modalPopup("doorEditPopup", "출입문 선택", 900, 600);
+
+        // 출입문 그룹 명 유효성 체크
+        $("#gpNm").focusout(function() {
+            console.log("이름 input을 벗어남");
+
+            // TODO : 출입문 그룹 명 유효성 체크 (ajax)
+        });
     });
 
-    // 등록 버튼
-    function fnAdd() {
-        fnCancel();
-        // TODO: 저장 ajax
+    // 출입문 저장, 등록
+    function fnSave() {
+        console.log("fnSave");
+        let gpNm = $("#gpNm").val();
+        let gpSchedule = $("#gpSchedule").val();
+        let gpDoor = $("#gpDoor").val();
+
+        // 입력값 유효성 체크
+        if (fnIsEmpty(gpNm)) {
+            alert("출입문 그룹 명을 입력해주세요.");
+            $("#gpNm").focus(); return;
+        } else if (fnIsEmpty(gpSchedule)) {
+            alert("출입문 스케쥴을 선택해주세요.");
+            $("#gpSchedule").focus(); return;
+        } else if (fnIsEmpty(gpDoor)) {
+            alert("출입문을 선택해주세요."); return;
+        }
+
+        // TODO : gpDoor 출입문 disabled 해제!
+        location.href = "/door/group/detail.do";
     }
 
     // 수정 취소
@@ -145,6 +170,6 @@
     <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
 </div>
 <div class="right_btn mt_20" id="btnboxEdit" style="display:none;">
-    <button class="btn_middle ml_5 color_basic" onclick="fnAdd();">등록</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnSave();">등록</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnCancel();">취소</button>
 </div>

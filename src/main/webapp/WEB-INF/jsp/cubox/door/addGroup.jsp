@@ -29,14 +29,13 @@
     #doorSelected tr th {
         text-align: center;
     }
-
 </style>
 
 <script type="text/javascript">
 
     const defaultTime = 60; // 기본 시간 설정
 
-    $(function() {
+    $(function () {
 
         $(".title_tx").html("출입문 그룹 관리 - 등록");
         $("#gpNm").focus();
@@ -44,7 +43,7 @@
         modalPopup("doorEditPopup", "출입문 선택", 900, 600);
 
         // 출입문 그룹 명 유효성 체크
-        $("#gpNm").focusout(function() {
+        $("#gpNm").focusout(function () {
             console.log("이름 input을 벗어남");
 
             // TODO : 출입문 그룹 명 유효성 체크 (ajax)
@@ -62,23 +61,20 @@
         // 입력값 유효성 체크
         if (fnIsEmpty(gpNm)) {
             alert("출입문 그룹 명을 입력해주세요.");
-            $("#gpNm").focus(); return;
+            $("#gpNm").focus();
+            return;
         } else if (fnIsEmpty(gpSchedule)) {
             alert("출입문 스케쥴을 선택해주세요.");
-            $("#gpSchedule").focus(); return;
+            $("#gpSchedule").focus();
+            return;
         } else if (fnIsEmpty(gpDoor)) {
-            alert("출입문을 선택해주세요."); return;
+            alert("출입문을 선택해주세요.");
+            return;
         }
 
         // TODO : gpDoor 출입문 disabled 해제!
         location.href = "/door/group/detail.do";
 
-    }
-
-    // 출입문 선택
-    function selectDoor(self) {
-        let door = $(self);
-        console.log("selectDoor");
     }
 
     // popup open (공통)
@@ -93,7 +89,7 @@
     function closePopup(popupNm) {
         let doorGroup = [];
 
-        $("input[name=chkDoorConf]").each(function(i) {
+        $("input[name=chkDoorConf]").each(function (i) {
             let chkDoor = $(this).closest("tr").children().eq(1).html().replaceAll("&gt;", ">");
             doorGroup.push(chkDoor);
         });
@@ -114,36 +110,23 @@
             <tr>
                 <th>출입문 그룹 명</th>
                 <td>
-                    <input type="text" id="gpNm" name="gpNm" maxlength="50" value="<c:if test="${editMode eq 'edit'}">3동 현관</c:if>" class="input_com w_600px">
+                    <input type="text" id="gpNm" name="gpNm" maxlength="50" value="" class="input_com w_600px">
                 </td>
             </tr>
             <tr>
                 <th>출입문 스케쥴</th>
                 <td>
-                <c:choose>
-                    <c:when test="${editMode eq 'edit'}">
-                        <select id="gpSchedule" name="gpSchedule" class="form-control input_com w_600px" value=${alType} style="padding-left:10px;">
-                            <option value="">선택</option>
-                            <option value="default" selected>3동 평일</option>
-                            <option value="setTime">3동 주말</option>
-                        </select>
-                    </c:when>
-                    <c:otherwise>
-                        <select id="gpSchedule" name="gpSchedule" class="form-control input_com w_600px" style="padding-left:10px;">
-                            <option value="" selected>선택</option>
-                            <option value="default">3동 평일</option>
-                            <option value="setTime">3동 주말</option>
-                        </select>
-                    </c:otherwise>
-                </c:choose>
+                    <select id="gpSchedule" name="gpSchedule" class="form-control input_com w_600px" style="padding-left:10px;">
+                        <option value="">선택</option>
+                        <option value="default" selected>3동 평일</option>
+                        <option value="setTime">3동 주말</option>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <th>출입문</th>
                 <td style="display: flex;">
-                    <textarea id="gpDoor" name="gpDoor" rows="10" cols="33" class="w_600px"
-                              style="border-color: #ccc; border-radius: 2px;
-                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:if test="${editMode eq 'edit'}">16동 현관</c:if></textarea>
+                    <textarea id="gpDoor" name="gpDoor" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px; font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:if test="${editMode eq 'edit'}">16동 현관</c:if></textarea>
                     <div class="ml_10" style="position: relative;">
                         <button type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px;" onclick="openPopup('doorEditPopup')">출입문 선택</button>
                     </div>
