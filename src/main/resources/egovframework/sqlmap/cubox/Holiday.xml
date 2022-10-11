@@ -17,11 +17,11 @@
         from	T_HOLIDAY
         where
             1=1
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(holidayTyp)'>
-            and holiday_typ = #{holidayTyp}
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond)'>
+            and holiday_typ = #{srchCond}
         </if>
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(holidayNm)'>
-            and holiday_nm like CONCAT('%',#{holidayNm},'%')
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            and holiday_nm like CONCAT('%',#{keyword},'%')
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(startDt) and @aero.cubox.util.CommonUtils@notEmpty(endDt)'>
             and holiday between #{startDt} and #{endDt}
@@ -36,11 +36,11 @@
         from	T_HOLIDAY
         where
             1=1
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(holidayTyp)'>
-            and holiday_typ = #{holidayTyp}
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond)'>
+            and holiday_typ = #{srchCond}
         </if>
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(holidayNm)'>
-            and holiday_nm like CONCAT('%',#{holidayNm},'%')
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            and holiday_nm like CONCAT('%',#{keyword},'%')
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(startDt) and @aero.cubox.util.CommonUtils@notEmpty(endDt)'>
             and holiday between #{startDt} and #{endDt}

@@ -8,6 +8,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
+<jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
 
 <style>
     .title_box {
@@ -37,59 +38,10 @@
 
     $(function() {
 
-        if (${editMode eq 'edit'}) {
-            $(".title_tx").html("출입문 그룹 관리 - 수정");
-        } else {
-            $(".title_tx").html("출입문 그룹 관리 - 등록");
-            $("#gpNm").focus();
-        }
+        $(".title_tx").html("출입문 그룹 관리 - 등록");
+        $("#gpNm").focus();
 
         modalPopup("doorEditPopup", "출입문 선택", 900, 600);
-
-        // dTree
-        let fnName = "selectDoor(this);";
-        createTree($("#treeDiv"), fnName);
-
-        // 출입문 추가
-        $("#add_door").click(function() {
-            let nodeSel = $(".nodeSel").children(); // span
-            let path = nodeSel.attr("value");
-            console.log(nodeSel.html()); // door name
-
-            let doorSelected = $("#doorSelected").children();
-
-            // 이미 같은 출입문 있을 경우 return
-            for (let i = 1; i < doorSelected.length; i++) {
-
-                let doorPath = doorSelected.eq(i).children().last().html().replaceAll("&gt;", ">");
-                if (doorPath == path) { // TODO : id로 비교?
-                    return;
-                }
-            }
-
-            let tag = "<tr><td><input type='checkbox' name='chkDoorConf'></td><td>" + path + "</td></tr>";
-            $("#doorSelected").append(tag);
-        });
-
-        // 출입문 삭제
-        $("#delete_door").click(function() {
-            let ckd = $("input[name=chkDoorConf]:checked").length;
-            for (let i = ckd -1; i > -1; i--) {
-                $("input[name=chkDoorConf]:checked").eq(i).closest("tr").remove();
-            }
-
-            if ($("#chkDoorConfAll").prop("checked")) {
-                $("#chkDoorConfAll").prop("checked", false);
-            }
-        });
-
-        $("#chkDoorConfAll").click(function() {
-            if ($("#chkDoorConfAll").prop("checked")) {
-                $("input[name=chkDoorConf]").prop("checked", true);
-            } else {
-                $("input[name=chkDoorConf]").prop("checked", false);
-            }
-        });
 
         // 출입문 그룹 명 유효성 체크
         $("#gpNm").focusout(function() {
@@ -100,20 +52,12 @@
 
     });
 
-    // 수정 버튼
-    function fnEdit() {
-        f = document.detailForm;
-        f.action = "/door/group/add.do";
-        f.submit();
-    }
-
     // 출입문 저장, 등록
     function fnSave() {
         console.log("fnSave");
         let gpNm = $("#gpNm").val();
         let gpSchedule = $("#gpSchedule").val();
         let gpDoor = $("#gpDoor").val();
-        console.log(gpNm);
 
         // 입력값 유효성 체크
         if (fnIsEmpty(gpNm)) {
@@ -123,8 +67,7 @@
             alert("출입문 스케쥴을 선택해주세요.");
             $("#gpSchedule").focus(); return;
         } else if (fnIsEmpty(gpDoor)) {
-            alert("출입문을 선택해주세요.");
-            return;
+            alert("출입문을 선택해주세요."); return;
         }
 
         // TODO : gpDoor 출입문 disabled 해제!
@@ -135,12 +78,15 @@
     // 출입문 선택
     function selectDoor(self) {
         let door = $(self);
-        console.log(door.attr("value"));
+        console.log("selectDoor");
     }
 
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
+        if (popupNm === "doorEditPopup") {
+            fnGetDoorListAjax(); //출입문 목록
+        }
     }
 
     // popup close (공통)
@@ -158,7 +104,6 @@
 
 </script>
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
-    <input type="hidden" id="editMode" name="editMode" value="edit"/>
     <div class="tb_01_box">
         <table class="tb_write_02 tb_write_p1 box">
             <colgroup>
@@ -210,66 +155,8 @@
 </form>
 
 <div class="right_btn mt_20">
-    <button class="btn_middle ml_5 color_basic" onClick="fnSave();">등록</button>
-    <button class="btn_middle ml_5 color_basic" onClick="location='/door/group/listView.do'">취소</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnSave();">등록</button>
+    <button class="btn_middle ml_5 color_basic" onclick="location='/door/group/listView.do'">취소</button>
 </div>
 
 
-<%--  출입문 선택 modal  --%>
-<div id="doorEditPopup" class="example_content" style="display: none;">
-    <div class="popup_box box_w3">
-        <div style="width:45%;">
-            <div class="com_box" style="border: 1px solid black; background-color: white; overflow: auto; height: 400px; padding: 2px 10px;">
-                <div id="treeDiv"></div>
-            </div>
-        </div>
-
-        <%--  화살표 이동  --%>
-        <div style="height: 400px; display: flex; justify-content: center; flex-wrap: wrap; flex-direction: column; align-items: center;">
-            <div class="btn_box" style="margin:5px 0;">
-                <img src="/img/ar_r.png" alt="" id="add_door"/>
-            </div>
-            <div class="btn_box" style="margin:5px 0;">
-                <img src="/img/ar_l.png" alt="" id="delete_door"/>
-            </div>
-        </div>
-        <%--  end of 화살표 이동  --%>
-
-        <%--  테이블  --%>
-        <div style="width:45%;">
-            <div class="com_box" style="border: 1px solid black; background-color: white; overflow: auto; height: 400px;">
-                <table class="tb_list tb_write_02 tb_write_p1">
-                    <colgroup>
-                        <col style="width:10%">
-                        <col style="width:90%">
-                    </colgroup>
-                    <tbody id="doorSelected">
-                    <tr>
-                        <th><input type="checkbox" id="chkDoorConfAll"></th>
-                        <th>출입문</th>
-                    </tr>
-                    <c:if test="${editMode eq 'edit'}">${schName}
-                        <tr>
-                            <td><input type="checkbox" name="chkDoorConf"></td>
-                            <td>12동 > C구역 > 1층 > 현관 출입문</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" name="chkDoorConf"></td>
-                            <td>12동 > D구역 > 2층 > 계단</td>
-                        </tr>
-                    </c:if>
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <%--  end of 테이블  --%>
-
-        <div class="c_btnbox center mt_30">
-            <div style="display: inline-block;">
-                <button type="button" class="comm_btn mr_20" onclick="closePopup('doorEditPopup');">확인</button>
-            </div>
-        </div>
-    </div>
-</div>
-<%--  end of 출입문 선택 modal  --%>

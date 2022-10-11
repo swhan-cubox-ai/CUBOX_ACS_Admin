@@ -25,31 +25,17 @@
         $(".title_tx").html("출입문 알람 그룹 - 목록");
     });
 
-    // 출입문 신규 등록
-    function createAlarm() {
-        f = document.frmSearch;
-        f.action = "/door/alarmGroup/add.do";
-        f.submit();
-    }
-
     function fnDetail(self) {
-        console.log(self); // 추후에 정보 넘김
-        f = document.frmSearch;
-        f.action = "/door/alarmGroup/detail.do";
-        f.submit();
+        location.href = "/door/alarmGroup/detail.do";
     }
 </script>
 
 <%--  검색 박스 --%>
-<form id="frmSearch" name="frmSearch" method="post" onsubmit="return false;">
-    <input type="hidden" id="editMode" name="editMode" value="add"/>
-</form>
-
-<form id="frmSchedule" name="frmSchedule" method="post">
+<form id="frmAlarmGroup" name="frmAlarmGroup" method="post">
     <div class="search_box mb_20 mt_20" style="width: 40%;">
         <div class="search_in" style="width: 100%;">
             <div class="comm_search ml_10 mr_10" style="width: 90%;">
-                <input type="text" class="input_com" id="srchGate" name="srchGate" value="" placeholder="출입문 스케쥴 명"/>
+                <input type="text" class="input_com" id="srchAlarmGroup" name="srchAlarmGroup" value="" placeholder="출입문 알람그룹 명"/>
             </div>
             <div class="comm_search ml_40">
                 <%--                <div class="search_btn2" onclick="pageSearch('1')"></div>--%>
@@ -63,7 +49,7 @@
             <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="openExcelDownload();">엑셀다운로드</button>
         </div>
         <div class="r_btnbox ml_10 mb_10">
-            <button type="button" class="btn_excel" data-toggle="modal" onclick="createAlarm();">신규등록</button>
+            <button type="button" class="btn_excel" data-toggle="modal" onclick="location='/door/alarmGroup/add.do'">신규등록</button>
         </div>
     </div>
     <%--  end of 검색 박스 --%>

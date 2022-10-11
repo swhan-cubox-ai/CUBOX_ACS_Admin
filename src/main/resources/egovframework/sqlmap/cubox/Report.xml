@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="report">
+
+    <select id="getEntHistList" parameterType="aero.cubox.core.vo.EntHistVO" resultType="aero.cubox.core.vo.EntHistVO">
+        SELECT
+            evt_dt AS evtDt,
+            ent_evt_typ AS entEvtTyp,
+            (SELECT cd_nm from T_CMMN_CD WHERE cd_typ = 'EntEvtTyp' AND cd = ent_evt_typ) AS entEvtTypNm,
+            terminal_cd AS terminalCd,
+            model_nm AS modelNm,
+            mgmt_num AS mgmtNum,
+            ip_addr AS ipAddr,
+            complex_auth_typ AS complexAuthTyp,
+            door_nm AS doorNm,
+            building_nm AS buildingNm,
+            emp_nm AS empNm,
+            emp_no AS empNo,
+            dept_cd AS deptCd,
+            dept_nm AS deptNm,
+            belong_nm AS belongNm,
+            ent_face_img AS entFaceImg
+        FROM
+            T_ENT_HIST
+        where
+            1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond1)'>
+            and ent_evt_typ = #{srchCond1}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(fromDt) and @aero.cubox.util.CommonUtils@notEmpty(toDt)'>
+            and evt_dt between #{fromDt} and #{toDt}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
+            and building_id = #{srchCond2}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            and emp_nm like CONCAT('%',#{keyword},'%')
+        </if>
+
+        limit	#{srchCnt} offset #{offset}
+    </select>
+
+    <select id="getEntHistListCount" parameterType="aero.cubox.core.vo.EntHistVO" resultType="int">
+        select
+           count(*)
+        from	T_ENT_HIST
+        where
+            1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond1)'>
+            and ent_evt_typ = #{srchCond1}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(fromDt) and @aero.cubox.util.CommonUtils@notEmpty(toDt)'>
+            and evt_dt between #{fromDt} and #{toDt}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
+            and building_id = #{srchCond2}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            and emp_nm like CONCAT('%',#{keyword},'%')
+        </if>
+    </select>
+
+    <select id="getAlarmHistList" parameterType="aero.cubox.core.vo.AlarmHistVO" resultType="aero.cubox.core.vo.AlarmHistVO">
+        SELECT
+        evt_dt AS evtDt,
+        door_alarm_typ AS doorAlarmTyp,
+        (SELECT cd_nm from T_CMMN_CD WHERE cd_typ = 'DoorAlarmTyp' AND cd = door_alarm_typ) AS doorAlarmTypNm,
+        terminal_id AS terminalId,
+        terminal_cd AS terminalCd,
+        terminal_typ AS terminalTyp,
+        ip_addr AS ipAddr,
+        model_nm AS modelNm,
+        mgmt_num AS mgmtNum,
+        complex_auth_typ AS complexAuthTyp,
+        (SELECT cd_nm from T_CMMN_CD WHERE cd_typ = 'ComplexAuthTyp' AND cd = complexAuthTyp) AS complexAuthTypNm,
+        door_id AS doorId,
+        door_nm AS doorNm,
+        building_id AS buildingId,
+        building_nm AS buildingNm,
+        created_at AS createdAt
+        FROM
+        T_DOORALARM_HIST
+        where
+        1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond)'>
+            and door_alarm_typ = #{srchCond}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(fromDt) and @aero.cubox.util.CommonUtils@notEmpty(toDt)'>
+            and evt_dt between #{fromDt} and #{toDt}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            and door_nm like CONCAT('%',#{keyword},'%')
+        </if>
+
+        limit	#{srchCnt} offset #{offset}
+    </select>
+
+    <select id="getAlarmHistListCount" parameterType="aero.cubox.core.vo.AlarmHistVO" resultType="int">
+        select
+        count(*)
+        from	T_DOORALARM_HIST
+        where
+        1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond)'>
+            and door_alarm_typ = #{srchCond}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(fromDt) and @aero.cubox.util.CommonUtils@notEmpty(toDt)'>
+            and evt_dt between #{fromDt} and #{toDt}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            and door_nm like CONCAT('%',#{keyword},'%')
+        </if>
+    </select>
+
+    <select id="getDoorDetail" parameterType="Map" resultType="Map">
+        SELECT
+            TB.building_nm as buildingNm,
+            TA.area_nm as areaNm,
+            TF.floor_nm as floorNm,
+            TD.door_nm as doorNm
+        FROM
+            T_DOOR TD
+                LEFT OUTER JOIN
+            T_BUILDING TB ON TD.building_id = TB.id
+                LEFT OUTER JOIN
+            T_FLOOR TF ON TD.floor_id = TF.id
+                LEFT OUTER JOIN
+            T_AREA TA ON TD.area_id = TA.id
+        WHERE
+            TD.id = #{doorId}
+    </select>
+</mapper>

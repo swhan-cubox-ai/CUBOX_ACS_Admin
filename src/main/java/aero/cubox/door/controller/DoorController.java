@@ -254,19 +254,14 @@ public class DoorController {
     @RequestMapping(value="/group/detail.do")
     public String groupDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
-        HashMap doorGroupDetail = doorService.getDoorGroupDetail(commandMap);
+//        HashMap doorGroupDetail = doorService.getDoorGroupDetail(commandMap);
 
         return "cubox/door/groupDetail";
     }
 
     // 출입문 그룹 관리 등록/수정
-    @RequestMapping(value = "/group/add.do")
+    @RequestMapping(value = "/group/add.do", method= RequestMethod.GET)
     public String groupAdd(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
-
-        if (commandMap.get("editMode").equals("edit")) {
-
-        }
-        model.addAttribute("editMode", commandMap.get("editMode"));
 
         return "cubox/door/addGroup";
     }
@@ -318,20 +313,12 @@ public class DoorController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/schedule/add.do")
+    @RequestMapping(value = "/schedule/add.do", method= RequestMethod.GET)
     public String scheduleAdd(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
-        if (commandMap.get("editMode").equals("edit")) {
-            model.addAttribute("schName", commandMap.get("schName"));
-            model.addAttribute("schUseYn", commandMap.get("schUseYn"));
-            model.addAttribute("gateGroup", commandMap.get("gateGroup"));
-        }
-        model.addAttribute("editMode", commandMap.get("editMode"));
-
-        LOGGER.debug("editMode : " + model.get("editMode"));
-        LOGGER.debug("schName : " + model.get("schName"));
         return "cubox/door/scheduleAdd";
     }
+
 
     /**
      * 스케줄 목록 상세
@@ -344,11 +331,6 @@ public class DoorController {
     @RequestMapping(value="/schedule/detail.do")
     public String showScheduleDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
-        String[] days = {"월", "화", "수", "목", "금", "토", "일"};
-        String[] days_eng = {"mon", "tue", "wed", "thu", "fri", "sat", "sun"};
-
-        model.addAttribute("days", days);
-        model.addAttribute("days_eng", days_eng);
         return "cubox/door/scheduleDetail";
     }
 
@@ -394,17 +376,8 @@ public class DoorController {
     }
 
     // 출입문 알람 그룹 등록
-    @RequestMapping(value = "/alarmGroup/add.do")
+    @RequestMapping(value = "/alarmGroup/add.do", method= RequestMethod.GET)
     public String alarmAdd(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
-
-        if (commandMap.get("editMode").equals("edit")) {
-            model.addAttribute("alNm", commandMap.get("alNm"));
-            model.addAttribute("alType", commandMap.get("alType"));
-            model.addAttribute("alTime", commandMap.get("alTime"));
-            model.addAttribute("alUseYn", commandMap.get("alUseYn"));
-            model.addAttribute("alDoorCnt", commandMap.get("alDoorCnt"));
-        }
-        model.addAttribute("editMode", commandMap.get("editMode"));
 
         return "cubox/door/addAlarm";
     }

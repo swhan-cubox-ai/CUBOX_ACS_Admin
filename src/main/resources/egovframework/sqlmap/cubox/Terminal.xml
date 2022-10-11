@@ -211,7 +211,7 @@
 
     <select id="getBlackList" parameterType="Map" resultType="Map">
         SELECT
-            TE.id AS id, TE.emp_no AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
+            TE.id AS id, TE.emp_cd AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
         FROM
             T_WB_LIST TB
                 JOIN
@@ -224,7 +224,7 @@
 
     <select id="getWhiteList" parameterType="Map" resultType="Map">
         SELECT
-            TE.id AS id, TE.emp_no AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
+            TE.id AS id, TE.emp_cd AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
         FROM
             T_WB_LIST TW
                 JOIN
@@ -238,7 +238,7 @@
 
     <select id="getEmpSourceList" parameterType="Map" resultType="Map">
         SELECT
-            TE.id AS id, TE.emp_no AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
+            TE.id AS id, TE.emp_cd AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
         FROM
             T_EMP TE
                 LEFT OUTER JOIN
@@ -251,13 +251,13 @@
             AND (TE.belong_nm like CONCAT('%',#{keyword1},'%') OR TE.dept_nm like CONCAT('%',#{keyword1},'%'))
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword2)'>
-            AND (TE.emp_no = #{keyword2} OR TE.emp_nm like CONCAT('%',#{keyword2},'%'))
+            AND (TE.emp_cd = #{keyword2} OR TE.emp_nm like CONCAT('%',#{keyword2},'%'))
         </if>
     </select>
 
     <select id="getEmpTargetList" parameterType="Map" resultType="Map">
         SELECT
-            TE.id AS id, TE.emp_no AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
+            TE.id AS id, TE.emp_cd AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
         FROM
             T_EMP TE
                 LEFT OUTER JOIN
@@ -270,7 +270,7 @@
 
     <select id="getEmpListForWhite" parameterType="Map" resultType="Map">
         SELECT
-        TE.id AS id, TE.emp_no AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
+        TE.id AS id, TE.emp_cd AS empNo, TE.emp_nm AS empNm, TE.dept_nm AS deptNm, TE.belong_nm AS belongNm
         FROM
         T_EMP TE
         LEFT OUTER JOIN
@@ -282,7 +282,7 @@
             and (TE.belong_nm like CONCAT('%',#{keyword1},'%') or TE.dept_nm like CONCAT('%',#{keyword1},'%'))
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword2)'>
-            and (TE.emp_no = #{keyword2} or TE.emp_nm like CONCAT('%',#{keyword2},'%'))
+            and (TE.emp_cd = #{keyword2} or TE.emp_nm like CONCAT('%',#{keyword2},'%'))
         </if>
 
     </select>

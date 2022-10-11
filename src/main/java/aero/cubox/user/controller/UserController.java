@@ -4,6 +4,7 @@ import aero.cubox.cmmn.service.CommonService;
 //import aero.cubox.core.vo.LoginVO;
 import aero.cubox.core.vo.*;
 import aero.cubox.menu.service.MenuService;
+import aero.cubox.menuAuth.service.MenuAuthService;
 import aero.cubox.user.service.UserService;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
@@ -33,6 +34,9 @@ public class UserController {
 
 	@Resource(name = "MenuService")
 	private MenuService menuService;
+
+	@Resource(name = "menuAuthService")
+	private MenuAuthService menuAuthService;
 
 	@Resource(name = "userService")
 	private UserService userService;
@@ -223,6 +227,63 @@ public class UserController {
 		return modelAndView;
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/user/getUserAuthList.do")
+	public ModelAndView getUserAuthList(HttpServletRequest request, @RequestParam HashMap<String, Object> param) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+
+		try {
+			List<MenuAuthVO> list = menuAuthService.getUserAuthList(param);
+
+			modelAndView.addObject("list", list);
+
+		} catch(Exception e) {
+			e.printStackTrace();
+			modelAndView.addObject("message", e.getMessage());
+		}
+
+		return modelAndView;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/user/getRoleList.do")
+	public ModelAndView getRoleList(HttpServletRequest request, @RequestParam HashMap<String, Object> param) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+
+		try {
+			List<MenuAuthVO> list = menuAuthService.getRoleList();
+
+			modelAndView.addObject("list", list);
+
+		} catch(Exception e) {
+			e.printStackTrace();
+			modelAndView.addObject("message", e.getMessage());
+		}
+
+		return modelAndView;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/user/getUserRoleList.do")
+	public ModelAndView getUserRoleList(HttpServletRequest request, @RequestParam HashMap<String, Object> param) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+
+		try {
+			List<MenuAuthVO> list1 = menuAuthService.getRoleList();
+			List<MenuAuthVO> list2 = menuAuthService.getRoleListByUser(param);
+
+			modelAndView.addObject("list1", list1);
+			modelAndView.addObject("list2", list2);
+		} catch(Exception e) {
+			e.printStackTrace();
+			modelAndView.addObject("message", e.getMessage());
+		}
+
+		return modelAndView;
+	}
 
 	@ResponseBody
 	@RequestMapping(value="/user/modifyUser.do")
@@ -238,6 +299,21 @@ public class UserController {
 			String activeYn = (String) param.get("activeYn");
 			String roleStr = (String) param.get("roleStr");
 			String isModRole = (String) param.get("isModRole");
+
+			//권한목록 저장여부 체크 후 저장처리..
+			if("Y".equals(isModRole)){
+				String[] roleArray =roleStr.split(",");
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("userId", userId);
+
+				menuAuthService.delUserRole(map);
+				if(!"nan".equals(roleStr)){
+					for(int i=0;i<roleArray.length;i++){
+						map.put("roleId", roleArray[i]);
+						menuAuthService.addUserRole(map);
+					}
+				}
+			}
 
 			UserVO userVO = new UserVO();
 			userVO.setId(Integer.parseInt(userId));
@@ -285,6 +361,18 @@ public class UserController {
 			userService.addUser(userVO);
 
 			int userId = userService.getUserId(userVO);
+
+			//권한목록 저장여부 체크 후 저장처리..
+			if("Y".equals(isAddRole)){
+				String[] roleArray =roleStr.split(",");
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("userId", userId);
+
+				for(int i=0;i<roleArray.length;i++){
+					map.put("roleId", roleArray[i]);
+					menuAuthService.addUserRole(map);
+				}
+			}
 
 		}catch (Exception e){
 			e.printStackTrace();
