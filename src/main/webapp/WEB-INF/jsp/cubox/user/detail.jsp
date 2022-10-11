@@ -3,6 +3,43 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
+<style>
+    .layer {
+        position: fixed;
+        width: 40%;
+        left: 50%;
+        margin-left: -20%; /* half of width */
+        height: 400px;
+        top: 50%;
+        margin-top: -150px; /* half of height */
+        overflow: auto;
+
+        /* decoration */
+        border: 1px solid #000;
+        background-color: #eee;
+        padding: 1em;
+        box-sizing: border-box;
+        z-index: 2;
+    }
+
+    #userRoleDiv {
+        white-space: pre;
+        overflow-y: auto;
+        height: 250px;
+    }
+
+    @media (max-width: 600px) {
+        .layer {
+            width: 80%;
+            margin-left: -40%;
+        }
+    }
+    .hidden {
+        display: none;
+    }
+</style>
+
+
 <script type="text/javascript">
 
     $(function() {
@@ -14,6 +51,7 @@
             $(".title_tx").html("사용자 관리 - 상세");
         }
 
+        fnGetUserAuthList();
     });
 
     function fnCancel(){
@@ -34,6 +72,115 @@
             }
         })
     }
+
+    function fnClosePop(){
+        $("#roleListLayerPop").addClass("hidden");
+    }
+
+    function fnGetUserAuthList() {
+        var paramKey = $("#userId").val();
+
+        $.ajax({
+            type:"POST",
+            url:"/user/getUserAuthList.do",
+            data:{
+                "id": paramKey
+            },
+            dataType:'json',
+            //timeout:(1000*30),
+            success:function(returnData, status){
+                if(status == "success") {
+                    $("#userRoleListDiv").empty();
+
+                    var result = returnData.list;
+                    var str = '';
+
+                    $.each(result, function(i){
+                        str += $.trim(result[i].roleNm);
+                        str += '\n';
+                    });
+
+                    $("#userAuthListTxt").append(str);
+
+                }else{ alert("ERROR!");return;}
+            }
+        });
+    }
+
+    function fnGetRoleList() {
+        var param = $("#userId").val();
+
+        $.ajax({
+            type:"POST",
+            data:{"userId" : param},
+            url:"/user/getUserRoleList.do",
+            dataType:'json',
+            //timeout:(1000*30),
+            success:function(returnData, status){
+                if(status == "success") {
+                    $("#roleListDiv").empty();
+
+                    var result1 = returnData.list1;
+                    var result2 = returnData.list2;
+
+                    var str = '';
+
+                    $.each(result1, function(i){
+                        str += '<tr>';
+                        str += '<td><input type="checkbox" name="role" data="' + result1[i].roleNm + '" value="' + result1[i].id + '" ';
+                        $.each(result2, function (k){
+                            if(result1[i].id == result2[k].id){
+                                str += 'checked';
+                                return false;
+                            }
+                        });
+                        str += '/></td>';
+                        str += '<td>' + result1[i].roleNm + '</td>';
+                        str += '</tr>';
+                    });
+
+
+
+                    $("#roleListDiv").append(str);
+
+                    $("#roleListLayerPop").removeClass("hidden");
+
+                }else{ alert("ERROR!");return;}
+            }
+        });
+    }
+
+    function fnSavePop(){
+        var len = $("input[name='role']:checked").length;
+        var str1 = "";
+        var str2 = "";
+        var cnt = 0;
+
+        $("#isModRole").val("Y");
+
+        if(len > 0){
+            $("input[name='role']:checked").each(function(e){
+                cnt++;
+                str1 += $(this).val()
+                if(cnt < len) str1 += ",";
+
+                str2 += $.trim($(this).attr("data"));
+                str2 += '\n';
+
+            });
+            $("#roleStr").val(str1);
+
+            $("#userAuthListTxt").empty();
+            $("#userAuthListTxt").append(str2);
+        }else{
+            $("#roleStr").val("nan");
+            $("#userAuthListTxt").empty();
+        }
+
+        fnClosePop();
+    }
+
+
 
     function fnSave(){
         Swal.fire({
@@ -120,6 +267,9 @@
                 <div style="float:left;">
                     <textarea id="userAuthListTxt" name="userAuthListTxt" readonly="readonly" value="" placeholder="" rows="10" cols="50" style="border:1px solid #ccc;"></textarea>
                 </div>
+                <c:if test="${isModify}">
+                    <button type="button" class="btn_small color_basic ml_3" style="float:left;margin-left: 30px;" onclick="fnGetRoleList();">선택</button>
+                </c:if>
             </div>
 
 
@@ -139,3 +289,33 @@
     </div>
 </form>
 
+
+<!-- 사용자 권한 목록 레이어 팝업 -->
+<div id="roleListLayerPop" class="js-layer  layer  hidden">
+    <div class="com_box ">
+        <div class="txbox">
+            <b class="fl mr_10">권한목록 선택</b>
+        </div>
+        <!--테이블 시작 -->
+        <div class="tb_outbox" id="roleDiv">
+            <table class="tb_list" >
+                <colgroup>
+                    <col width="3%" />
+                    <col width="15%" />
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>선택</th>
+                    <th>권한명</th>
+                </tr>
+                </thead>
+                <tbody id="roleListDiv"></tbody>
+            </table>
+        </div>
+        <div style="margin-top:300px;text-align: center;">
+            <button type="button" class="btn_middle color_basic ml_5" onclick="fnSavePop()">확인</button>
+            <button type="button" class="btn_middle color_basic ml_5" onclick="fnClosePop()">취소</button>
+        </div>
+    </div>
+</div>
+<!-- /사용자 목록 레이어 팝업 -->
