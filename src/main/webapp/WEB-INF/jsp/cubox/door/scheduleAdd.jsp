@@ -8,7 +8,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
-<jsp:include page="/WEB-INF/jsp/cubox/common/doorGroupPick.jsp" flush="false"/>
+<jsp:include page="/WEB-INF/jsp/cubox/common/doorGroupPickPopup.jsp" flush="false"/>
 
 <style>
     .title_box {
@@ -32,20 +32,6 @@
         $(".title_tx").html("출입문 스케쥴 - 등록");
         modalPopup("doorGroupPickPopup", "출입문 그룹 선택", 910, 550);
     });
-
-    // 출입문그룹 선택 저장
-    // function fnGroupSave() {
-    //     var gateGroup = [];
-    //     $("input[name=chkGroupConf]").each(function(i) { // 체크된 것 말고 오른쪽 박스에 들어온 모든 항목
-    //         var auth = $(this).closest("tr").children().eq(1).html();
-    //         gateGroup.push(auth);
-    //     });
-    //     console.log(gateGroup);
-    //
-    //     // 권한그룹 textarea에 뿌려주기
-    //     $("#gateGroup").val(gateGroup.join("\r\n"));
-    //     closePopup("doorGroupPickPopup");
-    // }
 
     // 출입문 스케줄 등록 저장
     function fnAdd() {
@@ -107,18 +93,6 @@
 
     }
 
-    // function totalCheck() {
-    //     if ($("#totalGroupCheckAll").prop("checked")) {
-    //         $("#totalGroupCheckAll").prop("checked", false);
-    //     }
-    // }
-    //
-    // function userCheck() {
-    //     if ($("#userGroupCheckAll").prop("checked")) {
-    //         $("#userGroupCheckAll").prop("checked", false);
-    //     }
-    // }
-
     // popup open
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
@@ -135,7 +109,7 @@
 </script>
 
 <form id="addForm" name="addForm" method="post" enctype="multipart/form-data">
-    <input type="hidden" id="editMode" name="editMode" value="edit"/>
+<%--    <input type="hidden" id="editMode" name="editMode" value="edit"/>--%>
     <div class="tb_01_box">
         <table class="tb_write_02 tb_write_p1 box">
             <colgroup>

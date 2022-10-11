@@ -9,7 +9,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
-<jsp:include page="/WEB-INF/jsp/cubox/common/doorGroupPick.jsp" flush="false"/> <!-- 출입문 선택 popup -->
+<jsp:include page="/WEB-INF/jsp/cubox/common/doorGroupPickPopup.jsp" flush="false"/> <!-- 출입문 선택 popup -->
 
 <style>
     .title_box {
@@ -166,7 +166,6 @@
             alert("중복된 스케쥴이 존재합니다. 다시 선택해주세요.");
         }
     }
-
 
     // 이미 색칠되어 있는지 여부확인
     function ifValid(startId, endId, start, end, day, schNum) {
@@ -356,11 +355,7 @@
 
     // 수정 확인
     function fnAdd() {
-        $(".title_tx").html("출입문 스케쥴 - 상세");
-        $("#btnboxDetail").css("display", "block");
-        $("#btnboxEdit").css("display", "none");
-        $("#btnEdit").css("display", "none");
-        $("[name=detail]").attr("disabled", true);
+        fnCancel();
         // TODO: 저장 ajax
     }
 
@@ -393,7 +388,6 @@
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-        location.href = "";
 
         $.ajax({
             type: "post",
@@ -507,7 +501,7 @@
 </script>
 
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
-    <input type="hidden" id="editMode" name="editMode" value="edit"/>
+<%--    <input type="hidden" id="editMode" name="editMode" value="edit"/>--%>
     <div class="tb_01_box">
         <table class="tb_write_02 tb_write_p1 box">
             <colgroup>

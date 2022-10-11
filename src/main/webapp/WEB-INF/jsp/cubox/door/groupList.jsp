@@ -22,36 +22,29 @@
 <script type="text/javascript">
     $(function() {
         $(".title_tx").html("출입문 그룹 관리 - 목록");
+        fnGetList();
     });
 
-    // 출입문 신규 등록
-    function createGroup() {
-        f = document.frmSearch;
-        f.action = "/door/group/add.do";
-        f.submit();
-    }
-
     function fnDetail(self) {
-        console.log(self); // 추후에 정보 넘김
-        f = document.frmSearch;
-        f.action = "/door/group/detail.do";
-        f.submit();
+        console.log(self); // 추후에 정보 넘김(id)
+        location.href = "/door/group/detail.do";
     }
 
+    function fnGetList() {
+        $.ajax({
+            type : "GET",
+            data : {},
+            dataType : "json",
+            url : "<c:url value='/door/group/list.do' />",
+            success : function(result) {
+                console.log(result.doorGroupList);
+            }
+        });
 
-    function fnGetList(self) {
-        console.log(self); // 추후에 정보 넘김
-        f = document.frmSearch;
-        f.action = "/door/group/list.do";
-        f.submit();
     }
 </script>
 
 <%--  검색 박스 --%>
-<form id="frmSearch" name="frmSearch" method="post" onsubmit="return false;">
-    <input type="hidden" id="editMode" name="editMode" value="add"/>
-</form>
-
 <form id="frmSchedule" name="frmSchedule" method="post">
     <div class="search_box mb_20 mt_20" style="width: 40%;">
         <div class="search_in" style="width: 100%;">
@@ -70,7 +63,7 @@
             <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="openExcelDownload();">엑셀다운로드</button>
         </div>
         <div class="r_btnbox ml_10 mb_10">
-            <button type="button" class="btn_excel" data-toggle="modal" onclick="createGroup();">신규등록</button>
+            <button type="button" class="btn_excel" data-toggle="modal" onclick="location='/door/group/add.do'">신규등록</button>
         </div>
     </div>
     <%--  end of 검색 박스 --%>
