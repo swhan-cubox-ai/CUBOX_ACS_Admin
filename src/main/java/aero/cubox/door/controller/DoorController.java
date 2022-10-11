@@ -330,11 +330,6 @@ public class DoorController {
     @RequestMapping(value="/schedule/detail.do")
     public String showScheduleDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
-//        String[] days = {"월", "화", "수", "목", "금", "토", "일"};
-//        String[] days_eng = {"mon", "tue", "wed", "thu", "fri", "sat", "sun"};
-//
-//        model.addAttribute("days", days);
-//        model.addAttribute("days_eng", days_eng);
         return "cubox/door/scheduleDetail";
     }
 

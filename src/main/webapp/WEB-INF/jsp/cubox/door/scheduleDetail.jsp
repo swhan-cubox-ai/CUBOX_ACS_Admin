@@ -7,6 +7,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorGroupPickPopup.jsp" flush="false"/> <!-- 출입문 선택 popup -->
@@ -554,6 +555,8 @@
 
 <%--  요일 별 스케쥴 등록 modal  --%>
 <div id="addByDayPopup" class="example_content" style="display: none;">
+    <c:set var="days" value="${fn:split('월,화,수,목,금,토,일',',')}"/>
+    <c:set var="days_eng" value="${fn:split('mon,tue,wed,thu,fri,sat,sun',',')}"/>
     <div class="popup_box box_w3" style="margin-top:0px; padding:20px;">
         <%--  검색 박스 --%>
         <div class="search_box">
