@@ -17,10 +17,6 @@
 <script type="text/javascript">
     $(function () {
 
-        // dTree
-        let fnName = "selectDoor(this);";
-        createTree($("#treeDiv"), fnName);
-
         // 출입문 추가
         $("#add_door").click(function () {
             let nodeSel = $(".nodeSel").children(); // span
@@ -63,6 +59,26 @@
             }
         });
     });
+
+    /////////////////  출입문 목록 ajax - start  /////////////////////
+
+
+    function fnGetDoorListAjax() {
+        console.log( "fnGetDoorListAjax2");
+
+        $.ajax({
+            type : "GET",
+            data : { },
+            dataType : "json",
+            url : "<c:url value='/door/list.do' />",
+            success : function(result) {
+                console.log(result);
+                createTree(false, result, $("#treeDiv"));
+            }
+        });
+    }
+    /////////////////  출입문 목록 ajax - end  /////////////////////
+
 </script>
 
 <%--  출입문 선택 modal  --%>

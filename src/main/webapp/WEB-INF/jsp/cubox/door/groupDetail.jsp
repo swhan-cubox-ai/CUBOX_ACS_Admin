@@ -92,6 +92,9 @@
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
+        if (popupNm === "doorEditPopup") {
+            fnGetDoorListAjax(); //출입문 목록
+        }
     }
 
     // popup close (공통)
@@ -101,7 +104,6 @@
 
 </script>
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
-<%--    <input type="hidden" id="editMode" name="editMode" value="edit"/>--%>
     <div class="tb_01_box">
         <table class="tb_write_02 tb_write_p1 box">
             <colgroup>

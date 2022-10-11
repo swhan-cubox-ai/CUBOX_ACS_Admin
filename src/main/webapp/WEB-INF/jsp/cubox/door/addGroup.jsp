@@ -43,51 +43,6 @@
 
         modalPopup("doorEditPopup", "출입문 선택", 900, 600);
 
-        // // dTree
-        // let fnName = "selectDoor(this);";
-        // createTree($("#treeDiv"), fnName);
-        //
-        // // 출입문 추가
-        // $("#add_door").click(function() {
-        //     let nodeSel = $(".nodeSel").children(); // span
-        //     let path = nodeSel.attr("value");
-        //     console.log(nodeSel.html()); // door name
-        //
-        //     let doorSelected = $("#doorSelected").children();
-        //
-        //     // 이미 같은 출입문 있을 경우 return
-        //     for (let i = 1; i < doorSelected.length; i++) {
-        //
-        //         let doorPath = doorSelected.eq(i).children().last().html().replaceAll("&gt;", ">");
-        //         if (doorPath == path) { // TODO : id로 비교?
-        //             return;
-        //         }
-        //     }
-        //
-        //     let tag = "<tr><td><input type='checkbox' name='chkDoorConf'></td><td>" + path + "</td></tr>";
-        //     $("#doorSelected").append(tag);
-        // });
-        //
-        // // 출입문 삭제
-        // $("#delete_door").click(function() {
-        //     let ckd = $("input[name=chkDoorConf]:checked").length;
-        //     for (let i = ckd -1; i > -1; i--) {
-        //         $("input[name=chkDoorConf]:checked").eq(i).closest("tr").remove();
-        //     }
-        //
-        //     if ($("#chkDoorConfAll").prop("checked")) {
-        //         $("#chkDoorConfAll").prop("checked", false);
-        //     }
-        // });
-        //
-        // $("#chkDoorConfAll").click(function() {
-        //     if ($("#chkDoorConfAll").prop("checked")) {
-        //         $("input[name=chkDoorConf]").prop("checked", true);
-        //     } else {
-        //         $("input[name=chkDoorConf]").prop("checked", false);
-        //     }
-        // });
-
         // 출입문 그룹 명 유효성 체크
         $("#gpNm").focusout(function() {
             console.log("이름 input을 벗어남");
@@ -96,13 +51,6 @@
         });
 
     });
-
-    // 수정 버튼
-    // function fnEdit() {
-    //     f = document.detailForm;
-    //     f.action = "/door/group/add.do";
-    //     f.submit();
-    // }
 
     // 출입문 저장, 등록
     function fnSave() {
@@ -136,6 +84,9 @@
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
+        if (popupNm === "doorEditPopup") {
+            fnGetDoorListAjax(); //출입문 목록
+        }
     }
 
     // popup close (공통)

@@ -234,46 +234,91 @@ function fnvalichk (event) {
  *    // d.add(4, 0, '사업장 1_4', 'example.html', '', '', 'img/cd.gif');
  *    ////////////////////////////////////////////////////////////////////////////////
 **/
-
-function createTree(treeDiv, fnName) {
+function createTree(isMngmt, result, treeDiv) {
+	console.log("createTree");
 
 	d = new dTree('d'); //dtree선언
 
-	let data = [
-		{id : "root", pid : "-1", name : "세종청사", isLeaf : "false"},
-		{id : "node_1", pid : "root", name : "10동", isLeaf : "false"},
-		{id : "node_1_1", pid : "node_1", name : "A구역", isLeaf : "false"},
-		{id : "node_1_1_1", pid : "node_1_1", name : "1층", isLeaf : "false"},
-		{id : "node_1_1_1_1", pid : "node_1_1_1", name : '현관', isLeaf : "true"},
-		{id : "node_2", pid : "root", name : '11동', isLeaf : "false"},
-		{id : "node_2_1", pid : "node_2", name : 'A구역', isLeaf : "false"},
-		{id : "node_2_1_1", pid : "node_2_1", name : '1층', isLeaf : "false"},
-		{id : "node_2_1_1_1", pid : "node_2_1_1", name : '현관', isLeaf : "true"},
-		{id : "node_2_1_1_2", pid : "node_2_1_1", name : '계단', isLeaf : "true"},
-		{id : "node_2_1_2", pid : "node_2_1", name : '2층', isLeaf : "false"},
-		{id : "node_2_1_2_1", pid : "node_2_1_2", name : '계단', isLeaf : "true"},
-		{id : "node_2_2", pid : "node_2", name : 'B구역', isLeaf : "false"},
-		{id : "node_2_2_1", pid : "node_2_2", name : 'B1층', isLeaf : "false"},
-		{id : "node_2_2_1_1", pid : "node_2_2_1", name : '계단', isLeaf : "true"},
-		{id : "node_3", pid : "root", name : '12동', isLeaf : "false"},
-		{id : "node_3_1", pid : "node_3", name : 'A구역', isLeaf : "false"},
-		{id : "node_3_1_1", pid : "node_3_1", name : '1층', isLeaf : "false"},
-		{id : "node_3_1_1_1", pid : "node_3_1_1", name : '현관', isLeaf : "true"},
-		{id : "node_3_1_1_2", pid : "node_3_1_1", name : '계단', isLeaf : "true"},
-		{id : "node_3_1_1_3", pid : "node_3_1_1", name : '출입문', isLeaf : "true"},
-		{id : "node_3_1_1_4", pid : "node_3_1_1", name : '복도', isLeaf : "true"},
-	];
+	if(result.workplaceList.length > 0) {
+		console.log( "workplaceList>>");
+		$.each(result.workplaceList, function(i, workplace) {
+			d.add("w_" + workplace.id, -1, workplace.workplace_nm);
 
-	$.each(data, function () {
+			if(result.buildingList.length > 0) {
+				$.each(result.buildingList, function(j, building) {
+					if (building.workplace_id === workplace.id) {
+						d.add("b_" + building.id, "w_" + workplace.id, building.building_nm);
 
-		if (this.isLeaf === "false") {  				// endNode가 아닌 경우
-			d.add(this.id, this.pid, this.name);
-		} else {  										// endNode인 경우
-			d.add(this.id, this.pid, '<span onclick="' + fnName + '">'+ this.name +'</span>', "#");
-		}
-	});
+						if (result.doorList.length > 0) {
+							$.each(result.doorList, function(k, door) {
+								if (door.building_id === building.id) {
+									let tag = "";
+									if (isMngmt) { 	// 출입문관리일 경우
+										tag = '<span onclick="' + fnName + '">' + door.door_nm + '</span>';
+									} else {  // 그 외(그룹관리, 알람그룹)
+										tag = door.door_nm;
+									}
+									d.add("d_" + door.id, "b_" + building.id, tag, "#");
+								}
+							});
+						}
+					}
+				});
+			}
+		});
+	}
+
+	console.log( "buildingList>>");
+	if(result.buildingList.length > 0) {
+		$.each(result.buildingList, function(i){
+			console.log(result.buildingList[i].id +" / "+ result.buildingList[i].building_nm);
+		});
+	}
+
+	console.log( "doorList>>");
+	if(result.doorList.length > 0) {
+		$.each(result.doorList, function(i){
+			console.log(result.doorList[i].id +" / "+ result.doorList[i].door_nm);
+		});
+	}
 
 	treeDiv.html(d.toString());
 	d.openAll();
+
+	// let data = [
+	// 	{id : "root", pid : "-1", name : "세종청사", isLeaf : "false"},
+	// 	{id : "node_1", pid : "root", name : "10동", isLeaf : "false"},
+	// 	{id : "node_1_1", pid : "node_1", name : "A구역", isLeaf : "false"},
+	// 	{id : "node_1_1_1", pid : "node_1_1", name : "1층", isLeaf : "false"},
+	// 	{id : "node_1_1_1_1", pid : "node_1_1_1", name : '현관', isLeaf : "true"},
+	// 	{id : "node_2", pid : "root", name : '11동', isLeaf : "false"},
+	// 	{id : "node_2_1", pid : "node_2", name : 'A구역', isLeaf : "false"},
+	// 	{id : "node_2_1_1", pid : "node_2_1", name : '1층', isLeaf : "false"},
+	// 	{id : "node_2_1_1_1", pid : "node_2_1_1", name : '현관', isLeaf : "true"},
+	// 	{id : "node_2_1_1_2", pid : "node_2_1_1", name : '계단', isLeaf : "true"},
+	// 	{id : "node_2_1_2", pid : "node_2_1", name : '2층', isLeaf : "false"},
+	// 	{id : "node_2_1_2_1", pid : "node_2_1_2", name : '계단', isLeaf : "true"},
+	// 	{id : "node_2_2", pid : "node_2", name : 'B구역', isLeaf : "false"},
+	// 	{id : "node_2_2_1", pid : "node_2_2", name : 'B1층', isLeaf : "false"},
+	// 	{id : "node_2_2_1_1", pid : "node_2_2_1", name : '계단', isLeaf : "true"},
+	// 	{id : "node_3", pid : "root", name : '12동', isLeaf : "false"},
+	// 	{id : "node_3_1", pid : "node_3", name : 'A구역', isLeaf : "false"},
+	// 	{id : "node_3_1_1", pid : "node_3_1", name : '1층', isLeaf : "false"},
+	// 	{id : "node_3_1_1_1", pid : "node_3_1_1", name : '현관', isLeaf : "true"},
+	// 	{id : "node_3_1_1_2", pid : "node_3_1_1", name : '계단', isLeaf : "true"},
+	// 	{id : "node_3_1_1_3", pid : "node_3_1_1", name : '출입문', isLeaf : "true"},
+	// 	{id : "node_3_1_1_4", pid : "node_3_1_1", name : '복도', isLeaf : "true"},
+	// ];
+	//
+	// $.each(data, function () {
+	//
+	// 	if (this.isLeaf === "false") {  				// endNode가 아닌 경우
+	// 		d.add(this.id, this.pid, this.name);
+	// 	} else {  										// endNode인 경우
+	// 		d.add(this.id, this.pid, '<span onclick="' + fnName + '">'+ this.name +'</span>', "#");
+	// 	}
+	// });
+	//
+	// treeDiv.html(d.toString());
 
 }

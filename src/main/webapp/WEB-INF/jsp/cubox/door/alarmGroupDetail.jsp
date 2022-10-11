@@ -43,9 +43,6 @@
         modalPopup("doorListPopup", "출입문 목록", 450, 550);
         modalPopup("doorEditPopup", "출입문 수정", 900, 600);
 
-        // // dTree
-        let fnName = "selectDoor(this);";
-        createTree($("#treeDiv"), fnName);
         chkAlType();
 
         // 출입문 알람그룹 명 유효성 체크
@@ -129,11 +126,11 @@
     }
 
     // 출입문 선택
-    function selectDoor(self) {
-        let door = $(self);
-        console.log(door.html());
-        console.log(door.attr("value"));
-    }
+    // function selectDoor(self) {
+    //     let door = $(self);
+    //     console.log(door.html());
+    //     console.log(door.attr("value"));
+    // }
 
     // 삭제 버튼
     function fnDelete() {
@@ -152,6 +149,9 @@
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
+        if (popupNm === "doorEditPopup") {
+            fnGetDoorListAjax(); //출입문 목록
+        }
     }
 
     // popup close (공통)

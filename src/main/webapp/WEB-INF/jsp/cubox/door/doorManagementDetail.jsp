@@ -332,7 +332,7 @@
 
 
     function fnGetDoorListAjax() {
-        console.log( "fnGetDoorListAjax");
+        console.log( "fnGetDoorListAjax1");
 
         $.ajax({
             type : "GET",
@@ -340,48 +340,7 @@
             dataType : "json",
             url : "<c:url value='/door/list.do' />",
             success : function(result) {
-                d = new dTree('d');
-
-                if(result.workplaceList.length > 0) {
-                    console.log( "workplaceList>>");
-                    $.each(result.workplaceList, function(i, workplace) {
-                        d.add("w_" + workplace.id, -1, workplace.workplace_nm);
-
-                        if(result.buildingList.length > 0) {
-                            $.each(result.buildingList, function(j, building) {
-                                if (building.workplace_id === workplace.id) {
-                                    d.add("b_" + building.id, "w_" + workplace.id, building.building_nm);
-
-                                    if (result.doorList.length > 0) {
-                                        $.each(result.doorList, function(k, door) {
-                                            if (door.building_id === building.id) {
-                                                let tag = '<span onclick="' + fnName + '">' + door.door_nm + '</span>';
-                                                d.add("d_" + door.id, "b_" + building.id, tag, "#");
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-
-                console.log( "buildingList>>");
-                if(result.buildingList.length > 0) {
-                    $.each(result.buildingList, function(i){
-                       console.log(result.buildingList[i].id +" / "+ result.buildingList[i].building_nm);
-                    });
-                }
-
-                console.log( "doorList>>");
-                if(result.doorList.length > 0) {
-                    $.each(result.doorList, function(i){
-                       console.log(result.doorList[i].id +" / "+ result.doorList[i].door_nm);
-                    });
-                }
-
-                $("#treeDiv").html(d.toString());
-                d.openAll();
+                createTree(true, result, $("#treeDiv"));
             }
         });
     }
@@ -412,7 +371,6 @@
                         tag += "<td>" + terminal.doorNm + "</td></tr>";
 
                         $("#tbTerminal").append(tag);
-
                     });
                 }
             }
@@ -442,33 +400,7 @@
             }
         });
     }
-    /////////////////  권한그룹 목록 조회 ajax - end  /////////////////////
 
-
-    <%--function fnAddDoorAjax() {--%>
-    <%--    console.log("fnAddDoor");--%>
-    <%--    $.ajax({--%>
-    <%--        type: "POST",--%>
-    <%--        url: "<c:url value='/door/add.do' />",--%>
-    <%--        data: {--%>
-    <%--            doorNm: $("#doorNm").val(),--%>
-    <%--            doorSchedule: $("")--%>
-    <%--            doorAlarmGroup:--%>
-    <%--            terminalCd:--%>
-    <%--            mgmtNum:--%>
-    <%--            doorGrId:--%>
-    <%--        },--%>
-    <%--        dataType: "json",--%>
-    <%--        success: function (result) {--%>
-    <%--            // console.log(result);--%>
-    <%--            // if(result.authGroupList.length > 0) {--%>
-    <%--            //     $.each(result.authGroupList, function(i, authGroup) {--%>
-    <%--            //         console.log(authGroup.id + "/" + authGroup.authNm + "/" + authGroup.deptAuthYn );--%>
-    <%--            //     });--%>
-    <%--            // }--%>
-    <%--        }--%>
-    <%--    });--%>
-    <%--}--%>
 
 
 
