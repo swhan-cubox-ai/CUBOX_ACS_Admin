@@ -63,7 +63,7 @@
 
 <script type="text/javascript">
 
-    var tmpSelf;
+    let tmpSelf;
     let fnName = "getGateDetail(this);";
 
     $(function() {
@@ -76,7 +76,7 @@
         modalPopup("authPickPopup", "권한그룹 선택", 910, 550);
 
         $("input[name=checkAll]").click(function() {
-            if($(this).prop("checked")){
+            if ($(this).prop("checked")) {
                 $("input[name=excelColumn]").prop("checked", true);
             } else {
                 $("input[name=excelColumn]").prop("checked", false);
@@ -84,14 +84,15 @@
         });
 
         // 단말기 선택 확인
-        $('#gatePickConfirm').click(function() {
-            // 이미 등록된 단말기 일 경우, 체크가 되어있을 때,
-            if ($("input[name='checkOne']:checked").is(":checked")) {
-                alert("이미 등록된 단말기입니다.");
-                $("input[name='checkOne']:checked").attr("checked", false);
-            } else {
+        $('#doorPickConfirm').click(function() {
+            let chkTerminal = $("input[name=checkOne]:checked").closest("tr").children();
 
-            }
+            // TODO : 등록된 단말기 여부 확인
+            //  alert("이미 등록된 단말기입니다.");
+
+            $("#terminalCd").val(chkTerminal.eq(1).html());
+            $("#mgmtNum").val(chkTerminal.eq(2).html());
+            closePopup('gatePickPopup');
         });
 
         // 권한그룹 추가
@@ -147,11 +148,11 @@
     // 속성 값 초기화
     function initDetail() {
         $("#gatePath").text("");
-        $("#gateNm").val("");
+        $("#doorNm").val("");
         $("option[name='selected']").prop("selected", true);
-        $("#gateCode").val("");
-        $("#gateNum").val("");
-        $("#gateAuthGroup").val("");
+        $("#terminalCd").val("");
+        $("#mgmtNum").val("");
+        $("#doorGroup").val("");
     }
 
     // 속성 보여주기
@@ -169,6 +170,7 @@
     // 속성 뿌려주기
     function getGateDetail(self) {
         tmpSelf = $(self); // TODO : id 넘기기
+        console.log(tmpSelf);
 
         initDetail();
         fnCancelEdit();
@@ -177,34 +179,25 @@
         //출입문 정보
         $.ajax({
             type: "GET",
-            url: "<c:url value='/door/list.do' />",
+            url: "<c:url value='/door/detail.do' />",
             data: {doorId : "1"},
             dataType: "json",
             success: function(result) {
-                $.each(result.doorInfo, function(i, dInfo) {
-                    console.log(dInfo.id + "/" + dInfo.building_id + "/" + dInfo.area_id + "/" + dInfo.floor_id + "/" + dInfo.door_nm + "/" + dInfo.alarm_typ);
-                });
+                // TODO : 스케쥴, 알람그룹, 단말기코드, 단말기 관리번호, 권한그룹 가져오기
+                console.log(result);
+                // $.each(result.doorList, function(i, dInfo) {
+                //     console.log(dInfo.id + "/" + dInfo.building_id + "/" + dInfo.floor_id + "/" + dInfo.door_nm);
+                // });
+                // $("#doorNm").val(dInfo.door_nm);
             }
         });
 
-        // $.ajax({
-        //     type: "GET",
-        //     url: '',
-        //     data: {
-        //        "gateNm": $(self).html()
-        //     },
-        //     dataType: "json",
-        //     success: function(result) {
-        //
-        //     }
-        // });
-
         // 데이터 가지고 와서 뿌려주기
         $("#gatePath").text("12 동 > D 구역 > 1층 > " + tmpSelf.html());
-        $("#gateNm").val(tmpSelf.html() + "_이름");
-        $("#gateCode").val(tmpSelf.html() + "_코드");
-        $("#gateNum").val(tmpSelf.html() + "_관리번호");
-        $("#gateAuthGroup").val(tmpSelf.html() + "_권한그룹");
+        $("#doorNm").val(tmpSelf.html() + "_이름");
+        $("#terminalCd").val(tmpSelf.html() + "_코드");
+        $("#mgmtNum").val(tmpSelf.html() + "_관리번호");
+        $("#doorGroup").val(tmpSelf.html() + "_권한그룹");
     }
 
     // 출입문 관리 - 취소
@@ -216,7 +209,7 @@
         $("#btnCancel").css("display", "none");
         $("#btnGatePick").css("display", "none");
         $("#btnAuthPick").css("display", "none");
-        $("[name=gateEdit]").prop("disabled", true);
+        $("[name=doorEdit]").prop("disabled", true);
     }
 
     // 출입문 관리 - 수정
@@ -228,7 +221,7 @@
         $("#btnCancel").css("display", "inline-block");
         $("#btnGatePick").css("display", "inline-block");
         $("#btnAuthPick").css("display", "inline-block");
-        $("[name=gateEdit]").prop("disabled", false);
+        $("[name=doorEdit]").prop("disabled", false);
     }
 
     // 출입문 관리 - 추가
@@ -236,7 +229,7 @@
         fnEdit();
         initDetail();
         viewDetail();
-        $("#gateNm").focus();
+        $("#doorNm").focus();
         // $("option[name='selected']").prop("selected", true);
     }
 
@@ -255,7 +248,15 @@
     // 출입문 관리 - 수정 저장 확인
     function fnSave() {
         alert("수정사항을 저장하시겠습니까?");
-        if(fnIsEmpty($("#gateNm").val())){alert ("출입문 명칭을 입력하세요."); $("#gateNm").focus(); return;}
+        if (fnIsEmpty($("#doorNm").val())) { alert ("출입문 명칭을 입력하세요."); $("#doorNm").focus(); return; }
+        if (fnIsEmpty($("#doorSchedule"))) { alert("스케쥴을 선택해주세요."); $("#doorSchedule").focus(); return; }
+        if (fnIsEmpty($("#doorAlarmGroup"))) { alert("알람 그룹을 선택해주세요."); $("#doorAlarmGroup").focus(); return; }
+        if (fnIsEmpty($("#terminalCd")) || fnIsEmpty($("#mgmtNum"))) { alert("단말기를 선택해주세요."); return; }
+        if (fnIsEmpty($("#doorGroup"))) { alert("권한그룹을 선택해주세요."); return; }
+
+        // TODO : 출입문 속성 저장 ajax
+        // getGateDetail();
+        fnCancel();
     }
 
     // 출입문 관리 - 삭제
@@ -288,7 +289,7 @@
         console.log(authGroup);
 
         // 권한그룹 textarea에 뿌려주기
-        $("#gateAuthGroup").val(authGroup.join("\r\n"));
+        $("#doorGroup").val(authGroup.join("\r\n"));
         closePopup("authPickPopup");
     }
 
@@ -318,6 +319,7 @@
             // 단말기 선택 팝업창 초기화
             $("input[name='checkOne']:checked").attr("checked", false);
         } else if (popupNm == "authPickPopup") {
+            fnGetAuthGroupListAjax();
             $("input[name='chkAuth']:checked").attr("checked", false);
             $("input[name='chkAuthConf']:checked").attr("checked", false);
             totalCheck();
@@ -330,7 +332,7 @@
 
 
     function fnGetDoorListAjax() {
-        console.log( "fnGetDoorListAjax");
+        console.log( "fnGetDoorListAjax1");
 
         $.ajax({
             type : "GET",
@@ -338,48 +340,7 @@
             dataType : "json",
             url : "<c:url value='/door/list.do' />",
             success : function(result) {
-                d = new dTree('d');
-
-                if(result.workplaceList.length > 0) {
-                    console.log( "workplaceList>>");
-                    $.each(result.workplaceList, function(i, workplace) {
-                        d.add("w_" + workplace.id, -1, workplace.workplace_nm);
-
-                        if(result.buildingList.length > 0) {
-                            $.each(result.buildingList, function(j, building) {
-                                if (building.workplace_id === workplace.id) {
-                                    d.add("b_" + building.id, "w_" + workplace.id, building.building_nm);
-
-                                    if (result.doorList.length > 0) {
-                                        $.each(result.doorList, function(k, door) {
-                                            if (door.building_id === building.id) {
-                                                let tag = '<span onclick="' + fnName + '">' + door.door_nm + '</span>';
-                                                d.add("d_" + door.id, "b_" + building.id, tag, "#");
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-
-                console.log( "buildingList>>");
-                if(result.buildingList.length > 0) {
-                    $.each(result.buildingList, function(i){
-                       console.log(result.buildingList[i].id +" / "+ result.buildingList[i].building_nm);
-                    });
-                }
-
-                console.log( "doorList>>");
-                if(result.doorList.length > 0) {
-                    $.each(result.doorList, function(i){
-                       console.log(result.doorList[i].id +" / "+ result.doorList[i].door_nm);
-                    });
-                }
-
-                $("#treeDiv").html(d.toString());
-                d.openAll();
+                createTree(true, result, $("#treeDiv"));
             }
         });
     }
@@ -400,10 +361,9 @@
             success: function (result) {
                 if(result.terminalList.length > 0) {
                     $.each(result.terminalList, function(i, terminal) {
-                        console.log("단말기 목록 : " + terminal.id + "/" + terminal.terminalCd + "/" + terminal.terminalTyp + "/" + terminal.mgmtNum);
+                        console.log("단말기 목록 : " + terminal.id + "/" + terminal.doorNm + "/" + terminal.terminalCd + "/" + terminal.terminalTyp + "/" + terminal.mgmtNum);
                         // 단말기 코드, 관리번호, 단말기 유형, 출입문명
-                        // terminal_cd, mgmt_num, terminal_typ, door_id
-                        // TODO : 출입문명 가져오기 (현재는 door_id로 되어있음)
+                        // terminalCd, mgmtNum, terminalTyp, doorNm
                         let tag = "<tr class='h_35px' style='text-align:center'><td style='padding:0 14px;'><input type='radio' name='checkOne'></td>";
                         tag += "<td>" + terminal.terminalCd + "</td>";
                         tag += "<td>" + terminal.mgmtNum + "</td>";
@@ -411,7 +371,6 @@
                         tag += "<td>" + terminal.doorNm + "</td></tr>";
 
                         $("#tbTerminal").append(tag);
-
                     });
                 }
             }
@@ -432,17 +391,15 @@
             data: {checkYn: checkYn},
             dataType: "json",
             success: function (result) {
+                console.log(result);
                 if(result.authGroupList.length > 0) {
                     $.each(result.authGroupList, function(i, authGroup) {
                         console.log(authGroup.id + "/" + authGroup.authNm + "/" + authGroup.deptAuthYn );
-
                     });
                 }
             }
         });
     }
-    /////////////////  권한그룹 목록 조회 ajax - end  /////////////////////
-
 
 
 
@@ -506,14 +463,14 @@
                     <tr>
                         <th>출입문 명</th>
                         <td>
-                            <input type="text" id="gateNm" name="gateEdit" maxlength="30" class="input_com gateNm" value="" disabled/>
+                            <input type="text" id="doorNm" name="doorEdit" maxlength="30" class="input_com doorNm" value="" disabled/>
                         </td>
                     </tr>
 
                     <tr>
                         <th>스케쥴</th>
                         <td>
-                            <select name="gateEdit" id="gateUseYn" class="form-control" style="padding-left:10px;" disabled>
+                            <select name="doorEdit" id="doorSchedule" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
                                 <option value="#">12동 현관</option>
                                 <option value="#">4동 현관</option>
@@ -523,8 +480,7 @@
                     <tr>
                         <th>알람 그룹</th>
                         <td>
-                            <%--  <input type="text" id="gateMode" name="gateMode" maxlength="10" class="w_250px input_com gateMode" value="독립 모드" />--%>
-                            <select name="gateEdit" id="gateMode" class="form-control" style="padding-left:10px;" disabled>
+                            <select name="doorEdit" id="doorAlarmGroup" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
                                 <option value="#">알람 그룹1</option>
                                 <option value="#">알람 그룹2</option>
@@ -536,19 +492,19 @@
                     <tr>
                         <th>단말기 코드</th>
                         <td>
-                            <input type="text" id="gateCode" name="gateCode" maxlength="30" class="input_com" value="" disabled />
+                            <input type="text" id="terminalCd" name="terminalCd" maxlength="30" class="input_com" value="" disabled />
                         </td>
                     </tr>
                     <tr>
                         <th>단말기 관리번호</th>
                         <td>
-                            <input type="text" id="gateNum" name="gateNum" maxlength="30" class="input_com" value="" disabled />
+                            <input type="text" id="mgmtNum" name="mgmtNum" maxlength="30" class="input_com" value="" disabled />
                         </td>
                     </tr>
                     <tr>
                         <th>권한 그룹</th>
                         <td>
-                            <textarea id="gateAuthGroup" name="gateAuthGroup" rows="5" cols="33" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled>보건 복지부 &#10;12동 전체</textarea>
+                            <textarea id="doorGroup" name="doorGroup" rows="5" cols="33" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled>보건 복지부 &#10;12동 전체</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -589,8 +545,8 @@
                            value="" placeholder="단말기명 / 관리번호 / 단말기 코드" maxlength="30" style="width: 629px;">
                 </div>
                 <div class="comm_search ml_5 mr_10">
-                    <input type="checkbox" id="unregisteredGate" name="unregisteredGate" value="unregistered">
-                    <label for="unregisteredGate" class="ml_5" style="position: relative; top: -12px;">출입문 미등록</label><br>
+                    <input type="checkbox" id="unregisteredDoor" name="unregisteredDoor" value="unregistered">
+                    <label for="unregisteredDoor" class="ml_5" style="position: relative; top: -12px;">출입문 미등록</label><br>
                 </div>
                 <div class="comm_search ml_40">
                     <div class="search_btn2"></div>
@@ -618,22 +574,13 @@
                 </tr>
                 </thead>
                 <tbody id="tbTerminal">
-<%--                <c:forEach var="i" begin="1" end="10" varStatus="status">--%>
-<%--                    <tr class="h_35px" style="text-align: center">--%>
-<%--                        <td style="padding: 0 14px;"><input type="radio" name="checkOne"/></td>--%>
-<%--                        <td>CU22T00<c:out value="${i}"/></td>--%>
-<%--                        <td>CUBOX_<c:out value="${i}"/></td>--%>
-<%--                        <td></td>--%>
-<%--                        <td>3동 B1 계단</td>--%>
-<%--                    </tr>--%>
-<%--                </c:forEach>--%>
                 </tbody>
             </table>
         </div>
 
         <div class="c_btnbox">
             <div style="display: inline-block;">
-                <button type="button" id="gatePickConfirm" class="comm_btn mr_20">확인</button>
+                <button type="button" id="doorPickConfirm" class="comm_btn mr_20">확인</button>
                 <button type="button" class="comm_btn" onclick="closePopup('gatePickPopup');">취소</button>
             </div>
         </div>
@@ -684,11 +631,6 @@
                     </tbody>
                 </table>
             </div>
-            <%--            <div class="c_btnbox center">--%>
-            <%--                <div style="display: inline-block;" class="mt_20">--%>
-            <%--                    <button type="button" id="add_auth" class="comm_btn">추가</button>--%>
-            <%--                </div>--%>
-            <%--            </div>--%>
         </div>
         <%--  end of 왼쪽 box  --%>
 
@@ -734,12 +676,6 @@
                     </tbody>
                 </table>
             </div>
-            <%--  end of 테이블  --%>
-            <%--            <div class="c_btnbox center">--%>
-            <%--                <div style="display: inline-block;" class="mt_20">--%>
-            <%--                    <button type="button" id="delete_auth" class="comm_btn">삭제</button>--%>
-            <%--                </div>--%>
-            <%--            </div>--%>
         </div>
         <%--  end of 오른쪽 box  --%>
 

@@ -25,26 +25,12 @@
         $(".title_tx").html("출입문 스케쥴 - 목록");
     });
 
-    // 출입문 신규 등록
-    function createSchedule() {
-        f = document.frmSearch;
-        f.action = "/door/schedule/add.do";
-        f.submit();
-    }
-
     function fnDetail(self) {
-        console.log(self);
-        f = document.frmSearch;
-        f.action = "/door/schedule/detail.do";
-        f.submit();
+        location.href = "/door/schedule/detail.do";
     }
 </script>
 
 <%--  검색 박스 --%>
-<form id="frmSearch" name="frmSearch" method="post" onsubmit="return false;">
-    <input type="hidden" id="editMode" name="editMode" value="add"/>
-</form>
-
 <form id="frmSchedule" name="frmSchedule" method="post">
     <div class="search_box mb_20 mt_20" style="width: 40%;">
         <div class="search_in" style="width: 100%;">
@@ -63,7 +49,7 @@
             <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="openExcelDownload();">엑셀다운로드</button>
         </div>
         <div class="r_btnbox ml_10 mb_10">
-            <button type="button" class="btn_excel" data-toggle="modal" id="" onclick="createSchedule();">신규등록</button>
+            <button type="button" class="btn_excel" data-toggle="modal" onclick="location='/door/schedule/add.do'">신규등록</button>
         </div>
     </div>
 <%--  end of 검색 박스 --%>
