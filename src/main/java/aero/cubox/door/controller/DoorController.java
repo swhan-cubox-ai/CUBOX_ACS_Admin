@@ -262,11 +262,6 @@ public class DoorController {
     @RequestMapping(value = "/group/add.do", method= RequestMethod.GET)
     public String groupAdd(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
-//        if (commandMap.get("editMode").equals("edit")) {
-//
-//        }
-//        model.addAttribute("editMode", commandMap.get("editMode"));
-
         return "cubox/door/addGroup";
     }
 
@@ -320,15 +315,6 @@ public class DoorController {
     @RequestMapping(value = "/schedule/add.do", method= RequestMethod.GET)
     public String scheduleAdd(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
-//        if (commandMap.get("editMode").equals("edit")) {
-//            model.addAttribute("schName", commandMap.get("schName"));
-//            model.addAttribute("schUseYn", commandMap.get("schUseYn"));
-//            model.addAttribute("gateGroup", commandMap.get("gateGroup"));
-//        }
-//        model.addAttribute("editMode", commandMap.get("editMode"));
-
-//        LOGGER.debug("editMode : " + model.get("editMode"));
-//        LOGGER.debug("schName : " + model.get("schName"));
         return "cubox/door/scheduleAdd";
     }
 
@@ -396,15 +382,6 @@ public class DoorController {
     // 출입문 알람 그룹 등록
     @RequestMapping(value = "/alarmGroup/add.do", method= RequestMethod.GET)
     public String alarmAdd(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
-
-//        if (commandMap.get("editMode").equals("edit")) {
-//            model.addAttribute("alNm", commandMap.get("alNm"));
-//            model.addAttribute("alType", commandMap.get("alType"));
-//            model.addAttribute("alTime", commandMap.get("alTime"));
-//            model.addAttribute("alUseYn", commandMap.get("alUseYn"));
-//            model.addAttribute("alDoorCnt", commandMap.get("alDoorCnt"));
-//        }
-//        model.addAttribute("editMode", commandMap.get("editMode"));
 
         return "cubox/door/addAlarm";
     }

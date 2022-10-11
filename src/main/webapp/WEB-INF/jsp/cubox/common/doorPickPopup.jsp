@@ -8,6 +8,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<style>
+    #doorSelected tr th {
+        text-align: center;
+    }
+</style>
+
 <script type="text/javascript">
     $(function () {
 
@@ -94,17 +100,6 @@
                         <th><input type="checkbox" id="chkDoorConfAll"></th>
                         <th>출입문</th>
                     </tr>
-                    <c:if test="${editMode eq 'edit'}">${schName}
-                        <tr>
-                            <td><input type="checkbox" name="chkDoorConf"></td>
-                            <td>12동 > C구역 > 1층 > 현관 출입문</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" name="chkDoorConf"></td>
-                            <td>12동 > D구역 > 2층 > 계단</td>
-                        </tr>
-                    </c:if>
-
                     </tbody>
                 </table>
             </div>

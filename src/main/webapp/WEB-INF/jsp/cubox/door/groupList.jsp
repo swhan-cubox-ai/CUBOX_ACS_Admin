@@ -45,7 +45,7 @@
 </script>
 
 <%--  검색 박스 --%>
-<form id="frmSchedule" name="frmSchedule" method="post">
+<form id="frmGroup" name="frmGroup" method="post">
     <div class="search_box mb_20 mt_20" style="width: 40%;">
         <div class="search_in" style="width: 100%;">
             <div class="comm_search ml_10 mr_10" style="width: 90%;">

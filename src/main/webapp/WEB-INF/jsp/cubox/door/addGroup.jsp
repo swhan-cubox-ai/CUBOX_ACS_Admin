@@ -153,7 +153,6 @@
 
 </script>
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
-    <input type="hidden" id="editMode" name="editMode" value="edit"/>
     <div class="tb_01_box">
         <table class="tb_write_02 tb_write_p1 box">
             <colgroup>
@@ -210,61 +209,3 @@
 </div>
 
 
-<%--&lt;%&ndash;  출입문 선택 modal  &ndash;%&gt;--%>
-<%--<div id="doorEditPopup" class="example_content" style="display: none;">--%>
-<%--    <div class="popup_box box_w3">--%>
-<%--        <div style="width:45%;">--%>
-<%--            <div class="com_box" style="border: 1px solid black; background-color: white; overflow: auto; height: 400px; padding: 2px 10px;">--%>
-<%--                <div id="treeDiv"></div>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-
-<%--        &lt;%&ndash;  화살표 이동  &ndash;%&gt;--%>
-<%--        <div style="height: 400px; display: flex; justify-content: center; flex-wrap: wrap; flex-direction: column; align-items: center;">--%>
-<%--            <div class="btn_box" style="margin:5px 0;">--%>
-<%--                <img src="/img/ar_r.png" alt="" id="add_door"/>--%>
-<%--            </div>--%>
-<%--            <div class="btn_box" style="margin:5px 0;">--%>
-<%--                <img src="/img/ar_l.png" alt="" id="delete_door"/>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--        &lt;%&ndash;  end of 화살표 이동  &ndash;%&gt;--%>
-
-<%--        &lt;%&ndash;  테이블  &ndash;%&gt;--%>
-<%--        <div style="width:45%;">--%>
-<%--            <div class="com_box" style="border: 1px solid black; background-color: white; overflow: auto; height: 400px;">--%>
-<%--                <table class="tb_list tb_write_02 tb_write_p1">--%>
-<%--                    <colgroup>--%>
-<%--                        <col style="width:10%">--%>
-<%--                        <col style="width:90%">--%>
-<%--                    </colgroup>--%>
-<%--                    <tbody id="doorSelected">--%>
-<%--                    <tr>--%>
-<%--                        <th><input type="checkbox" id="chkDoorConfAll"></th>--%>
-<%--                        <th>출입문</th>--%>
-<%--                    </tr>--%>
-<%--                    <c:if test="${editMode eq 'edit'}">${schName}--%>
-<%--                        <tr>--%>
-<%--                            <td><input type="checkbox" name="chkDoorConf"></td>--%>
-<%--                            <td>12동 > C구역 > 1층 > 현관 출입문</td>--%>
-<%--                        </tr>--%>
-<%--                        <tr>--%>
-<%--                            <td><input type="checkbox" name="chkDoorConf"></td>--%>
-<%--                            <td>12동 > D구역 > 2층 > 계단</td>--%>
-<%--                        </tr>--%>
-<%--                    </c:if>--%>
-
-<%--                    </tbody>--%>
-<%--                </table>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--        &lt;%&ndash;  end of 테이블  &ndash;%&gt;--%>
-
-<%--        <div class="c_btnbox center mt_30">--%>
-<%--            <div style="display: inline-block;">--%>
-<%--                <button type="button" class="comm_btn mr_20" onclick="closePopup('doorEditPopup');">확인</button>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--    </div>--%>
-<%--</div>--%>
-<%--&lt;%&ndash;  end of 출입문 선택 modal  &ndash;%&gt;--%>

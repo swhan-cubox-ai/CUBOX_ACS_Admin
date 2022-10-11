@@ -31,11 +31,11 @@
 </script>
 
 <%--  검색 박스 --%>
-<form id="frmSchedule" name="frmSchedule" method="post">
+<form id="frmAlarmGroup" name="frmAlarmGroup" method="post">
     <div class="search_box mb_20 mt_20" style="width: 40%;">
         <div class="search_in" style="width: 100%;">
             <div class="comm_search ml_10 mr_10" style="width: 90%;">
-                <input type="text" class="input_com" id="srchGate" name="srchGate" value="" placeholder="출입문 스케쥴 명"/>
+                <input type="text" class="input_com" id="srchAlarmGroup" name="srchAlarmGroup" value="" placeholder="출입문 알람그룹 명"/>
             </div>
             <div class="comm_search ml_40">
                 <%--                <div class="search_btn2" onclick="pageSearch('1')"></div>--%>

@@ -10,6 +10,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
+<jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
+<jsp:include page="/WEB-INF/jsp/cubox/common/doorListPopup.jsp" flush="false"/>
+
 
 <style>
     .title_box {
@@ -31,22 +34,105 @@
 </style>
 
 <script type="text/javascript">
+
+    const defaultTime = 60; // 기본 시간 설정
+
     $(function() {
         $(".title_tx").html("출입문 알람 그룹 - 상세");
+
         modalPopup("doorListPopup", "출입문 목록", 450, 550);
+        modalPopup("doorEditPopup", "출입문 수정", 900, 600);
+
+        // // dTree
+        let fnName = "selectDoor(this);";
+        createTree($("#treeDiv"), fnName);
+        chkAlType();
+
+        // 출입문 알람그룹 명 유효성 체크
+        $("#alNm").focusout(function() {
+            console.log("이름 input을 벗어남");
+
+            // TODO : 출입문스케쥴명 유효성 체크 (ajax)
+        });
+
+        // 유형 - 기본시간
+        $("#alType").change(function() {
+            console.log("유형");
+            console.log(this);
+            console.log($(this).val());
+
+            chkAlType();
+        });
+
     });
+
+    // 유형:기본시간 --> 시간 고정
+    function chkAlType() {
+        if ($("#alType").val() == "default") {
+            $("#alTime").val(defaultTime).attr("disabled", true);
+        } else {
+            $("#alTime").val("").attr("disabled", false);
+        }
+    }
 
     // 목록 버튼
     function fnList() {
         location.href = "/door/alarmGroup/list.do";
     }
 
+    // 수정 확인
+    function fnSave() {
+        let alNm = $("#alNm").val();
+        let alType = $("#alType").val();
+        let alTime = $("#alTime").val();
+        let alUseYn = $("#alUseYn").val();
+        let alDoorCnt = $("#alDoorCnt").val();
+        // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
+
+        // 입력값 유효성 체크
+        if (alNm == "") {
+            alert("출입문 알람 그룹 명을 입력해주세요.");
+            $("#alNm").focus(); return;
+        } else if (alType == "") {
+            alert("유형을 선택해주세요.");
+            $("#alType").focus(); return;
+        } else if (alTime == "") {
+            alert("시간을 입력해주세요.");
+            $("#alTime").focus(); return;
+        } else if (alUseYn == "") {
+            alert("사용여부를 선택해주세요.");
+            $("#alUseYn").focus(); return;
+        } else if (alDoorCnt == "" || alDoorCnt == 0) {
+            alert("출입문을 선택해주세요.");
+            return;
+        }
+        fnCancel();
+        // TODO: 저장 ajax
+    }
+
+    // 수정 취소
+    function fnCancel() {
+        $(".title_tx").html("출입문 스케쥴 - 상세");
+        $("#btnEdit").css("display", "none");
+        $("#btnboxDetail").css("display", "block");
+        $("#btnboxEdit").css("display", "none");
+        $("[name=detail]").attr("disabled", true);
+    }
+
     // 수정 버튼
     function fnEdit() {
-        f = document.detailForm;
-        f.action = "/door/alarmGroup/add.do";
-        $("#tdAlarmDetail input").attr("disabled", false);
-        f.submit();
+        $(".title_tx").html("출입문 알람 그룹 - 수정");
+        $("#btnEdit").css("display", "inline-block");
+        $("#btnboxDetail").css("display", "none");
+        $("#btnboxEdit").css("display", "block");
+        $("[name=detail]").attr("disabled", false);
+    }
+
+    // 출입문 선택
+    function selectDoor(self) {
+        let door = $(self);
+        console.log(door.html());
+        console.log(door.attr("value"));
     }
 
     // 삭제 버튼
@@ -71,11 +157,22 @@
     // popup close (공통)
     function closePopup(popupNm) {
         $("#" + popupNm).PopupWindow("close");
+
+        if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
+            // TODO : 출입문 저장 로직
+
+            let doorSel = $("input[name=chkDoorConf]");
+            doorSel.each(function(i) {
+                let el = doorSel.eq(i).closest("tr").children().last().html();
+                let tag = "<tr><td>" + el + "</td></tr>";
+                $("#selDoorList").append(tag);
+            });
+            $("#alDoorCnt").val(doorSel.length);
+        }
     }
 
 </script>
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
-    <input type="hidden" id="editMode" name="editMode" value="edit"/>
     <div class="tb_01_box">
         <table class="tb_write_02 tb_write_p1 box">
             <colgroup>
@@ -86,32 +183,42 @@
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
-                    <input type="text" id="alNm" name="alNm" maxlength="50" value="작업자 통로" class="input_com w_600px" disabled>
+                    <input type="text" id="alNm" name="detail" maxlength="50" value="작업자 통로" class="input_com w_600px" disabled>
                 </td>
             </tr>
             <tr>
                 <th>유형</th>
                 <td>
-                    <input type="text" id="alType" name="alType" maxlength="50" value="기본시간" class="input_com w_600px" disabled>
+                    <select id="alType" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
+                        <option value="">선택</option>
+                        <option value="default" selected>기본 시간</option>
+                        <option value="setTime">지정시간</option>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <th>시간</th>
                 <td>
-                    <input type="text" id="alTime" name="alTime" maxlength="10" value="30" class="input_com w_600px" disabled>&ensp;초
+                    <input type="number" id="alTime" name="detail" maxlength="10" min="1" value="30" class="input_com w_600px"
+                           oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" disabled>&ensp;초
                 </td>
             </tr>
             <tr>
                 <th>사용</th>
                 <td>
-                    <input type="text" id="alUseYn" name="alUseYn" maxlength="5" value="Y" class="input_com w_600px" disabled>
+                    <select id="alUseYn" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
+                        <option value="">선택</option>
+                        <option value="yes" selected>Y</option>
+                        <option value="no">N</option>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <th>출입문 수</th>
                 <td>
-                    <input type="text" id="alDoorCnt" name="alDoorCnt" maxlength="50" value="2" class="input_com w_600px" disabled>&ensp;
+                    <input type="text" id="alDoorCnt" name="detail" maxlength="50" value="2" class="input_com w_600px" disabled>
                     <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>
+                    <button type="button" id="btnEdit" class="btn_small color_basic" onclick="openPopup('doorEditPopup')" style="display: none">출입문 수정</button>
                 </td>
             </tr>
             </tbody>
@@ -119,40 +226,13 @@
     </div>
 </form>
 
-<div class="right_btn mt_20">
-    <button class="btn_middle color_basic" onClick="fnList();">목록</button>
-    <button class="btn_middle ml_5 color_basic" onClick="fnEdit();">수정</button>
-    <button class="btn_middle ml_5 color_basic" onClick="fnDelete();">삭제</button>
+<div class="right_btn mt_20" id="btnboxDetail">
+    <button class="btn_middle color_basic" onclick="fnList();">목록</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnEdit();">수정</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
 </div>
-
-
-<%--  출입문 목록 modal  --%>
-<div id="doorListPopup" class="example_content">
-    <div class="popup_box box_w3">
-
-        <%--  테이블  --%>
-        <div style="width:100%;">
-            <div class="com_box" style="border: 1px solid black; background-color: white; overflow: auto; height: 330px;">
-                <table class="tb_list tb_write_02 tb_write_p1">
-                    <tbody id="tdGroupTotal">
-                        <tr>
-                            <td>12동 > C구역 > 1층 > 현관 출입문</td>
-                        </tr>
-                        <tr>
-                            <td>12동 > D구역 > 2층 > 계단</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <%--  end of 테이블  --%>
-
-        <div class="c_btnbox center mt_30">
-            <div style="display: inline-block;">
-                <button type="button" class="comm_btn mr_20" onclick="closePopup('doorListPopup');">확인</button>
-            </div>
-        </div>
-    </div>
+<div class="right_btn mt_20" id="btnboxEdit" style="display: none;">
+    <button class="btn_middle ml_5 color_basic" onclick="fnSave();">저장</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnCancel();">취소</button>
 </div>
-<%--  end of 출입문 목록 modal  --%>
 
