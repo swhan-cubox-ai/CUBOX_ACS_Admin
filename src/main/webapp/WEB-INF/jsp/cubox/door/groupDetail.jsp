@@ -32,7 +32,6 @@
 <script type="text/javascript">
     $(function() {
         $(".title_tx").html("출입문 그룹 관리 - 상세");
-        $("#gpNm").focus();
 
         modalPopup("doorEditPopup", "출입문 선택", 900, 600);
 
@@ -124,6 +123,14 @@
 
     // popup close (공통)
     function closePopup(popupNm) {
+        let doorGroup = [];
+
+        $("input[name=chkDoorConf]").each(function (i) {
+            let chkDoor = $(this).closest("tr").children().eq(1).html();
+            doorGroup.push(chkDoor);
+        });
+        $("#gpDoor").val(doorGroup.join("\r\n"));
+
         $("#" + popupNm).PopupWindow("close");
     }
 

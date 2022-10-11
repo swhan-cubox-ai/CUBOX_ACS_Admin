@@ -90,7 +90,7 @@
         let doorGroup = [];
 
         $("input[name=chkDoorConf]").each(function (i) {
-            let chkDoor = $(this).closest("tr").children().eq(1).html().replaceAll("&gt;", ">");
+            let chkDoor = $(this).closest("tr").children().eq(1).html();
             doorGroup.push(chkDoor);
         });
         $("#gpDoor").val(doorGroup.join("\r\n"));
