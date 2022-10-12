@@ -2,19 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="door">
-	<select id="selectDoor"  parameterType="HashMap" resultType="HashMap">
-		SELECT id
-			 , building_id
-			 , area_id
-			 , floor_id
-			 , door_nm
-			 , alarm_typ
-			 , created_at
-			 , updated_at
-		FROM T_DOOR TD
-		WHERE id = #{id}
+	<select id="selectDoorDetail"  parameterType="HashMap" resultType="HashMap">
+		  SELECT TD.id
+		       , TD.door_nm
+		       , TD.building_id
+		       , TD.area_id
+		       , TD.floor_id
+		       , TD.alarm_typ
+		       , TDS.id as sch_id
+		       , TDS.door_sch_nm as sch_nm
+		    FROM T_DOOR TD
+ LEFT OUTER JOIN T_DOORGRP_DOOR TDD ON TD.id = TDD.door_id
+ LEFT OUTER JOIN T_DOORGRP TDG      ON TDD.doorgrp_id = TDG.id
+ LEFT OUTER JOIN T_DOOR_SCH TDS     ON TDD.doorgrp_id = TDS.id
+		   WHERE TD.id = #{id}
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-			AND TD.id = #{id}
+			 AND TD.id = #{id}
 		</if>
 	</select>
 
@@ -39,6 +42,45 @@
 		  AND TD.floor_id = #{floor_id}
 		</if>
 	</select>
+
+
+	<insert id="insertDoor" parameterType="HashMap">
+		insert
+		into
+			T_DOOR (   area_id
+				   , alarm_typ
+				   , door_nm
+				   , floor_id
+				   , created_at
+				   , updated_at
+		)
+		values  ( #{areaid}
+				, #{alarm_typ}
+				, #{door_nm}
+				, #{floor_id}
+				, SYSDATE
+				, SYSDATE
+				)
+
+	</insert>
+
+	<update id="updateDoor" parameterType="HashMap">
+		UPDATE T_DOOR
+		SET building_id = ''
+		  , area_id = ''
+		  , alarm_typ = ''
+		  , door_nm = ''
+		  , floor_id = ''
+		  , updated_at = SYSDATE
+		WHERE id = #{id}
+	</update>
+
+	<delete id="deleteDoor" parameterType="HashMap" >
+		DELETE
+		FROM T_DOOR
+		WHERE id = #{id}
+
+	</delete>
 
 	<select id="selectBuildingList" parameterType="HashMap" resultType="HashMap">
 		SELECT id,
@@ -92,37 +134,63 @@
 		</if>
 	</select>
 
-
-	<select id="selectPermissionGroup"   parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-			   building_id,
-			   area_id,
-			   floor_id,
-			   door_nm,
-			   alarm_typ,
-			   created_at,
-			   updated_at
-		FROM T_DOOR TD
-		WHERE 1 = 1
-	</select>
-
-	<select id="selectTerminalList"  parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-			   terminal_cd,
-			   terminal_typ,
-			   door_id,
-			   mgmt_num,
-			   ip_addr,
-			   complex_auth_typ,
-			   face_auth_typ,
-			   created_at,
-			   updated_at
-		FROM T_TERMINAL TT
-		WHERE 1=1
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(building_id)'>
-			AND TT.id = #{id}
+	<select id="selectDoorGroupList"  parameterType="HashMap" resultType="HashMap">
+		SELECT TD.id
+		     , TD.nm
+		     , TD.doorSchId
+		     , TDS.door_sch_nm
+		  FROM T_DOORGRP TD
+		     , T_DOOR_SCH TDS
+		 WHERE TD.doorSchId = TDS.id
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+		   AND TD.id = #{id}
 		</if>
 	</select>
+
+
+	<select id="selectDoorGroupDetail"   parameterType="HashMap" resultType="HashMap">
+		SELECT TD.id
+			 , TD.nm
+			 , TD.doorSchId
+			 , TDS.door_sch_nm
+		  FROM T_DOORGRP TD
+			 , T_DOOR_SCH TDS
+		 WHERE TD.doorSchId = TDS.id
+	</select>
+
+
+
+	<insert id="insertDoorGroup" parameterType="HashMap">
+		insert
+		into
+			T_DOORGRP (   id
+	   					 ,nm
+				   		, doorSchId
+
+		)
+		values  ( #{id}
+				, #{nm}
+				, #{doorSchId}
+				)
+
+	</insert>
+
+
+	<update id="updateDoorGroup" parameterType="HashMap">
+		UPDATE T_DOORGRP
+		SET nm = ''
+		  , doorSchId = ''
+		WHERE id = #{id}
+	</update>
+
+
+	<delete id="deleteDoorGroup" parameterType="HashMap" >
+		DELETE
+		FROM T_DOORGRP
+		WHERE id = #{id}
+
+	</delete>
+
 
 
 	<select id="selectDoorSchList"  parameterType="HashMap" resultType="HashMap">
@@ -138,9 +206,112 @@
 	</select>
 
 
+	<select id="selectScheduleDetail"  parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+			door_sch_nm,
+			created_at,
+			updated_at
+		FROM T_DOOR_SCH TDS
+		WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+			AND TDS.id = #{id}
+		</if>
+	</select>
 
 
-	<select id="selectTerminal" parameterType="HashMap" resultType="HashMap">
+	<insert id="insertSchedule" parameterType="HashMap">
+		insert
+		into
+			T_DOOR_SCH (  id,
+						  door_sch_nm,
+						  created_at,
+						  updated_at
+		)
+		values  ( #{id}
+				, #{door_sch_nm}
+				, SYSDATE
+				, SYSDATE
+				)
+
+	</insert>
+
+
+	<update id="updateSchedule" parameterType="HashMap">
+		UPDATE T_DOOR_SCH
+		SET door_sch_nm = ''
+		  ,  updated_at= SYSDATE
+		WHERE id = #{id}
+	</update>
+
+
+	<delete id="deleteSchedule" parameterType="HashMap" >
+		DELETE
+		FROM T_DOOR_SCH
+		WHERE id = #{id}
+
+	</delete>
+
+
+
+	<select id="selectScheduleByDayDetail"  parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+		door_sch_id,
+		weekday,
+		beg_tm,
+		end_tm,
+		created_at,
+		updated_at
+		FROM T_DOOR_SCH_WEEKDAY TDSW
+		WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+			AND TDSW.id = #{id}
+		</if>
+	</select>
+
+
+	<insert id="insertScheduleByDay" parameterType="HashMap">
+		insert
+		into
+			T_DOOR_SCH_WEEKDAY (  id,
+								  door_sch_id,
+								  weekday,
+								  beg_tm,
+								  end_tm,
+								  created_at,
+								  updated_at
+		)
+		values  ( #{id}
+				, #{door_sch_id}
+				, #{weekday}
+				, #{beg_tm}
+				, #{end_tm}
+				, SYSDATE
+				, SYSDATE
+				)
+
+	</insert>
+
+
+	<update id="updateScheduleByDay" parameterType="HashMap">
+		UPDATE T_DOOR_SCH_WEEKDAY
+		SET door_sch_id = ''
+		  ,  weekday= ''
+		  ,  beg_tm= ''
+		  ,  end_tm= ''
+		  ,  updated_at= SYSDATE
+		WHERE id = #{id}
+	</update>
+
+
+	<delete id="deleteScheduleByDay" parameterType="HashMap" >
+		DELETE
+		FROM T_DOOR_SCH_WEEKDAY
+		WHERE id = #{id}
+
+	</delete>
+
+
+	<select id="selectTerminalDetail" parameterType="HashMap" resultType="HashMap">
 		SELECT id,
 			   terminal_cd,
 			   terminal_typ,
@@ -156,51 +327,26 @@
 	</select>
 
 
-	<insert id="insertDoor" parameterType="HashMap">
-		insert
-		  into
-		T_DOOR (   area_id
-		         , alarm_typ
-		         , door_nm
-		         , floor_id
-		         , created_at
-		         , updated_at
-		         )
-		 values  ( #{areaid}
-				 , #{alarm_typ}
-				 , #{door_nm}
-				 , #{floor_id}
-				 , SYSDATE
-				 , SYSDATE
-		         )
 
-	</insert>
-
-	<update id="updateDoor" parameterType="HashMap">
-		UPDATE T_DOOR
-		   SET building_id = ''
-			 , area_id = ''
-			 , alarm_typ = ''
-			 , door_nm = ''
-			 , floor_id = ''
-			 , updated_at = SYSDATE
-		 WHERE id = #{id}
-	</update>
-
-	<delete id="deleteDoorInformation" parameterType="HashMap" >
-		DELETE
-		  FROM T_DOOR
-		 WHERE id = #{id}
-
-	</delete>
-
-
-	<select id="selectDoorGroup"   parameterType="HashMap" resultType="HashMap">
+	<select id="selectTerminalList"  parameterType="HashMap" resultType="HashMap">
 		SELECT id,
-		       nm,
-		       doorSchId
-		FROM T_DOORGRP TD
-		WHERE 1 = 1
+		terminal_cd,
+		terminal_typ,
+		door_id,
+		mgmt_num,
+		ip_addr,
+		complex_auth_typ,
+		face_auth_typ,
+		created_at,
+		updated_at
+		FROM T_TERMINAL TT
+		WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(building_id)'>
+			AND TT.id = #{id}
+		</if>
 	</select>
+
+
+
 
 </mapper>

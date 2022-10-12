@@ -21,6 +21,7 @@
 
 <script type="text/javascript">
     $(function() {
+        fnGetDoorGroupListAjax();
         $(".title_tx").html("출입문 그룹 관리 - 목록");
         fnGetList();
     });
@@ -42,6 +43,23 @@
         });
 
     }
+
+
+    function fnGetDoorGroupListAjax() {
+        console.log("fnGetDoorGroupListAjax");
+
+        $.ajax({
+            type: "GET",
+            data: {},
+            dataType: "json",
+            url: "<c:url value='/door/group/list.do' />",
+            success: function (result) {
+                console.log("ajax success-[doorGroupList]" + result.doorGroupList);
+            }
+        });
+    }
+
+
 </script>
 
 <%--  검색 박스 --%>

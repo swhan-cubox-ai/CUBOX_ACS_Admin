@@ -183,14 +183,13 @@
             dataType: "json",
             success: function(result) {
                 // TODO : 스케쥴, 알람그룹, 단말기코드, 단말기 관리번호, 권한그룹 가져오기
-                // TODO : 스케쥴, 알람그룹, 단말기코드, 단말기 관리번호, 권한그룹 가져오기
                 console.log("getGateDetail:"
                     + result.doorInfo.id+"/"
-                    + result.doorInfo.building_id+"/"
-                    + result.doorInfo.door_sch_nm+"/"
-                    + result.doorInfo.door_sch_id+"/"
-                    + result.doorInfo.floor_id+"/"
                     + result.doorInfo.door_nm+"/"
+                    + result.doorInfo.building_id+"/"
+                    + result.doorInfo.floor_id+"/"
+                    + result.doorInfo.sch_id+"/"
+                    + result.doorInfo.sch_nm+"/"
                 );
             }
         });

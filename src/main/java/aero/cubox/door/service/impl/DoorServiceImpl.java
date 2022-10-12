@@ -34,7 +34,7 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     @Override
     public Map getDoorDetail(Map<String, Object> commandMap) {
 
-        return doorDAO.getDoorInformation(commandMap);
+        return doorDAO.getDoorDetail(commandMap);
     }
 
     /**
@@ -62,7 +62,7 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
      */
     @Override
     public void deleteDoor(Map<String, Object> commandMap) {
-        doorDAO.deleteDoorInformation(commandMap);
+        doorDAO.deleteDoor(commandMap);
     }
 
     /**
