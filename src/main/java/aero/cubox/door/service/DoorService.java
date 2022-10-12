@@ -17,8 +17,6 @@ public interface DoorService {
 
     void deleteDoor(Map<String, Object> commandMap);
 
-
-
     List<Map> getAreaList(Map<String, Object> commandMap);
 
     List<Map> getBuildingList(Map<String, Object> commandMap);

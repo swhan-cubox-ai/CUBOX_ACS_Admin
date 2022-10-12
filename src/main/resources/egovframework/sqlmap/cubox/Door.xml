@@ -47,19 +47,19 @@
 	<insert id="insertDoor" parameterType="HashMap">
 		insert
 		into
-			T_DOOR (   area_id
-				   , alarm_typ
-				   , door_nm
+			T_DOOR ( building_id
+				   , area_id
 				   , floor_id
+				   , door_nm
+				   , alarm_typ
 				   , created_at
-				   , updated_at
 		)
-		values  ( #{areaid}
-				, #{alarm_typ}
-				, #{door_nm}
-				, #{floor_id}
-				, SYSDATE
-				, SYSDATE
+		values  ( #{buildingId}
+				, #{areaId}
+				, #{floorId}
+				, #{doorNm}
+				, #{alarmGroupId}
+				, NOW()
 				)
 
 	</insert>
@@ -327,26 +327,41 @@
 	</select>
 
 
-
 	<select id="selectTerminalList"  parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-		terminal_cd,
-		terminal_typ,
-		door_id,
-		mgmt_num,
-		ip_addr,
-		complex_auth_typ,
-		face_auth_typ,
-		created_at,
-		updated_at
-		FROM T_TERMINAL TT
-		WHERE 1=1
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(building_id)'>
-			AND TT.id = #{id}
+		SELECT TM.id as id,
+		       TD.door_nm as doorNm,
+		       TM.mgmt_num as mgmtNum,
+		       TM.terminal_cd as terminalCd,
+		       TM.terminal_typ as terminalTyp,
+		       (SELECT cd_nm
+		          FROM T_CMMN_CD
+                 WHERE cd_typ = 'TerminalTyp'
+                   AND cd = TM.terminal_typ) AS terminalTypNm,
+               TM.ip_addr as ipAddr,
+               TM.complex_auth_typ as complexAuthTyp,
+               (SELECT cd_nm
+                  FROM T_CMMN_CD
+                 WHERE cd_typ = 'ComplexAuthTyp'
+                   AND cd = TM.complex_auth_typ) AS complexAuthTypNm,
+               TM.face_auth_typ as faceAuthTyp,
+               (SELECT cd_nm
+                  FROM T_CMMN_CD
+                 WHERE cd_typ = 'FaceAuthTyp'
+                   AND cd = TM.face_auth_typ) AS faceAuthTypNm,
+               TM.use_yn as useYn
+           FROM T_TERMINAL TM
+LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
+		  WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(registrationionStatus)'>
+			<if test='registrationionStatus.equals("N")'>
+			AND (TM.door_id is null or TM.door_id ='')
+			</if>
 		</if>
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+			AND (TM.model_nm like CONCAT('%',#{keyword},'%') OR TM.terminal_cd like CONCAT('%',#{keyword},'%') OR TM.mgmt_num like CONCAT('%',#{keyword},'%'))
+		</if>
+
 	</select>
-
-
 
 
 </mapper>
