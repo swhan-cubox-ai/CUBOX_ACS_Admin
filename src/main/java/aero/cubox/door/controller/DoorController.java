@@ -119,12 +119,17 @@ public class DoorController {
      */
     @RequestMapping(value="/add.do", method= RequestMethod.POST)
     public ModelAndView addDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+        LOGGER.debug("출입문 등록");
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
         String doorNm = commandMap.get("doorNm").toString();
-        String doorScheduleId = commandMap.get("doorSchedule").toString();
-        String doorAlarmGroupId = commandMap.get("doorAlarmGroup").toString();
+        String buildingId = commandMap.get("buildingId").toString();
+        String areaId = commandMap.get("areaId").toString();
+        String floorId = commandMap.get("floorId").toString();
+        String scheduleId = commandMap.get("scheduleId").toString();
+        String alarmGroupId = commandMap.get("alarmGroupId").toString();
         String terminalCd = commandMap.get("terminalCd").toString();
         String mgmtNum = commandMap.get("mgmtNum").toString();
         String doorGrId = commandMap.get("doorGrId").toString();
@@ -132,8 +137,11 @@ public class DoorController {
         HashMap param = new HashMap();
 
         param.put("doorNm", doorNm );
-        param.put("doorScheduleId", doorScheduleId);
-        param.put("doorAlarmGroupId", doorAlarmGroupId);
+        param.put("buildingId", buildingId );
+        param.put("areaId", areaId );
+        param.put("floorId", floorId );
+        param.put("doorScheduleId", scheduleId);
+        param.put("alarmGroupId", alarmGroupId);
         param.put("terminalCd", terminalCd);
         param.put("mgmtNum", mgmtNum);
         param.put("doorGrId", doorGrId);
@@ -196,6 +204,7 @@ public class DoorController {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
+
 
         try {
             doorService.deleteDoor(commandMap);
@@ -400,27 +409,25 @@ public class DoorController {
         modelAndView.setViewName("jsonView");
 
         try {
-            TerminalVO vo = new TerminalVO();
 
-            String srchCond1 = StringUtil.nvl(commandMap.get("srchCond1"), "");
-            String srchCond2 = StringUtil.nvl(commandMap.get("srchCond2"), "");
             String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+            String registrationionStatus = StringUtil.nvl(commandMap.get("registrationionStatus"), "");
 
-            vo.setSrchCond1(srchCond1);
-            vo.setSrchCond2(srchCond2);
-            vo.setKeyword(keyword);
+            HashMap param = new HashMap<>();
 
-            List<CommonVO> terminalTypCombList = commonService.getCommonCodeList("TerminalTyp");
-            List<CommonVO> buildingCombList = terminalService.getBuildingList();
+            if ( keyword.length() > 0){
+                param.put("keyword",keyword);
+            }
 
-            int totalCnt = terminalService.getTerminalListCount(vo);List<TerminalVO> terminalList = terminalService.getTerminalList(vo);
+            if ( registrationionStatus.length() > 0){
+                param.put("registrationionStatus",registrationionStatus);
 
-            System.out.println("terminalList.size()" + terminalList.size());
-            model.addAttribute("terminalTypCombList", terminalTypCombList);
-            model.addAttribute("buildingCombList", buildingCombList);
+
+            }
+
+
+            List<HashMap> terminalList = doorService.getTerminalList(param);
             model.addAttribute("terminalList", terminalList);
-            model.addAttribute("data", vo);
-
 
         } catch (Exception e) {
             e.printStackTrace();

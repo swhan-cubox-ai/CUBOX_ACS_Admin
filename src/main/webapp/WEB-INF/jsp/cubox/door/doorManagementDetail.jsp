@@ -142,6 +142,14 @@
             }
         });
 
+        // 단말기 검색 버튼 클릭시
+        // 명칭은 테스트를 위한 가칭으로 필요시 수정해서 사용하세요
+        $("#searchTeminalBtn").click(function() {
+            //param1 : 검색어, param2 : 출입문 미등록 체크박스 value값 Y or N
+            let chk = "Y"
+            fnGetTerminalListAjax($("#srchMachine").val(), chk );
+        });
+
     });
 
     // 속성 값 초기화
@@ -258,6 +266,41 @@
         if (fnIsEmpty($("#terminalCd")) || fnIsEmpty($("#mgmtNum"))) { alert("단말기를 선택해주세요."); return; }
         if (fnIsEmpty($("#doorGroup"))) { alert("권한그룹을 선택해주세요."); return; }
 
+        //출입문 정보
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='/door/add.do' />",
+            data:
+                //파라미터 수정
+                { doorNm : "1",
+                  buildingId : "2",
+                  areaId : "3",
+                  floorId : "4",
+                  scheduleId : "5",
+                  alarmGroupId : "6",
+                  terminalCd : "7",
+                  mgmtNum : "8",
+                  doorGrId : "9"
+                },
+            dataType: "json",
+            success: function(returnData) {
+
+                console.log("fnSave:"+ returnData.result );
+
+                if(returnData.result == "success") {
+                    //등록이 완료되었습니다.
+                } else{
+                    //등록에 문제가 발생
+                }
+
+            }
+        });
+
+
+
+
+
+
         // TODO : 출입문 속성 저장 ajax
         // getGateDetail();
         fnCancel();
@@ -353,13 +396,16 @@
     /////////////////  단말기 목록 ajax - start  /////////////////////
 
 
-    function fnGetTerminalListAjax() {
+    function fnGetTerminalListAjax(param1, param2) {
+
         console.log("fnGetTerminalListAjax");
-        let checkYn = "Y";
+
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/terminal/list.do' />",
-            data: {checkYn: checkYn},
+            data: {
+                keyword: param1
+              , registrationionStatus : param2 },
             dataType: "json",
             success: function (result) {
                 if(result.terminalList.length > 0) {
@@ -550,7 +596,7 @@
                     <label for="unregisteredDoor" class="ml_5" style="position: relative; top: -12px;">출입문 미등록</label><br>
                 </div>
                 <div class="comm_search ml_40">
-                    <div class="search_btn2"></div>
+                    <div class="search_btn2" id="searchTeminalBtn"></div>
                 </div>
             </div>
         </div>
