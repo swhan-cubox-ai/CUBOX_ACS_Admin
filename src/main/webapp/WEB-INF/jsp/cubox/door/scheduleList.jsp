@@ -49,7 +49,7 @@
             <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="openExcelDownload();">엑셀다운로드</button>
         </div>
         <div class="r_btnbox ml_10 mb_10">
-            <button type="button" class="btn_excel" data-toggle="modal" onclick="location='/door/schedule/add.do'">신규등록</button>
+            <button type="button" class="btn_excel" data-toggle="modal" onclick="location='/door/schedule/addView.do'">신규등록</button>
         </div>
     </div>
 <%--  end of 검색 박스 --%>

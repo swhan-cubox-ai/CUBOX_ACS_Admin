@@ -157,9 +157,9 @@ public class DoorController {
 
         } catch(Exception e) {
             e.getStackTrace();
-            modelAndView.addObject("result", "N");
+            modelAndView.addObject("resultCode", "N");
         }
-        modelAndView.addObject("result", "Y");
+        modelAndView.addObject("resultCode", "Y");
 
         return modelAndView;
     }
@@ -179,20 +179,36 @@ public class DoorController {
 
         String doorId = commandMap.get("doorId").toString();
         String doorNm = commandMap.get("doorNm").toString();
-        String doorScheduleId = commandMap.get("doorSchedule").toString();
-        String doorAlarmGroupId = commandMap.get("doorAlarmGroup").toString();
+        String buildingId = commandMap.get("buildingId").toString();
+        String areaId = commandMap.get("areaId").toString();
+        String floorId = commandMap.get("floorId").toString();
+        String scheduleId = commandMap.get("scheduleId").toString();
+        String alarmGroupId = commandMap.get("alarmGroupId").toString();
         String terminalCd = commandMap.get("terminalCd").toString();
         String mgmtNum = commandMap.get("mgmtNum").toString();
         String doorGrId = commandMap.get("doorGrId").toString();
 
-        try {
+        HashMap param = new HashMap();
 
+        param.put("doorId", doorId );
+        param.put("doorNm", doorNm );
+        param.put("buildingId", buildingId );
+        param.put("areaId", areaId );
+        param.put("floorId", floorId );
+        param.put("doorScheduleId", scheduleId);
+        param.put("alarmGroupId", alarmGroupId);
+        param.put("terminalCd", terminalCd);
+        param.put("mgmtNum", mgmtNum);
+        param.put("doorGrId", doorGrId);
+
+        try {
+            doorService.updateDoor(param);
 
         } catch(Exception e) {
             e.getStackTrace();
-            modelAndView.addObject("result", "N");
+            modelAndView.addObject("resultCode", "N");
         }
-        modelAndView.addObject("result", "Y");
+        modelAndView.addObject("resultCode", "Y");
 
         return modelAndView;
     }
@@ -216,9 +232,9 @@ public class DoorController {
             doorService.deleteDoor(commandMap);
         } catch(Exception e) {
             e.getStackTrace();
-            modelAndView.addObject("result", "N");
+            modelAndView.addObject("resultCode", "N");
         }
-        modelAndView.addObject("result", "Y");
+        modelAndView.addObject("resultCode", "Y");
 
         return modelAndView;
     }
@@ -234,7 +250,7 @@ public class DoorController {
      * @throws Exception
      */
     @RequestMapping(value="/group/listView.do", method= RequestMethod.GET)
-    public String getDoorGroupListView(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    public String showDoorGroupListView(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         //todo 세션
 
@@ -264,18 +280,39 @@ public class DoorController {
 
     // 출입문 그룹 관리 상세
     @RequestMapping(value="/group/detail.do")
-    public String groupDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    public String showGroupDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
 //        HashMap doorGroupDetail = doorService.getDoorGroupDetail(commandMap);
 
         return "cubox/door/groupDetail";
     }
 
-    // 출입문 그룹 관리 등록/수정
-    @RequestMapping(value = "/group/add.do", method= RequestMethod.GET)
-    public String groupAdd(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    // 출입문 그룹 관리 등록화면
+    @RequestMapping(value = "/group/addView.do", method= RequestMethod.GET)
+    public String showGroupAddView(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
-        return "cubox/door/addGroup";
+
+        return "cubox/door/groupAdd";
+    }
+    // 출입문 그룹 관리 등록/수정
+    @RequestMapping(value = "/group/add.do", method= RequestMethod.POST)
+    public ModelAndView addGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String resultCode = "Y";
+        try {
+
+        doorService.addDoorGroup(commandMap);
+        } catch (Exception e){
+            e.getStackTrace();
+            resultCode = "N";
+        }
+
+        modelAndView.addObject( "resultCode", resultCode);
+
+        return modelAndView;
     }
 
 
@@ -286,8 +323,8 @@ public class DoorController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/schedule.do", method= RequestMethod.GET)
-    public String schedule(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value="/schedule/listView.do", method= RequestMethod.GET)
+    public String showScheduleList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
         //todo 세션처리
 
         return "cubox/door/scheduleList";
@@ -321,11 +358,31 @@ public class DoorController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/schedule/add.do", method= RequestMethod.GET)
-    public String scheduleAdd(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/schedule/addView.do", method= RequestMethod.GET)
+    public String showScheduleAddView(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         return "cubox/door/scheduleAdd";
     }
+
+    @RequestMapping(value = "/schedule/add.do", method= RequestMethod.POST)
+    public ModelAndView addSchedule(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String resultCode = "Y";
+        try {
+            doorService.addSchedule(commandMap);
+        } catch (Exception e){
+            e.getStackTrace();
+            resultCode= "N";
+        }
+
+        modelAndView.addObject( "resultCode", resultCode);
+
+        return modelAndView;
+    }
+
 
 
     /**
@@ -344,6 +401,36 @@ public class DoorController {
 
 
     /**
+     * 요일별 스케쥴 등록
+     * @param model
+     * @param commandMap
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/schedule/day/add.do", method= RequestMethod.POST)
+    public ModelAndView addScheduleByDay(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+
+
+        String resultCode = "Y";
+        try {
+            doorService.addScheduleByDay(commandMap);
+        } catch (Exception e){
+            e.getStackTrace();
+            resultCode = "N";
+        }
+
+        modelAndView.addObject( "resultCode", resultCode);
+
+        return modelAndView;
+    }
+
+
+    /**
      * 스케줄 삭제
      * @param model
      * @param commandMap
@@ -357,20 +444,16 @@ public class DoorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        String result= "N";
+        String resultCode= "N";
 
-        result = "Y";
-        model.addAttribute("result", result);
+        resultCode = "Y";
+        model.addAttribute("resultCode", resultCode);
         return modelAndView;
     }
 
-
-
-
-
     // 출입문 알람 그룹
-    @RequestMapping(value="/alarmGroup/list.do")
-    public String alarm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value="/alarmGroup/listView.do")
+    public String showAlarmGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
         //todo 세션처리
 
         return "cubox/door/alarmGroupList";
@@ -378,20 +461,39 @@ public class DoorController {
 
     // 출입문 알람 그룹 상세
     @RequestMapping(value="/alarmGroup/detail.do")
-    public String viewAlarmDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    public String showAlarmDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         return "cubox/door/alarmGroupDetail";
     }
 
-    // 출입문 알람 그룹 등록
-    @RequestMapping(value = "/alarmGroup/add.do", method= RequestMethod.GET)
-    public String alarmAdd(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    // 출입문 알람 그룹 등록 화면
+    @RequestMapping(value = "/alarmGroup/addView.do", method= RequestMethod.GET)
+    public String showAlarmGroupAddView(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
-        return "cubox/door/addAlarm";
+        return "cubox/door/alarmAdd";
     }
 
 
+    // 출입문 알람 그룹 등록
+    @RequestMapping(value = "/alarmGroup/add.do", method= RequestMethod.POST)
+    public ModelAndView addAalarmGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String resultMsg = "success";
+        try{
+
+            doorService.addDoorGroup(commandMap);
+        }catch (Exception e){
+            e.getStackTrace();
+            resultMsg = "fail";
+        }
+
+        modelAndView.addObject( "result", resultMsg);
+
+        return modelAndView;
+    }
 
 
     /**
@@ -421,9 +523,7 @@ public class DoorController {
             if ( registrationionStatus.length() > 0){
                 param.put("registrationionStatus",registrationionStatus);
 
-
             }
-
 
             List<HashMap> terminalList = doorService.getTerminalList(param);
             model.addAttribute("terminalList", terminalList);

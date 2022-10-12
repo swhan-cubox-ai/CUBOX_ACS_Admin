@@ -74,7 +74,7 @@
 
     // 목록 버튼
     function fnList() {
-        location.href = "/door/alarmGroup/list.do";
+        location.href = "/door/alarmGroup/listView.do";
     }
 
     // 수정 확인
@@ -143,7 +143,7 @@
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-        location.href = "/door/alarmGroup/list.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
+        location.href = "/door/alarmGroup/listView.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
     }
 
     // popup open (공통)

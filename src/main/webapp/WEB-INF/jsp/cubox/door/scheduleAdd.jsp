@@ -88,7 +88,7 @@
             $("#addForm").submit();
         } else {
             // $("#addForm").attr("action", "/door/schedule.do");
-            location.href = "/door/schedule.do";
+            location.href = "/door/schedule/listView.do";
         }
 
     }

@@ -399,7 +399,7 @@
             dataType: 'json',
             success: function (data, status) {
                 if (data.result == "Y") {
-                    location.href = "/door/schedule.do";
+                    location.href = "/door/schedule/listView.do";
                 } else {
                     alert("삭제 중 오류가 발생하였습니다.");
                 }
@@ -543,7 +543,7 @@
 </form>
 
 <div class="right_btn mt_20" id="btnboxDetail">
-    <button class="btn_middle color_basic" onclick="location='/door/schedule.do'">목록</button>
+    <button class="btn_middle color_basic" onclick="location='/door/schedule/listView.do'">목록</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnEdit();">수정</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
     <button class="btn_middle ml_5 color_basic" onclick="openPopup('addByDayPopup');">요일 별 스케쥴 등록</button>
