@@ -235,7 +235,7 @@ function fnvalichk (event) {
  *    ////////////////////////////////////////////////////////////////////////////////
 **/
 function createTree(isMngmt, result, treeDiv) {
-	console.log("createTree");
+	let fnName = "getGateDetail(this);";
 
 	d = new dTree('d'); //dtree선언
 

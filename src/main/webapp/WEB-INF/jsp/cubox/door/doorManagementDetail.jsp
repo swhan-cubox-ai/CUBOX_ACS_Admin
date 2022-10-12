@@ -64,7 +64,6 @@
 <script type="text/javascript">
 
     let tmpSelf;
-    let fnName = "getGateDetail(this);";
 
     $(function() {
         $(".title_tx").html("출입문 관리");
@@ -281,7 +280,6 @@
     // 권한그룹 선택 저장
     function authSave() {
         var authGroup = [];
-        // $("input[name=chkAuthConf]:checked").each(function(i) {
         $("input[name=chkAuthConf]").each(function(i) {
             var auth = $(this).closest("tr").children().eq(1).html();
             authGroup.push(auth);
@@ -400,8 +398,6 @@
             }
         });
     }
-
-
 
 
 
