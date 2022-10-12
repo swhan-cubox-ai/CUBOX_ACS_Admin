@@ -113,7 +113,7 @@
 
     // 알람그룹 수정 취소
     function fnCancel() {
-        $("#detailForm").attr("action", "/door/alarmGroup/list.do");
+        $("#detailForm").attr("action", "/door/alarmGroup/listView.do");
     }
 
     // popup open (공통)
@@ -192,6 +192,6 @@
 
 <div class="right_btn mt_20">
     <button class="btn_middle ml_5 color_basic" onclick="fnSave();">등록</button>
-    <button class="btn_middle ml_5 color_basic" onclick="location='/door/alarmGroup/list.do'">취소</button>
+    <button class="btn_middle ml_5 color_basic" onclick="location='/door/alarmGroup/listView.do'">취소</button>
 </div>
 
