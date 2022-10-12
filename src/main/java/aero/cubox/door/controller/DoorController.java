@@ -413,8 +413,7 @@ public class DoorController {
             List<CommonVO> terminalTypCombList = commonService.getCommonCodeList("TerminalTyp");
             List<CommonVO> buildingCombList = terminalService.getBuildingList();
 
-            int totalCnt = terminalService.getTerminalListCount(vo);
-            List<TerminalVO> terminalList = terminalService.getTerminalList(vo);
+            int totalCnt = terminalService.getTerminalListCount(vo);List<TerminalVO> terminalList = terminalService.getTerminalList(vo);
 
             System.out.println("terminalList.size()" + terminalList.size());
             model.addAttribute("terminalTypCombList", terminalTypCombList);

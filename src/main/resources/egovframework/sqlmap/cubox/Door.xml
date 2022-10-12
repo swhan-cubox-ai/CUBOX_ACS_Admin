@@ -3,21 +3,21 @@
 
 <mapper namespace="door">
 	<select id="selectDoorDetail"  parameterType="HashMap" resultType="HashMap">
-		SELECT id
-			 , building_id
-			 , area_id
-			 , floor_id
-			 , door_nm
-			 , alarm_typ
-			 , created_at
-			 , updated_at
-		FROM T_DOOR TD
-		T_DOOR_SCH TDS
-		T_DOORALARM_GRP TDG
-		WHERE TD.
-		    id = #{id}
+		  SELECT TD.id
+		       , TD.door_nm
+		       , TD.building_id
+		       , TD.area_id
+		       , TD.floor_id
+		       , TD.alarm_typ
+		       , TDS.id as sch_id
+		       , TDS.door_sch_nm
+		    FROM T_DOOR TD
+ LEFT OUTER JOIN T_DOORGRP_DOOR TDD ON TD.id = TDD.door_id
+ LEFT OUTER JOIN T_DOORGRP TDG      ON TDD.doorgrp_id = TDG.id
+ LEFT OUTER JOIN T_DOOR_SCH TDS     ON TDD.doorgrp_id = TDS.id
+		   WHERE TD.id = #{id}
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-			AND TD.id = #{id}
+			 AND TD.id = #{id}
 		</if>
 	</select>
 
