@@ -54,8 +54,10 @@ public class DoorController {
     public String doorManagementDetail(ModelMap model) throws Exception {
         //todo 세션처리
 
-        List<HashMap> scheduleList = doorService.getScheduleList();
-
+        // TODO : scheduleList, alarmGroupList 넘기기
+        HashMap map = new HashMap();
+        List<HashMap> scheduleList = doorService.getScheduleList(map);
+        System.out.println(scheduleList);
 
         return "cubox/door/doorManagementDetail";
     }

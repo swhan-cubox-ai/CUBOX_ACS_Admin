@@ -146,7 +146,7 @@
 
     // 속성 값 초기화
     function initDetail() {
-        $("#gatePath").text("");
+        $("#doorPath").text("");
         $("#doorNm").val("");
         $("option[name='selected']").prop("selected", true);
         $("#terminalCd").val("");
@@ -183,20 +183,17 @@
             dataType: "json",
             success: function(result) {
                 // TODO : 스케쥴, 알람그룹, 단말기코드, 단말기 관리번호, 권한그룹 가져오기
-                console.log("getGateDetail:"
-                    + result.doorInfo.id+"/"
-                    + result.doorInfo.door_nm+"/"
-                    + result.doorInfo.building_id+"/"
-                    + result.doorInfo.floor_id+"/"
-                    + result.doorInfo.sch_id+"/"
-                    + result.doorInfo.sch_nm+"/"
-                );
+                console.log(result);
+                let doorInfo = result.doorInfo;
+                // id/door_nm/building_id/floor_id/sch_id/sch_nm
+                // $("#doorPath").text(doorInfo.building_id + " > " + doorInfo.floor_id); // TODO : 이름으로
+                $("#doorNm").val(doorInfo.door_nm);
+                $("#doorSchedule").val(doorInfo.sch_nm); // 스케쥴 뿌려준 다음엔 sch_id로 변경
             }
         });
 
-        // 데이터 가지고 와서 뿌려주기
-        $("#gatePath").text("12 동 > D 구역 > 1층 > " + tmpSelf.html());
-        $("#doorNm").val(tmpSelf.html() + "_이름");
+        $("#doorPath").text("12 동 > D 구역 > 1층 > " + tmpSelf.html());
+        // $("#doorNm").val(tmpSelf.html() + "_이름");
         $("#terminalCd").val(tmpSelf.html() + "_코드");
         $("#mgmtNum").val(tmpSelf.html() + "_관리번호");
         $("#doorGroup").val(tmpSelf.html() + "_권한그룹");
@@ -457,7 +454,7 @@
 
                     <tbody class="gateDetailList" style="display: none;">
                     <tr>
-                        <td colspan="2" style="font-size: 17px; text-align: left; padding-left: 20px"><b id="gatePath"></b></td>
+                        <td colspan="2" style="font-size: 17px; text-align: left; padding-left: 20px"><b id="doorPath"></b></td>
                     </tr>
                     <tr>
                         <th>출입문 명</th>
@@ -471,8 +468,9 @@
                         <td>
                             <select name="doorEdit" id="doorSchedule" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
-                                <option value="#">12동 현관</option>
-                                <option value="#">4동 현관</option>
+                                <option value="12동 현관">12동 현관</option>
+                                <option value="테스트 스케쥴1">테스트 스케쥴1</option>
+                                <option value="4동 현관">4동 현관</option>
                             </select>
                         </td>
                     </tr>
