@@ -131,13 +131,7 @@
         if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
             // TODO : 출입문 저장 로직
 
-            let doorSel = $("input[name=chkDoorConf]");
-            doorSel.each(function(i) {
-                let el = doorSel.eq(i).closest("tr").children().last().html();
-                let tag = "<tr><td>" + el + "</td></tr>";
-                $("#selDoorList").append(tag);
-            });
-            $("#alDoorCnt").val(doorSel.length);
+            $("#alDoorCnt").val($("input[name=chkDoorConf]").length);
         }
     }
 
