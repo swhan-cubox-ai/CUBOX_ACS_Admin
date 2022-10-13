@@ -66,7 +66,7 @@
 
 <script type="text/javascript">
 
-    let tmpSelf;
+    let doorId;
 
     $(function () {
         $(".title_tx").html("출입문 관리");
@@ -185,9 +185,8 @@
     }
 
     // 속성 뿌려주기
-    function getGateDetail(self) {
-        tmpSelf = $(self); // TODO : id 넘기기
-        console.log(tmpSelf);
+    function getGateDetail(dId) {
+        doorId = dId // TODO : id 넘기기
 
         initDetail();
         fnCancelEdit();
@@ -197,24 +196,23 @@
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/detail.do' />",
-            data: {doorId: "1"},
+            data: { doorId: doorId },
             dataType: "json",
             success: function (result) {
-                // TODO : 스케쥴, 알람그룹, 단말기코드, 단말기 관리번호, 권한그룹 가져오기
+                // TODO : 알람그룹,권한그룹 가져오기
                 console.log(result);
-                let doorInfo = result.doorInfo;
-                // id/door_nm/building_id/floor_id/sch_id/sch_nm
-                // $("#doorPath").text(doorInfo.building_id + " > " + doorInfo.floor_id); // TODO : 이름으로
-                $("#doorNm").val(doorInfo.door_nm);
-                $("#doorSchedule").val(doorInfo.sch_nm); // 스케쥴 뿌려준 다음엔 sch_id로 변경
+                let dInfo = result.doorInfo;
+                $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));  // 경로
+                $("#doorNm").val(dInfo.door_nm);                            // 출입문 명
+                $("#dBuilding").val(dInfo.building_id);                     // 빌딩
+                $("#dArea").val(dInfo.area_id);                             // 구역
+                $("#dFloor").val(dInfo.floor_id);                           // 층
+                $("#doorSchedule").val(dInfo.sch_id);                       // 스케쥴
+                $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
+                $("#mgmtNum").val(dInfo.mgmt_num);                          // 단말기 관리번호
             }
         });
 
-        $("#doorPath").text("12 동 > D 구역 > 1층 > " + tmpSelf.html());
-        // $("#doorNm").val(tmpSelf.html() + "_이름");
-        $("#terminalCd").val(tmpSelf.html() + "_코드");
-        $("#mgmtNum").val(tmpSelf.html() + "_관리번호");
-        $("#doorGroup").val(tmpSelf.html() + "_권한그룹");
     }
 
     // 출입문 관리 - 취소
@@ -247,27 +245,33 @@
         initDetail();
         viewDetail();
         $("#doorNm").focus();
+        $(".nodeSel").toggleClass("nodeSel node");
+        doorId = "";
         // $("option[name='selected']").prop("selected", true);
     }
 
     // 출입문 관리 - 취소
     function fnCancel() {
-        if (tmpSelf == undefined || tmpSelf == null) {
+        if (doorId === undefined || doorId === "") {
             // 추가 저장 시 취소
             initDetail();
             hideDetail();
         } else {
             // 수정 시 취소
-            getGateDetail(tmpSelf);
+            getGateDetail(doorId);
         }
     }
 
     // 출입문 관리 - 수정 저장 확인
     function fnSave() {
-        alert("수정사항을 저장하시겠습니까?");
         if (fnIsEmpty($("#doorNm").val())) {
             alert("출입문 명칭을 입력하세요.");
             $("#doorNm").focus();
+            return;
+        }
+        if (fnIsEmpty($("#dBuilding"))) {
+            alert("빌딩을 선택해주세요");
+            $("#dBuilding").focus();
             return;
         }
         if (fnIsEmpty($("#doorSchedule"))) {
@@ -410,6 +414,7 @@
             url: "<c:url value='/door/list.do' />",
             success: function (result) {
                 console.log(result);
+                // tree 생성
                 createTree(true, result, $("#treeDiv"));
             }
         });
@@ -424,8 +429,6 @@
     function fnGetTerminalListAjax(param1, param2) {
 
         console.log("fnGetTerminalListAjax");
-        console.log(param1);
-        console.log(param2);
 
         $.ajax({
             type: "GET",
@@ -547,6 +550,9 @@
                         <td>
                             <select name="doorEdit" id="dBuilding" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
+                                <c:forEach items="${buildingList}" var="building" varStatus="status">
+                                    <option value='<c:out value="${building.id}"/>'><c:out value="${building.building_nm}"/></option>
+                                </c:forEach>
                             </select>
                         </td>
                     </tr>
@@ -555,6 +561,9 @@
                         <td>
                             <select name="doorEdit" id="dArea" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
+                                <c:forEach items="${areaList}" var="area" varStatus="status">
+                                    <option value='<c:out value="${area.id}"/>'><c:out value="${area.area_nm}"/></option>
+                                </c:forEach>
                             </select>
                         </td>
                     </tr>
@@ -563,10 +572,12 @@
                         <td>
                             <select name="doorEdit" id="dFloor" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
+                                <c:forEach items="${floorList}" var="floor" varStatus="status">
+                                    <option value='<c:out value="${floor.id}"/>'><c:out value="${floor.floor_nm}"/></option>
+                                </c:forEach>
                             </select>
                         </td>
                     </tr>
-
                     <tr>
                         <th>스케쥴</th>
                         <td>
