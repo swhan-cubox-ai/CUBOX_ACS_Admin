@@ -152,6 +152,9 @@
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
 		   AND TD.id = #{id}
 		</if>
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+			AND TD.nm like CONCAT('%',#{keyword},'%')
+		</if>
 	</select>
 
 
@@ -395,7 +398,7 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 
 
 	<insert id="insertDoorAlarmGrp" parameterType="HashMap">
-		INSERT
+	  INSERT
 		INTO T_DOORALARM_GRP
 		   ( id
 		   , nm

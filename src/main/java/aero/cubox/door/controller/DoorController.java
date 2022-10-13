@@ -89,6 +89,7 @@ public class DoorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
+        String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
         HashMap parmaMap = new HashMap();
 
         List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
@@ -96,6 +97,11 @@ public class DoorController {
         List<Map> areaList = doorService.getAreaList(parmaMap);           //지역 목록
         List<HashMap> floorList = doorService.getFloorList(parmaMap);     //층 목록
         List<Map> doorList = doorService.getDoorList(parmaMap);           //출입문 목록
+
+        if ( keyword.length() > 0){
+            param.put("keyword",keyword);
+        }
+
 
         model.addAttribute("workplaceList", workplaceList);
         model.addAttribute("buildingList", buildingList);
