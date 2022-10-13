@@ -92,21 +92,22 @@ public class DoorController {
         String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
         HashMap parmaMap = new HashMap();
 
+        if( keyword.length() > 0){
+            parmaMap.put("keyword",keyword);
+        }
+
         List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
         List<Map> buildingList = doorService.getBuildingList(parmaMap);   //빌딩 목록
         List<Map> areaList = doorService.getAreaList(parmaMap);           //지역 목록
         List<HashMap> floorList = doorService.getFloorList(parmaMap);     //층 목록
+
         List<Map> doorList = doorService.getDoorList(parmaMap);           //출입문 목록
-
-        if ( keyword.length() > 0){
-            param.put("keyword",keyword);
-        }
-
 
         model.addAttribute("workplaceList", workplaceList);
         model.addAttribute("buildingList", buildingList);
         model.addAttribute("areaList", areaList);
         model.addAttribute("floorList", floorList);
+
         modelAndView.addObject("doorList", doorList);
 
         return modelAndView;
@@ -300,6 +301,13 @@ public class DoorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
+        String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+        HashMap parmaMap = new HashMap();
+
+        if( keyword.length() > 0){
+            parmaMap.put("keyword",keyword);
+        }
+
         List<HashMap> doorGroupList = doorService.getDoorGroupList(commandMap);
 
         modelAndView.addObject("doorGroupList", doorGroupList);
@@ -382,7 +390,14 @@ public class DoorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        List<HashMap> scheduleList = doorService.getScheduleList(commandMap);
+        String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+        HashMap parmaMap = new HashMap();
+
+        if( keyword.length() > 0){
+            parmaMap.put("keyword",keyword);
+        }
+
+        List<HashMap> scheduleList = doorService.getScheduleList(parmaMap);
         modelAndView.addObject("scheduleList", scheduleList);
 
         return modelAndView;
@@ -452,12 +467,10 @@ public class DoorController {
      * @throws Exception
      */
     @RequestMapping(value = "/schedule/day/add.do", method = RequestMethod.POST)
-    public ModelAndView addScheduleByDay(ModelMap
-                                                 model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    public ModelAndView addScheduleByDay(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
-
 
         String resultCode = "Y";
         try {
@@ -483,8 +496,7 @@ public class DoorController {
      * @throws Exception
      */
     @RequestMapping(value = "/schedule/delete.do")
-    public ModelAndView deleteSchedule(ModelMap
-                                               model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    public ModelAndView deleteSchedule(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -496,13 +508,47 @@ public class DoorController {
         return modelAndView;
     }
 
-    // 출입문 알람 그룹
+    /**
+     * 출입문 알람 그룹 화면
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/alarmGroup/listView.do")
     public String showAlarmGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
             Exception {
         //todo 세션처리
 
         return "cubox/door/alarmGroupList";
+    }
+
+    /**
+     * 출입문 알람 그룹 목록 조회
+     *
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/alarmGroup/list.do")
+    public ModelAndView getAlarmGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+        HashMap parmaMap = new HashMap();
+
+        if( keyword.length() > 0){
+            parmaMap.put("keyword",keyword);
+        }
+
+        List<HashMap> alarmGroupList = doorService.getDoorAlarmGrpList(parmaMap);
+        modelAndView.addObject("alarmGroupList", alarmGroupList);
+
+        return modelAndView;
     }
 
     // 출입문 알람 그룹 상세
@@ -530,16 +576,16 @@ public class DoorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        String resultMsg = "success";
+        String resultCode = "Y";
         try {
 
             doorService.addDoorGroup(commandMap);
         } catch (Exception e) {
             e.getStackTrace();
-            resultMsg = "fail";
+            resultCode = "N";
         }
 
-        modelAndView.addObject("result", resultMsg);
+        modelAndView.addObject("resultCode", resultCode);
 
         return modelAndView;
     }
@@ -658,5 +704,45 @@ public class DoorController {
 
         return modelAndView;
     }
+
+
+    /**
+     *
+     *
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/area/list.do", method = RequestMethod.GET)
+    public ModelAndView getAreaList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        List<HashMap> areaList = doorService.getAreaList(commandMap);
+
+        modelAndView.addObject("areaList", areaList);
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/floor/list.do", method = RequestMethod.GET)
+    public ModelAndView getFloorList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        List<HashMap> floorList = doorService.getFloorList(commandMap);
+
+        modelAndView.addObject("floorList", floorList);
+
+        return modelAndView;
+    }
+
+
+
 
 }

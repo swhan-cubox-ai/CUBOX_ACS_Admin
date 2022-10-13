@@ -23,10 +23,32 @@
 <script type="text/javascript">
     $(function() {
         $(".title_tx").html("출입문 알람 그룹 - 목록");
+
+        fnGetAlarmGroupListAjax();
+
+        $("#searchBtn").click(function() {
+            //param1 : 검색어, param2 : 출입문 미등록 체크박스 value값 Y or N
+            fnGetAlarmGroupListAjax( $("#srchAlarmGroup").val()  );
+        });
+
     });
 
     function fnDetail(self) {
         location.href = "/door/alarmGroup/detail.do";
+    }
+
+    function fnGetAlarmGroupListAjax(param1) {
+        console.log("fnGetScheduleListAjax");
+
+        $.ajax({
+            type: "GET",
+            data: { keyword: param1},
+            dataType: "json",
+            url: "<c:url value='/door/alarmGroup/list.do' />",
+            success: function (result) {
+                console.log("ajax success-[alarmGroupListAjax]" + result.scheduleList);
+            }
+        });
     }
 </script>
 
@@ -39,7 +61,7 @@
             </div>
             <div class="comm_search ml_40">
                 <%--                <div class="search_btn2" onclick="pageSearch('1')"></div>--%>
-                <div class="search_btn2"></div>
+                <div class="search_btn2" id="searchBtn"></div>
             </div>
         </div>
     </div>

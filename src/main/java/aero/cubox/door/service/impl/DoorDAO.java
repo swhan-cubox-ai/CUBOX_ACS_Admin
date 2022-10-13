@@ -34,15 +34,15 @@ public class DoorDAO extends EgovAbstractMapper {
 	}
 
 
-	public List<Map> getAreaList(Map<String, Object> commandMap) {
+	public List<HashMap> getAreaList(Map<String, Object> commandMap) {
 		return selectList(sqlNameSpace+"selectAreaList", commandMap);
 	}
 
-	public List<Map> getBuildingList(Map<String, Object> commandMap) {
+	public List<HashMap> getBuildingList(Map<String, Object> commandMap) {
 		return selectList(sqlNameSpace+"selectBuildingList", commandMap);
 	}
 
-	public List<Map> getWorkplaceList(Map<String, Object> commandMap) {
+	public List<HashMap> getWorkplaceList(Map<String, Object> commandMap) {
 		return selectList(sqlNameSpace+"selectWorkplaceList", commandMap);
 	}
 

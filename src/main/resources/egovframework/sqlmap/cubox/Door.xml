@@ -109,8 +109,9 @@
 		       updated_at
 		  FROM T_FLOOR TF
 		 WHERE 1=1
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-		  AND TF.id = #{id}
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(areaId)'>
+		  AND TF.area_id = #{areaId}
+		  AND TF.building_id = #{buildingId}
 		</if>
 	</select>
 
@@ -123,8 +124,8 @@
 		       updated_at
 		  FROM T_AREA TA
 		 WHERE 1=1
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(building_id)'>
-		   AND TA.building_id = #{building_id}
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(buildingId)'>
+		   AND TA.building_id = #{buildingId}
 		</if>
 	</select>
 
@@ -209,6 +210,10 @@
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
 		   AND TDS.id = #{id}
+		</if>
+
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+			AND TDS.door_sch_nm like CONCAT('%',#{keyword},'%')
 		</if>
 	</select>
 
@@ -369,8 +374,6 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 
 	</select>
 
-
-
 	<select id="selectDoorAlarmGrpList"  parameterType="HashMap" resultType="HashMap">
 		SELECT TDG.id
 		     , TDG.nm
@@ -380,6 +383,9 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
 		   AND TDG.id = #{id}
+		</if>
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+			AND TDG.nm like CONCAT('%',#{keyword},'%')
 		</if>
 	</select>
 

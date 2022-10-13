@@ -18,11 +18,11 @@ public interface DoorService {
 
     void deleteDoor(Map<String, Object> commandMap);
 
-    List<Map> getAreaList(Map<String, Object> commandMap);
+    List<HashMap> getAreaList(Map<String, Object> commandMap);
 
-    List<Map> getBuildingList(Map<String, Object> commandMap);
+    List<HashMap> getBuildingList(Map<String, Object> commandMap);
 
-    List<Map> getWorkplaceList(Map<String, Object> commandMap);
+    List<HashMap> getWorkplaceList(Map<String, Object> commandMap);
 
     List<HashMap> getFloorList(Map<String, Object> commandMap);
 

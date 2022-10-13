@@ -71,7 +71,7 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
      * @return
      */
     @Override
-    public List<Map> getWorkplaceList(Map<String, Object> commandMap) {
+    public List<HashMap> getWorkplaceList(Map<String, Object> commandMap) {
 
         return doorDAO.getWorkplaceList(commandMap);
     }
@@ -82,7 +82,7 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
      * @return
      */
     @Override
-    public List<Map> getAreaList(Map<String, Object> commandMap) {
+    public List<HashMap> getAreaList(Map<String, Object> commandMap) {
 
         return doorDAO.getAreaList(commandMap);
     }
@@ -103,7 +103,7 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
      * @return
      */
     @Override
-    public List<Map> getBuildingList(Map<String, Object> commandMap) {
+    public List<HashMap> getBuildingList(Map<String, Object> commandMap) {
 
         return doorDAO.getBuildingList(commandMap);
     }

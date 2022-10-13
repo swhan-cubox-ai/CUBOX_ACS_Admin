@@ -23,10 +23,30 @@
 <script type="text/javascript">
     $(function() {
         $(".title_tx").html("출입문 스케쥴 - 목록");
+        fnGetScheduleListAjax();
+
+        $("#searchBtn").click(function() {
+            //param1 : 검색어, param2 : 출입문 미등록 체크박스 value값 Y or N
+            fnGetScheduleListAjax( $("#srchSchedule").val()  );
+        });
     });
 
     function fnDetail(self) {
         location.href = "/door/schedule/detail.do";
+    }
+
+    function fnGetScheduleListAjax(param1) {
+        console.log("fnGetScheduleListAjax");
+
+        $.ajax({
+            type: "GET",
+            data: { keyword: param1},
+            dataType: "json",
+            url: "<c:url value='/door/schedule/list.do' />",
+            success: function (result) {
+                console.log("ajax success-[getScheduleList]" + result.scheduleList);
+            }
+        });
     }
 </script>
 
@@ -35,11 +55,11 @@
     <div class="search_box mb_20 mt_20" style="width: 40%;">
         <div class="search_in" style="width: 100%;">
             <div class="comm_search ml_10 mr_10" style="width: 90%;">
-                <input type="text" class="input_com" id="srchGate" name="srchGate" value="" placeholder="출입문 스케쥴 명"/>
+                <input type="text" class="input_com" id="srchSchedule" name="srchSchedule" value="" placeholder="출입문 스케쥴 명"/>
             </div>
             <div class="comm_search ml_40">
                 <%--                <div class="search_btn2" onclick="pageSearch('1')"></div>--%>
-                <div class="search_btn2"></div>
+                <div class="search_btn2" id="searchBtn"></div>
             </div>
         </div>
     </div>
