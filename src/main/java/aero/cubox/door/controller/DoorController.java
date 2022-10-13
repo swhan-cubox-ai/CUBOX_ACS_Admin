@@ -46,22 +46,21 @@ public class DoorController {
 
     /**
      * 출입문관리 - view
+     *
      * @param model
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/management.do")
+    @RequestMapping(value = "/management.do")
     public String doorManagementDetail(ModelMap model) throws Exception {
         //todo 세션처리
 
         // TODO : scheduleList, alarmGroupList 넘기기
         HashMap parmaMap = new HashMap();
-
         List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
         List<Map> buildingList = doorService.getBuildingList(parmaMap);   //빌딩 목록
         List<Map> areaList = doorService.getAreaList(parmaMap);           //지역 목록
         List<HashMap> floorList = doorService.getFloorList(parmaMap);     //층 목록
-
         List<HashMap> scheduleList = doorService.getScheduleList(parmaMap);         //스케쥴 목록
         List<HashMap> doorAlarmGrpList = doorService.getDoorAlarmGrpList(parmaMap); // 출입물 알람 그룹 목록
 
@@ -69,7 +68,6 @@ public class DoorController {
         model.addAttribute("buildingList", buildingList);
         model.addAttribute("areaList", areaList);
         model.addAttribute("floorList", floorList);
-
         model.addAttribute("scheduleList", scheduleList);
         model.addAttribute("doorAlarmGrpList", doorAlarmGrpList);
 
@@ -79,21 +77,30 @@ public class DoorController {
 
     /**
      * 출입문 목록 조회
+     *
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/list.do", method= RequestMethod.GET)
+    @RequestMapping(value = "/list.do", method = RequestMethod.GET)
     public ModelAndView getDoorList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
+        HashMap parmaMap = new HashMap();
 
-        List<Map> doorList = doorService.getDoorList(commandMap);           //출입문 목록
+        List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
+        List<Map> buildingList = doorService.getBuildingList(parmaMap);   //빌딩 목록
+        List<Map> areaList = doorService.getAreaList(parmaMap);           //지역 목록
+        List<HashMap> floorList = doorService.getFloorList(parmaMap);     //층 목록
+        List<Map> doorList = doorService.getDoorList(parmaMap);           //출입문 목록
 
-
+        model.addAttribute("workplaceList", workplaceList);
+        model.addAttribute("buildingList", buildingList);
+        model.addAttribute("areaList", areaList);
+        model.addAttribute("floorList", floorList);
         modelAndView.addObject("doorList", doorList);
 
         return modelAndView;
@@ -101,22 +108,23 @@ public class DoorController {
 
     /**
      * 출입문 정보 조회
+     *
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/detail.do", method= RequestMethod.GET)
+    @RequestMapping(value = "/detail.do", method = RequestMethod.GET)
     public ModelAndView getDoorInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         LOGGER.debug("getDoor");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        LOGGER.debug("param doorId="+commandMap.get("doorId"));
+        LOGGER.debug("param doorId=" + commandMap.get("doorId"));
         HashMap<String, Object> param = new HashMap<String, Object>();
 
-        param.put("id", commandMap.get("doorId") );
+        param.put("id", commandMap.get("doorId"));
 
         HashMap doorInfo = (HashMap) doorService.getDoorDetail(param);
 
@@ -127,12 +135,13 @@ public class DoorController {
 
     /**
      * 출입문 정보 등록
+     *
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/add.do", method= RequestMethod.POST)
+    @RequestMapping(value = "/add.do", method = RequestMethod.POST)
     public ModelAndView addDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
         LOGGER.debug("출입문 등록");
 
@@ -151,10 +160,10 @@ public class DoorController {
 
         HashMap param = new HashMap();
 
-        param.put("doorNm", doorNm );
-        param.put("buildingId", buildingId );
-        param.put("areaId", areaId );
-        param.put("floorId", floorId );
+        param.put("doorNm", doorNm);
+        param.put("buildingId", buildingId);
+        param.put("areaId", areaId);
+        param.put("floorId", floorId);
         param.put("doorScheduleId", scheduleId);
         param.put("alarmGroupId", alarmGroupId);
         param.put("terminalCd", terminalCd);
@@ -164,7 +173,7 @@ public class DoorController {
         try {
             doorService.addDoor(param);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.getStackTrace();
             modelAndView.addObject("resultCode", "N");
         }
@@ -176,13 +185,15 @@ public class DoorController {
 
     /**
      * 출입문 정보 수정
+     *
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/update.do", method= RequestMethod.POST)
-    public ModelAndView updateDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/update.do", method = RequestMethod.POST)
+    public ModelAndView updateDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
@@ -199,11 +210,11 @@ public class DoorController {
 
         HashMap param = new HashMap();
 
-        param.put("doorId", doorId );
-        param.put("doorNm", doorNm );
-        param.put("buildingId", buildingId );
-        param.put("areaId", areaId );
-        param.put("floorId", floorId );
+        param.put("doorId", doorId);
+        param.put("doorNm", doorNm);
+        param.put("buildingId", buildingId);
+        param.put("areaId", areaId);
+        param.put("floorId", floorId);
         param.put("doorScheduleId", scheduleId);
         param.put("alarmGroupId", alarmGroupId);
         param.put("terminalCd", terminalCd);
@@ -213,7 +224,7 @@ public class DoorController {
         try {
             doorService.updateDoor(param);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.getStackTrace();
             modelAndView.addObject("resultCode", "N");
         }
@@ -225,13 +236,15 @@ public class DoorController {
 
     /**
      * 출입문 삭제
+     *
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/delete.do")
-    public ModelAndView deleteDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/delete.do")
+    public ModelAndView deleteDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -239,7 +252,7 @@ public class DoorController {
 
         try {
             doorService.deleteDoor(commandMap);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.getStackTrace();
             modelAndView.addObject("resultCode", "N");
         }
@@ -249,17 +262,17 @@ public class DoorController {
     }
 
 
-
-
     /**
      * 출입문 그룹 목록 조회
+     *
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/group/listView.do", method= RequestMethod.GET)
-    public String showDoorGroupListView(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/group/listView.do", method = RequestMethod.GET)
+    public String showDoorGroupListView(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
 
         //todo 세션
 
@@ -268,13 +281,15 @@ public class DoorController {
 
     /**
      * 출입문 그룹 목록 조회
+     *
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/group/list.do", method= RequestMethod.GET)
-    public ModelAndView getDoorGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/group/list.do", method = RequestMethod.GET)
+    public ModelAndView getDoorGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -288,8 +303,9 @@ public class DoorController {
 
 
     // 출입문 그룹 관리 상세
-    @RequestMapping(value="/group/detail.do")
-    public String showGroupDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/group/detail.do")
+    public String showGroupDetail(ModelMap
+                                          model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
 //        HashMap doorGroupDetail = doorService.getDoorGroupDetail(commandMap);
 
@@ -297,15 +313,18 @@ public class DoorController {
     }
 
     // 출입문 그룹 관리 등록화면
-    @RequestMapping(value = "/group/addView.do", method= RequestMethod.GET)
-    public String showGroupAddView(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/group/addView.do", method = RequestMethod.GET)
+    public String showGroupAddView(ModelMap
+                                           model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
 
         return "cubox/door/groupAdd";
     }
+
     // 출입문 그룹 관리 등록/수정
-    @RequestMapping(value = "/group/add.do", method= RequestMethod.POST)
-    public ModelAndView addGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/group/add.do", method = RequestMethod.POST)
+    public ModelAndView addGroup(ModelMap
+                                         model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -313,13 +332,13 @@ public class DoorController {
         String resultCode = "Y";
         try {
 
-        doorService.addDoorGroup(commandMap);
-        } catch (Exception e){
+            doorService.addDoorGroup(commandMap);
+        } catch (Exception e) {
             e.getStackTrace();
             resultCode = "N";
         }
 
-        modelAndView.addObject( "resultCode", resultCode);
+        modelAndView.addObject("resultCode", resultCode);
 
         return modelAndView;
     }
@@ -327,13 +346,15 @@ public class DoorController {
 
     /**
      * 스케줄 관리 - view
+     *
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/schedule/listView.do", method= RequestMethod.GET)
-    public String showScheduleList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/schedule/listView.do", method = RequestMethod.GET)
+    public String showScheduleList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
         //todo 세션처리
 
         return "cubox/door/scheduleList";
@@ -342,13 +363,15 @@ public class DoorController {
 
     /**
      * 스케줄 목록 조회
+     *
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/schedule/list.do")
-    public ModelAndView getScheduleList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/schedule/list.do")
+    public ModelAndView getScheduleList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -361,20 +384,23 @@ public class DoorController {
 
     /**
      * 스케쥴 추가
+     *
      * @param model
      * @param commandMap
      * @param redirectAttributes
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/schedule/addView.do", method= RequestMethod.GET)
-    public String showScheduleAddView(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/schedule/addView.do", method = RequestMethod.GET)
+    public String showScheduleAddView(ModelMap
+                                              model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         return "cubox/door/scheduleAdd";
     }
 
-    @RequestMapping(value = "/schedule/add.do", method= RequestMethod.POST)
-    public ModelAndView addSchedule(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/schedule/add.do", method = RequestMethod.POST)
+    public ModelAndView addSchedule(ModelMap
+                                            model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -382,28 +408,29 @@ public class DoorController {
         String resultCode = "Y";
         try {
             doorService.addSchedule(commandMap);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.getStackTrace();
-            resultCode= "N";
+            resultCode = "N";
         }
 
-        modelAndView.addObject( "resultCode", resultCode);
+        modelAndView.addObject("resultCode", resultCode);
 
         return modelAndView;
     }
 
 
-
     /**
      * 스케줄 목록 상세
+     *
      * @param model
      * @param commandMap
      * @param redirectAttributes
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/schedule/detail.do")
-    public String showScheduleDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/schedule/detail.do")
+    public String showScheduleDetail(ModelMap
+                                             model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         return "cubox/door/scheduleDetail";
     }
@@ -411,29 +438,30 @@ public class DoorController {
 
     /**
      * 요일별 스케쥴 등록
+     *
      * @param model
      * @param commandMap
      * @param redirectAttributes
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/schedule/day/add.do", method= RequestMethod.POST)
-    public ModelAndView addScheduleByDay(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/schedule/day/add.do", method = RequestMethod.POST)
+    public ModelAndView addScheduleByDay(ModelMap
+                                                 model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
 
-
         String resultCode = "Y";
         try {
             doorService.addScheduleByDay(commandMap);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.getStackTrace();
             resultCode = "N";
         }
 
-        modelAndView.addObject( "resultCode", resultCode);
+        modelAndView.addObject("resultCode", resultCode);
 
         return modelAndView;
     }
@@ -441,19 +469,21 @@ public class DoorController {
 
     /**
      * 스케줄 삭제
+     *
      * @param model
      * @param commandMap
      * @param redirectAttributes
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/schedule/delete.do")
-    public ModelAndView deleteSchedule(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/schedule/delete.do")
+    public ModelAndView deleteSchedule(ModelMap
+                                               model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        String resultCode= "N";
+        String resultCode = "N";
 
         resultCode = "Y";
         model.addAttribute("resultCode", resultCode);
@@ -461,45 +491,49 @@ public class DoorController {
     }
 
     // 출입문 알람 그룹
-    @RequestMapping(value="/alarmGroup/listView.do")
-    public String showAlarmGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/alarmGroup/listView.do")
+    public String showAlarmGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
         //todo 세션처리
 
         return "cubox/door/alarmGroupList";
     }
 
     // 출입문 알람 그룹 상세
-    @RequestMapping(value="/alarmGroup/detail.do")
-    public String showAlarmDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/alarmGroup/detail.do")
+    public String showAlarmDetail(ModelMap
+                                          model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         return "cubox/door/alarmGroupDetail";
     }
 
     // 출입문 알람 그룹 등록 화면
-    @RequestMapping(value = "/alarmGroup/addView.do", method= RequestMethod.GET)
-    public String showAlarmGroupAddView(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/alarmGroup/addView.do", method = RequestMethod.GET)
+    public String showAlarmGroupAddView(ModelMap
+                                                model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         return "cubox/door/alarmAdd";
     }
 
 
     // 출입문 알람 그룹 등록
-    @RequestMapping(value = "/alarmGroup/add.do", method= RequestMethod.POST)
-    public ModelAndView addAalarmGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/alarmGroup/add.do", method = RequestMethod.POST)
+    public ModelAndView addAalarmGroup(ModelMap
+                                               model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
         String resultMsg = "success";
-        try{
+        try {
 
             doorService.addDoorGroup(commandMap);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.getStackTrace();
             resultMsg = "fail";
         }
 
-        modelAndView.addObject( "result", resultMsg);
+        modelAndView.addObject("result", resultMsg);
 
         return modelAndView;
     }
@@ -507,13 +541,15 @@ public class DoorController {
 
     /**
      * 단말기 목록 조회(검색)
+     *
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/terminal/list.do", method= RequestMethod.GET)
-    public ModelAndView searchTerminal(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/terminal/list.do", method = RequestMethod.GET)
+    public ModelAndView searchTerminal(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -525,12 +561,12 @@ public class DoorController {
 
             HashMap param = new HashMap<>();
 
-            if ( keyword.length() > 0){
-                param.put("keyword",keyword);
+            if (keyword.length() > 0) {
+                param.put("keyword", keyword);
             }
 
-            if ( registrationionStatus.length() > 0){
-                param.put("registrationionStatus",registrationionStatus);
+            if (registrationionStatus.length() > 0) {
+                param.put("registrationionStatus", registrationionStatus);
 
             }
 
@@ -548,13 +584,15 @@ public class DoorController {
 
     /**
      * 권한 그룹 목록 조회
+     *
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/authGroup/list.do", method= RequestMethod.GET)
-    public ModelAndView authGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/authGroup/list.do", method = RequestMethod.GET)
+    public ModelAndView authGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -593,10 +631,10 @@ public class DoorController {
     }
 
 
-
     // 일괄 등록 양식 다운로드(출입문)
-    @RequestMapping(value="/batch/registrationForm.do")
-    public ModelAndView downloadRegistrationForm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/batch/registrationForm.do")
+    public ModelAndView downloadRegistrationForm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -605,8 +643,9 @@ public class DoorController {
     }
 
     // 일괄 등록 (출입문 Excel)
-    @RequestMapping(value="/batch/insert.do")
-    public ModelAndView insertBatch(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/batch/insert.do")
+    public ModelAndView insertBatch(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
