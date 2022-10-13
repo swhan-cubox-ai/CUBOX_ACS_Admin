@@ -235,58 +235,43 @@ function fnvalichk (event) {
  *    ////////////////////////////////////////////////////////////////////////////////
 **/
 function createTree(isMngmt, result, treeDiv) {
-	let fnName = "getGateDetail(this);";
+	let fnName = "getGateDetail(this.id);";
 
 	d = new dTree('d'); //dtree선언
 
-	// if (result.workplaceList.length > 0) { // workplace
-		console.log( "workplaceList>>");
-		$.each(result.workplaceList, function(i, workplace) {
+	if (result.workplaceList.length > 0) {
+		$.each(result.workplaceList, function(i, workplace) { // workplace
 			d.add("w_" + workplace.id, -1, workplace.workplace_nm);
 
-			// if (result.buildingList.length > 0) { // building
-				$.each(result.buildingList, function(j, building) {
-					if (building.workplace_id === workplace.id) {
-						d.add("b_" + building.id, "w_" + workplace.id, building.building_nm, '','','','/img/folder.gif');
+			$.each(result.buildingList, function(j, building) { // building
+				if (building.workplace_id === workplace.id) {
+					d.add("b_" + building.id, "w_" + workplace.id, building.building_nm, '','','','/img/folder.gif');
 
-						// if (result.floorList.length > 0) { // floor
-							$.each(result.floorList, function(k, floor) {
-								if (floor.building_id === building.id) {
-									d.add("f_" + floor.id, "b_" + building.id, floor.floor_nm, '','','','/img/folder.gif');
+					$.each(result.areaList, function(k, area) {
+						if (area.building_id === building.id) {
+							d.add("a_" + area.id, "b_" + building.id, area.area_nm, '','','','/img/folder.gif');
 
-									// if (result.doorList.length > 0) { // door
-										$.each(result.doorList, function(l, door) {
-											if (door.floor_id === floor.id) {
-												let tag = "";
-												if (isMngmt) { 	// 출입문관리일 경우
-													tag = '<span onclick="' + fnName + '">' + door.door_nm + '</span>';
-												} else {  // 그 외(그룹관리, 알람그룹)
-													tag = door.door_nm;
-												}
-												d.add("d_" + door.id, "f_" + floor.id, tag, "#", '','','/img/page.gif');
+							$.each(result.floorList, function(l, floor) { // floor
+								if (floor.area_id === area.id) {
+									d.add("f_" + floor.id, "a_" + area.id, floor.floor_nm, '','','','/img/folder.gif');
+
+									$.each(result.doorList, function(m, door) { // door
+										if (door.floor_id === floor.id) {
+											let tag = "";
+											if (isMngmt) { 	// 출입문관리일 경우
+												tag = '<span id="' + door.id + '" onclick="' + fnName + '">' + door.door_nm + '</span>';
+											} else {  // 그 외(그룹관리, 알람그룹)
+												tag = door.door_nm;
 											}
-										});
-									// }
+											d.add("d_" + door.id, "f_" + floor.id, tag, "#", '','','/img/page.gif');
+										}
+									});
 								}
 							});
-						// }
-					}
-				});
-			// }
-		});
-	// }
-
-	console.log( "buildingList>>");
-	if(result.buildingList.length > 0) {
-		$.each(result.buildingList, function(i){
-			console.log(result.buildingList[i].id +" / "+ result.buildingList[i].building_nm);
-		});
-	}
-
-	console.log( "doorList>>");
-	if(result.doorList.length > 0) {
-		$.each(result.doorList, function(i){
-			console.log(result.doorList[i].id +" / "+ result.doorList[i].door_nm);
+						}
+					});
+				}
+			});
 		});
 	}
 
