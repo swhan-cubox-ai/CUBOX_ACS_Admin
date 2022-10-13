@@ -239,22 +239,22 @@ function createTree(isMngmt, result, treeDiv) {
 
 	d = new dTree('d'); //dtree선언
 
-	if(result.workplaceList.length > 0) { // workplace
+	// if (result.workplaceList.length > 0) { // workplace
 		console.log( "workplaceList>>");
 		$.each(result.workplaceList, function(i, workplace) {
 			d.add("w_" + workplace.id, -1, workplace.workplace_nm);
 
-			if(result.buildingList.length > 0) { // building
+			// if (result.buildingList.length > 0) { // building
 				$.each(result.buildingList, function(j, building) {
 					if (building.workplace_id === workplace.id) {
-						d.add("b_" + building.id, "w_" + workplace.id, building.building_nm);
+						d.add("b_" + building.id, "w_" + workplace.id, building.building_nm, '','','','/img/folder.gif');
 
-						if (result.floorList.length > 0) { // floor
+						// if (result.floorList.length > 0) { // floor
 							$.each(result.floorList, function(k, floor) {
 								if (floor.building_id === building.id) {
-									d.add("f_" + floor.id, "b_" + building.id, floor.floor_nm);
+									d.add("f_" + floor.id, "b_" + building.id, floor.floor_nm, '','','','/img/folder.gif');
 
-									if (result.doorList.length > 0) { // door
+									// if (result.doorList.length > 0) { // door
 										$.each(result.doorList, function(l, door) {
 											if (door.floor_id === floor.id) {
 												let tag = "";
@@ -263,18 +263,18 @@ function createTree(isMngmt, result, treeDiv) {
 												} else {  // 그 외(그룹관리, 알람그룹)
 													tag = door.door_nm;
 												}
-												d.add("d_" + door.id, "f_" + floor.id, tag, "#");
+												d.add("d_" + door.id, "f_" + floor.id, tag, "#", '','','/img/page.gif');
 											}
 										});
-									}
+									// }
 								}
 							});
-						}
+						// }
 					}
 				});
-			}
+			// }
 		});
-	}
+	// }
 
 	console.log( "buildingList>>");
 	if(result.buildingList.length > 0) {
@@ -291,6 +291,7 @@ function createTree(isMngmt, result, treeDiv) {
 	}
 
 	treeDiv.html(d.toString());
+	$(".nodeSel").toggleClass("nodeSel node");
 	d.openAll();
 
 	// let data = [
