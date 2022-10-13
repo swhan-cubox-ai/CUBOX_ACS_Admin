@@ -1,6 +1,8 @@
 package aero.cubox.door.controller;
 
+import aero.cubox.auth.service.AuthService;
 import aero.cubox.cmmn.service.CommonService;
+import aero.cubox.core.vo.AuthVO;
 import aero.cubox.core.vo.CommonVO;
 import aero.cubox.core.vo.PaginationVO;
 import aero.cubox.core.vo.TerminalVO;
@@ -30,17 +32,21 @@ import java.util.Map;
 @RequestMapping(value = "/door/")
 public class DoorController {
 
+    @Resource(name = "commonUtils")
+    private CommonUtils commonUtils;
+
+    @Resource(name = "commonService")
+    private CommonService commonService;
+
     @Resource(name = "doorService")
     private DoorService doorService;
 
-    @Resource(name = "commonUtils")
-    private CommonUtils commonUtils;
 
     @Resource(name = "terminalService")
     private TerminalService terminalService;
 
-    @Resource(name = "commonService")
-    private CommonService commonService;
+    @Resource(name = "authService")
+    private AuthService authService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DoorController.class);
 
@@ -634,55 +640,6 @@ public class DoorController {
     }
 
 
-    /**
-     * 권한 그룹 목록 조회
-     *
-     * @param model
-     * @param commandMap
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping(value = "/authGroup/list.do", method = RequestMethod.GET)
-    public ModelAndView authGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
-            Exception {
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("jsonView");
-
-        try {
-            TerminalVO vo = new TerminalVO();
-
-            String srchPage = StringUtil.nvl(commandMap.get("srchPage"), "1");
-            String srchRecPerPage = StringUtil.nvl(commandMap.get("srchRecPerPage"), "10");
-            String srchCond1 = StringUtil.nvl(commandMap.get("srchCond1"), "");
-            String srchCond2 = StringUtil.nvl(commandMap.get("srchCond2"), "");
-            String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
-
-            vo.setSrchPage(Integer.parseInt(srchPage));
-            vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
-            vo.autoOffset();
-
-            vo.setSrchCond1(srchCond1);
-            vo.setSrchCond2(srchCond2);
-            vo.setKeyword(keyword);
-
-            List<CommonVO> authGroupTypCombList = commonService.getCommonCodeList("");
-
-            List<TerminalVO> authGroupList = null;
-
-            model.addAttribute("authGroupList", authGroupList);
-            model.addAttribute("data", vo);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            modelAndView.addObject("message", e.getMessage());
-        }
-
-        return modelAndView;
-
-    }
-
-
     // 일괄 등록 양식 다운로드(출입문)
     @RequestMapping(value = "/batch/registrationForm.do")
     public ModelAndView downloadRegistrationForm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
@@ -707,8 +664,7 @@ public class DoorController {
 
 
     /**
-     *
-     *
+     * 구역 목록 조회
      * @param model
      * @param commandMap
      * @return
@@ -728,6 +684,13 @@ public class DoorController {
         return modelAndView;
     }
 
+    /**
+     * 층 목록 조회
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/floor/list.do", method = RequestMethod.GET)
     public ModelAndView getFloorList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
             Exception {
@@ -742,6 +705,31 @@ public class DoorController {
         return modelAndView;
     }
 
+    /**
+     * 권한 그룹 목록 조회
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/authGroup/list.do", method = RequestMethod.GET)
+    public ModelAndView getAuthList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
+            Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        AuthVO vo = new AuthVO();
+
+        String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+
+        vo.setKeyword(keyword);
+        List<AuthVO> authList = authService.getAuthList(vo);
+
+        modelAndView.addObject("authList", authList);
+
+        return modelAndView;
+    }
 
 
 

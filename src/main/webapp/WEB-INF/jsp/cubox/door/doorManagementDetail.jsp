@@ -154,6 +154,12 @@
             fnGetTerminalListAjax($("#srchMachine").val(), chk);
         });
 
+        // 권한그룹 검색 버튼 클릭시 - 팝업
+        $("#searchAuthGroupBtn").click(function () {
+            //param1 : 검색어
+            fnGetAuthGroupListAjax( $("#srchAuth").val() );
+        });
+
     });
 
     // 속성 값 초기화
@@ -425,8 +431,8 @@
             type: "GET",
             url: "<c:url value='/door/terminal/list.do' />",
             data: {
-                keyword: param1
-                , registrationionStatus: param2
+                    keyword: param1
+                  , registrationionStatus: param2
             },
             dataType: "json",
             success: function (result) {
@@ -453,15 +459,14 @@
 
 
     /////////////////  권한그룹 목록 ajax - start  /////////////////////
+    function fnGetAuthGroupListAjax(param1) {
 
-
-    function fnGetAuthGroupListAjax() {
         console.log("fnGetAuthGroupListAjax");
-        let checkYn = "Y";
+
         $.ajax({
             type: "GET",
-            url: "<c:url value='/door/AuthGroup/list.do' />",
-            data: {checkYn: checkYn},
+            url: "<c:url value='/door/authGroup/list.do' />",
+            data: {keyword: param1},
             dataType: "json",
             success: function (result) {
                 console.log(result);
@@ -692,7 +697,7 @@
                     <input type="text" class="input_com" id="srchAuth" name="srchAuth" value="" placeholder="권한그룹명" maxlength="30" style="width: 765px;">
                 </div>
                 <div class="comm_search ml_40">
-                    <div class="search_btn2"></div>
+                    <div class="search_btn2" id="searchAuthGroupBtn"></div>
                 </div>
             </div>
         </div>
