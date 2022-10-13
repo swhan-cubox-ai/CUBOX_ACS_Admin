@@ -7,6 +7,7 @@ import java.util.Map;
 
 public interface DoorService {
 
+    //출입문
     List<Map> getDoorList(Map<String, Object> commandMap);
 
     Map getDoorDetail(Map<String, Object> commandMap);
@@ -26,7 +27,7 @@ public interface DoorService {
     List<HashMap> getFloorList(Map<String, Object> commandMap);
 
 
-    //출입문
+    //출입문 그룹
     List<HashMap> getDoorGroupList(Map<String, Object> commandMap);
 
     HashMap getDoorGroupDetail(Map<String, Object> commandMap);
@@ -34,6 +35,7 @@ public interface DoorService {
     void addDoorGroup(Map<String, Object> commandMap);
     void updateDoorGroup(Map<String, Object> commandMap);
     void deleteDoorGroup(Map<String, Object> commandMap);
+
 
     //출입문 스케쥴
     List<HashMap> getScheduleList(Map<String, Object> commandMap);
@@ -49,6 +51,15 @@ public interface DoorService {
     void addScheduleByDay(Map<String, Object> commandMap);
     void updateScheduleByDay(Map<String, Object> commandMap);
     void deleteScheduleByDay(Map<String, Object> commandMap);
+
+
+    //출입문 알람 그룹
+    List<HashMap> getDoorAlarmGrpList(Map<String, Object> commandMap);
+    HashMap getDoorAlarmGrpDetail(Map<String, Object> commandMap);
+    void addDoorAlarmGrp(Map<String, Object> commandMap);
+    void updateDoorAlarmGrp(Map<String, Object> commandMap);
+    void deleteDoorAlarmGrp(Map<String, Object> commandMap);
+
 
 
     //단말기

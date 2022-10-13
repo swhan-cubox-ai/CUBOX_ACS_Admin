@@ -121,4 +121,24 @@ public class DoorDAO extends EgovAbstractMapper {
 	public List<HashMap> getTerminalList(Map<String, Object> commandMap) {
 		return selectList(sqlNameSpace+"selectTerminalList", commandMap);
 	}
+
+	public List<HashMap> getDoorAlarmGrpList(Map<String, Object> commandMap) {
+		return selectList(sqlNameSpace+"selectDoorAlarmGrpList", commandMap);
+	}
+
+	public HashMap getDoorAlarmGrpDetail(Map<String, Object> commandMap) {
+		return selectOne(sqlNameSpace+"selectDoorAlarmGrpDetail", commandMap);
+	}
+
+	public void addDoorAlarmGrp(Map<String, Object> commandMap) {
+		insert(sqlNameSpace+"insertDoorAlarmGrp", commandMap);
+	}
+
+	public void updateDoorAlarmGrp(Map<String, Object> commandMap) {
+		update(sqlNameSpace+"updateDoorAlarmGrp", commandMap);
+	}
+
+	public void deleteDoorAlarmGrp(Map<String, Object> commandMap) {
+		delete(sqlNameSpace+"deleteDoorAlarmGrp", commandMap);
+	}
 }

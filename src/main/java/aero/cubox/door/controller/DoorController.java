@@ -55,9 +55,23 @@ public class DoorController {
         //todo 세션처리
 
         // TODO : scheduleList, alarmGroupList 넘기기
-        HashMap map = new HashMap();
-        List<HashMap> scheduleList = doorService.getScheduleList(map);
-        System.out.println(scheduleList);
+        HashMap parmaMap = new HashMap();
+
+        List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
+        List<Map> buildingList = doorService.getBuildingList(parmaMap);   //빌딩 목록
+        List<Map> areaList = doorService.getAreaList(parmaMap);           //지역 목록
+        List<HashMap> floorList = doorService.getFloorList(parmaMap);     //층 목록
+
+        List<HashMap> scheduleList = doorService.getScheduleList(parmaMap);         //스케쥴 목록
+        List<HashMap> doorAlarmGrpList = doorService.getDoorAlarmGrpList(parmaMap); // 출입물 알람 그룹 목록
+
+        model.addAttribute("workplaceList", workplaceList);
+        model.addAttribute("buildingList", buildingList);
+        model.addAttribute("areaList", areaList);
+        model.addAttribute("floorList", floorList);
+
+        model.addAttribute("scheduleList", scheduleList);
+        model.addAttribute("doorAlarmGrpList", doorAlarmGrpList);
 
         return "cubox/door/doorManagementDetail";
     }
@@ -76,15 +90,10 @@ public class DoorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        //List<Map> areaList = doorService.getAreaList(commandMap);
-        List<Map> workplaceList = doorService.getWorkplaceList(commandMap); //사업장 목록
-        List<Map> buildingList = doorService.getBuildingList(commandMap);   //빌딩 목록
-        List<HashMap> floorList = doorService.getFloorList(commandMap);     //층 목록
+
         List<Map> doorList = doorService.getDoorList(commandMap);           //출입문 목록
 
-        modelAndView.addObject("workplaceList", workplaceList);
-        modelAndView.addObject("buildingList", buildingList);
-        modelAndView.addObject("floorList", floorList);
+
         modelAndView.addObject("doorList", doorList);
 
         return modelAndView;

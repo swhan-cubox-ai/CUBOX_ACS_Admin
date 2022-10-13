@@ -243,6 +243,53 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         doorDAO.deleteScheduleByDay(commandMap);
     }
 
+    /**
+     * 출입문 알람그룹 목록 조회
+     * @param commandMap
+     * @return
+     */
+    @Override
+    public List<HashMap> getDoorAlarmGrpList(Map<String, Object> commandMap) {
+        return  doorDAO.getDoorAlarmGrpList(commandMap);
+    }
+
+    /**
+     * 출입문 알람그룹 상세
+     * @param commandMap
+     * @return
+     */
+    @Override
+    public HashMap getDoorAlarmGrpDetail(Map<String, Object> commandMap) {
+        return doorDAO.getDoorAlarmGrpDetail(commandMap);
+    }
+
+    /**
+     * 출입문 알람그룹 등록
+     * @param commandMap
+     */
+    @Override
+    public void addDoorAlarmGrp(Map<String, Object> commandMap) {
+        doorDAO.addDoorAlarmGrp(commandMap);
+    }
+
+    /**
+     * 출입문 알람그룹 수정
+     * @param commandMap
+     */
+    @Override
+    public void updateDoorAlarmGrp(Map<String, Object> commandMap) {
+        doorDAO.updateDoorAlarmGrp(commandMap);
+    }
+
+    /**
+     * 출입문 알람그룹 삭제
+     * @param commandMap
+     */
+    @Override
+    public void deleteDoorAlarmGrp(Map<String, Object> commandMap) {
+        doorDAO.deleteDoorAlarmGrp(commandMap);
+    }
+
 
     /**
      * 단말기 목록 조회
