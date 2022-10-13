@@ -133,7 +133,7 @@ public class DoorController {
 
         param.put("id", commandMap.get("doorId"));
 
-        HashMap doorInfo = (HashMap) doorService.getDoorDetail(param);
+        HashMap doorInfo = (HashMap) doorService.getDoorDetail(param); // TODO: 스케쥴 이름은 필요 없음
 
         modelAndView.addObject("doorInfo", doorInfo);
 
