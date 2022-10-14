@@ -66,7 +66,7 @@
 
 <script type="text/javascript">
 
-    let tmpSelf;
+    let doorId;
 
     $(function () {
         $(".title_tx").html("출입문 관리");
@@ -78,13 +78,47 @@
 
         fnAdd(); // 최초 등록 상태
 
-        $("input[name=checkAll]").click(function () {
-            if ($(this).prop("checked")) {
-                $("input[name=excelColumn]").prop("checked", true);
-            } else {
-                $("input[name=excelColumn]").prop("checked", false);
-            }
+        // 빌딩 선택 시,
+        $("#dBuilding").change(function() {
+            let val = $(this).val();
+
+            // 초기화
+            $(".dArea").css("display", "block");
+            $("#dArea option[name=selected]").prop("selected", true);
+            $("#dFloor option[name=selected]").prop("selected", true);
+
+            $("#dArea option").each(function(i, option) { // 빌딩 id와 구역과 area의 bId 속성이 같지 않으면 option에서 제거
+                console.log($(option).attr("bId"));
+                if (val != $(option).attr("bId")) {
+                    $(option).css("display", "none");
+                }
+            });
+            $("#dArea").prop("disabled", false);
         });
+
+        // 구역 선택 시,
+        $("#dArea").change(function() {
+            let val = $(this).val();
+
+            // 초기화
+            $(".dFloor").css("display", "block");
+            $("#dFloor option[name=selected]").prop("selected", true);
+
+            $("#dFloor option").each(function(i, option) {
+                if (val != $(option).attr("aId")) {
+                    $(option).css("display", "none");
+                }
+            });
+            $("#dFloor").prop("disabled", false);
+        });
+
+        // $("input[name=checkAll]").click(function () {
+        //     if ($(this).prop("checked")) {
+        //         $("input[name=excelColumn]").prop("checked", true);
+        //     } else {
+        //         $("input[name=excelColumn]").prop("checked", false);
+        //     }
+        // });
 
         // 단말기 선택 확인
         $('#doorPickConfirm').click(function () {
@@ -147,17 +181,10 @@
         });
 
         // 단말기 검색 버튼 클릭시
-        // 명칭은 테스트를 위한 가칭으로 필요시 수정해서 사용하세요
-        $("#searchTeminalBtn").click(function () {
-            //param1 : 검색어, param2 : 출입문 미등록 체크박스 value값 Y or N
-            let chk = "Y"
+        $("#btnSearchTerminal").click(function () {
+            // param1 : 검색어, param2 : 출입문 미등록 체크박스 value값 Y or N
+            let chk = "Y";
             fnGetTerminalListAjax($("#srchMachine").val(), chk);
-        });
-
-        // 권한그룹 검색 버튼 클릭시 - 팝업
-        $("#searchAuthGroupBtn").click(function () {
-            //param1 : 검색어
-            fnGetAuthGroupListAjax( $("#srchAuth").val() );
         });
 
     });
@@ -185,9 +212,8 @@
     }
 
     // 속성 뿌려주기
-    function getGateDetail(self) {
-        tmpSelf = $(self); // TODO : id 넘기기
-        console.log(tmpSelf);
+    function getGateDetail(dId) {
+        doorId = dId // TODO : id 넘기기
 
         initDetail();
         fnCancelEdit();
@@ -197,24 +223,23 @@
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/detail.do' />",
-            data: {doorId: "1"},
+            data: { doorId: doorId },
             dataType: "json",
             success: function (result) {
-                // TODO : 스케쥴, 알람그룹, 단말기코드, 단말기 관리번호, 권한그룹 가져오기
+                // TODO : 알람그룹,권한그룹 가져오기
                 console.log(result);
-                let doorInfo = result.doorInfo;
-                // id/door_nm/building_id/floor_id/sch_id/sch_nm
-                // $("#doorPath").text(doorInfo.building_id + " > " + doorInfo.floor_id); // TODO : 이름으로
-                $("#doorNm").val(doorInfo.door_nm);
-                $("#doorSchedule").val(doorInfo.sch_nm); // 스케쥴 뿌려준 다음엔 sch_id로 변경
+                let dInfo = result.doorInfo;
+                $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));  // 경로
+                $("#doorNm").val(dInfo.door_nm);                            // 출입문 명
+                $("#dBuilding").val(dInfo.building_id);                     // 빌딩
+                $("#dArea").val(dInfo.area_id);                             // 구역
+                $("#dFloor").val(dInfo.floor_id);                           // 층
+                $("#doorSchedule").val(dInfo.sch_id);                       // 스케쥴
+                $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
+                $("#mgmtNum").val(dInfo.mgmt_num);                          // 단말기 관리번호
             }
         });
 
-        $("#doorPath").text("12 동 > D 구역 > 1층 > " + tmpSelf.html());
-        // $("#doorNm").val(tmpSelf.html() + "_이름");
-        $("#terminalCd").val(tmpSelf.html() + "_코드");
-        $("#mgmtNum").val(tmpSelf.html() + "_관리번호");
-        $("#doorGroup").val(tmpSelf.html() + "_권한그룹");
     }
 
     // 출입문 관리 - 취소
@@ -247,27 +272,33 @@
         initDetail();
         viewDetail();
         $("#doorNm").focus();
+        $(".nodeSel").toggleClass("nodeSel node");
+        doorId = "";
         // $("option[name='selected']").prop("selected", true);
     }
 
     // 출입문 관리 - 취소
     function fnCancel() {
-        if (tmpSelf == undefined || tmpSelf == null) {
+        if (doorId === undefined || doorId === "") {
             // 추가 저장 시 취소
             initDetail();
             hideDetail();
         } else {
             // 수정 시 취소
-            getGateDetail(tmpSelf);
+            getGateDetail(doorId);
         }
     }
 
     // 출입문 관리 - 수정 저장 확인
     function fnSave() {
-        alert("수정사항을 저장하시겠습니까?");
         if (fnIsEmpty($("#doorNm").val())) {
             alert("출입문 명칭을 입력하세요.");
             $("#doorNm").focus();
+            return;
+        }
+        if (fnIsEmpty($("#dBuilding"))) {
+            alert("빌딩을 선택해주세요");
+            $("#dBuilding").focus();
             return;
         }
         if (fnIsEmpty($("#doorSchedule"))) {
@@ -410,6 +441,7 @@
             url: "<c:url value='/door/list.do' />",
             success: function (result) {
                 console.log(result);
+                // tree 생성
                 createTree(true, result, $("#treeDiv"));
             }
         });
@@ -424,15 +456,13 @@
     function fnGetTerminalListAjax(param1, param2) {
 
         console.log("fnGetTerminalListAjax");
-        console.log(param1);
-        console.log(param2);
 
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/terminal/list.do' />",
             data: {
-                    keyword: param1
-                  , registrationionStatus: param2
+                keyword: param1
+                , registrationionStatus: param2
             },
             dataType: "json",
             success: function (result) {
@@ -459,14 +489,15 @@
 
 
     /////////////////  권한그룹 목록 ajax - start  /////////////////////
-    function fnGetAuthGroupListAjax(param1) {
 
+
+    function fnGetAuthGroupListAjax() {
         console.log("fnGetAuthGroupListAjax");
-
+        let checkYn = "Y";
         $.ajax({
             type: "GET",
-            url: "<c:url value='/door/authGroup/list.do' />",
-            data: {keyword: param1},
+            url: "<c:url value='/door/AuthGroup/list.do' />",
+            data: {checkYn: checkYn},
             dataType: "json",
             success: function (result) {
                 console.log(result);
@@ -547,26 +578,35 @@
                         <td>
                             <select name="doorEdit" id="dBuilding" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
+                                <c:forEach items="${buildingList}" var="building" varStatus="status">
+                                    <option value='<c:out value="${building.id}"/>'><c:out value="${building.building_nm}"/></option>
+                                </c:forEach>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <th>구역</th>
                         <td>
-                            <select name="doorEdit" id="dArea" class="form-control" style="padding-left:10px;" disabled>
+                            <select name="dArea" id="dArea" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
+                                <c:forEach items="${areaList}" var="area" varStatus="status">
+                                    <option value='<c:out value="${area.id}"/>' class="dArea" bId='<c:out value="${area.building_id}"/>'>
+                                        <c:out value="${area.area_nm}"/></option>
+                                </c:forEach>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <th>층</th>
                         <td>
-                            <select name="doorEdit" id="dFloor" class="form-control" style="padding-left:10px;" disabled>
+                            <select name="dFloor" id="dFloor" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
+                                <c:forEach items="${floorList}" var="floor" varStatus="status">
+                                    <option value='<c:out value="${floor.id}"/>' class="dFloor" aId='<c:out value="${floor.area_id}"/>'><c:out value="${floor.floor_nm}"/></option>
+                                </c:forEach>
                             </select>
                         </td>
                     </tr>
-
                     <tr>
                         <th>스케쥴</th>
                         <td>
@@ -648,7 +688,7 @@
                     <label for="unregisteredDoor" class="ml_5" style="position: relative; top: -12px;">출입문 미등록</label><br>
                 </div>
                 <div class="comm_search ml_40">
-                    <div class="search_btn2" id="searchTeminalBtn"></div>
+                    <div class="search_btn2" id="btnSearchTerminal"></div>
                 </div>
             </div>
         </div>
@@ -697,7 +737,7 @@
                     <input type="text" class="input_com" id="srchAuth" name="srchAuth" value="" placeholder="권한그룹명" maxlength="30" style="width: 765px;">
                 </div>
                 <div class="comm_search ml_40">
-                    <div class="search_btn2" id="searchAuthGroupBtn"></div>
+                    <div class="search_btn2"></div>
                 </div>
             </div>
         </div>
