@@ -16,7 +16,8 @@
     }
     .tb_write_02 tbody tr {
         /*height: 70px;*/
-        height: 51px;
+        /*height: 51px;*/
+        height: 57.5px;
     }
     .gateDetailList tr td {
         text-align: center;
@@ -27,7 +28,7 @@
     .gateDetailList tr td input,
     .gateDetailList tr td select,
     .gateDetailList tr td textarea {
-        width: 95%;
+        width: 100%;
     }
     .title_s {
         font-size: 20px;
@@ -46,7 +47,9 @@
         overflow: auto;
     }
     #btnGatePick, #btnAuthPick {
-        width: 100px;
+        /*width: 100px;*/
+        /*width: 20%;*/
+        width: 100%;
     }
     .tb_list tr td {
         text-align: center;
@@ -58,6 +61,10 @@
     #tdAuthConf tr, #tdAuthTotal tr {
         height: 40px;
         text-align: center;
+    }
+    .disabled {
+        pointer-events: none;
+        background-color: lightgray;
     }
     .title_box {
         margin-top: 10px;
@@ -78,6 +85,8 @@
 
         fnAdd(); // 최초 등록 상태
 
+        let pathArr = [];
+
         // 빌딩 선택 시,
         $("#dBuilding").change(function() {
             let val = $(this).val();
@@ -92,6 +101,11 @@
                     $(option).css("display", "none");
                 }
             });
+            // $("#pathBuilding").text($("#dBuilding option:checked").text());
+            pathArr = [];
+            pathArr[0] = $("#dBuilding option:checked").text();
+            $("#doorPath").text(pathArr.join(" > "));
+
             // 구역 disabled 해제
             $("#dArea").prop("disabled", false);
         });
@@ -109,8 +123,26 @@
                     $(option).css("display", "none");
                 }
             });
+            // let txt = $("#doorPath").text() + " > " + $("#dArea option:checked").text();
+            // $("#doorPath").text(txt);
+            // $("#pathArea").text($("#dArea option:checked").text());
+            pathArr.splice(2, 1);
+            pathArr[1] = $("#dArea option:checked").text();
+            $("#doorPath").text(pathArr.join(" > "));
+
+
             // 층 disabled 해제
             $("#dFloor").prop("disabled", false);
+        });
+
+        // 층 선택 시,
+        $("#dFloor").change(function() {
+            // let txt = $("#doorPath").text() + " > " + $("#dFloor option:checked").text();
+            // $("#doorPath").text(txt);
+            $("#pathFloor").text($("dFloor option:checked").text());
+            pathArr[2] = $("#dFloor option:checked").text();
+            $("#doorPath").text(pathArr.join(" > "));
+
         });
 
         // 단말기 선택 확인
@@ -182,6 +214,13 @@
 
     });
 
+    function getPath() {
+        // pathArr.map(function(el) {
+        //
+        // })
+
+    }
+
     // 속성 값 초기화
     function initDetail() {
         $("#doorPath").text("");
@@ -243,8 +282,9 @@
         $("#btnDelete").css("display", "inline-block");
         $("#btnSave").css("display", "none");
         $("#btnCancel").css("display", "none");
-        $("#btnGatePick").css("display", "none");
-        $("#btnAuthPick").css("display", "none");
+        // $("#btnGatePick").css("display", "none");
+        // $("#btnAuthPick").css("display", "none");
+        $("#btnGatePick, #btnAuthPick").addClass("disabled");
         $("[name=doorEdit]").prop("disabled", true);
         $("[name=doorEditSelect]").prop("disabled", true);
     }
@@ -256,10 +296,11 @@
         $("#btnDelete").css("display", "none");
         $("#btnSave").css("display", "inline-block");
         $("#btnCancel").css("display", "inline-block");
-        $("#btnGatePick").css("display", "inline-block");
-        $("#btnAuthPick").css("display", "inline-block");
+        // $("#btnGatePick").css("display", "inline-block");
+        // $("#btnAuthPick").css("display", "inline-block");
+        $("#btnGatePick, #btnAuthPick").removeClass("disabled");
         $("[name=doorEdit]").prop("disabled", false);
-        $("#dArea").prop("disabled", false);
+        if (doorId !== "") {$("#dArea").prop("disabled", false);}
         // $("[name=doorEditSelect]").prop("disabled", false);
     }
 
@@ -611,23 +652,29 @@
                 <table class="tb_write_02 tb_write_p1">
                     <colgroup>
                         <col style="width:30%">
-                        <col style="width:70%">
+                        <col style="width:57%">
+                        <col style="width:13%">
                     </colgroup>
 
                     <tbody class="gateDetailList" style="display: none;">
                     <input type="hidden" id="doorId" value="">
                     <tr>
-                        <td colspan="2" style="font-size: 17px; text-align: left; padding-left: 20px"><b id="doorPath"></b></td>
+                        <td colspan="3" style="font-size: 17px; text-align: left; padding-left: 20px">
+                            <b id="doorPath"></b>
+<%--                            <b id="pathBuilding" style="display:none;"></b>--%>
+<%--                            <b id="pathArea" style="display:none;"> > </b>--%>
+<%--                            <b id="pathFloor" style="display:none;"> > </b>--%>
+                        </td>
                     </tr>
                     <tr>
                         <th>출입문 명</th>
-                        <td>
+                        <td colspan="2">
                             <input type="text" id="doorNm" name="doorEdit" maxlength="30" class="input_com doorNm" value="" disabled/>
                         </td>
                     </tr>
                     <tr>
                         <th>빌딩(동)</th>
-                        <td>
+                        <td colspan="2">
                             <select name="doorEdit" id="dBuilding" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
                                 <c:forEach items="${buildingList}" var="building" varStatus="status">
@@ -638,7 +685,7 @@
                     </tr>
                     <tr>
                         <th>구역</th>
-                        <td>
+                        <td colspan="2">
                             <select name="doorEditSelect" id="dArea" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
                                 <c:forEach items="${areaList}" var="area" varStatus="status">
@@ -650,7 +697,7 @@
                     </tr>
                     <tr>
                         <th>층</th>
-                        <td>
+                        <td colspan="2">
                             <select name="doorEditSelect" id="dFloor" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
                                 <c:forEach items="${floorList}" var="floor" varStatus="status">
@@ -661,7 +708,7 @@
                     </tr>
                     <tr>
                         <th>스케쥴</th>
-                        <td>
+                        <td colspan="2">
                             <select name="doorEdit" id="doorSchedule" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
                                 <c:forEach items="${scheduleList}" var="schedule" varStatus="status">
@@ -672,7 +719,7 @@
                     </tr>
                     <tr>
                         <th>알람 그룹</th>
-                        <td>
+                        <td colspan="2">
                             <select name="doorEdit" id="doorAlarmGroup" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
                                 <c:forEach items="${doorAlarmGrpList}" var="doorAlarmGroup" varStatus="status">
@@ -683,30 +730,36 @@
                     </tr>
                     <tr>
                         <th>단말기 코드</th>
-                        <td>
+                        <td style="border-right:none; padding-right:0; padding-left:12px;">
                             <input type="text" id="terminalCd" name="terminalCd" maxlength="30" class="input_com" value="" disabled/>
+                        </td>
+                        <td>
+                            <button type="button" id="btnGatePick" class="btn_gray3 btn_small disabled" onclick="openPopup('doorPickPopup');">단말기</button>
                         </td>
                     </tr>
                     <tr>
                         <th>단말기 관리번호</th>
-                        <td>
+                        <td colspan="2">
                             <input type="text" id="mgmtNum" name="mgmtNum" maxlength="30" class="input_com" value="" disabled/>
                         </td>
                     </tr>
                     <tr>
                         <th>권한 그룹</th>
+                        <td style="border-right:none; padding-right:0; padding-left:12px;">
+                            <textarea id="doorGroup" name="doorGroup" rows="4" cols="33" class="mt_5 mb_5" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled>보건 복지부 &#10;12동 전체</textarea>
+                        </td>
                         <td>
-                            <textarea id="doorGroup" name="doorGroup" rows="5" cols="33" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled>보건 복지부 &#10;12동 전체</textarea>
+                            <button type="button" id="btnAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup');">권한그룹</button>
                         </td>
                     </tr>
-                    <tr>
-                        <td colspan="2" class="c_btnbox center">
-                            <div style="display: inline-block">
-                                <button type="button" id="btnGatePick" class="comm_btn btn_small mr_10" onclick="openPopup('doorPickPopup');" style="display:none;">단말기 선택</button>
-                                <button type="button" id="btnAuthPick" class="comm_btn btn_small" onclick="openPopup('authPickPopup');" style="display:none;">권한그룹 선택</button>
-                            </div>
-                        </td>
-                    </tr>
+<%--                    <tr>--%>
+<%--                        <td colspan="2" class="c_btnbox center">--%>
+<%--                            <div style="display: inline-block">--%>
+<%--                                <button type="button" id="btnGatePick" class="comm_btn btn_small mr_10" onclick="openPopup('doorPickPopup');" style="display:none;">단말기 선택</button>--%>
+<%--                                <button type="button" id="btnAuthPick" class="comm_btn btn_small" onclick="openPopup('authPickPopup');" style="display:none;">권한그룹 선택</button>--%>
+<%--                            </div>--%>
+<%--                        </td>--%>
+<%--                    </tr>--%>
                     </tbody>
                 </table>
 
