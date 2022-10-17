@@ -448,4 +448,26 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 		 WHERE id = #{id}
 	</update>
 
+	<insert id="insertDoorIdForAuthDoor" parameterType="HashMap">
+		INSERT
+		  INTO T_AUTH_DOOR
+		     ( auth_id
+		     , door_id
+		     , created_at)
+		VALUES
+		     ( #{authId}
+			 , #{doorId}
+			 , NOW()
+			  )
+	</insert>
+
+	<delete id="deleteDoorIdForAuthDoor" parameterType="HashMap" >
+		DELETE
+		  FROM T_AUTH_DOOR
+		 WHERE auth_id = #{authId}
+		   AND door_id = #{doorId}
+	</delete>
+
+
+
 </mapper>

@@ -146,4 +146,17 @@ public class DoorDAO extends EgovAbstractMapper {
     public void updateDoorIdForTerminal(Map<String, Object> commandMap) {
 		update(sqlNameSpace+"updateDoorIdForTerminal", commandMap);
 	}
+
+	public void updateDoorIdForAuthDoor(Map<String, Object> commandMap) {
+		update(sqlNameSpace+"updateDoorIdForTerminal", commandMap);
+	}
+
+	public void insertDoorIdForAuthDoor(Map<String, Object> commandMap) {
+		insert(sqlNameSpace+"insertDoorIdForAuthDoor", commandMap);
+	}
+
+	public void deleteDoorIdForAuthDoor(Map<String, Object> commandMap) {
+		delete(sqlNameSpace+"deleteDoorIdForAuthDoor", commandMap);
+
+	}
 }

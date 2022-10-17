@@ -171,14 +171,14 @@ public class DoorController {
 
         HashMap param = new HashMap();
 
-        param.put("doorNm", doorNm);
-        param.put("buildingId", buildingId);
-        param.put("areaId", areaId);
-        param.put("floorId", floorId);
-        param.put("doorScheduleId", scheduleId);
-        param.put("alarmGroupId", alarmGroupId);
-        param.put("terminalIds", terminalIds);
-        param.put("authGrIds", authGrIds);
+        param.put("doorNm", doorNm);        //출입문 명
+        param.put("buildingId", buildingId);//빌딩 ID
+        param.put("areaId", areaId);        //지역 ID
+        param.put("floorId", floorId);      //층 ID
+        param.put("doorScheduleId", scheduleId); //출입문 스케쥴 ID
+        param.put("alarmGroupId", alarmGroupId); //알람 그룹 ID
+        param.put("terminalIds", terminalIds);//단말기 ID - 복수저장?
+        param.put("authGrIds", authGrIds); //권한그룹ID - 복수저장?
 
         String newDoorId = "";
         try {
