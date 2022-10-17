@@ -22,9 +22,10 @@ public class DoorDAO extends EgovAbstractMapper {
 	}
 
 
-	public void insertDoor(Map<String, Object> commandMap) {
+	public int insertDoor(Map<String, Object> commandMap) {
 		insert(sqlNameSpace+"insertDoor", commandMap);
-	}
+        return 0;
+    }
 
 	public void updateDoor(Map<String, Object> commandMap) {
 		update(sqlNameSpace+"updateDoor", commandMap);
@@ -140,5 +141,9 @@ public class DoorDAO extends EgovAbstractMapper {
 
 	public void deleteDoorAlarmGrp(Map<String, Object> commandMap) {
 		delete(sqlNameSpace+"deleteDoorAlarmGrp", commandMap);
+	}
+
+    public void updateDoorIdForTerminal(Map<String, Object> commandMap) {
+		update(sqlNameSpace+"updateDoorIdForTerminal", commandMap);
 	}
 }

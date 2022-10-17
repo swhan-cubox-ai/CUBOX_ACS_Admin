@@ -120,7 +120,7 @@ public class DoorController {
     }
 
     /**
-     * 출입문 정보 조회
+     * 출입문 정보 상세 조회
      *
      * @param model
      * @param commandMap
@@ -149,13 +149,12 @@ public class DoorController {
     /**
      * 출입문 정보 등록
      *
-     * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/add.do", method = RequestMethod.POST)
-    public ModelAndView addDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/add.do")
+    public ModelAndView addDoor( @RequestParam Map<String, Object> commandMap) throws Exception {
         LOGGER.debug("출입문 등록");
 
         ModelAndView modelAndView = new ModelAndView();
@@ -167,9 +166,8 @@ public class DoorController {
         String floorId = commandMap.get("floorId").toString();
         String scheduleId = commandMap.get("scheduleId").toString();
         String alarmGroupId = commandMap.get("alarmGroupId").toString();
-        String terminalCd = commandMap.get("terminalCd").toString();
-        String mgmtNum = commandMap.get("mgmtNum").toString();
-        String doorGrId = commandMap.get("doorGrId").toString();
+        String terminalIds = commandMap.get("terminalIds").toString();
+        String authGrIds = commandMap.get("authGrIds").toString();
 
         HashMap param = new HashMap();
 
@@ -179,17 +177,17 @@ public class DoorController {
         param.put("floorId", floorId);
         param.put("doorScheduleId", scheduleId);
         param.put("alarmGroupId", alarmGroupId);
-        param.put("terminalCd", terminalCd);
-        param.put("mgmtNum", mgmtNum);
-        param.put("doorGrId", doorGrId);
+        param.put("terminalIds", terminalIds);
+        param.put("authGrIds", authGrIds);
 
+        String newDoorId = "";
         try {
-            doorService.addDoor(param);
-
+            newDoorId = doorService.addDoor(param);
         } catch (Exception e) {
             e.getStackTrace();
             modelAndView.addObject("resultCode", "N");
         }
+        modelAndView.addObject("newDoorId", newDoorId );
         modelAndView.addObject("resultCode", "Y");
 
         return modelAndView;
@@ -344,9 +342,21 @@ public class DoorController {
         modelAndView.setViewName("jsonView");
 
         String resultCode = "Y";
+
+        String nm = commandMap.get("nm").toString();
+        String scheduleId = commandMap.get("scheduleId").toString();
+        String doorIds = commandMap.get("doorIds").toString();
+
+        HashMap param = new HashMap();
+
+        param.put("nm", nm);
+        param.put("doorSchId", scheduleId);
+        param.put("doorIds", doorIds);
+
         try {
 
             doorService.addDoorGroup(commandMap);
+
         } catch (Exception e) {
             e.getStackTrace();
             resultCode = "N";

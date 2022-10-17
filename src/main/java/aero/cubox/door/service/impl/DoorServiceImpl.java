@@ -1,6 +1,7 @@
 package aero.cubox.door.service.impl;
 
 import aero.cubox.door.service.DoorService;
+import aero.cubox.util.StringUtil;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +40,26 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
 
     /**
      * 출입문 등록
+     *
      * @param commandMap
+     * @return
      */
     @Override
-    public void addDoor(Map<String, Object> commandMap) {
+    public String addDoor(Map<String, Object> commandMap) {
+
         doorDAO.insertDoor(commandMap);
+
+        String newDoorId = commandMap.get("doorId").toString();
+
+        //단말기정보에 출입문 id update
+        if( !StringUtil.isEmpty((String) commandMap.get("terminalIds"))){
+
+            HashMap terminalParam = new HashMap();
+            terminalParam.put("doorId", newDoorId );
+            terminalParam.put("id", commandMap.get("terminalIds"));
+            doorDAO.updateDoorIdForTerminal(commandMap);
+        }
+        return newDoorId;
     }
 
     /**
@@ -138,6 +154,10 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     @Override
     public void addDoorGroup(Map<String, Object> commandMap) {
         doorDAO.addDoorGroup(commandMap);
+
+        commandMap.get("");
+        //doorDAO.addDoorGroupDoor(commandMap);
+
     }
 
     /**

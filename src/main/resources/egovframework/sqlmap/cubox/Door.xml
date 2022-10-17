@@ -11,6 +11,7 @@
 		       , TD.alarm_typ
 		       , TDS.id as sch_id
 		       , TDS.door_sch_nm as sch_nm
+		       , (select GROUP_CONCAT( TT.id  SEPARATOR '/ ') from T_TERMINAL TT where TT.door_id= TD.id ) AS terminal_id
 		       , (select GROUP_CONCAT( TT.terminal_cd  SEPARATOR '/ ') from T_TERMINAL TT where TT.door_id= TD.id ) AS terminal_cd
 		       , (select GROUP_CONCAT( TT.mgmt_num  SEPARATOR '/ ')  from T_TERMINAL TT where TT.door_id= TD.id ) AS mgmt_num
 		    FROM T_DOOR TD
@@ -46,7 +47,7 @@
 	</select>
 
 
-	<insert id="insertDoor" parameterType="HashMap">
+	<insert id="insertDoor" parameterType="HashMap" useGeneratedKeys="true" keyProperty="doorId" keyColumn="id">
 		insert
 		into
 			T_DOOR ( building_id
@@ -440,5 +441,11 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 	</delete>
 
 
+	<update id="updateDoorIdForTerminal" parameterType="HashMap">
+		UPDATE T_TERMINAL
+		   SET door_id = #{doorId}
+		     , updated_at= NOW()
+		 WHERE id = #{id}
+	</update>
 
 </mapper>

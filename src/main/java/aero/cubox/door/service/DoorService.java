@@ -12,7 +12,7 @@ public interface DoorService {
 
     Map getDoorDetail(Map<String, Object> commandMap);
 
-    void addDoor(Map<String, Object> commandMap);
+    String addDoor(Map<String, Object> commandMap);
 
     void updateDoor(Map<String, Object> commandMap);
 

@@ -72,6 +72,33 @@
             return;
         }
 
+
+        //출입문 정보
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='/door/group/add.do' />",
+            data:{ //example
+                   nm: "춥입문 테스트 그룹1",
+                   scheduleId: "1",
+                   doorIds: "1/2/3", // 1, 1/2  2개 이상일 경우 "/" 으로 구분자 추가
+            },
+            dataType: "json",
+            success: function (returnData) {
+                console.log("fnSave:" + returnData.result);
+
+                if( returnData.resultCode == "Y" ) {
+                    //등록이 완료되었습니다.
+                } else {
+                    //등록에 문제가 발생
+                }
+
+            }
+        });
+
+
+
+
+
         // TODO : gpDoor 출입문 disabled 해제!
         location.href = "/door/group/detail.do";
 
