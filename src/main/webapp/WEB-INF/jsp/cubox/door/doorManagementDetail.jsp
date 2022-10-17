@@ -230,6 +230,7 @@
         $("#terminalCd").val("");
         $("#mgmtNum").val("");
         $("#doorGroup").val("");
+        $("#terminalCd").attr("tId", "");
     }
 
     // 속성 보여주기
@@ -259,7 +260,7 @@
             data: { doorId: doorId },
             dataType: "json",
             success: function (result) {
-                // TODO : 알람그룹,권한그룹,단말기 가져오기
+                // TODO : 알람그룹,권한그룹 가져오기
                 console.log(result);
                 let dInfo = result.doorInfo;
                 // TODO: terminalId
@@ -270,6 +271,7 @@
                 $("#dArea").val(dInfo.area_id);                             // 구역
                 $("#dFloor").val(dInfo.floor_id);                           // 층
                 $("#doorSchedule").val(dInfo.sch_id);                       // 스케쥴
+                $("#terminalCd").attr("tId", dInfo.terminal_id);            // 단말기 id
                 $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
                 $("#mgmtNum").val(dInfo.mgmt_num);                          // 단말기 관리번호
             }
@@ -476,11 +478,9 @@
                 $("#tbTerminal").empty();
                 if (result.terminalList.length > 0) {
                     $.each(result.terminalList, function (i, terminal) {
-                        console.log("단말기 목록 : " + terminal.id + "/" + terminal.doorNm + "/" + terminal.terminalCd + "/" + terminal.terminalTyp + "/" + terminal.mgmtNum);
-                        // 단말기 코드, 관리번호, 단말기 유형, 출입문명
-                        // terminalCd, mgmtNum, terminalTyp, doorNm
+                        console.log(result.terminalList);
                         let tag = "<tr class='h_35px' style='text-align:center'><td style='padding:0 14px;'>";
-                        tag += "<input type='radio' id='" + terminal.id + "' name='checkOne'></td>";
+                        tag += "<input type='radio' value='" + terminal.id + "' name='checkOne'></td>";
                         tag += "<td>" + terminal.terminalCd + "</td>";
                         tag += "<td>" + terminal.mgmtNum + "</td>";
                         tag += "<td>" + terminal.terminalTyp + "</td>";
@@ -488,7 +488,8 @@
 
                         $("#tbTerminal").append(tag);
                         if (doorId !== "") {
-                            // $("#radio_1").attr('checked', 'checked'); // TODO: 해당 id의 terminalId 가져와서 선택
+                            let terminalCd = $("#terminalCd").attr("tId").split("/")[0]; // TODO: '/' 다중으로 오는 데이터는 보류
+                            $('input[name=checkOne]:input[value=' + terminalCd + ']').attr("checked", true);
                         }
                     });
                 }
@@ -741,7 +742,7 @@
                     <tr>
                         <th>단말기 코드</th>
                         <td style="border-right:none; padding-right:0; padding-left:12px;">
-                            <input type="text" id="terminalCd" name="terminalCd" maxlength="30" class="input_com" value="" disabled/>
+                            <input type="text" id="terminalCd" name="terminalCd" maxlength="30" class="input_com" tId="" value="" disabled/>
                         </td>
                         <td>
                             <button type="button" id="btnGatePick" class="btn_gray3 btn_small disabled" onclick="openPopup('doorPickPopup');">단말기</button>
