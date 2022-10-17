@@ -88,11 +88,11 @@
             $("#dFloor option[name=selected]").prop("selected", true);
 
             $("#dArea option").each(function(i, option) { // 빌딩 id와 구역과 area의 bId 속성이 같지 않으면 option에서 제거
-                console.log($(option).attr("bId"));
                 if (val != $(option).attr("bId")) {
                     $(option).css("display", "none");
                 }
             });
+            // 구역 disabled 해제
             $("#dArea").prop("disabled", false);
         });
 
@@ -109,16 +109,9 @@
                     $(option).css("display", "none");
                 }
             });
+            // 층 disabled 해제
             $("#dFloor").prop("disabled", false);
         });
-
-        // $("input[name=checkAll]").click(function () {
-        //     if ($(this).prop("checked")) {
-        //         $("input[name=excelColumn]").prop("checked", true);
-        //     } else {
-        //         $("input[name=excelColumn]").prop("checked", false);
-        //     }
-        // });
 
         // 단말기 선택 확인
         $('#doorPickConfirm').click(function () {
@@ -229,6 +222,7 @@
                 // TODO : 알람그룹,권한그룹 가져오기
                 console.log(result);
                 let dInfo = result.doorInfo;
+                $("#doorId").val(dInfo.id);                                 // doorId
                 $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));  // 경로
                 $("#doorNm").val(dInfo.door_nm);                            // 출입문 명
                 $("#dBuilding").val(dInfo.building_id);                     // 빌딩
@@ -252,6 +246,7 @@
         $("#btnGatePick").css("display", "none");
         $("#btnAuthPick").css("display", "none");
         $("[name=doorEdit]").prop("disabled", true);
+        $("[name=doorEditSelect]").prop("disabled", true);
     }
 
     // 출입문 관리 - 수정
@@ -264,6 +259,8 @@
         $("#btnGatePick").css("display", "inline-block");
         $("#btnAuthPick").css("display", "inline-block");
         $("[name=doorEdit]").prop("disabled", false);
+        $("#dArea").prop("disabled", false);
+        // $("[name=doorEditSelect]").prop("disabled", false);
     }
 
     // 출입문 관리 - 추가
@@ -289,8 +286,9 @@
         }
     }
 
-    // 출입문 관리 - 수정 저장 확인
+    // 출입문 저장
     function fnSave() {
+        // validation
         if (fnIsEmpty($("#doorNm").val())) {
             alert("출입문 명칭을 입력하세요.");
             $("#doorNm").focus();
@@ -320,52 +318,15 @@
             return;
         }
 
-        //출입문 정보
-        $.ajax({
-            type: "POST",
-            url: "<c:url value='/door/add.do' />",
-            data:
-            //파라미터 수정
-                {
-                    doorNm: "1",
-                    buildingId: "2",
-                    areaId: "3",
-                    floorId: "4",
-                    scheduleId: "5",
-                    alarmGroupId: "6",
-                    terminalCd: "7",
-                    mgmtNum: "8",
-                    doorGrId: "9"
-                },
-            dataType: "json",
-            success: function (returnData) {
+        // disabled 해제
+        $(":disabled").prop("disabled", false);
 
-                console.log("fnSave:" + returnData.result);
-
-                if (returnData.result == "success") {
-                    //등록이 완료되었습니다.
-                } else {
-                    //등록에 문제가 발생
-                }
-
-            }
-        });
-
-
-        // TODO : 출입문 속성 저장 ajax
-        // getGateDetail();
-        fnCancel();
+        fnSaveDoorAjax();
     }
 
     // 출입문 관리 - 삭제
     function fnDelete() {
-        if (confirm("삭제 하시겠습니까?")) {
-            alert("해당 출입문 정보를 삭제하였습니다.");
-            initDetail();
-            hideDetail();
-        } else {
-            alert("취소하였습니다.");
-        }
+        console.log(doorId);
 
         // 출입문에 연결된 단말기/ 권한 그룹 없을 경우
         // if (confirm("연결된 단말기 또는 권한 그룹이 존재 합니다. 삭제 하시겠습니까?")) {
@@ -374,6 +335,7 @@
         //     alert("취소하였습니다.");
         // }
 
+        fnDeleteDoorAjax();
     }
 
     // 권한그룹 선택 저장
@@ -488,6 +450,7 @@
     /////////////////  단말기 목록 조회 ajax - end  /////////////////////
 
 
+
     /////////////////  권한그룹 목록 ajax - start  /////////////////////
 
 
@@ -509,6 +472,97 @@
             }
         });
     }
+
+    /////////////////  권한그룹 목록 ajax - end  /////////////////////
+
+
+
+    /////////////////  출입문 저장 ajax - start  /////////////////////
+
+
+    function fnSaveDoorAjax() {
+        let url = "";
+        let data = {
+            doorNm: $("#doorNm").val(),
+            buildingId: $("#dBuilding").val(),
+            areaId: $("#dArea").val(),
+            floorId: $("#dFloor").val(),
+            scheduleId: $("#doorSchedule").val(),
+            alarmGroupId: $("#doorAlarmGroup").val(),
+            terminalCd: $("#terminalCd").val(),
+            mgmtNum: $("#mgmtNum").val(),
+            doorGrId: ""
+            // doorGrId: $("#doorGroup").val().split("\n") // array 형식
+        };
+
+        if (doorId === undefined || doorId === "") { // 등록 시
+            url = "<c:url value='/door/add.do' />";
+            data = data;
+        } else { // 수정 시
+            url = "<c:url value='/door/update.do' />";
+            data.doorId = doorId;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            dataType: "json",
+            success: function (returnData) {
+                console.log("fnSave: ");
+                console.log(returnData);
+
+                if (returnData.resultCode == "Y") {
+                    //등록이 완료되었습니다.
+                    alert("저장되었습니다.");
+                    fnGetDoorListAjax();
+
+                } else {
+                    //등록에 문제가 발생
+                    alert("등록에 실패하였습니다.");
+                }
+            }
+        });
+
+        getGateDetail(doorId); // 상세 정보를 뿌려주기엔 저장 시점에 id를 알 수 없음
+        fnCancel();
+    }
+
+    /////////////////  출입문 저장 ajax - end  /////////////////////
+
+
+
+    /////////////////  출입문 삭제 ajax - start  /////////////////////
+
+
+    function fnDeleteDoorAjax() {
+        if (confirm("삭제 하시겠습니까?")) {
+            $.ajax({
+                type: "POST",
+                url: "<c:url value='/door/delete.do' />",
+                data: { id: doorId },
+                dataType: "json",
+                success: function (returnData) {
+                    console.log("fnDelete: ");
+                    console.log(returnData);
+
+                    if (returnData.resultCode == "Y") {
+                        // 삭제 성공
+                        alert("해당 출입문 정보를 삭제하였습니다.");
+                        fnGetDoorListAjax();
+                        initDetail();
+                        hideDetail();
+                    } else {
+                        // 삭제 실패
+                        // TODO: 실패감지가 안됨
+                        alert("삭제 실패");
+                    }
+                }
+            });
+        }
+    }
+
+    /////////////////  출입문 삭제 ajax - end  /////////////////////
 
 
 </script>
@@ -547,9 +601,7 @@
     <%--  속성  --%>
     <div style="width:550px;">
         <div class="totalbox mb_20">
-            <div class="title_s w_50p fl">
-                <img src="/img/title_icon1.png" alt=""/>속성
-            </div>
+            <div class="title_s w_50p fl"><img src="/img/title_icon1.png" alt=""/>속성</div>
         </div>
 
         <%--  테이블  --%>
@@ -563,6 +615,7 @@
                     </colgroup>
 
                     <tbody class="gateDetailList" style="display: none;">
+                    <input type="hidden" id="doorId" value="">
                     <tr>
                         <td colspan="2" style="font-size: 17px; text-align: left; padding-left: 20px"><b id="doorPath"></b></td>
                     </tr>
@@ -572,7 +625,6 @@
                             <input type="text" id="doorNm" name="doorEdit" maxlength="30" class="input_com doorNm" value="" disabled/>
                         </td>
                     </tr>
-
                     <tr>
                         <th>빌딩(동)</th>
                         <td>
@@ -587,7 +639,7 @@
                     <tr>
                         <th>구역</th>
                         <td>
-                            <select name="dArea" id="dArea" class="form-control" style="padding-left:10px;" disabled>
+                            <select name="doorEditSelect" id="dArea" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
                                 <c:forEach items="${areaList}" var="area" varStatus="status">
                                     <option value='<c:out value="${area.id}"/>' class="dArea" bId='<c:out value="${area.building_id}"/>'>
@@ -599,7 +651,7 @@
                     <tr>
                         <th>층</th>
                         <td>
-                            <select name="dFloor" id="dFloor" class="form-control" style="padding-left:10px;" disabled>
+                            <select name="doorEditSelect" id="dFloor" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
                                 <c:forEach items="${floorList}" var="floor" varStatus="status">
                                     <option value='<c:out value="${floor.id}"/>' class="dFloor" aId='<c:out value="${floor.area_id}"/>'><c:out value="${floor.floor_nm}"/></option>
@@ -648,7 +700,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <%-- <td colspan="2" class="c_btnbox center" style="border:none;">--%>
                         <td colspan="2" class="c_btnbox center">
                             <div style="display: inline-block">
                                 <button type="button" id="btnGatePick" class="comm_btn btn_small mr_10" onclick="openPopup('doorPickPopup');" style="display:none;">단말기 선택</button>
