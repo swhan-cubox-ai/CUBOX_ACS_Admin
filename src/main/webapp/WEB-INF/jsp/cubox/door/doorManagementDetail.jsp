@@ -389,6 +389,8 @@
 
     // 권한그룹 반영
     function authSave() {
+        $("#authGroupId").val($("input[name=chkAuthConf]").val());
+
         var authGroup = [];
         $("input[name=chkAuthConf]").each(function (i) {
             var auth = $(this).closest("tr").children().eq(1).html();
@@ -500,7 +502,8 @@
                         $("#tbTerminal").append(tag);
                     });
 
-                    if (doorId !== "" && $("#terminalId").val() !== "") {
+                    // if (doorId !== "" && $("#terminalId").val() !== "") {
+                    if ($("#terminalId").val() !== "") {
                         let terminalId = $("#terminalId").val(); // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
                         $('input[name=checkOne]:input[value=' + terminalId + ']').attr("checked", true);
                     }
@@ -541,7 +544,8 @@
                         $("#tdAuthTotal").append(tag);
                     });
 
-                    if (doorId !== "" && $("#authGroupId").val() !== "") {
+                    // if (doorId !== "" && $("#authGroupId").val() !== "") {
+                    if ($("#authGroupId").val() !== "") {
                         let authGroupId = $("#authGroupId").val();
                         $('input[name=chkAuth]:input[value=' + authGroupId + ']').prop("checked", true);
                         $("#add_auth").click();
