@@ -6,6 +6,7 @@ import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,9 +67,19 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
             //출입권한-출입문 table에 door_id Insert
             if( !StringUtil.isEmpty((String) commandMap.get("authGrIds"))){
 
-                paramMap.put("doorId", newDoorId );
-                paramMap.put("authId", commandMap.get("authGrIds"));
-                doorDAO.insertDoorIdForAuthDoor(paramMap);
+                String authGrIds = "";
+                authGrIds = commandMap.get("authGrIds").toString();
+
+                if( authGrIds.length() > 0 ){
+                    String[] authGrIdArr = authGrIds.split("/");
+                    for (int i = 0; i < authGrIdArr.length; i++) {
+                        paramMap.put("authId", authGrIdArr[i]);
+                        paramMap.put("doorId", newDoorId );
+
+                        doorDAO.insertDoorIdForAuthDoor(paramMap);
+                    }
+                }
+
             }
         }
         return newDoorId;
@@ -93,10 +104,19 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
 
         //출입권한-출입문 table에 door_id Delete-Insert
         if( !StringUtil.isEmpty((String) commandMap.get("authGrIds"))){
-            paramMap.put("authId", commandMap.get("authGrIds"));
 
-            doorDAO.deleteDoorIdForAuthDoor(paramMap);
-            doorDAO.insertDoorIdForAuthDoor(paramMap);
+            String authGrIds = "";
+            authGrIds = commandMap.get("authGrIds").toString();
+
+            if( authGrIds.length() > 0 ){
+                String[] authGrIdArr = authGrIds.split("/");
+                for (int i = 0; i < authGrIdArr.length; i++) {
+                    paramMap.put("authId", authGrIdArr[i]);
+
+                    doorDAO.deleteDoorIdForAuthDoor(paramMap);
+                    doorDAO.insertDoorIdForAuthDoor(paramMap);
+                }
+            }
         }
     }
 
@@ -106,28 +126,28 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
      */
     @Override
     public void deleteDoor(Map<String, Object> commandMap) {
-        doorDAO.deleteDoor(commandMap);
 
-        String doorId = commandMap.get("doordD").toString();
+        String doorId = commandMap.get("doorId").toString();
+
+        HashMap paramMap = new HashMap();
 
         //단말기정보에 출입문 id - Update
         if( !StringUtil.isEmpty((String) commandMap.get("terminalIds"))){
-
-            HashMap terminalParam = new HashMap();
-            terminalParam.put("doorId", "" );
-            terminalParam.put("id", commandMap.get("terminalIds"));
-            doorDAO.updateDoorIdForTerminal(commandMap);
+            paramMap.put("doorId", "" );
+            paramMap.put("id", commandMap.get("terminalIds"));
+            doorDAO.updateDoorIdForTerminal(paramMap);
         }
 
         //출입권한-출입문 table에 door_id Delete-Insert
         if( !StringUtil.isEmpty((String) commandMap.get("authGrIds"))){
 
-            HashMap terminalParam = new HashMap();
-            terminalParam.put("doorId", doorId );
-            terminalParam.put("authId", commandMap.get("authGrIds"));
+            paramMap.put("doorId", doorId );
+            paramMap.put("authId", commandMap.get("authGrIds"));
 
-            doorDAO.deleteDoorIdForAuthDoor(commandMap);
+            doorDAO.deleteDoorIdForAuthDoor(paramMap);
         }
+
+        doorDAO.deleteDoor(commandMap);
     }
 
     /**
