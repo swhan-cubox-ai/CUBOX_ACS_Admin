@@ -153,9 +153,10 @@
             // TODO : 등록된 단말기 여부 확인
             //  alert("이미 등록된 단말기입니다.");
 
-            $("#terminalCd").attr("tId", $("input[name=checkOne]:checked").attr("id"));
-            $("#terminalCd").val(chkTerminal.eq(1).html());
-            $("#mgmtNum").val(chkTerminal.eq(2).html());
+            // $("#terminalCd").attr("tId", $("input[name=checkOne]:checked").attr("id"));
+            $("#terminalId").val($("input[name=checkOne]:checked").val());
+            $("#terminalCd").val(chkTerminal.eq(1).html()); // 단말기 코드
+            $("#mgmtNum").val(chkTerminal.eq(2).html());    // 단말기 관리번호
             closePopup('doorPickPopup');
         });
 
@@ -230,7 +231,9 @@
         $("#terminalCd").val("");
         $("#mgmtNum").val("");
         $("#doorGroup").val("");
-        $("#terminalCd").attr("tId", "");
+
+        $("#terminalId").val("");
+        $("#authGroupId").val("");
     }
 
     // 속성 보여주기
@@ -271,12 +274,13 @@
                 $("#dArea").val(dInfo.area_id);                             // 구역
                 $("#dFloor").val(dInfo.floor_id);                           // 층
                 $("#doorSchedule").val(dInfo.sch_id);                       // 스케쥴
-                $("#terminalCd").attr("tId", dInfo.terminal_id);            // 단말기 id
+                $("#terminalId").val(dInfo.terminal_id);                    // 단말기 id
                 $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
                 $("#mgmtNum").val(dInfo.mgmt_num);                          // 단말기 관리번호
+                $("#authGroupId").val(dInfo.auth_id);                       // 권한그룹 id
+                $("#doorGroup").val(dInfo.auth_nm);            // 권한그룹
             }
         });
-
     }
 
     // 출입문 관리 - 취소
@@ -383,7 +387,7 @@
         fnDeleteDoorAjax();
     }
 
-    // 권한그룹 선택 저장
+    // 권한그룹 반영
     function authSave() {
         var authGroup = [];
         $("input[name=chkAuthConf]").each(function (i) {
@@ -394,6 +398,11 @@
 
         // 권한그룹 textarea에 뿌려주기
         $("#doorGroup").val(authGroup.join("\r\n"));
+    }
+
+    // 권한그룹 선택 저장
+    function authConf() {
+        authSave();
         closePopup("authPickPopup");
     }
 
@@ -423,17 +432,17 @@
 
     // popup close (공통)
     function closePopup(popupNm) {
-        $("#" + popupNm).PopupWindow("close");
-
         if (popupNm == "doorPickPopup") {
+            console.log("closepopup - doorpickpopup");
             // 단말기 선택 팝업창 초기화
-            $("input[name='checkOne']:checked").attr("checked", false);
+            // $("input[name='checkOne']:checked").attr("checked", false);
         } else if (popupNm == "authPickPopup") {
-            $("input[name='chkAuth']:checked").attr("checked", false);
-            $("input[name='chkAuthConf']:checked").attr("checked", false);
+            // $("input[name='chkAuth']:checked").attr("checked", false);
+            // $("input[name='chkAuthConf']:checked").attr("checked", false);
             totalCheck();
             userCheck();
         }
+        $("#" + popupNm).PopupWindow("close");
     }
 
 
@@ -489,12 +498,16 @@
                         tag += "<td>" + terminal.terminalTyp + "</td>";
                         tag += "<td>" + terminal.doorNm + "</td></tr>";
                         $("#tbTerminal").append(tag);
-
-                        if (doorId !== "" && $("#terminalCd").attr("tId") !== "") {
-                            let terminalCd = $("#terminalCd").attr("tId").split("/")[0]; // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
-                            $('input[name=checkOne]:input[value=' + terminalCd + ']').attr("checked", true);
-                        }
                     });
+
+                    if (doorId !== "" && $("#terminalId").val() !== "") {
+                        let terminalId = $("#terminalId").val(); // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
+                        $('input[name=checkOne]:input[value=' + terminalId + ']').attr("checked", true);
+                    }
+                    // if (doorId !== "" && $("#terminalCd").attr("tId") !== "") {
+                    //     let terminalCd = $("#terminalCd").attr("tId").split("/")[0]; // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
+                    //     $('input[name=checkOne]:input[value=' + terminalCd + ']').attr("checked", true);
+                    // }
                 }
             }
         });
@@ -509,7 +522,6 @@
     function fnGetAuthGroupListAjax(param1) {
 
         console.log("fnGetAuthGroupListAjax");
-        console.log(param1);
 
         $.ajax({
             type: "GET",
@@ -519,15 +531,28 @@
             success: function (result) {
                 console.log(result);
                 $("#tdAuthTotal").empty();
+                $("#tdAuthConf").empty();
+                $("#srchAuth").val("");
+
                 if (result.authList.length > 0) {
                     $.each(result.authList, function (i, authGroup) {
-                        console.log(authGroup);
-                        // console.log(authGroup.id + "/" + authGroup.authNm + "/" + authGroup.deptAuthYn);
-                        let tag = "<tr><td style='padding: 0 14px;'><input type='checkbox' aId='" + authGroup.id + "' name='chkAuth'/></td>";
+                        let tag = "<tr><td style='padding: 0 14px;'><input type='checkbox' value='" + authGroup.id + "' name='chkAuth'/></td>";
                         tag += "<td>" + authGroup.authNm + "</td></tr>";
-
                         $("#tdAuthTotal").append(tag);
                     });
+
+                    if (doorId !== "" && $("#authGroupId").val() !== "") {
+                        let authGroupId = $("#authGroupId").val();
+                        $('input[name=chkAuth]:input[value=' + authGroupId + ']').prop("checked", true);
+                        $("#add_auth").click();
+                    }
+                    // if (doorId !== "" && $("#doorGroup").attr("aId") !== "") {
+                    //     $("#tdAuthConf").empty();
+                    //     let doorGroup = $("#doorGroup").attr("aId");
+                    //     $('input[name=chkAuth]:input[value=' + doorGroup + ']').prop("checked", true);
+                    //     $("#add_auth").click();
+                    //     authSave();
+                    // }
                 }
             }
         });
@@ -549,7 +574,7 @@
             floorId: $("#dFloor").val(),
             scheduleId: $("#doorSchedule").val(),
             alarmGroupId: $("#doorAlarmGroup").val(),
-            terminalIds: $("#terminalCd").attr("tId"),
+            terminalIds: $("#terminalId").val()
             // authGrIds:
         };
 
@@ -665,7 +690,6 @@
         <%--  테이블  --%>
         <div class="com_box mt_5" style="background-color: white;">
             <div id="gateInfo" class="tb_outbox">
-                <%--  <input type="hidden" id="fsiteid2" name="fsiteid" />--%>
                 <table class="tb_write_02 tb_write_p1">
                     <colgroup>
                         <col style="width:30%">
@@ -675,6 +699,8 @@
 
                     <tbody class="gateDetailList" style="display: none;">
                     <input type="hidden" id="doorId" value="">
+                    <input type="hidden" id="terminalId" value="">
+                    <input type="hidden" id="authGroupId" value="">
                     <tr>
                         <td colspan="3" style="font-size: 17px; text-align: left; padding-left: 20px">
                             <b id="doorPath"></b>
@@ -745,7 +771,7 @@
                     <tr>
                         <th>단말기 코드</th>
                         <td style="border-right:none; padding-right:0; padding-left:12px;">
-                            <input type="text" id="terminalCd" name="terminalCd" maxlength="30" class="input_com" tId="" value="" disabled/>
+                            <input type="text" id="terminalCd" name="terminalCd" maxlength="30" class="input_com" value="" disabled/>
                         </td>
                         <td>
                             <button type="button" id="btnGatePick" class="btn_gray3 btn_small disabled" onclick="openPopup('doorPickPopup');">단말기</button>
@@ -812,7 +838,6 @@
         </div>
         <%--  end of 검색 박스 --%>
         <div class="tb_outbox mb_20" style="height: 255px; overflow: auto;">
-            <%-- <input type="hidden" id="fsiteid2" name="fsiteid" />--%>
             <table class="tb_list tb_write_02 tb_write_p1">
                 <colgroup>
                     <col style="width:5%">
@@ -873,18 +898,10 @@
                     <tr>
                         <th><input type="checkbox" id="totalAuthCheckAll"></th>
 <%--                        <th>권한코드</th>--%>
-                        <th>권한그룹명</th>
+                        <th>권한그룹 목록</th>
                     </tr>
                     </thead>
-                    <tbody id="tdAuthTotal">
-<%--                    <c:forEach var="i" begin="1" end="10" varStatus="status">--%>
-<%--                        <tr>--%>
-<%--                            <td style="padding: 0 14px;"><input type="checkbox" name="chkAuth"/></td>--%>
-<%--                            <td>CUBOX123</td>--%>
-<%--                            <td>보건 복지부</td>--%>
-<%--                        </tr>--%>
-<%--                    </c:forEach>--%>
-                    </tbody>
+                    <tbody id="tdAuthTotal"></tbody>
                 </table>
             </div>
         </div>
@@ -913,19 +930,10 @@
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="userAuthCheckAll"></th>
-                        <th>권한그룹명</th>
+                        <th>선택된 권한그룹</th>
                     </tr>
                     </thead>
-                    <tbody id="tdAuthConf">
-<%--                    <tr>--%>
-<%--                        <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>--%>
-<%--                        <td>보건 복지부</td>--%>
-<%--                    </tr>--%>
-<%--                    <tr>--%>
-<%--                        <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>--%>
-<%--                        <td>보건 복지부</td>--%>
-<%--                    </tr>--%>
-                    </tbody>
+                    <tbody id="tdAuthConf"></tbody>
                 </table>
             </div>
         </div>
@@ -933,7 +941,7 @@
 
         <div class="c_btnbox center mt_30">
             <div style="display: inline-block;">
-                <button type="button" class="comm_btn mr_20" onclick="authSave();">확인</button>
+                <button type="button" class="comm_btn mr_20" onclick="authConf();">확인</button>
                 <button type="button" class="comm_btn" onclick="closePopup('authPickPopup');">취소</button>
             </div>
         </div>
