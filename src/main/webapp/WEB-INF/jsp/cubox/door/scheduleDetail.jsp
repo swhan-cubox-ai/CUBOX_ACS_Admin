@@ -59,17 +59,27 @@
         background-color: coral;
     }
 
-    .sch1 {
+    .sch1_timepick {
         background-color: aliceblue;
+    }
+    .sch2_timepick {
+        background-color: mistyrose;
+    }
+    .sch3_timepick {
+        /*background-color: lemonchiffon;*/
+        background-color: floralwhite;
+    }
+
+    .sch1 {
+        background-color: lightblue;
     }
 
     .sch2 {
-        background-color: mistyrose;
+        background-color: lightsalmon;
     }
 
     .sch3 {
-        /*background-color: lemonchiffon;*/
-        background-color: floralwhite;
+        background-color: gold;
     }
 
     input[name=timepicker] {
@@ -168,7 +178,9 @@
             for (let i in editSch) {
                 if (i == 0) editSch.eq(i).val("");
                 if (i == editSch.length - 1) editSch.eq(i).val("");
+
                 editSch.eq(i).removeClass("colored");
+                editSch.eq(i).removeClass("sch" + schNum);
                 editSch.eq(i).removeClass(day + "_" + schNum);
             }
         }
@@ -337,6 +349,7 @@
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         if (j == Number(start.min)) divToColor.val(start); // 첫번째 div에 시작시간 value 넣기
                         divToColor.addClass("colored");
+                        divToColor.addClass("sch" + schNum);
                         divToColor.addClass(day + "_" + schNum); // mon_2
                     }
                 } else if (i == end.hour) { // 종료 hour 칸
@@ -344,18 +357,22 @@
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         if (j == Number(end.min)) divToColor.val(end); // 마지막 div에 종료시간 value 넣기
                         divToColor.addClass("colored");
+                        divToColor.addClass("sch" + schNum);
                         divToColor.addClass(day + "_" + schNum);
                     }
                 } else {
                     for (let j = 0; j < 60; j++) {
                         let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2));
                         divToColor.addClass("colored");
+                        divToColor.addClass("sch" + schNum);
                         divToColor.addClass(day + "_" + schNum);
                     }
                 }
             }
+
         } else if (start.hour == end.hour) {
             for (let i = Number(start.hour); i <= Number(end.hour); i++) {  // hour
+
                 // 분단위 coloring
                 if (i == Number(start.hour)) { // 시작 hour 칸
                     for (let j = Number(start.min); j <= Number(end.min); j++) {
@@ -363,6 +380,7 @@
                         if (j == Number(start.min)) divToColor.val(start); // 첫번째 div에 시작시간 value 넣기
                         if (j == Number(end.min)) divToColor.val(end); // 마지막 div에 종료시간 value 넣기
                         divToColor.addClass("colored");
+                        divToColor.addClass("sch" + schNum);
                         divToColor.addClass(day + "_" + schNum); // mon_2
                     }
                 }
@@ -487,6 +505,8 @@
 
             // 스케쥴 뿌려주기
             $.each(tmp, function (i, sch) {
+                console.log(sch);
+
                 let beg_tm = sch.beg_tm.split(":");
                 let end_tm = sch.end_tm.split(":");
                 let start = {hour: beg_tm[0], min: beg_tm[1], sec: beg_tm[2]};
@@ -651,8 +671,8 @@
                                 <c:forEach begin="1" end="3" varStatus="status">
                                     <fmt:formatNumber var="no" value="${status.index}" type="number"/>
                                     <td>
-                                        <input type="time" id="${day}_${no}_start" name="timepicker" class="start ${day}_timepick sch${no}" value="" min="00:00:00" max="23:59:59" step="1"><br>~
-                                        <input type="time" id="${day}_${no}_end" name="timepicker" class="end ${day}_timepick sch${no}" value="" min="00:00:00" max="23:59:59" step="1" >
+                                        <input type="time" id="${day}_${no}_start" name="timepicker" class="start ${day}_timepick sch${no}_timepick" value="" min="00:00:00" max="23:59:59" step="1"><br>~
+                                        <input type="time" id="${day}_${no}_end" name="timepicker" class="end ${day}_timepick sch${no}_timepick" value="" min="00:00:00" max="23:59:59" step="1" >
                                     </td>
                                 </c:forEach>
                             </tr>
