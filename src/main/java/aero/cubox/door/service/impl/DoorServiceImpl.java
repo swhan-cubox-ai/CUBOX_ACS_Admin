@@ -60,7 +60,7 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
 
                 paramMap.put("doorId", newDoorId );
                 paramMap.put("id", commandMap.get("terminalIds"));
-                doorDAO.updateDoorIdForTerminal(commandMap);
+                doorDAO.updateDoorIdForTerminal(paramMap);
             }
 
             //출입권한-출입문 table에 door_id Insert
@@ -68,7 +68,7 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
 
                 paramMap.put("doorId", newDoorId );
                 paramMap.put("authId", commandMap.get("authGrIds"));
-                doorDAO.insertDoorIdForAuthDoor(commandMap);
+                doorDAO.insertDoorIdForAuthDoor(paramMap);
             }
         }
         return newDoorId;
@@ -82,26 +82,21 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     public void updateDoor(Map<String, Object> commandMap) {
         doorDAO.updateDoor(commandMap);
 
-        String doorId = commandMap.get("doordD").toString();
-
+        HashMap paramMap = new HashMap();
+        paramMap.put("doorId", commandMap.get("doorId") );
         //단말기정보에 출입문 id Update
         if( !StringUtil.isEmpty((String) commandMap.get("terminalIds"))){
 
-            HashMap terminalParam = new HashMap();
-            terminalParam.put("doorId", doorId );
-            terminalParam.put("id", commandMap.get("terminalIds"));
-            doorDAO.updateDoorIdForTerminal(commandMap);
+            paramMap.put("id", commandMap.get("terminalIds"));
+            doorDAO.updateDoorIdForTerminal(paramMap);
         }
 
         //출입권한-출입문 table에 door_id Delete-Insert
         if( !StringUtil.isEmpty((String) commandMap.get("authGrIds"))){
+            paramMap.put("authId", commandMap.get("authGrIds"));
 
-            HashMap terminalParam = new HashMap();
-            terminalParam.put("doorId", doorId );
-            terminalParam.put("authId", commandMap.get("authGrIds"));
-
-            doorDAO.deleteDoorIdForAuthDoor(commandMap);
-            doorDAO.insertDoorIdForAuthDoor(commandMap);
+            doorDAO.deleteDoorIdForAuthDoor(paramMap);
+            doorDAO.insertDoorIdForAuthDoor(paramMap);
         }
     }
 

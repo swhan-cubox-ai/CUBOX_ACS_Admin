@@ -226,6 +226,7 @@
     // 속성 값 초기화
     function initDetail() {
         $("#doorPath").text("");
+        $("#doorId").val("");
         $("#doorNm").val("");
         $("option[name='selected']").prop("selected", true);
         $("#terminalCd").val("");
@@ -582,15 +583,17 @@
             authGrIds: $("#authGroupId").val()
         };
 
+        let mode = "";
         let doorId = "";
         doorId = $("#doorId").val();
-
         if (doorId === undefined || doorId === "") { // 등록 시
             url = "<c:url value='/door/add.do' />";
             data = data;
+            mode = "C";
         } else { // 수정 시
             url = "<c:url value='/door/update.do' />";
             data.doorId = doorId;
+            mode = "U";
         }
 
         $.ajax({
@@ -607,8 +610,13 @@
                     alert("저장되었습니다.");
                     fnGetDoorListAjax();
 
-                    if(returnData.newDoorId != "" ){
-                        getGateDetail(returnData.newDoorId); //
+                    if( "C" == mode ){
+                        if(returnData.newDoorId !== "" ){
+                            getGateDetail(returnData.newDoorId); //
+                        }
+
+                    } else if("U" === mode) {
+                        getGateDetail(doorId);
                     }
 
                 } else {
