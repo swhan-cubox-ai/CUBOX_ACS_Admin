@@ -59,6 +59,11 @@
         background-color: coral;
     }
 
+    .colorTheme tr th {
+        padding: 0;
+        border: 10px solid transparent !important;
+    }
+
 </style>
 
 <script type="text/javascript">
@@ -622,8 +627,11 @@
                         </c:forEach>
                     </colgroup>
                     <thead>
-                    <tr>
-                        <th colspan="3" style="color: transparent !important; background-color: transparent;"> -</th>
+                    <tr class="colorTheme">
+<%--                        <th colspan="3" style="color: transparent !important; background-color: transparent;"> -</th>--%>
+                        <th style="color: transparent !important; background-color: lightblue;"> - </th>
+                        <th style="color: transparent !important; background-color: lightsalmon;"> -</th>
+                        <th style="color: transparent !important; background-color: #6a65bb;"> -</th>
                     </tr>
                     </thead>
                     <tbody id="tdTimePick">
