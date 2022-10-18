@@ -59,11 +59,22 @@
         background-color: coral;
     }
 
-    .colorTheme tr th {
-        padding: 0;
-        border: 10px solid transparent !important;
+    .sch1 {
+        background-color: aliceblue;
     }
 
+    .sch2 {
+        background-color: mistyrose;
+    }
+
+    .sch3 {
+        /*background-color: lemonchiffon;*/
+        background-color: floralwhite;
+    }
+
+    input[name=timepicker] {
+        border: 1px solid gray;
+    }
 </style>
 
 <script type="text/javascript">
@@ -628,10 +639,9 @@
                     </colgroup>
                     <thead>
                     <tr class="colorTheme">
-<%--                        <th colspan="3" style="color: transparent !important; background-color: transparent;"> -</th>--%>
-                        <th style="color: transparent !important; background-color: lightblue;"> - </th>
-                        <th style="color: transparent !important; background-color: lightsalmon;"> -</th>
-                        <th style="color: transparent !important; background-color: #6a65bb;"> -</th>
+                        <th style="color: transparent !important; background-color: lightblue; padding:0; border:10px solid transparent !important;">-</th>
+                        <th style="color: transparent !important; background-color: lightsalmon; padding:0; border:10px solid transparent !important;">-</th>
+                        <th style="color: transparent !important; background-color: gold; padding:0; border:10px solid transparent !important;">-</th>
                     </tr>
                     </thead>
                     <tbody id="tdTimePick">
@@ -641,8 +651,8 @@
                                 <c:forEach begin="1" end="3" varStatus="status">
                                     <fmt:formatNumber var="no" value="${status.index}" type="number"/>
                                     <td>
-                                        <input type="time" id="${day}_${no}_start" name="timepicker" class="start ${day}_timepick" value="" min="00:00:00" max="23:59:59" step="1"><br>~
-                                        <input type="time" id="${day}_${no}_end" name="timepicker" class="end ${day}_timepick" value="" min="00:00:00" max="23:59:59" step="1" >
+                                        <input type="time" id="${day}_${no}_start" name="timepicker" class="start ${day}_timepick sch${no}" value="" min="00:00:00" max="23:59:59" step="1"><br>~
+                                        <input type="time" id="${day}_${no}_end" name="timepicker" class="end ${day}_timepick sch${no}" value="" min="00:00:00" max="23:59:59" step="1" >
                                     </td>
                                 </c:forEach>
                             </tr>
