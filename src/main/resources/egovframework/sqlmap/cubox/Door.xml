@@ -11,13 +11,16 @@
 		       , TD.alarm_typ
 		       , TDS.id as sch_id
 		       , TDS.door_sch_nm as sch_nm
-		       , (select GROUP_CONCAT( TT.id  SEPARATOR '/ ') from T_TERMINAL TT where TT.door_id= TD.id ) AS terminal_id
-		       , (select GROUP_CONCAT( TT.terminal_cd  SEPARATOR '/ ') from T_TERMINAL TT where TT.door_id= TD.id ) AS terminal_cd
-		       , (select GROUP_CONCAT( TT.mgmt_num  SEPARATOR '/ ')  from T_TERMINAL TT where TT.door_id= TD.id ) AS mgmt_num
+		       , (SELECT GROUP_CONCAT( TT.id  SEPARATOR '/ ') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_id
+		       , (SELECT GROUP_CONCAT( TT.terminal_cd  SEPARATOR '/ ') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_cd
+		       , (SELECT GROUP_CONCAT( TT.mgmt_num  SEPARATOR '/ ')  FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS mgmt_num
+		       , TAD.auth_id AS auth_id
+		       , (SELECT TA.auth_nm FROM T_AUTH TA WHERE TA.id = TAD.auth_id ) AS auth_nm
 		    FROM T_DOOR TD
  LEFT OUTER JOIN T_DOORGRP_DOOR TDD ON TD.id = TDD.door_id
  LEFT OUTER JOIN T_DOORGRP TDG      ON TDD.doorgrp_id = TDG.id
  LEFT OUTER JOIN T_DOOR_SCH TDS     ON TDD.doorgrp_id = TDS.id
+ LEFT OUTER JOIN T_AUTH_DOOR TAD     ON TD.id = TAD.door_id
 		   WHERE TD.id = #{id}
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
 			 AND TD.id = #{id}
@@ -144,19 +147,46 @@
 	</select>
 
 	<select id="selectDoorGroupList"  parameterType="HashMap" resultType="HashMap">
+		SELECT A.*
+          FROM (
+                SELECT TD.id
+                     , TD.nm
+                     , TD.door_sch_id
+                     , TDS.door_sch_nm
+                  FROM T_DOORGRP TD
+                     , T_DOOR_SCH TDS
+                 WHERE TD.door_sch_id = TDS.id
+                 <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+                   AND TD.id = #{id}
+                 </if>
+                 <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                   AND TD.nm like CONCAT('%',#{keyword},'%')
+				 </if>
+               ) A
+	  ORDER BY A.nm DESC
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(offset)'>
+		 LIMIT #{srchCnt} OFFSET #{offset}
+		</if>
+	</select>
+
+	<select id="selectDoorGroupListCount"  parameterType="HashMap" resultType="int">
+		SELECT COUNT(*)
+		FROM (
 		SELECT TD.id
-		     , TD.nm
-		     , TD.door_sch_id
-		     , TDS.door_sch_nm
-		  FROM T_DOORGRP TD
-		     , T_DOOR_SCH TDS
-		 WHERE TD.door_sch_id = TDS.id
+		, TD.nm
+		, TD.door_sch_id
+		, TDS.door_sch_nm
+		FROM T_DOORGRP TD
+		, T_DOOR_SCH TDS
+		WHERE TD.door_sch_id = TDS.id
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-		   AND TD.id = #{id}
+			AND TD.id = #{id}
 		</if>
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
 			AND TD.nm like CONCAT('%',#{keyword},'%')
 		</if>
+		) A
+
 	</select>
 
 
