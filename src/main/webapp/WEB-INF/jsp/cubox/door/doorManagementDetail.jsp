@@ -50,6 +50,7 @@
         /*width: 100px;*/
         /*width: 20%;*/
         width: 100%;
+        border: none;
     }
     .tb_list tr td {
         text-align: center;
@@ -152,6 +153,7 @@
             // TODO : 등록된 단말기 여부 확인
             //  alert("이미 등록된 단말기입니다.");
 
+            $("#terminalCd").attr("tId", $("input[name=checkOne]:checked").attr("id"));
             $("#terminalCd").val(chkTerminal.eq(1).html());
             $("#mgmtNum").val(chkTerminal.eq(2).html());
             closePopup('doorPickPopup');
@@ -212,14 +214,13 @@
             fnGetTerminalListAjax($("#srchMachine").val(), chk);
         });
 
+        // 단말기 검색 버튼 클릭시
+        $("#btnSearchAuthGroup").click(function () {
+            // param1 : 검색어, param2 : 출입문 미등록 체크박스 value값 Y or N
+            fnGetAuthGroupListAjax($("#srchAuth").val());
+        });
+
     });
-
-    function getPath() {
-        // pathArr.map(function(el) {
-        //
-        // })
-
-    }
 
     // 속성 값 초기화
     function initDetail() {
@@ -229,6 +230,7 @@
         $("#terminalCd").val("");
         $("#mgmtNum").val("");
         $("#doorGroup").val("");
+        $("#terminalCd").attr("tId", "");
     }
 
     // 속성 보여주기
@@ -261,6 +263,7 @@
                 // TODO : 알람그룹,권한그룹 가져오기
                 console.log(result);
                 let dInfo = result.doorInfo;
+                // TODO: terminalId
                 $("#doorId").val(dInfo.id);                                 // doorId
                 $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));  // 경로
                 $("#doorNm").val(dInfo.door_nm);                            // 출입문 명
@@ -268,6 +271,7 @@
                 $("#dArea").val(dInfo.area_id);                             // 구역
                 $("#dFloor").val(dInfo.floor_id);                           // 층
                 $("#doorSchedule").val(dInfo.sch_id);                       // 스케쥴
+                $("#terminalCd").attr("tId", dInfo.terminal_id);            // 단말기 id
                 $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
                 $("#mgmtNum").val(dInfo.mgmt_num);                          // 단말기 관리번호
             }
@@ -410,7 +414,10 @@
         $("#" + popupNm).PopupWindow("open");
 
         if (popupNm === "doorPickPopup") {
-            fnGetTerminalListAjax(); //단말기 목록
+            fnGetTerminalListAjax(); // 단말기 목록
+        }
+        if (popupNm === "authPickPopup") {
+            fnGetAuthGroupListAjax(); // 권한그룹 목록
         }
     }
 
@@ -422,7 +429,6 @@
             // 단말기 선택 팝업창 초기화
             $("input[name='checkOne']:checked").attr("checked", false);
         } else if (popupNm == "authPickPopup") {
-            fnGetAuthGroupListAjax();
             $("input[name='chkAuth']:checked").attr("checked", false);
             $("input[name='chkAuthConf']:checked").attr("checked", false);
             totalCheck();
@@ -469,19 +475,25 @@
             },
             dataType: "json",
             success: function (result) {
+                // 값 초기화
                 $("#tbTerminal").empty();
+                $("#srchMachine").val("");
+                console.log(result.terminalList);
+
                 if (result.terminalList.length > 0) {
                     $.each(result.terminalList, function (i, terminal) {
-                        console.log("단말기 목록 : " + terminal.id + "/" + terminal.doorNm + "/" + terminal.terminalCd + "/" + terminal.terminalTyp + "/" + terminal.mgmtNum);
-                        // 단말기 코드, 관리번호, 단말기 유형, 출입문명
-                        // terminalCd, mgmtNum, terminalTyp, doorNm
-                        let tag = "<tr class='h_35px' style='text-align:center'><td style='padding:0 14px;'><input type='radio' name='checkOne'></td>";
+                        let tag = "<tr class='h_35px' style='text-align:center'><td style='padding:0 14px;'>";
+                        tag += "<input type='radio' value='" + terminal.id + "' name='checkOne'></td>";
                         tag += "<td>" + terminal.terminalCd + "</td>";
                         tag += "<td>" + terminal.mgmtNum + "</td>";
                         tag += "<td>" + terminal.terminalTyp + "</td>";
                         tag += "<td>" + terminal.doorNm + "</td></tr>";
-
                         $("#tbTerminal").append(tag);
+
+                        if (doorId !== "" && $("#terminalCd").attr("tId") !== "") {
+                            let terminalCd = $("#terminalCd").attr("tId").split("/")[0]; // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
+                            $('input[name=checkOne]:input[value=' + terminalCd + ']').attr("checked", true);
+                        }
                     });
                 }
             }
@@ -491,23 +503,30 @@
     /////////////////  단말기 목록 조회 ajax - end  /////////////////////
 
 
-
     /////////////////  권한그룹 목록 ajax - start  /////////////////////
 
 
-    function fnGetAuthGroupListAjax() {
+    function fnGetAuthGroupListAjax(param1) {
+
         console.log("fnGetAuthGroupListAjax");
-        let checkYn = "Y";
+        console.log(param1);
+
         $.ajax({
             type: "GET",
-            url: "<c:url value='/door/AuthGroup/list.do' />",
-            data: {checkYn: checkYn},
+            url: "<c:url value='/door/authGroup/list.do' />",
+            data: { keyword: param1 },
             dataType: "json",
             success: function (result) {
                 console.log(result);
-                if (result.authGroupList.length > 0) {
-                    $.each(result.authGroupList, function (i, authGroup) {
-                        console.log(authGroup.id + "/" + authGroup.authNm + "/" + authGroup.deptAuthYn);
+                $("#tdAuthTotal").empty();
+                if (result.authList.length > 0) {
+                    $.each(result.authList, function (i, authGroup) {
+                        console.log(authGroup);
+                        // console.log(authGroup.id + "/" + authGroup.authNm + "/" + authGroup.deptAuthYn);
+                        let tag = "<tr><td style='padding: 0 14px;'><input type='checkbox' aId='" + authGroup.id + "' name='chkAuth'/></td>";
+                        tag += "<td>" + authGroup.authNm + "</td></tr>";
+
+                        $("#tdAuthTotal").append(tag);
                     });
                 }
             }
@@ -530,10 +549,8 @@
             floorId: $("#dFloor").val(),
             scheduleId: $("#doorSchedule").val(),
             alarmGroupId: $("#doorAlarmGroup").val(),
-            terminalCd: $("#terminalCd").val(),
-            mgmtNum: $("#mgmtNum").val(),
-            doorGrId: ""
-            // doorGrId: $("#doorGroup").val().split("\n") // array 형식
+            terminalIds: $("#terminalCd").attr("tId"),
+            // authGrIds:
         };
 
         if (doorId === undefined || doorId === "") { // 등록 시
@@ -661,9 +678,6 @@
                     <tr>
                         <td colspan="3" style="font-size: 17px; text-align: left; padding-left: 20px">
                             <b id="doorPath"></b>
-<%--                            <b id="pathBuilding" style="display:none;"></b>--%>
-<%--                            <b id="pathArea" style="display:none;"> > </b>--%>
-<%--                            <b id="pathFloor" style="display:none;"> > </b>--%>
                         </td>
                     </tr>
                     <tr>
@@ -731,7 +745,7 @@
                     <tr>
                         <th>단말기 코드</th>
                         <td style="border-right:none; padding-right:0; padding-left:12px;">
-                            <input type="text" id="terminalCd" name="terminalCd" maxlength="30" class="input_com" value="" disabled/>
+                            <input type="text" id="terminalCd" name="terminalCd" maxlength="30" class="input_com" tId="" value="" disabled/>
                         </td>
                         <td>
                             <button type="button" id="btnGatePick" class="btn_gray3 btn_small disabled" onclick="openPopup('doorPickPopup');">단말기</button>
@@ -841,7 +855,7 @@
                     <input type="text" class="input_com" id="srchAuth" name="srchAuth" value="" placeholder="권한그룹명" maxlength="30" style="width: 765px;">
                 </div>
                 <div class="comm_search ml_40">
-                    <div class="search_btn2"></div>
+                    <div class="search_btn2" id="btnSearchAuthGroup"></div>
                 </div>
             </div>
         </div>
@@ -853,24 +867,23 @@
                 <table class="tb_list tb_write_02 tb_write_p1">
                     <colgroup>
                         <col style="width:15%">
-                        <col style="width:20%">
-                        <col style="width:65%">
+                        <col style="width:85%">
                     </colgroup>
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="totalAuthCheckAll"></th>
-                        <th>권한코드</th>
+<%--                        <th>권한코드</th>--%>
                         <th>권한그룹명</th>
                     </tr>
                     </thead>
                     <tbody id="tdAuthTotal">
-                    <c:forEach var="i" begin="1" end="10" varStatus="status">
-                        <tr>
-                            <td style="padding: 0 14px;"><input type="checkbox" name="chkAuth"/></td>
-                            <td>CUBOX123</td>
-                            <td>보건 복지부</td>
-                        </tr>
-                    </c:forEach>
+<%--                    <c:forEach var="i" begin="1" end="10" varStatus="status">--%>
+<%--                        <tr>--%>
+<%--                            <td style="padding: 0 14px;"><input type="checkbox" name="chkAuth"/></td>--%>
+<%--                            <td>CUBOX123</td>--%>
+<%--                            <td>보건 복지부</td>--%>
+<%--                        </tr>--%>
+<%--                    </c:forEach>--%>
                     </tbody>
                 </table>
             </div>
@@ -895,27 +908,23 @@
                 <table class="tb_list tb_write_02 tb_write_p1">
                     <colgroup>
                         <col style="width:15%">
-                        <col style="width:20%">
-                        <col style="width:65%">
+                        <col style="width:85%">
                     </colgroup>
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="userAuthCheckAll"></th>
-                        <th>권한코드</th>
                         <th>권한그룹명</th>
                     </tr>
                     </thead>
                     <tbody id="tdAuthConf">
-                    <tr>
-                        <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>
-                        <td>CUBOX123</td>
-                        <td>보건 복지부</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>
-                        <td>CUBOX123</td>
-                        <td>보건 복지부</td>
-                    </tr>
+<%--                    <tr>--%>
+<%--                        <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>--%>
+<%--                        <td>보건 복지부</td>--%>
+<%--                    </tr>--%>
+<%--                    <tr>--%>
+<%--                        <td style="padding: 0 14px;"><input type="checkbox" name="chkAuthConf"/></td>--%>
+<%--                        <td>보건 복지부</td>--%>
+<%--                    </tr>--%>
                     </tbody>
                 </table>
             </div>
