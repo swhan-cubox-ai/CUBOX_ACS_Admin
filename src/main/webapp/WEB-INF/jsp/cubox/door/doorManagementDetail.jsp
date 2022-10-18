@@ -475,20 +475,23 @@
             },
             dataType: "json",
             success: function (result) {
+                // 값 초기화
                 $("#tbTerminal").empty();
+                $("#srchMachine").val("");
+                console.log(result.terminalList);
+
                 if (result.terminalList.length > 0) {
                     $.each(result.terminalList, function (i, terminal) {
-                        console.log(result.terminalList);
                         let tag = "<tr class='h_35px' style='text-align:center'><td style='padding:0 14px;'>";
                         tag += "<input type='radio' value='" + terminal.id + "' name='checkOne'></td>";
                         tag += "<td>" + terminal.terminalCd + "</td>";
                         tag += "<td>" + terminal.mgmtNum + "</td>";
                         tag += "<td>" + terminal.terminalTyp + "</td>";
                         tag += "<td>" + terminal.doorNm + "</td></tr>";
-
                         $("#tbTerminal").append(tag);
-                        if (doorId !== "") {
-                            let terminalCd = $("#terminalCd").attr("tId").split("/")[0]; // TODO: '/' 다중으로 오는 데이터는 보류
+
+                        if (doorId !== "" && $("#terminalCd").attr("tId") !== "") {
+                            let terminalCd = $("#terminalCd").attr("tId").split("/")[0]; // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
                             $('input[name=checkOne]:input[value=' + terminalCd + ']').attr("checked", true);
                         }
                     });
