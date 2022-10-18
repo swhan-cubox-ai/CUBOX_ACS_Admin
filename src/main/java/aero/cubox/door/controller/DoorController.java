@@ -17,6 +17,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -47,6 +48,18 @@ public class DoorController {
 
     @Resource(name = "authService")
     private AuthService authService;
+
+    private int srchPage   =  1; //조회할 페이지 번호 기본 1페이지
+    private int srchCnt	   = 10; //조회할 페이지 수
+    private int offset	   =  0;
+    private int curPage	   =  1; //조회할 페이지 번호 기본 1페이지
+    private int curPageUnit= 10; //한번에 표시할 페이지 번호 개수
+
+    public int autoOffset(int srchPage, int srchCnt ){
+        int off = (srchPage - 1) * srchCnt;
+        if(off<0) off = 0;
+        return off;
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DoorController.class);
 
@@ -153,6 +166,7 @@ public class DoorController {
      * @return
      * @throws Exception
      */
+    @ResponseBody
     @RequestMapping(value = "/add.do")
     public ModelAndView addDoor( @RequestParam Map<String, Object> commandMap) throws Exception {
         LOGGER.debug("출입문 등록");
@@ -160,14 +174,14 @@ public class DoorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        String doorNm = commandMap.get("doorNm").toString();
-        String buildingId = commandMap.get("buildingId").toString();
-        String areaId = commandMap.get("areaId").toString();
-        String floorId = commandMap.get("floorId").toString();
-        String scheduleId = commandMap.get("scheduleId").toString();
-        String alarmGroupId = commandMap.get("alarmGroupId").toString();
-        String terminalIds = commandMap.get("terminalIds").toString();
-        String authGrIds = commandMap.get("authGrIds").toString();
+        String doorNm = StringUtil.nvl(commandMap.get("doorNm"), "");;
+        String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");
+        String areaId = StringUtil.nvl(commandMap.get("areaId"), "");
+        String floorId = StringUtil.nvl(commandMap.get("floorId"), "");
+        String scheduleId = StringUtil.nvl(commandMap.get("scheduleId"), "");
+        String alarmGroupId = StringUtil.nvl(commandMap.get("alarmGroupId"), "");
+        String terminalIds = StringUtil.nvl(commandMap.get("terminalIds"), "");
+        String authGrIds = StringUtil.isNullToString(commandMap.get("authGrIds"));
 
         HashMap param = new HashMap();
 
@@ -177,8 +191,8 @@ public class DoorController {
         param.put("floorId", floorId);      //층 ID
         param.put("doorScheduleId", scheduleId); //출입문 스케쥴 ID
         param.put("alarmGroupId", alarmGroupId); //알람 그룹 ID
-        param.put("terminalIds", terminalIds);//단말기 ID - 복수저장?
-        param.put("authGrIds", authGrIds); //권한그룹ID - 복수저장?
+        param.put("terminalIds", terminalIds);   //단말기 ID - 복수저장?
+        param.put("authGrIds", authGrIds);       //권한그룹ID - 복수저장?
 
         String newDoorId = "";
         try {
@@ -202,41 +216,45 @@ public class DoorController {
      * @return
      * @throws Exception
      */
+    @ResponseBody
     @RequestMapping(value = "/update.do", method = RequestMethod.POST)
     public ModelAndView updateDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        String doorId = commandMap.get("doorId").toString();
-        String doorNm = commandMap.get("doorNm").toString();
-        String buildingId = commandMap.get("buildingId").toString();
-        String areaId = commandMap.get("areaId").toString();
-        String floorId = commandMap.get("floorId").toString();
-        String scheduleId = commandMap.get("scheduleId").toString();
-        String alarmGroupId = commandMap.get("alarmGroupId").toString();
-        String terminalCd = commandMap.get("terminalCd").toString();
-        String mgmtNum = commandMap.get("mgmtNum").toString();
-        String doorGrId = commandMap.get("doorGrId").toString();
-
         HashMap param = new HashMap();
 
-        param.put("id", doorId);
-        param.put("doorNm", doorNm);
-        param.put("buildingId", buildingId);
-        param.put("areaId", areaId);
-        param.put("floorId", floorId);
-        param.put("doorScheduleId", scheduleId);
-        param.put("alarmGroupId", alarmGroupId);
-        param.put("terminalCd", terminalCd);
-        param.put("mgmtNum", mgmtNum);
-        param.put("doorGrId", doorGrId);
+        if (StringUtil.isEmpty(commandMap.get("doorId").toString() ) ){
+            modelAndView.addObject("resultCode", "N");
+            modelAndView.addObject("resultMsg", "no id");
+        } else {
+            String doorId = commandMap.get("doorId").toString();
+            String doorNm = StringUtil.nvl(commandMap.get("doorNm"), "");;
+            String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");
+            String areaId = StringUtil.nvl(commandMap.get("areaId"), "");
+            String floorId = StringUtil.nvl(commandMap.get("floorId"), "");
+            String scheduleId = StringUtil.nvl(commandMap.get("scheduleId"), "");
+            String alarmGroupId = StringUtil.nvl(commandMap.get("alarmGroupId"), "");
+            String terminalIds = StringUtil.nvl(commandMap.get("terminalIds"), "");
+            String authGrIds = StringUtil.nvl(commandMap.get("authGrIds"), "");
 
+            param.put("id", doorId);
+            param.put("doorNm", doorNm);
+            param.put("buildingId", buildingId);
+            param.put("areaId", areaId);
+            param.put("floorId", floorId);
+            param.put("doorScheduleId", scheduleId);
+            param.put("alarmGroupId", alarmGroupId);
+            param.put("terminalIds", terminalIds);
+            param.put("authGrIds", authGrIds);
+        }
         try {
             doorService.updateDoor(param);
 
         } catch (Exception e) {
             e.getStackTrace();
             modelAndView.addObject("resultCode", "N");
+            modelAndView.addObject("resultMsg", e.getStackTrace());
         }
         modelAndView.addObject("resultCode", "Y");
 
@@ -252,6 +270,7 @@ public class DoorController {
      * @return
      * @throws Exception
      */
+    @ResponseBody
     @RequestMapping(value = "/delete.do", method = RequestMethod.POST)
     public ModelAndView deleteDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
@@ -261,8 +280,6 @@ public class DoorController {
         try {
             doorService.deleteDoor(commandMap);
         } catch (Exception e) {
-            System.out.println("delete exception");
-            System.out.println(e);
             e.getStackTrace();
             modelAndView.addObject("resultCode", "N");
         }
@@ -284,6 +301,33 @@ public class DoorController {
     public String showDoorGroupListView(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         //todo 세션
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+
+            String srchPage       = StringUtil.nvl(commandMap.get("srchPage"), "1");
+            String srchRecPerPage = StringUtil.nvl(commandMap.get("srchRecPerPage"), "10");
+            String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+
+            List<HashMap> doorGroupList = doorService.getDoorGroupList(commandMap);
+            int totalCnt = doorService.getDoorGroupListCount(commandMap);
+
+            PaginationVO pageVO = new PaginationVO();
+            pageVO.setCurPage(Integer.parseInt(srchPage));
+            pageVO.setRecPerPage(Integer.parseInt(srchRecPerPage));
+            pageVO.setTotRecord(totalCnt);
+            pageVO.setUnitPage(curPageUnit);
+            pageVO.calcPageList();
+
+            model.addAttribute("doorGroupList", doorGroupList);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("pagination", pageVO);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
 
         return "cubox/door/groupList";
     }
@@ -303,14 +347,34 @@ public class DoorController {
         modelAndView.setViewName("jsonView");
 
         String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
-        HashMap parmaMap = new HashMap();
+        int srchPage = 1;
+        if( StringUtil.isNullToString(commandMap.get("srchPage")) !="" ) {
+            srchPage = String.valueOf(commandMap.get("srchPage")).matches("(^[0-9]*$)") ? Integer.valueOf((String) commandMap.get("srchPage")) : 1;
+        }
+
+        HashMap paramMap = new HashMap();
+
+        paramMap.put( "srchPage", srchPage );
+        paramMap.put(  "srchCnt", srchCnt  );
+        paramMap.put(   "offset", autoOffset( srchPage, srchCnt ) );
 
         if( keyword.length() > 0){
-            parmaMap.put("keyword",keyword);
+            paramMap.put("keyword",keyword);
         }
 
         List<HashMap> doorGroupList = doorService.getDoorGroupList(commandMap);
 
+        int totalCnt = 0;
+        totalCnt = doorGroupList.size();
+
+        PaginationVO pageVO = new PaginationVO();
+        pageVO.setCurPage( srchPage );	//현재 페이지번호
+        pageVO.setRecPerPage( srchCnt );	//한페이지당 레코드 개수
+        pageVO.setTotRecord( totalCnt );	//총페이지수
+        pageVO.setUnitPage( PaginationVO.unitPage ); //한번에 보여줄 페이지 개수
+        pageVO.calcPageList();
+
+        model.addAttribute("pagination", pageVO);//페이징 설정값 수정
         modelAndView.addObject("doorGroupList", doorGroupList);
 
         return modelAndView;
@@ -318,7 +382,7 @@ public class DoorController {
 
 
     // 출입문 그룹 관리 상세
-    @RequestMapping(value = "/group/detail.do")
+    @RequestMapping(value = "/group/detail.do", method = RequestMethod.GET)
     public String showGroupDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
 //        HashMap doorGroupDetail = doorService.getDoorGroupDetail(commandMap);
@@ -335,6 +399,7 @@ public class DoorController {
     }
 
     // 출입문 그룹 관리 등록/수정
+    @ResponseBody
     @RequestMapping(value = "/group/add.do", method = RequestMethod.POST)
     public ModelAndView addGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -392,7 +457,7 @@ public class DoorController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/schedule/list.do")
+    @RequestMapping(value = "/schedule/list.do", method = RequestMethod.GET)
     public ModelAndView getScheduleList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws
             Exception {
 
@@ -427,6 +492,7 @@ public class DoorController {
         return "cubox/door/scheduleAdd";
     }
 
+    @ResponseBody
     @RequestMapping(value = "/schedule/add.do", method = RequestMethod.POST)
     public ModelAndView addSchedule(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -456,7 +522,7 @@ public class DoorController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/schedule/detail.do")
+    @RequestMapping(value = "/schedule/detail.do", method = RequestMethod.GET)
     public String showScheduleDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         return "cubox/door/scheduleDetail";
@@ -472,6 +538,7 @@ public class DoorController {
      * @return
      * @throws Exception
      */
+    @ResponseBody
     @RequestMapping(value = "/schedule/day/add.do", method = RequestMethod.POST)
     public ModelAndView addScheduleByDay(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -501,7 +568,8 @@ public class DoorController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/schedule/delete.do")
+    @ResponseBody
+    @RequestMapping(value = "/schedule/delete.do", method = RequestMethod.POST)
     public ModelAndView deleteSchedule(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
@@ -521,7 +589,7 @@ public class DoorController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/alarmGroup/listView.do")
+    @RequestMapping(value = "/alarmGroup/listView.do", method = RequestMethod.GET)
     public String showAlarmGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
         //todo 세션처리
 
@@ -536,7 +604,7 @@ public class DoorController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/alarmGroup/list.do")
+    @RequestMapping(value = "/alarmGroup/list.do", method = RequestMethod.GET)
     public ModelAndView getAlarmGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
@@ -556,7 +624,7 @@ public class DoorController {
     }
 
     // 출입문 알람 그룹 상세
-    @RequestMapping(value = "/alarmGroup/detail.do")
+    @RequestMapping(value = "/alarmGroup/detail.do", method = RequestMethod.GET)
     public String showAlarmDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         return "cubox/door/alarmGroupDetail";
@@ -570,7 +638,9 @@ public class DoorController {
     }
 
 
+
     // 출입문 알람 그룹 등록
+    @ResponseBody
     @RequestMapping(value = "/alarmGroup/add.do", method = RequestMethod.POST)
     public ModelAndView addAalarmGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 

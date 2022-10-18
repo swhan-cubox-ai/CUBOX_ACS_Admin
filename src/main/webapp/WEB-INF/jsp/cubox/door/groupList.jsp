@@ -54,6 +54,15 @@
         });
     }
 
+    function pageSearch(page){
+        alert(page);
+
+
+        $("#srchPage").val(page);
+        fnGetDoorGroupListAjax
+
+    }
+
 
 </script>
 

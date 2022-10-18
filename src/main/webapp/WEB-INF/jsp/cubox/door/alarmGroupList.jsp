@@ -50,32 +50,17 @@
             }
         });
     }
+
+    function pageSearch(page) {
+        alert(page);
+        f = document.frmSearch;
+        f.action = "/diligenceAndLazinessManagement/certificationHistory.do?srchPage=" + page;
+        f.submit();
+    }
 </script>
 
 <%--  검색 박스 --%>
 <form id="frmAlarmGroup" name="frmAlarmGroup" method="post">
-    <div class="search_box mb_20 mt_20" style="width: 40%;">
-        <div class="search_in" style="width: 100%;">
-            <div class="comm_search ml_10 mr_10" style="width: 90%;">
-                <input type="text" class="input_com" id="srchAlarmGroup" name="srchAlarmGroup" value="" placeholder="출입문 알람그룹 명"/>
-            </div>
-            <div class="comm_search ml_40">
-                <%--                <div class="search_btn2" onclick="pageSearch('1')"></div>--%>
-                <div class="search_btn2" id="searchBtn"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="totalbox mb_20 mt_20" style="justify-content: end; width: 60%; height: 65px;">
-        <div class="r_btnbox mb_10">
-            <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="openExcelDownload();">엑셀다운로드</button>
-        </div>
-        <div class="r_btnbox ml_10 mb_10">
-            <button type="button" class="btn_excel" data-toggle="modal" onclick="location='/door/alarmGroup/addView.do'">신규등록</button>
-        </div>
-    </div>
-    <%--  end of 검색 박스 --%>
-
     <div class="com_box">
         <%--  테이블  --%>
         <div class="tb_outbox">
@@ -116,6 +101,30 @@
             </table>
         </div>
         <%--  end of 테이블  --%>
+            <!-- paging -->
+        <jsp:include page="/WEB-INF/jsp/cubox/common/pagination.jsp" flush="false" />
+    </div>
+
+    <div class="search_box mb_20 mt_20" style="width: 40%;">
+        <div class="search_in" style="width: 100%;">
+            <div class="comm_search ml_10 mr_10" style="width: 90%;">
+                <input type="text" class="input_com" id="srchAlarmGroup" name="srchAlarmGroup" value="" placeholder="출입문 알람그룹 명"/>
+            </div>
+            <div class="comm_search ml_40">
+                <%--                <div class="search_btn2" onclick="pageSearch('1')"></div>--%>
+                <div class="search_btn2" id="searchBtn"></div>
+            </div>
+        </div>
+    </div>
+<%--  end of 검색 박스 --%>
+
+    <div class="totalbox mb_20 mt_20" style="justify-content: end; width: 60%; height: 65px;">
+        <div class="r_btnbox mb_10">
+            <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="openExcelDownload();">엑셀다운로드</button>
+        </div>
+        <div class="r_btnbox ml_10 mb_10">
+            <button type="button" class="btn_excel" data-toggle="modal" onclick="location='/door/alarmGroup/addView.do'">신규등록</button>
+        </div>
     </div>
 
     <jsp:include page="/WEB-INF/jsp/cubox/common/pagination.jsp" flush="false"/>

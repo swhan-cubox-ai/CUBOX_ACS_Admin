@@ -50,24 +50,24 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         doorDAO.insertDoor(commandMap);
 
         String newDoorId = "";
+        newDoorId = commandMap.get("doorId").toString();
+
+        HashMap paramMap = new HashMap();
 
         if (!StringUtil.isEmpty(commandMap.get("doorId").toString() ) ){
-            newDoorId = commandMap.get("doorId").toString();
             //단말기정보에 출입문 id Update
             if( !StringUtil.isEmpty((String) commandMap.get("terminalIds"))){
 
-                HashMap terminalParam = new HashMap();
-                terminalParam.put("doorId", newDoorId );
-                terminalParam.put("id", commandMap.get("terminalIds"));
+                paramMap.put("doorId", newDoorId );
+                paramMap.put("id", commandMap.get("terminalIds"));
                 doorDAO.updateDoorIdForTerminal(commandMap);
             }
 
             //출입권한-출입문 table에 door_id Insert
             if( !StringUtil.isEmpty((String) commandMap.get("authGrIds"))){
 
-                HashMap terminalParam = new HashMap();
-                terminalParam.put("doorId", newDoorId );
-                terminalParam.put("authId", commandMap.get("authGrIds"));
+                paramMap.put("doorId", newDoorId );
+                paramMap.put("authId", commandMap.get("authGrIds"));
                 doorDAO.insertDoorIdForAuthDoor(commandMap);
             }
         }
@@ -189,6 +189,11 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     public List<HashMap> getDoorGroupList(Map<String, Object> commandMap) {
 
         return doorDAO.getDoorGroupList(commandMap);
+    }
+
+    @Override
+    public int getDoorGroupListCount(Map<String, Object> commandMap) {
+        return doorDAO.getDoorGroupListCount(commandMap);
     }
 
     /**
@@ -375,6 +380,8 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     public List<HashMap> getTerminalList(Map<String, Object> commandMap) {
         return doorDAO.getTerminalList(commandMap);
     }
+
+
 
 
 }

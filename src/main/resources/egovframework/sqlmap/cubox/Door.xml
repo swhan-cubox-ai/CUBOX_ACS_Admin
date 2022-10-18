@@ -20,7 +20,7 @@
  LEFT OUTER JOIN T_DOORGRP_DOOR TDD ON TD.id = TDD.door_id
  LEFT OUTER JOIN T_DOORGRP TDG      ON TDD.doorgrp_id = TDG.id
  LEFT OUTER JOIN T_DOOR_SCH TDS     ON TDD.doorgrp_id = TDS.id
- LEFT OUTER JOIN T_AUTH_DOOR TAD     ON TD.id = TAD.door_id
+ LEFT OUTER JOIN T_AUTH_DOOR TAD    ON TD.id = TAD.door_id
 		   WHERE TD.id = #{id}
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
 			 AND TD.id = #{id}

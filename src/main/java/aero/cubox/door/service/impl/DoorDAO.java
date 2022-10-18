@@ -159,4 +159,8 @@ public class DoorDAO extends EgovAbstractMapper {
 		delete(sqlNameSpace+"deleteDoorIdForAuthDoor", commandMap);
 
 	}
+
+	public int getDoorGroupListCount(Map<String, Object> commandMap) {
+		return selectOne (sqlNameSpace+"selectDoorGroupListCount", commandMap);
+	}
 }

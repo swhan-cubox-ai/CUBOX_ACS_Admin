@@ -578,9 +578,12 @@
             floorId: $("#dFloor").val(),
             scheduleId: $("#doorSchedule").val(),
             alarmGroupId: $("#doorAlarmGroup").val(),
-            terminalIds: $("#terminalId").val()
-            // authGrIds:
+            terminalIds: $("#terminalId").val(),
+            authGrIds: $("#authGroupId").val()
         };
+
+        let doorId = "";
+        doorId = $("#doorId").val();
 
         if (doorId === undefined || doorId === "") { // 등록 시
             url = "<c:url value='/door/add.do' />";
@@ -604,6 +607,10 @@
                     alert("저장되었습니다.");
                     fnGetDoorListAjax();
 
+                    if(returnData.newDoorId != "" ){
+                        getGateDetail(returnData.newDoorId); //
+                    }
+
                 } else {
                     //등록에 문제가 발생
                     alert("등록에 실패하였습니다.");
@@ -611,7 +618,6 @@
             }
         });
 
-        getGateDetail(doorId); // 상세 정보를 뿌려주기엔 저장 시점에 id를 알 수 없음
         fnCancel();
     }
 
@@ -778,7 +784,7 @@
                             <input type="text" id="terminalCd" name="terminalCd" maxlength="30" class="input_com" value="" disabled/>
                         </td>
                         <td>
-                            <button type="button" id="btnGatePick" class="btn_gray3 btn_small disabled" onclick="openPopup('doorPickPopup');">단말기</button>
+                            <button type="button" id="btnGatePick" class="btn_gray3 btn_small disabled" onclick="openPopup('doorPickPopup');">선택</button>
                         </td>
                     </tr>
                     <tr>
@@ -793,7 +799,7 @@
                             <textarea id="doorGroup" name="doorGroup" rows="4" cols="33" class="mt_5 mb_5" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled>보건 복지부 &#10;12동 전체</textarea>
                         </td>
                         <td>
-                            <button type="button" id="btnAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup');">권한그룹</button>
+                            <button type="button" id="btnAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup');">선택</button>
                         </td>
                     </tr>
 <%--                    <tr>--%>

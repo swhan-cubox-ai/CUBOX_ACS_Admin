@@ -65,4 +65,5 @@ public interface DoorService {
     //단말기
     List<HashMap> getTerminalList(Map<String, Object> commandMap);
 
+    int getDoorGroupListCount(Map<String, Object> commandMap);
 }
