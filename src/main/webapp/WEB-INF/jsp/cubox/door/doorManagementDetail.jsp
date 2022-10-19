@@ -67,6 +67,12 @@
         pointer-events: none;
         background-color: lightgray;
     }
+    .divAddNode {
+        display: inline-block;
+    }
+    .divAddNode label {
+        font-size: small;
+    }
     .title_box {
         margin-top: 10px;
     }
@@ -74,7 +80,7 @@
 
 <script type="text/javascript">
 
-    let doorId;
+    let doorId = "";
 
     $(function () {
         $(".title_tx").html("출입문 관리");
@@ -309,18 +315,30 @@
         // $("#btnAuthPick").css("display", "inline-block");
         $("#btnGatePick, #btnAuthPick").removeClass("disabled");
         $("[name=doorEdit]").prop("disabled", false);
-        if (doorId !== "") {$("#dArea").prop("disabled", false);}
-        // $("[name=doorEditSelect]").prop("disabled", false);
+
+        console.log(doorId);
+        console.log(doorId !== ""); // doorId 있음
+
+        if (doorId === "") {
+            $("#dArea").prop("disabled", true);
+        } else {
+            $("#dArea").prop("disabled", false); // 구역 disable 해제
+        }
     }
 
     // 출입문 관리 - 추가
     function fnAdd() {
+
+        console.log("fnAdd");
+        console.log($("input[name=createNode]").val());
+
+        doorId = "";
         fnEdit();
         initDetail();
         viewDetail();
         $("#doorNm").focus();
         $(".nodeSel").toggleClass("nodeSel node");
-        doorId = "";
+
         // $("option[name='selected']").prop("selected", true);
     }
 
@@ -503,15 +521,10 @@
                         $("#tbTerminal").append(tag);
                     });
 
-                    // if (doorId !== "" && $("#terminalId").val() !== "") {
                     if ($("#terminalId").val() !== "") {
                         let terminalId = $("#terminalId").val(); // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
                         $('input[name=checkOne]:input[value=' + terminalId + ']').attr("checked", true);
                     }
-                    // if (doorId !== "" && $("#terminalCd").attr("tId") !== "") {
-                    //     let terminalCd = $("#terminalCd").attr("tId").split("/")[0]; // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
-                    //     $('input[name=checkOne]:input[value=' + terminalCd + ']').attr("checked", true);
-                    // }
                 }
             }
         });
@@ -545,19 +558,11 @@
                         $("#tdAuthTotal").append(tag);
                     });
 
-                    // if (doorId !== "" && $("#authGroupId").val() !== "") {
                     if ($("#authGroupId").val() !== "") {
                         let authGroupId = $("#authGroupId").val();
                         $('input[name=chkAuth]:input[value=' + authGroupId + ']').prop("checked", true);
                         $("#add_auth").click();
                     }
-                    // if (doorId !== "" && $("#doorGroup").attr("aId") !== "") {
-                    //     $("#tdAuthConf").empty();
-                    //     let doorGroup = $("#doorGroup").attr("aId");
-                    //     $('input[name=chkAuth]:input[value=' + doorGroup + ']').prop("checked", true);
-                    //     $("#add_auth").click();
-                    //     authSave();
-                    // }
                 }
             }
         });
@@ -584,8 +589,8 @@
         };
 
         let mode = "";
-        let doorId = "";
-        doorId = $("#doorId").val();
+        // let doorId = "";
+        // doorId = $("#doorId").val();
         if (doorId === undefined || doorId === "") { // 등록 시
             url = "<c:url value='/door/add.do' />";
             data = data;
@@ -610,12 +615,14 @@
                     alert("저장되었습니다.");
                     fnGetDoorListAjax();
 
-                    if( "C" == mode ){
-                        if(returnData.newDoorId !== "" ){
+                    if ("C" === mode ) {
+                        if (returnData.newDoorId !== "" ) {
+                            console.log("C");
                             getGateDetail(returnData.newDoorId); //
                         }
 
-                    } else if("U" === mode) {
+                    } else if ("U" === mode) {
+                        console.log("U");
                         getGateDetail(doorId);
                     }
 
@@ -691,7 +698,31 @@
             <div id="treeDiv"></div>
             <div class="c_btnbox center mt_10 mb_10" style="height: 35px;">
                 <div style="display: inline-block;">
-                    <button type="button" class="comm_btn mr_20" onclick="fnAdd();">추가</button>
+                    <div class="divAddNode mr_10">
+                        <label for="addBuilding">
+                            <input type="radio" id="addBuilding" name="createNode" class="mr_5" value="building">빌딩(동)
+                        </label>
+                    </div>
+
+                    <div class="divAddNode mr_10">
+                        <label for="addArea">
+                            <input type="radio" id="addArea" name="createNode" class="mr_5" value="area">구역
+                        </label>
+                    </div>
+
+                    <div class="divAddNode mr_10">
+                        <label for="addFloor">
+                            <input type="radio" id="addFloor" name="createNode" class="mr_5" value="floor">층
+                        </label>
+                    </div>
+
+                    <div class="divAddNode mr_10">
+                        <label for="addDoor">
+                            <input type="radio" id="addDoor" name="createNode" class="mr_5" value="door" checked="checked">출입문
+                        </label>
+                    </div>
+
+                    <button type="button" class="comm_btn ml_10" style="float:none;" onclick="fnAdd();">추가</button>
                 </div>
             </div>
         </div>
