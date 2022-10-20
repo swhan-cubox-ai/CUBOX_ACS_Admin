@@ -53,7 +53,7 @@
     </div>
     <!--버튼 -->
     <div class="r_btnbox  mb_10">
-      <button type="button" class="btn_middle color_basic" id="excelDown">엑셀다운로드</button>
+      <button type="button" class="btn_excel" id="excelDown">엑셀다운로드</button>
       <button type="button" class="btn_middle color_basic" id="addDoorGroup" onclick="fnAddDoorGroup()">신규등록</button>
     </div>
     <!--//버튼  -->

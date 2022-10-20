@@ -408,8 +408,10 @@ public class DoorController {
         AuthVO vo = new AuthVO();
 
         String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+        String srchCond = StringUtil.nvl(commandMap.get("authType"), "");
 
         vo.setKeyword(keyword);
+        vo.setSrchCond(srchCond);
         List<AuthVO> authList = authService.getAuthList(vo);
 
         modelAndView.addObject("authList", authList);
@@ -521,6 +523,65 @@ public class DoorController {
         }
         modelAndView.addObject("newfloorId", newfloorId );
         modelAndView.addObject("resultCode", "Y");
+
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/building/detail.do", method = RequestMethod.GET)
+    public ModelAndView getBuildingInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        LOGGER.debug("getBuildingInformation");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        LOGGER.debug("param buildingId=" + commandMap.get("buildingId"));
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("id", commandMap.get("buildingId"));
+
+        HashMap doorInfo = (HashMap) doorService.getBuildingDetail(param);
+
+        modelAndView.addObject("doorInfo", doorInfo);
+
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/floor/detail.do", method = RequestMethod.GET)
+    public ModelAndView getFloorInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        LOGGER.debug("getFloorInformation");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        LOGGER.debug("param floorId=" + commandMap.get("floorId"));
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("id", commandMap.get("floorId"));
+
+        HashMap doorInfo = (HashMap) doorService.getFloorDetail(param);
+
+        modelAndView.addObject("doorInfo", doorInfo);
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/area/detail.do", method = RequestMethod.GET)
+    public ModelAndView getArearInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        LOGGER.debug("getArearInformation");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        LOGGER.debug("param areaId=" + commandMap.get("areaId"));
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("id", commandMap.get("areaId"));
+
+        HashMap doorInfo = (HashMap) doorService.getAreaDetail(param);
+
+        modelAndView.addObject("doorInfo", doorInfo);
 
         return modelAndView;
     }

@@ -759,12 +759,14 @@
     function fnGetAuthGroupListAjax(type, keyword) {
 
         console.log("fnGetAuthGroupListAjax");
+        console.log("type" + type);
+
 
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/authGroup/list.do' />",
             data: {
-                authType: type // TODO: type(String) = 'building' / 'area' / 'floor' / 'door' 중 1
+                authType: "EAT001" // TODO: type(String) = 'building' / 'area' / 'floor' / 'door' 중 1
                 , keyword: keyword
             },
             dataType: "json",

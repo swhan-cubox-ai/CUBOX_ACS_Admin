@@ -16,6 +16,6 @@ public interface DoorGroupService {
 
     void addDoorGroup(Map<String, Object> commandMap);
     void updateDoorGroup(Map<String, Object> commandMap);
-    void deleteDoorGroup(Map<String, Object> commandMap);
+    void deleteDoorGroup(int commandMap);
 
 }

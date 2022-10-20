@@ -39,6 +39,21 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         return doorDAO.getDoorDetail(paramMap);
     }
 
+    @Override
+    public Map getBuildingDetail(Map<String, Object> paramMap) {
+        return doorDAO.getBuildingDetail(paramMap);
+    }
+
+    @Override
+    public Map getFloorDetail(Map<String, Object> paramMap) {
+        return doorDAO.getFloorDetail(paramMap);
+    }
+
+    @Override
+    public Map getAreaDetail(HashMap<String, Object> paramMap) {
+        return doorDAO.getAreaDetail(paramMap);
+    }
+
     /**
      * 출입문 등록
      *

@@ -35,9 +35,9 @@ public class DoorGroupDAO extends EgovAbstractMapper {
         update(sqlNameSpace+"updateDoorGroup", paramMap);
     }
 
-    public void deleteDoorGroup(Map<String, Object> paramMap) {
+    public void deleteDoorGroup(int id) {
 
-        delete(sqlNameSpace+"deleteDoorGroup", paramMap);
+        delete(sqlNameSpace+"deleteDoorGroup", id);
     }
 
 }

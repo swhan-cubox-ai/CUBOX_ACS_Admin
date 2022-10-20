@@ -11,6 +11,11 @@ public interface DoorService {
     List<Map> getDoorList(Map<String, Object> commandMap);
 
     Map getDoorDetail(Map<String, Object> commandMap);
+    Map getBuildingDetail(Map<String, Object> commandMap);
+    Map getFloorDetail(Map<String, Object> commandMap);
+
+
+    Map getAreaDetail(HashMap<String, Object> param);
 
     String addDoor(Map<String, Object> commandMap);
 

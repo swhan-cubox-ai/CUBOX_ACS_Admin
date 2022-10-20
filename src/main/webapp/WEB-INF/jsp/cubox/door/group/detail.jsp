@@ -61,8 +61,40 @@
             alert("출입문을 선택해주세요."); return;
         }
 
+
+
+        let id = "1"; // example - doorgroup id
+
+        $.ajax({
+            type: "post",
+            url: "/door/group/modify/" + id,
+            data :{
+                nm: "춥입문 테스트 그룹1",
+                scheduleId: "1",
+                doorIds: "1/2/3"
+            },
+            dataType: 'json',
+            success: function (data, status) {
+                if (data.resultCode == "Y") {
+                    $('#gpNm').prop('disabled', true);
+                    $('#gpSchedule').prop('disabled', true);
+                    $('#gpDoor').prop('disabled', true);
+
+                    $('#btnSelDoor').hide();
+                    $('#saveBtn').hide();
+                    $('#cancelBtn').hide();
+                    $('#listBtn').show();
+
+                    alert("저장되었습니다.");
+                } else {
+                    alert("저장 중 오류가 발생하였습니다.");
+                }
+            }
+        });
+
+
         // TODO : gpDoor 출입문 disabled 해제!
-        location.href = "/door/group/detail.do";
+        // location.href = "/door/group/detail.do";
     }
 
     // 수정 취소
@@ -75,12 +107,13 @@
     }
 
     // 수정 버튼
-    function fnEdit() {
+    function fnEditMode() {
         $(".title_tx").html("출입문 그룹 관리 - 수정");
         $("#btnEdit").css("display", "block");
         $("#btnboxDetail").css("display", "none");
         $("#btnboxEdit").css("display", "block");
         $("[name=detail]").attr("disabled", false);
+
     }
 
     // 삭제 버튼
@@ -95,22 +128,22 @@
             return;
         }
 
-        // $.ajax({
-        //     type: "post",
-        //     url: "/door/group/delete.do",
-        //     data: {
-        //         // "id" : id
-        //     },
-        //     dataType: 'json',
-        //     success: function (data, status) {
-        //         if (data.result == "Y") {
-        //             location.href = "/door/group/listView.do";
-        //         } else {
-        //             alert("삭제 중 오류가 발생하였습니다.");
-        //         }
-        //     }
-        // });
-        location.href = "/door/group/listView.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
+        let id="1"; // example - doorgroup id
+
+        $.ajax({
+            type: "post",
+            url: "/door/group/delete/"+id,
+            dataType: 'json',
+            success: function (data, status) {
+                if (data.resultCode == "Y") {
+                    location.href = "/door/group/list.do";
+                    alert("삭제가 완료되었습니다.");
+                } else {
+                    alert("삭제 중 오류가 발생하였습니다.");
+                }
+            }
+        });
+        // location.href = "/door/group/listView.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
     }
 
     // popup open (공통)
@@ -162,7 +195,7 @@
                               style="border-color: #ccc; border-radius: 2px;
                               font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>16동 현관</textarea>
                     <div class="ml_10" style="position: relative;">
-                        <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px; display: none;" onclick="openPopup('doorEditPopup')">출입문 선택</button>
+                        <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px; display: none;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">출입문 선택</button>
                     </div>
                 </td>
             </tr>
@@ -171,12 +204,14 @@
     </div>
 </form>
 
+
 <div class="right_btn mt_20" id="btnboxDetail">
     <button class="btn_middle color_basic" onclick="location='/door/group/list.do'">목록</button>
-    <button class="btn_middle ml_5 color_basic" onclick="fnEdit();">수정</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnEditMode();">수정</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
 </div>
 <div class="right_btn mt_20" id="btnboxEdit" style="display:none;">
-    <button class="btn_middle ml_5 color_basic" onclick="fnSave();">등록</button>
-    <button class="btn_middle ml_5 color_basic" onclick="fnCancel();">취소</button>
+<button class="btn_middle ml_5 color_basic" onclick="location='/door/group/list.do'" id="listBtn">목록</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnSave();" id="saveBtn">저장</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnCancel();" id="cancelBtn">취소</button>
 </div>

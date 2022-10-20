@@ -1,7 +1,6 @@
 package aero.cubox.door.service.impl;
 
 import aero.cubox.door.service.DoorGroupService;
-import aero.cubox.door.service.DoorService;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -71,7 +70,7 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
      * @param commandMap
      */
     @Override
-    public void deleteDoorGroup(Map<String, Object> commandMap) {
+    public void deleteDoorGroup(int commandMap) {
         doorGroupDAO.deleteDoorGroup(commandMap);
     }
 

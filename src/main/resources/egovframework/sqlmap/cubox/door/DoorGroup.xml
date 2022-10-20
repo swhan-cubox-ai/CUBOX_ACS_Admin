@@ -74,12 +74,10 @@
     <insert id="insertDoorGroup" parameterType="HashMap">
         INSERT
         INTO T_DOORGRP
-        ( id
-        , nm
+        ( nm
         , door_sch_id)
         VALUES
-            ( #{id}
-            , #{nm}
+            ( #{nm}
             , #{doorSchId}
             )
     </insert>
@@ -93,7 +91,7 @@
     </update>
 
 
-    <delete id="deleteDoorGroup" parameterType="HashMap" >
+    <delete id="deleteDoorGroup" parameterType="int" >
         DELETE
         FROM T_DOORGRP
         WHERE id = #{id}

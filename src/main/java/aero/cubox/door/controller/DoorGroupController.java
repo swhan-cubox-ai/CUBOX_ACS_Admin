@@ -2,8 +2,10 @@ package aero.cubox.door.controller;
 
 import aero.cubox.auth.service.AuthService;
 import aero.cubox.cmmn.service.CommonService;
+import aero.cubox.core.vo.CommonVO;
 import aero.cubox.core.vo.PaginationVO;
 import aero.cubox.door.service.DoorGroupService;
+import aero.cubox.door.service.DoorScheduleService;
 import aero.cubox.door.service.DoorService;
 import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.CommonUtils;
@@ -37,6 +39,9 @@ public class DoorGroupController {
 
     @Resource(name = "doorGroupService")
     private DoorGroupService doorGroupService;
+
+    @Resource(name = "doorScheduleService")
+    private DoorScheduleService doorScheduleService;
 
     @Resource(name = "terminalService")
     private TerminalService terminalService;
@@ -122,7 +127,23 @@ public class DoorGroupController {
 
     // 출입문 그룹 관리 등록화면
     @RequestMapping(value = "/add.do", method = RequestMethod.GET)
-    public String addGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    public String addGroupView(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        HashMap param = new HashMap();
+        List<HashMap> scheduleList = doorScheduleService.getScheduleList(param);      // 스케쥴 목록
+
+        modelAndView.addObject("scheduleList", scheduleList);
+
+        return "cubox/door/group/add";
+    }
+
+    // 출입문 그룹 관리 등록화면
+    @ResponseBody
+    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
+    public ModelAndView saveDoorGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -140,8 +161,7 @@ public class DoorGroupController {
         param.put("doorIds", doorIds);
 
         try {
-            doorGroupService.addDoorGroup(commandMap);
-
+            doorGroupService.addDoorGroup(param);
         } catch (Exception e) {
             e.getStackTrace();
             resultCode = "N";
@@ -149,7 +169,64 @@ public class DoorGroupController {
 
         modelAndView.addObject("resultCode", resultCode);
 
-        return "cubox/door/group/add";
+        return modelAndView;
+    }
+    @ResponseBody
+    @RequestMapping(value="/modify/{id}", method= RequestMethod.POST)
+    public ModelAndView modify(ModelMap model, @PathVariable String id, HttpServletRequest request,@RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String resultCode = "Y";
+
+
+        if( id == null){
+             resultCode = "N";
+        }
+        String nm = StringUtil.nvl(commandMap.get("nm"), "");
+        String scheduleId = StringUtil.nvl(commandMap.get("scheduleId"), "");
+        String doorIds = StringUtil.nvl(commandMap.get("doorIds"), "");
+
+        HashMap param = new HashMap();
+
+        param.put("id", Integer.parseInt(id));
+        param.put("nm", nm);
+        param.put("doorSchId", scheduleId);
+        param.put("doorIds", doorIds);
+
+        try {
+            doorGroupService.updateDoorGroup(param);
+
+        } catch (Exception e) {
+            e.getStackTrace();
+            resultCode = "N";
+        }
+
+        model.addAttribute("resultCode", resultCode);
+
+        return modelAndView;
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/delete/{id}")
+    public ModelAndView delete(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        String resultCode = "Y";
+
+        try {
+            doorGroupService.deleteDoorGroup(id);
+        } catch (Exception e) {
+            e.getStackTrace();
+            resultCode = "N";
+        }
+
+
+        model.addAttribute("resultCode", resultCode);
+
+        return modelAndView;
     }
 
 

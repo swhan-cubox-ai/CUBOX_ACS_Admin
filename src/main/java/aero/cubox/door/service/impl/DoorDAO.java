@@ -78,7 +78,6 @@ public class DoorDAO extends EgovAbstractMapper {
 
 	}
 
-
 	public void insertBuilding(HashMap paramMap) {
 		insert(sqlNameSpace+"insertBuilding", paramMap);
 	}
@@ -109,5 +108,17 @@ public class DoorDAO extends EgovAbstractMapper {
 
 	public void insertBuildingIdForAuthBuilding(Map<String, Object> paramMap) {
 		insert(sqlNameSpace+"insertBuildingIdForAuthBuilding", paramMap);
+	}
+
+	public Map getBuildingDetail(Map<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectBuildingList", paramMap);
+	}
+
+	public Map getFloorDetail(Map<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectFloorList", paramMap);
+	}
+
+	public Map getAreaDetail(Map<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectAreaList", paramMap);
 	}
 }

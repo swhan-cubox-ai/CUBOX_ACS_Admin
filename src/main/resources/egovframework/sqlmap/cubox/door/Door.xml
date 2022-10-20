@@ -98,7 +98,9 @@
 		       updated_at
 		  FROM T_BUILDING TB
 		 WHERE 1=1
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(workplace_id)'>
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+		  AND TB.id = #{id}
+		</if><if test='@aero.cubox.util.CommonUtils@notEmpty(workplace_id)'>
 		  AND TB.workplace_id = #{workplace_id}
 		</if>
 	</select>
@@ -113,6 +115,9 @@
 		       updated_at
 		  FROM T_FLOOR TF
 		 WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+			AND TF.id = #{id}
+		</if>
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(areaId)'>
 		  AND TF.area_id = #{areaId}
 		  AND TF.building_id = #{buildingId}
@@ -128,6 +133,9 @@
 		       updated_at
 		  FROM T_AREA TA
 		 WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+			AND TA.building_id = #{id}
+		</if>
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(buildingId)'>
 		   AND TA.building_id = #{buildingId}
 		</if>
