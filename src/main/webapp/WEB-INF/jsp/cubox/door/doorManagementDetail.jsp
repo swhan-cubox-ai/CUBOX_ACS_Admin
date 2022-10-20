@@ -19,17 +19,18 @@
         /*height: 51px;*/
         height: 57.5px;
     }
-    .gateDetailList tr td {
+    .detailList tr td {
         text-align: center;
     }
-    .gateDetailList tr td select {
+    .detailList tr td select {
         float: none;
     }
-    .gateDetailList tr td input,
-    .gateDetailList tr td select,
-    .gateDetailList tr td textarea {
+    .detailList tr td input,
+    .detailList tr td select,
+    .detailList tr td textarea {
         width: 100%;
     }
+
     .title_s {
         font-size: 20px;
     }
@@ -46,7 +47,7 @@
         padding: 10px 45px;
         overflow: auto;
     }
-    #btnGatePick, #btnAuthPick {
+    #btnTerminalPick, #btnDoorAuthPick {
         /*width: 100px;*/
         /*width: 20%;*/
         width: 100%;
@@ -80,14 +81,14 @@
 
 <script type="text/javascript">
 
-    let doorId = "";
+    // let doorId = "";
 
     $(function () {
         $(".title_tx").html("출입문 관리");
 
         fnGetDoorListAjax();    //출입문 목록
 
-        modalPopup("doorPickPopup", "단말기 선택", 910, 520);
+        modalPopup("termPickPopup", "단말기 선택", 910, 520);
         modalPopup("authPickPopup", "권한그룹 선택", 910, 550);
 
         fnAdd(); // 최초 등록 상태
@@ -163,7 +164,7 @@
             $("#terminalId").val($("input[name=checkOne]:checked").val());
             $("#terminalCd").val(chkTerminal.eq(1).html()); // 단말기 코드
             $("#mgmtNum").val(chkTerminal.eq(2).html());    // 단말기 관리번호
-            closePopup('doorPickPopup');
+            closePopup('termPickPopup');
         });
 
         // 권한그룹 추가
@@ -231,44 +232,160 @@
 
     // 속성 값 초기화
     function initDetail() {
-        $("#doorPath").text("");
-        $("#doorId").val("");
-        $("#doorNm").val("");
+
+        let authType = $("#authType").val();
+
+        if (authType === "building") {
+            $("#buildingNm").val("");
+            $("#buildingId").val("");
+
+        } else if (authType === "area") {
+            $("#areaNm").val("");
+            $("#areaId").val("");
+
+        } else if (authType === "floor") {
+            $("#floorNm").val("");
+            $("#floorId").val("");
+            $("#floorGroup").val("");
+            $("#authGroupId").val("");
+
+        } else if (authType === "door") {
+            $("#doorPath").text("");
+            $("#doorId").val("");
+            $("#doorNm").val("");
+            $("#terminalCd").val("");
+            $("#mgmtNum").val("");
+            $("#doorGroup").val("");
+            $("#terminalId").val("");
+            $("#authGroupId").val("");
+            // $("option[name='selected']").prop("selected", true);
+        }
         $("option[name='selected']").prop("selected", true);
-        $("#terminalCd").val("");
-        $("#mgmtNum").val("");
-        $("#doorGroup").val("");
-        $("#terminalId").val("");
-        $("#authGroupId").val("");
+
+    }
+
+    // 권한 타입 set
+    function setAuthType(authType) {
+        $("#authType").val(authType);
     }
 
     // 출입문 속성 보여주기
     function viewDoorDetail() {
         $(".gateDetailList").css("display", "table-row-group");
+        hideBuildingDetail();
+        hideAreaDetail();
+        hideFloorDetail();
         viewButtons();
     }
 
     // 출입문 속성 숨기기
     function hideDoorDetail() {
         $(".gateDetailList").css("display", "none");
-        // $("#btn_wrapper").css("display", "none");
+        hideButtons();
     }
 
     // 빌딩 속성 보여주기
     function viewBuildingDetail() {
         $(".buildingDetailList").css("display", "table-row-group");
+        hideAreaDetail();
+        hideFloorDetail();
+        hideDoorDetail();
         viewButtons();
+    }
+
+    // 빌딩 속성 숨기기
+    function hideBuildingDetail() {
+        $(".buildingDetailList").css("display", "none");
+        hideButtons();
+    }
+
+    // 구역 속성 보여주기
+    function viewAreaDetail() {
+        $(".areaDetailList").css("display", "table-row-group");
+        hideBuildingDetail();
+        hideFloorDetail();
+        hideDoorDetail();
+        viewButtons();
+    }
+
+    // 구역 속성 숨기기
+    function hideAreaDetail() {
+        $(".areaDetailList").css("display", "none");
+        hideButtons();
+    }
+
+    // 층 속성 보여주기
+    function viewFloorDetail() {
+        $(".floorDetailList").css("display", "table-row-group");
+        hideBuildingDetail();
+        hideAreaDetail();
+        hideDoorDetail();
+        viewButtons();
+    }
+
+    // 층 속성 숨기기
+    function hideFloorDetail() {
+        $(".floorDetailList").css("display", "none");
+        hideButtons();
     }
 
     // 버튼 보여주기
     function viewButtons() {
+        console.log("viewButtons");
         $("#btn_wrapper").css("display", "block");
     }
 
-    // 속성 뿌려주기
-    function getGateDetail(dId) {
-        doorId = dId // TODO : id 넘기기
+    // 버튼 숨기기
+    function hideButtons() {
+        console.log("hideButtons");
+        $("#btn_wrapper").css("display", "none");
+    }
 
+    // 빌딩 속성 뿌려주기
+    function getBuildingDetail(id) {
+        console.log("getBuildingDetail buildingId => " + id);
+        $("#buildingId").val(id);
+        let buildingId = $("#buildingId").val();
+
+        setAuthType("building");
+        initDetail();
+        fnCancelEdit();
+        viewBuildingDetail();
+
+    }
+
+    // 구역 속성 뿌려주기
+    function getAreaDetail(id) {
+        console.log("getAreaDetail areaId => " + id);
+        $("#areaId").val(id);
+        let areaId = $("#areaId").val();
+
+        setAuthType("area");
+        initDetail();
+        fnCancelEdit();
+        viewAreaDetail();
+    }
+
+    // 층 속성 뿌려주기
+    function getFloorDetail(id) {
+        console.log("getFloorDetail floorId => " + id);
+        $("#floorId").val(id);
+        let floorId = $("#floorId").val();
+
+        setAuthType("floor");
+        initDetail();
+        fnCancelEdit();
+        viewFloorDetail();
+    }
+
+    // 출입문 속성 뿌려주기
+    function getDoorDetail(id) {
+        console.log("getDoorDetail doorId => " + id);
+
+        $("#doorId").val(id);
+        let doorId = $("#doorId").val();
+
+        setAuthType("door");
         initDetail();
         fnCancelEdit();
         viewDoorDetail();
@@ -280,10 +397,10 @@
             data: { doorId: doorId },
             dataType: "json",
             success: function (result) {
-                // TODO : 알람그룹,권한그룹 가져오기
+                // TODO : 알람그룹 가져오기
                 console.log(result);
+
                 let dInfo = result.doorInfo;
-                // TODO: terminalId
                 $("#doorId").val(dInfo.id);                                 // doorId
                 $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));  // 경로
                 $("#doorNm").val(dInfo.door_nm);                            // 출입문 명
@@ -295,35 +412,60 @@
                 $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
                 $("#mgmtNum").val(dInfo.mgmt_num);                          // 단말기 관리번호
                 $("#authGroupId").val(dInfo.auth_id);                       // 권한그룹 id
-                $("#doorGroup").val(dInfo.auth_nm);            // 권한그룹
+                $("#doorGroup").val(dInfo.auth_nm);                         // 권한그룹 명
             }
         });
     }
 
     // 출입문 관리 - 취소
     function fnCancelEdit() {
+        let authType = $("#authType").val();
+        console.log("fnCancelEdit : " + authType);
+
+
         // [확인, 취소] --> [수정, 삭제] 버튼으로 변환
         $("#btnEdit").css("display", "inline-block");
         $("#btnDelete").css("display", "inline-block");
         $("#btnSave").css("display", "none");
         $("#btnCancel").css("display", "none");
-        $("#btnGatePick, #btnAuthPick").addClass("disabled");
         $("[name=doorEdit]").prop("disabled", true);
         $("[name=doorEditSelect]").prop("disabled", true);
         $("[name=doorEditDisabled]").prop("disabled", true);
+
+        if (authType === "area") {
+            $("#btnAreaAuthPick").addClass("disabled");
+        } else if (authType === "floor") {
+            $("#btnFloorAuthPick").addClass("disabled");
+        } else if (authType === "door") {
+            $("#btnTerminalPick, #btnDoorAuthPick").addClass("disabled");
+        }
+
     }
 
     // 출입문 관리 - 수정
     function fnEdit() {
+
+        let authType = $("#authType").val();
+        let doorId = $("#doorId").val();
+        console.log("fnEdit : " + authType);
+
         // [수정, 삭제] --> [확인, 취소] 버튼으로 변환
         $("#btnEdit").css("display", "none");
         $("#btnDelete").css("display", "none");
         $("#btnSave").css("display", "inline-block");
         $("#btnCancel").css("display", "inline-block");
-        $("#btnGatePick, #btnAuthPick").removeClass("disabled");
         $("[name=doorEdit]").prop("disabled", false);
 
-        console.log(doorId);
+       if (authType === "area") {
+            $("#btnAreaAuthPick").removeClass("disabled");
+        } else if (authType === "floor") {
+            $("#btnFloorAuthPick").removeClass("disabled");
+        } else if (authType === "door") {
+            $("#btnTerminalPick, #btnDoorAuthPick").removeClass("disabled");
+        }
+
+       console.log(doorId);
+
         if (doorId === "") {
             $("#dArea").prop("disabled", true);
         } else {
@@ -334,39 +476,81 @@
     // 출입문 관리 - 추가
     function fnAdd() {
         console.log("fnAdd");
+
         let val = $("input[name=createNode]:checked").val();
+        setAuthType(val);
         fnEdit();
+        initDetail();
 
         if (val === "building") {
-            $(".buildingDetailList").css("display", "table-row-group");
-            hideDoorDetail();
+            $("#buildingId").val("");
+            viewBuildingDetail();
+            $("#buildingNm").focus();
+
         } else if (val === "area") {
-            $(".areaDetailList").css("display", "table-row-group");
-            hideDoorDetail();
+            $("#areaId").val("");
+            viewAreaDetail();
+            $("#areaNm").focus();
+
         } else if (val === "floor") {
-            $(".floorDetailList").css("display", "table-row-group");
-            hideDoorDetail();
+            $("#floorId").val("");
+            viewFloorDetail();
+            $("#floorNm").focus();
+
         } else if (val === "door") {
-            doorId = "";
-            initDetail();
+            // doorId = "";
+            $("#doorId").val("");
             viewDoorDetail();
             $("#doorNm").focus();
-            $(".nodeSel").toggleClass("nodeSel node");
         }
-        $("#btn_wrapper").css("display", "block");
+
+        $(".nodeSel").toggleClass("nodeSel node");
 
     }
 
     // 출입문 관리 - 취소
     function fnCancel() {
-        if (doorId === undefined || doorId === "") {
-            // 추가 저장 시 취소
-            initDetail();
-            hideDoorDetail();
-        } else {
-            // 수정 시 취소
-            getGateDetail(doorId);
+        let authType = $("#authType").val();
+
+        if (authType === "building") {
+            let buildingId = $("#buildingId").val();
+            if (buildingId === "") {
+                // 추가 저장 시 취소
+                initDetail();
+                hideBuildingDetail();
+            } else {
+                // 수정 시 취소
+                getBuildingDetail(buildingId);
+            }
+
+        } else if (authType === "area") {
+            let areaId = $("#areaId").val();
+            if (areaId === "") {
+                initDetail();
+                hideAreaDetail();
+            } else {
+                getAreaDetail(areaId);
+            }
+
+        } else if (authType === "floor") {
+            let floorId = $("#floorId").val();
+            if (floorId === "") {
+                initDetail();
+                hideFloorDetail();
+            } else {
+                getFloorDetail(floorId);
+            }
+
+        } else if (authType === "door") {
+            let doorId = $("#doorId").val();
+            if (doorId === "") {
+                initDetail();
+                hideDoorDetail();
+            } else {
+                getDoorDetail(doorId);
+            }
         }
+
     }
 
     // 출입문 저장
@@ -401,7 +585,6 @@
 
     // 출입문 관리 - 삭제
     function fnDelete() {
-        console.log(doorId);
 
         // 출입문에 연결된 단말기/ 권한 그룹 없을 경우
         // if (confirm("연결된 단말기 또는 권한 그룹이 존재 합니다. 삭제 하시겠습니까?")) {
@@ -430,6 +613,17 @@
 
     // 권한그룹 선택 저장
     function authConf() {
+        console.log("authConf");
+        console.log($("#authType").val());
+        let authType = $("#authType").val();
+
+        if (authType === "area") {
+
+        } else if (authType === "floor") {
+
+        } else if (authType === "door") {
+
+        }
         authSave();
         closePopup("authPickPopup");
     }
@@ -447,21 +641,40 @@
     }
 
     // popup open (공통)
-    function openPopup(popupNm) {
+    function openPopup(popupNm, id) {
+
+        console.log(id);
+        
+        if (id === "btnTerminalPick") {
+            fnGetTerminalListAjax() // 단말기 목록
+
+        } else if (id === "btnDoorAuthPick") {
+            fnGetAuthGroupListAjax("door"); // door 권한그룹 목록
+
+        } else if (id === "btnAreaAuthPick") {
+            fnGetAuthGroupListAjax("area"); // area 권한그룹 목록
+
+        } else if (id === "btnFloorAuthPick") {
+            fnGetAuthGroupListAjax("floor"); // floor 권한그룹 목록
+
+        }
+
+        // $("#authType").val(id);
+        setAuthType(id);
         $("#" + popupNm).PopupWindow("open");
 
-        if (popupNm === "doorPickPopup") {
-            fnGetTerminalListAjax(); // 단말기 목록
-        }
-        if (popupNm === "authPickPopup") {
-            fnGetAuthGroupListAjax(); // 권한그룹 목록
-        }
+        // if (popupNm === "termPickPopup") {
+        //     fnGetTerminalListAjax(); // 단말기 목록
+        // }
+        // if (popupNm === "authPickPopup") {
+        //     fnGetAuthGroupListAjax(); // 권한그룹 목록
+        // }
     }
 
     // popup close (공통)
     function closePopup(popupNm) {
-        if (popupNm == "doorPickPopup") {
-            console.log("closepopup - doorpickpopup");
+        if (popupNm == "termPickPopup") {
+            console.log("closepopup - termPickPopup");
             // 단말기 선택 팝업창 초기화
             // $("input[name='checkOne']:checked").attr("checked", false);
         } else if (popupNm == "authPickPopup") {
@@ -543,14 +756,17 @@
     /////////////////  권한그룹 목록 ajax - start  /////////////////////
 
 
-    function fnGetAuthGroupListAjax(param1) {
+    function fnGetAuthGroupListAjax(type, keyword) {
 
         console.log("fnGetAuthGroupListAjax");
 
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/authGroup/list.do' />",
-            data: { keyword: param1 },
+            data: {
+                authType: type // TODO: type(String) = 'building' / 'area' / 'floor' / 'door' 중 1
+                , keyword: keyword
+            },
             dataType: "json",
             success: function (result) {
                 console.log(result);
@@ -565,6 +781,8 @@
                         $("#tdAuthTotal").append(tag);
                     });
 
+                    console.log("authgroupId");
+                    console.log($("#authGroupId").val());
                     if ($("#authGroupId").val() !== "") {
                         let authGroupId = $("#authGroupId").val();
                         $('input[name=chkAuth]:input[value=' + authGroupId + ']').prop("checked", true);
@@ -596,9 +814,12 @@
         };
 
         let mode = "";
+        let doorId = $("#doorId").val();
         // let doorId = "";
         // doorId = $("#doorId").val();
-        if (doorId === undefined || doorId === "") { // 등록 시
+        // if (doorId === undefined || doorId === "") { // 등록 시
+
+        if (doorId === "") { // 등록 시
             url = "<c:url value='/door/add.do' />";
             data = data;
             mode = "C";
@@ -625,12 +846,12 @@
                     if ("C" === mode ) {
                         if (returnData.newDoorId !== "" ) {
                             console.log("C");
-                            getGateDetail(returnData.newDoorId); //
+                            getDoorDetail(returnData.newDoorId); //
                         }
 
                     } else if ("U" === mode) {
                         console.log("U");
-                        getGateDetail(doorId);
+                        getDoorDetail(doorId);
                     }
 
                 } else {
@@ -651,13 +872,13 @@
 
 
     function fnDeleteDoorAjax() {
-        console.log(doorId);
 
         if (confirm("삭제 하시겠습니까?")) {
             $.ajax({
                 type: "POST",
                 url: "<c:url value='/door/delete.do' />",
-                data: { id: doorId },
+                // data: { id: doorId },
+                data: { id: $("#doorId").val() },
                 dataType: "json",
                 success: function (returnData) {
                     console.log("fnDelete: ");
@@ -744,6 +965,14 @@
             <div class="title_s w_50p fl"><img src="/img/title_icon1.png" alt=""/>속성</div>
         </div>
 
+        <input type="hidden" id="authType" value="">
+        <input type="hidden" id="buildingId" value="">
+        <input type="hidden" id="areaId" value="">
+        <input type="hidden" id="floorId" value="">
+        <input type="hidden" id="doorId" value="">
+        <input type="hidden" id="terminalId" value="">
+        <input type="hidden" id="authGroupId" value="">
+
         <%--  테이블  --%>
         <div class="com_box mt_5" style="background-color: white;">
             <div id="gateInfo" class="tb_outbox">
@@ -755,10 +984,8 @@
                     </colgroup>
 
                     <%-- 출입문 추가 --%>
-                    <tbody class="gateDetailList" style="display: none;">
-                    <input type="hidden" id="doorId" value="">
-                    <input type="hidden" id="terminalId" value="">
-                    <input type="hidden" id="authGroupId" value="">
+                    <tbody class="gateDetailList detailList" style="display: none;">
+
                     <tr>
                         <td colspan="3" style="font-size: 17px; text-align: left; padding-left: 20px">
                             <b id="doorPath"></b>
@@ -767,7 +994,7 @@
                     <tr>
                         <th>출입문 명</th>
                         <td colspan="2">
-                            <input type="text" id="doorNm" name="doorEdit" maxlength="30" class="input_com doorNm" value="" disabled/>
+                            <input type="text" id="doorNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
                         </td>
                     </tr>
                     <jsp:include page="/WEB-INF/jsp/cubox/common/buildingSelect.jsp" flush="false" />
@@ -782,18 +1009,20 @@
 <%--                            </select>--%>
 <%--                        </td>--%>
 <%--                    </tr>--%>
-                    <tr>
-                        <th>구역</th>
-                        <td colspan="2">
-                            <select name="doorEditSelect" id="dArea" class="form-control" style="padding-left:10px;" disabled>
-                                <option value="" name="selected">선택</option>
-                                <c:forEach items="${areaList}" var="area" varStatus="status">
-                                    <option value='<c:out value="${area.id}"/>' class="dArea" bId='<c:out value="${area.building_id}"/>'>
-                                        <c:out value="${area.area_nm}"/></option>
-                                </c:forEach>
-                            </select>
-                        </td>
-                    </tr>
+
+
+                    <jsp:include page="/WEB-INF/jsp/cubox/common/areaSelect.jsp" flush="false" />
+<%--                        <th>구역</th>--%>
+<%--                        <td colspan="2">--%>
+<%--                            <select name="doorEditSelect" id="dArea" class="form-control" style="padding-left:10px;" disabled>--%>
+<%--                                <option value="" name="selected">선택</option>--%>
+<%--                                <c:forEach items="${areaList}" var="area" varStatus="status">--%>
+<%--                                    <option value='<c:out value="${area.id}"/>' class="dArea" bId='<c:out value="${area.building_id}"/>'>--%>
+<%--                                        <c:out value="${area.area_nm}"/></option>--%>
+<%--                                </c:forEach>--%>
+<%--                            </select>--%>
+<%--                        </td>--%>
+<%--                    </tr>--%>
                     <tr>
                         <th>층</th>
                         <td colspan="2">
@@ -833,7 +1062,7 @@
                             <input type="text" id="terminalCd" name="doorEditDisabled" maxlength="30" class="input_com" value="" disabled/>
                         </td>
                         <td>
-                            <button type="button" id="btnGatePick" class="btn_gray3 btn_small disabled" onclick="openPopup('doorPickPopup');">선택</button>
+                            <button type="button" id="btnTerminalPick" class="btn_gray3 btn_small disabled" onclick="openPopup('termPickPopup', this.id);">선택</button>
                         </td>
                     </tr>
                     <tr>
@@ -845,42 +1074,91 @@
                     <tr>
                         <th>권한 그룹</th>
                         <td style="border-right:none; padding-right:0; padding-left:12px;">
-                            <textarea id="doorGroup" name="doorEditDisabled" rows="4" cols="33" class="mt_5 mb_5" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled>보건 복지부 &#10;12동 전체</textarea>
+                            <textarea id="doorGroup" name="doorEditDisabled" rows="4" cols="33" class="mt_5 mb_5" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled></textarea>
                         </td>
                         <td>
-                            <button type="button" id="btnAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup');">선택</button>
+                            <button type="button" id="btnDoorAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup', this.id);">선택</button>
                         </td>
                     </tr>
                     </tbody>
                     <%-- // 출입문 추가 --%>
 
+
                     <%-- 빌딩 추가 --%>
-                    <tbody class="buildingDetailList" style="display: none;">
-                    <input type="hidden" id="workplaceId" value="1">
-                    <tr>
-                        <td colspan="3" style="font-size: 17px; text-align: left; padding-left: 20px">
-                            <b id="buildingPath"></b>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>빌딩 명</th>
-                        <td colspan="2">
-                            <input type="text" id="buildingNm" name="buildingEdit" maxlength="30" class="input_com doorNm" value="" disabled/>
-                        </td>
-                    </tr>
+                    <tbody class="buildingDetailList detailList" style="display: none;">
+                        <input type="hidden" id="workplaceId" value="1">
+                        <tr>
+                            <td colspan="3" style="font-size: 17px; text-align: left; padding-left: 20px">
+                                <b id="buildingPath"></b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>빌딩 명</th>
+                            <td colspan="2">
+                                <input type="text" id="buildingNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                            </td>
+                        </tr>
                     </tbody>
                     <%-- // 빌딩 추가 --%>
 
+
                     <%-- 구역 추가 --%>
-                    <tbody class="areaDetailList" style="display: none;">
-                    <tr>
-                        <td colspan="3" style="font-size: 17px; text-align: left; padding-left: 20px">
-                            <b id="areaPath"></b>
-                        </td>
-                    </tr>
-                    <jsp:include page="/WEB-INF/jsp/cubox/common/buildingSelect.jsp" flush="false" />
+                    <tbody class="areaDetailList detailList" style="display: none;">
+                        <tr>
+                            <td colspan="3" style="font-size: 17px; text-align: left; padding-left: 20px">
+                                <b id="areaPath"></b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>구역 명</th>
+                            <td colspan="2">
+                                <input type="text" id="areaNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                            </td>
+                        </tr>
+                        <%-- 빌딩 선택--%>
+                        <jsp:include page="/WEB-INF/jsp/cubox/common/buildingSelect.jsp" flush="false" />
+                        <tr>
+                            <th>권한 그룹</th>
+                            <td style="border-right:none; padding-right:0; padding-left:12px;">
+                                <textarea id="areaGroup" name="doorEditDisabled" rows="4" cols="33" class="mt_5 mb_5" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled></textarea>
+                            </td>
+                            <td>
+                                <button type="button" id="btnAreaAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup', this.id);">선택</button>
+                            </td>
+                        </tr>
+
                     </tbody>
                     <%-- // 구역 추가 --%>
+
+
+                    <%-- 층 추가 --%>
+                    <tbody class="floorDetailList detailList" style="display: none;">
+                        <tr>
+                            <td colspan="3" style="font-size: 17px; text-align: left; padding-left: 20px">
+                                <b id="floorPath"></b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>층 명</th>
+                            <td colspan="2">
+                                <input type="text" id="floorNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                            </td>
+                        </tr>
+                        <%-- 빌딩 선택 --%>
+                        <jsp:include page="/WEB-INF/jsp/cubox/common/buildingSelect.jsp" flush="false" />
+                        <%-- 구역 선택 --%>
+                        <jsp:include page="/WEB-INF/jsp/cubox/common/areaSelect.jsp" flush="false" />
+                        <tr>
+                            <th>권한 그룹</th>
+                            <td style="border-right:none; padding-right:0; padding-left:12px;">
+                                <textarea id="floorGroup" name="doorEditDisabled" rows="4" cols="33" class="mt_5 mb_5" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled></textarea>
+                            </td>
+                            <td>
+                                <button type="button" id="btnFloorAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup', this.id);">선택</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <%-- // 층 추가 --%>
 
                 </table>
 
@@ -900,7 +1178,7 @@
 </div>
 
 <%--  단말기 선택 modal  --%>
-<div id="doorPickPopup" class="example_content" style="display: none;">
+<div id="termPickPopup" class="example_content" style="display: none;">
     <div class="popup_box">
         <%--  검색 박스 --%>
         <div class="search_box mb_20">
@@ -944,7 +1222,7 @@
         <div class="c_btnbox">
             <div style="display: inline-block;">
                 <button type="button" id="doorPickConfirm" class="comm_btn mr_20">확인</button>
-                <button type="button" class="comm_btn" onclick="closePopup('doorPickPopup');">취소</button>
+                <button type="button" class="comm_btn" onclick="closePopup('termPickPopup');">취소</button>
             </div>
         </div>
     </div>
@@ -953,6 +1231,8 @@
 
 <%--  권한그룹 선택 modal  --%>
 <div id="authPickPopup" class="example_content" style="display: none;">
+
+
     <div class="popup_box box_w3">
         <%--  검색 박스 --%>
         <div class="search_box mb_20">
