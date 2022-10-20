@@ -235,7 +235,10 @@ function fnvalichk (event) {
  *    ////////////////////////////////////////////////////////////////////////////////
 **/
 function createTree(isMngmt, result, treeDiv) {
-	let fnName = "getGateDetail(this.id);";
+	let fnBuilding = "getBuildingDetail(this.id);";
+	let fnArea = "getAreaDetail(this.id);";
+	let fnDoor = "getDoorDetail(this.id);";
+	let fnFloor = "getFloorDetail(this.id);";
 
 	d = new dTree('d'); //dtree선언
 
@@ -245,21 +248,27 @@ function createTree(isMngmt, result, treeDiv) {
 
 			$.each(result.buildingList, function(j, building) { // building
 				if (building.workplace_id === workplace.id) {
-					d.add("b_" + building.id, "w_" + workplace.id, building.building_nm, '','','','/img/folder.gif');
+					let bTag = '<span id="' + building.id + '" onclick="' + fnBuilding + '">' + building.building_nm + '</span>';
+					d.add("b_" + building.id, "w_" + workplace.id, bTag, '#','','','/img/folder.gif');
+					// d.add("b_" + building.id, "w_" + workplace.id, building.building_nm, '','','','/img/folder.gif');
 
 					$.each(result.areaList, function(k, area) {
 						if (area.building_id === building.id) {
-							d.add("a_" + area.id, "b_" + building.id, area.area_nm, '','','','/img/folder.gif');
+							let aTag = '<span id="' + area.id + '" onclick="' + fnArea + '">' + area.area_nm + '</span>';
+							d.add("a_" + area.id, "b_" + building.id, aTag, '#','','','/img/folder.gif');
+							// d.add("a_" + area.id, "b_" + building.id, area.area_nm, '','','','/img/folder.gif');
 
 							$.each(result.floorList, function(l, floor) { // floor
 								if (floor.area_id === area.id) {
-									d.add("f_" + floor.id, "a_" + area.id, floor.floor_nm, '','','','/img/folder.gif');
+									let fTag = '<span id="' + floor.id + '" onclick="' + fnFloor + '">' + floor.floor_nm + '</span>';
+									d.add("f_" + floor.id, "a_" + area.id, fTag, '#','','','/img/folder.gif');
+									// d.add("f_" + floor.id, "a_" + area.id, floor.floor_nm, '','','','/img/folder.gif');
 
 									$.each(result.doorList, function(m, door) { // door
 										if (door.floor_id === floor.id) {
 											let tag = "";
 											if (isMngmt) { 	// 출입문관리일 경우
-												tag = '<span id="' + door.id + '" onclick="' + fnName + '">' + door.door_nm + '</span>';
+												tag = '<span id="' + door.id + '" onclick="' + fnDoor + '">' + door.door_nm + '</span>';
 											} else {  // 그 외(그룹관리, 알람그룹)
 												tag = door.door_nm;
 											}
