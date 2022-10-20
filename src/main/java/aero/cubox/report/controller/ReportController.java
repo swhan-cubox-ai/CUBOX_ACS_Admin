@@ -16,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,6 +163,25 @@ public class ReportController {
         }
 
         return modelAndView;
+    }
+
+
+    @RequestMapping(value="/imagView/{id}")
+    public void imgView(HttpServletRequest request, @PathVariable int id, HttpServletResponse response){
+        try {
+            HashMap<String, Object> dataMap = reportService.getEntHistBioImg(id);
+
+            if(dataMap != null){
+                byte[] imgByte = (byte[]) dataMap.get("ent_face_img");
+                response.setContentType("image/gif");
+                OutputStream ops = response.getOutputStream();
+                ops.write(imgByte);
+                ops.flush();
+                ops.close();
+            }
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
     }
 
 }

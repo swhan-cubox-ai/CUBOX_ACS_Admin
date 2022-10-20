@@ -72,7 +72,7 @@
 
     <update id="delAllPrivacy" parameterType="Map">
         UPDATE T_EMP
-            SET delete_yn = 'Y', deleted_at = NOW()
+            SET delete_yn = 'Y', deleted_at = NOW(3)
         WHERE
             expired_dt between #{fromDt} and #{toDt}
 
@@ -86,7 +86,7 @@
 
     <update id="delPrivacy" parameterType="Map">
         UPDATE T_EMP
-            SET delete_yn = 'Y', deleted_at = NOW()
+            SET delete_yn = 'Y', deleted_at = NOW(3)
         WHERE
             emp_cd = #{empCd}
     </update>

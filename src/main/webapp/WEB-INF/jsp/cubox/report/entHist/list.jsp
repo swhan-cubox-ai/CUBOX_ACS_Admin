@@ -120,7 +120,7 @@
           <td><c:out value="${sList.entEvtTypNm}"/></td>
           <td><c:out value="${sList.terminalCd}"/></td>
           <td><c:out value="${sList.modelNm}"/></td>
-          <td><c:out value="${sList.mtmtNum}"/></td>
+          <td><c:out value="${sList.mgmtNum}"/></td>
           <td><c:out value="${sList.ipAddr}"/></td>
           <td><c:out value="${sList.complexAuthTypNm}"/></td>
           <td><c:out value="${sList.doorNm}"/></td>
@@ -129,7 +129,7 @@
           <td><c:out value="${sList.empNo}"/></td>
           <td><c:out value="${sList.deptNm}"/></td>
           <td><c:out value="${sList.belongNm}"/></td>
-          <td></td>
+          <td><img src="/report/imagView/<c:out value="${sList.id}"/>" width="50px"></td>
         </tr>
       </c:forEach>
       </tbody>

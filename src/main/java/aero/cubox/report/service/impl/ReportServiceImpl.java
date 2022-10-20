@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Service("reportService")
@@ -41,6 +40,11 @@ public class ReportServiceImpl extends EgovAbstractServiceImpl implements Report
     @Override
     public HashMap getDoorDetail(HashMap map) throws Exception {
         return reportDAO.getDoorDetail(map);
+    }
+
+    @Override
+    public HashMap getEntHistBioImg(int id) throws Exception {
+        return reportDAO.getEntHistBioImg(id);
     }
 
 }

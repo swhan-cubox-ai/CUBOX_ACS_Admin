@@ -18,4 +18,6 @@ public interface ReportService {
 
     public HashMap getDoorDetail(HashMap map) throws Exception;
 
+    public HashMap getEntHistBioImg(int id) throws Exception;
+
 }

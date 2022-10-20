@@ -1,15 +1,19 @@
 package aero.cubox.core.vo;
 
+import java.sql.Blob;
+
 public class EntHistVO {
 
     private int id;
     private String evtDt;
     private String entEvtTyp;
+    private String entEvtTypNm;
     private String terminalCd;
     private String modelNm;
     private String mgmtNum;
     private String ipAddr;
     private String complexAuthTyp;
+    private String complexAuthTypNm;
     private String doorNm;
     private String buildingNm;
     private String empNm;
@@ -17,7 +21,7 @@ public class EntHistVO {
     private String deptCd;
     private String deptNm;
     private String belongNm;
-    private String entFaceImg;
+
 
     private String srchCond1;
     private String srchCond2;
@@ -51,6 +55,14 @@ public class EntHistVO {
 
     public String getEntEvtTyp() {
         return entEvtTyp;
+    }
+
+    public String getEntEvtTypNm() {
+        return entEvtTypNm;
+    }
+
+    public void setEntEvtTypNm(String entEvtTypNm) {
+        this.entEvtTypNm = entEvtTypNm;
     }
 
     public void setEntEvtTyp(String entEvtTyp) {
@@ -95,6 +107,14 @@ public class EntHistVO {
 
     public void setComplexAuthTyp(String complexAuthTyp) {
         this.complexAuthTyp = complexAuthTyp;
+    }
+
+    public String getComplexAuthTypNm() {
+        return complexAuthTypNm;
+    }
+
+    public void setComplexAuthTypNm(String complexAuthTypNm) {
+        this.complexAuthTypNm = complexAuthTypNm;
     }
 
     public String getDoorNm() {
@@ -151,14 +171,6 @@ public class EntHistVO {
 
     public void setBelongNm(String belongNm) {
         this.belongNm = belongNm;
-    }
-
-    public String getEntFaceImg() {
-        return entFaceImg;
-    }
-
-    public void setEntFaceImg(String entFaceImg) {
-        this.entFaceImg = entFaceImg;
     }
 
 
@@ -249,13 +261,13 @@ public class EntHistVO {
     }
 
 
-
     @Override
     public String toString() {
         return "EntHistVO{" +
                 "id=" + id +
                 ", evtDt='" + evtDt + '\'' +
                 ", entEvtTyp='" + entEvtTyp + '\'' +
+                ", entEvtTypNm='" + entEvtTypNm + '\'' +
                 ", terminalCd='" + terminalCd + '\'' +
                 ", modelNm='" + modelNm + '\'' +
                 ", mgmtNum='" + mgmtNum + '\'' +
@@ -268,7 +280,9 @@ public class EntHistVO {
                 ", deptCd='" + deptCd + '\'' +
                 ", deptNm='" + deptNm + '\'' +
                 ", belongNm='" + belongNm + '\'' +
-                ", entFaceImg='" + entFaceImg + '\'' +
+                ", srchCond1='" + srchCond1 + '\'' +
+                ", srchCond2='" + srchCond2 + '\'' +
+                ", keyword='" + keyword + '\'' +
                 ", fromDt='" + fromDt + '\'' +
                 ", toDt='" + toDt + '\'' +
                 ", srchPage=" + srchPage +
@@ -278,5 +292,4 @@ public class EntHistVO {
                 ", curPageUnit=" + curPageUnit +
                 '}';
     }
-
 }

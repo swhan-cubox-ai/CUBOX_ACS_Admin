@@ -37,4 +37,8 @@ public class ReportDAO extends EgovAbstractMapper {
         return  selectOne ( "report.getDoorDetail", map);
     }
 
+    public HashMap getEntHistBioImg(int id) throws Exception {
+        return  selectOne ( "report.getEntHistBioImg", id);
+    }
+
 }

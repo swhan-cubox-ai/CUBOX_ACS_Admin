@@ -69,7 +69,7 @@
             holiday = #{holiday},
             holiday_end = #{holidayEnd},
             use_yn = #{useYn},
-            updated_at = NOW()
+            updated_at = NOW(3)
         WHERE
             id = #{id}
     </update>
@@ -104,7 +104,7 @@
                     </otherwise>
                 </choose>
                    #{useYn},
-                   NOW()
+                   NOW(3)
                )
     </insert>
 

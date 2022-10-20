@@ -297,7 +297,7 @@
                    #{wbTyp},
                    #{empId},
                    #{id},
-                   NOW()
+                   NOW(3)
                )
     </insert>
 
@@ -321,7 +321,7 @@
             complex_auth_typ = #{complexAuthTyp},
             face_auth_typ = #{faceAuthTyp},
             use_yn = #{useYn},
-            updated_at = NOW()
+            updated_at = NOW(3)
         WHERE
             id = #{id}
     </update>
@@ -348,7 +348,7 @@
             #{complexAuthTyp},
             #{faceAuthTyp},
             #{useYn},
-            NOW()
+            NOW(3)
         )
     </insert>
 

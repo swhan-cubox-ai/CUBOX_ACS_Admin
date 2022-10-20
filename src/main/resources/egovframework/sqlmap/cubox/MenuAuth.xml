@@ -140,7 +140,7 @@
         )VALUES(
                    #{userId},
                    #{roleId},
-                   NOW()
+                   NOW(3)
         )
     </insert>
 
@@ -164,7 +164,7 @@
         )VALUES(
                    #{id},
                    #{menuCd},
-                   NOW()
+                   NOW(3)
                )
     </insert>
 
@@ -176,7 +176,7 @@
         )VALUES(
                    #{roleNm},
                    'Y',
-                   NOW()
+                   NOW(3)
                )
     </insert>
 

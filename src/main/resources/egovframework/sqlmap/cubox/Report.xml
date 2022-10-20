@@ -5,9 +5,18 @@
 
     <select id="getEntHistList" parameterType="aero.cubox.core.vo.EntHistVO" resultType="aero.cubox.core.vo.EntHistVO">
         SELECT
+            id,
             evt_dt AS evtDt,
             ent_evt_typ AS entEvtTyp,
-            (SELECT cd_nm from T_CMMN_CD WHERE cd_typ = 'EntEvtTyp' AND cd = ent_evt_typ) AS entEvtTypNm,
+            (
+                SELECT
+                    cd_nm
+                FROM
+                    T_CMMN_CD
+                WHERE
+                    cd_typ = 'EntEvtTyp'
+                    AND cd = ent_evt_typ
+            ) AS entEvtTypNm,
             terminal_cd AS terminalCd,
             model_nm AS modelNm,
             mgmt_num AS mgmtNum,
@@ -19,23 +28,22 @@
             emp_no AS empNo,
             dept_cd AS deptCd,
             dept_nm AS deptNm,
-            belong_nm AS belongNm,
-            ent_face_img AS entFaceImg
+            belong_nm AS belongNm
         FROM
             T_ENT_HIST
-        where
+        WHERE
             1=1
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond1)'>
-            and ent_evt_typ = #{srchCond1}
+            AND ent_evt_typ = #{srchCond1}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(fromDt) and @aero.cubox.util.CommonUtils@notEmpty(toDt)'>
-            and evt_dt between #{fromDt} and #{toDt}
+            AND evt_dt BETWEEN #{fromDt} AND #{toDt}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
-            and building_id = #{srchCond2}
+            AND building_id = #{srchCond2}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-            and emp_nm like CONCAT('%',#{keyword},'%')
+            AND emp_nm LIKE CONCAT('%',#{keyword},'%')
         </if>
 
         limit	#{srchCnt} offset #{offset}
@@ -130,4 +138,14 @@
         WHERE
             TD.id = #{doorId}
     </select>
+
+    <select id="getEntHistBioImg" parameterType="int" resultType="HashMap">
+        SELECT
+            ent_face_img
+        FROM
+            T_ENT_HIST_BIO
+        WHERE
+            end_hist_id = 4
+    </select>
+
 </mapper>
