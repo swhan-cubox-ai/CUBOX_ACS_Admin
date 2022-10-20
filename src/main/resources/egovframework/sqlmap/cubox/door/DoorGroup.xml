@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="door.group">
+
+    <select id="selectDoorGroupList"  parameterType="HashMap" resultType="HashMap">
+        SELECT A.id
+             , A.nm
+             , A.door_sch_id
+             , A.door_sch_nm
+             , DATE_FORMAT(A.created_at, '%Y-%m-%d') as created_at
+             , DATE_FORMAT(A.updated_at, '%Y-%m-%d') as updated_at
+             , A.door_cnt
+          FROM
+             ( SELECT TD.id
+                    , TD.nm
+                    , TD.door_sch_id
+                    , TDC.door_sch_nm
+                    , TD.created_at
+                    , TD.updated_at
+                    , (select COUNT(TDD.door_id) FROM T_DOORGRP_DOOR TDD where TDD.doorgrp_id = TD.id )AS door_cnt
+                 FROM T_DOORGRP TD
+            LEFT JOIN T_DOOR_SCH TDC on TD.door_sch_id = TDC.id
+                WHERE 1=1
+              <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+                  AND TD.id = #{id}
+              </if>
+              <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                  AND TD.nm like CONCAT('%',#{keyword},'%')
+              </if>
+             ) A
+      ORDER BY A.created_at DESC
+       <if test='@aero.cubox.util.CommonUtils@notEmpty(offset)'>
+         LIMIT #{srchCnt} OFFSET #{offset}
+       </if>
+    </select>
+
+    <select id="selectDoorGroupListCount"  parameterType="HashMap" resultType="int">
+        SELECT COUNT(*)
+          FROM (
+                SELECT TD.id
+                     , TD.nm
+                     , TD.door_sch_id
+                     , TDC.door_sch_nm
+        , DATE_FORMAT(TD.created_at, '%Y-%m-%d') as created_at
+        , DATE_FORMAT(TD.updated_at, '%Y-%m-%d') as updated_at
+                  FROM T_DOORGRP TD
+             LEFT JOIN T_DOOR_SCH TDC on TD.door_sch_id = TDC.id
+                 WHERE 1=1
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+                   AND TD.id = #{id}
+                </if>
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                   AND TD.nm like CONCAT('%',#{keyword},'%')
+                </if>
+                ) A
+    </select>
+
+
+    <select id="selectDoorGroupDetail"   parameterType="int" resultType="HashMap">
+        SELECT TD.id
+             , TD.nm
+             , TD.door_sch_id
+             , TDC.door_sch_nm
+             , DATE_FORMAT(TD.created_at, '%Y-%m-%d') as created_at
+             , DATE_FORMAT(TD.updated_at, '%Y-%m-%d') as updated_at
+        FROM T_DOORGRP TD
+   LEFT JOIN T_DOOR_SCH TDC on TD.door_sch_id = TDC.id
+       WHERE TD.id = #{id}
+    </select>
+
+
+
+    <insert id="insertDoorGroup" parameterType="HashMap">
+        INSERT
+        INTO T_DOORGRP
+        ( id
+        , nm
+        , door_sch_id)
+        VALUES
+            ( #{id}
+            , #{nm}
+            , #{doorSchId}
+            )
+    </insert>
+
+
+    <update id="updateDoorGroup" parameterType="HashMap">
+        UPDATE T_DOORGRP
+        SET nm = #{nm}
+          , door_sch_id = #{doorSchId}
+        WHERE id = #{id}
+    </update>
+
+
+    <delete id="deleteDoorGroup" parameterType="HashMap" >
+        DELETE
+        FROM T_DOORGRP
+        WHERE id = #{id}
+
+    </delete>
+
+
+</mapper>

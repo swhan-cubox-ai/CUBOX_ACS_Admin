@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="door.schedule">
+
+    <select id="selectDoorSchList"  parameterType="HashMap" resultType="HashMap">
+        SELECT id,
+        door_sch_nm,
+        created_at,
+        updated_at
+        FROM T_DOOR_SCH TDS
+        WHERE 1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+            AND TDS.id = #{id}
+        </if>
+
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            AND TDS.door_sch_nm like CONCAT('%',#{keyword},'%')
+        </if>
+    </select>
+
+
+    <select id="selectScheduleDetail"  parameterType="HashMap" resultType="HashMap">
+        SELECT id,
+        door_sch_nm,
+        created_at,
+        updated_at
+        FROM T_DOOR_SCH TDS
+        WHERE 1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+            AND TDS.id = #{id}
+        </if>
+    </select>
+
+
+    <insert id="insertSchedule" parameterType="HashMap">
+        INSERT
+        INTO T_DOOR_SCH
+        ( id,
+          door_sch_nm,
+          created_at,
+          updated_at
+        )
+        VALUES
+            ( #{id}
+            , #{doorSchNm}
+            , NOW()
+            , NOW()
+            )
+    </insert>
+
+
+    <update id="updateSchedule" parameterType="HashMap">
+        UPDATE T_DOOR_SCH
+        SET door_sch_nm = #{doorSchNm}
+          , updated_at= NOW()
+        WHERE id = #{id}
+    </update>
+
+
+    <delete id="deleteSchedule" parameterType="HashMap" >
+        DELETE
+        FROM T_DOOR_SCH
+        WHERE id = #{id}
+    </delete>
+
+
+
+    <select id="selectScheduleByDayDetail"  parameterType="HashMap" resultType="HashMap">
+        SELECT id,
+        door_sch_id,
+        weekday,
+        beg_tm,
+        end_tm,
+        created_at,
+        updated_at
+        FROM T_DOOR_SCH_WEEKDAY TDSW
+        WHERE 1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+            AND TDSW.id = #{id}
+        </if>
+    </select>
+
+
+    <insert id="insertScheduleByDay" parameterType="HashMap">
+        INSERT
+        INTO T_DOOR_SCH_WEEKDAY
+        ( id,
+          door_sch_id,
+          weekday,
+          beg_tm,
+          end_tm,
+          created_at,
+          updated_at
+        )
+        VALUES
+            ( #{id}
+            , #{doorSchId}
+            , #{weekday}
+            , #{begTm}
+            , #{endTm}
+            , NOW()
+            , NOW()
+            )
+    </insert>
+
+
+    <update id="updateScheduleByDay" parameterType="HashMap">
+        UPDATE T_DOOR_SCH_WEEKDAY
+        SET door_sch_id = #{doorSchId}
+          , weekday= #{weekday}
+          , beg_tm= #{begTm}
+          , end_tm= #{endTm}
+          , updated_at= NOW()
+        WHERE id = #{id}
+    </update>
+
+
+    <delete id="deleteScheduleByDay" parameterType="HashMap" >
+        DELETE
+        FROM T_DOOR_SCH_WEEKDAY
+        WHERE id = #{id}
+    </delete>
+
+
+</mapper>

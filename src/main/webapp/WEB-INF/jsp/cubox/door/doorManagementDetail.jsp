@@ -803,14 +803,14 @@
     function fnSaveDoorAjax() {
         let url = "";
         let data = {
-            doorNm: $("#doorNm").val(),
-            buildingId: $("#dBuilding").val(),
-            areaId: $("#dArea").val(),
-            floorId: $("#dFloor").val(),
-            scheduleId: $("#doorSchedule").val(),
-            alarmGroupId: $("#doorAlarmGroup").val(),
-            terminalIds: $("#terminalId").val(),
-            authGrIds: $("#authGroupId").val()
+            doorNm: Math.random().toString(36).substring(2, 11),
+            buildingId: 1,
+            areaId: 1,
+            floorId: 1,
+            scheduleId: 1,
+            alarmGroupId: 1,
+            terminalIds: 1,
+            authGrIds: "1"
         };
 
         let mode = "";

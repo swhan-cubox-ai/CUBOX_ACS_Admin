@@ -40,7 +40,7 @@ public class HolidayController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 
-		try{
+		try {
 			HolidayVO vo = new HolidayVO();
 
 			String srchPage       = StringUtil.nvl(commandMap.get("srchPage"), "1");

@@ -19,24 +19,24 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
 
     /**
      * 출입문 목록 조회
-     * @param commandMap
+     * @param paramMap
      * @return
      */
     @Override
-    public List<Map> getDoorList(Map<String, Object> commandMap) {
+    public List<Map> getDoorList(Map<String, Object> paramMap) {
 
-        return doorDAO.getDoorList(commandMap);
+        return doorDAO.getDoorList(paramMap);
     }
 
     /**
      * 출입문 정보 조회
-     * @param commandMap
+     * @param paramMap
      * @return
      */
     @Override
-    public Map getDoorDetail(Map<String, Object> commandMap) {
+    public Map getDoorDetail(Map<String, Object> paramMap) {
 
-        return doorDAO.getDoorDetail(commandMap);
+        return doorDAO.getDoorDetail(paramMap);
     }
 
     /**
@@ -152,238 +152,133 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
 
     /**
      * 사업장 목록 조회
-     * @param commandMap
+     * @param paramMap
      * @return
      */
     @Override
-    public List<HashMap> getWorkplaceList(Map<String, Object> commandMap) {
+    public List<HashMap> getWorkplaceList(Map<String, Object> paramMap) {
 
-        return doorDAO.getWorkplaceList(commandMap);
+        return doorDAO.getWorkplaceList(paramMap);
     }
 
     /**
      * 구역 목록 조회
-     * @param commandMap
+     * @param paramMap
      * @return
      */
     @Override
-    public List<HashMap> getAreaList(Map<String, Object> commandMap) {
+    public List<HashMap> getAreaList(Map<String, Object> paramMap) {
 
-        return doorDAO.getAreaList(commandMap);
+        return doorDAO.getAreaList(paramMap);
     }
 
     /**
      * 층 목록
-     * @param commandMap
+     * @param paramMap
      * @return
      */
     @Override
-    public List<HashMap> getFloorList(Map<String, Object> commandMap) {
-        return doorDAO.getFloorList(commandMap);
+    public List<HashMap> getFloorList(Map<String, Object> paramMap) {
+
+        return doorDAO.getFloorList(paramMap);
     }
 
     /**
      * 빌딩 목록 조회
-     * @param commandMap
+     * @param paramMap
      * @return
      */
     @Override
-    public List<HashMap> getBuildingList(Map<String, Object> commandMap) {
+    public List<HashMap> getBuildingList(Map<String, Object> paramMap) {
 
-        return doorDAO.getBuildingList(commandMap);
+        return doorDAO.getBuildingList(paramMap);
+    }
+
+    @Override
+    public String addBuilding(HashMap paramMap) {
+        doorDAO.insertBuilding(paramMap);
+
+        String newBuildingId = "";
+        newBuildingId = paramMap.get("buildingId").toString();
+
+        paramMap.put("buildingId", newBuildingId);
+
+        //출입권한-빌딩 table에 buildingId Insert
+        if( !StringUtil.isEmpty((String) paramMap.get("authGrIds")) ){
+
+            String authGrIds = "";
+            authGrIds = paramMap.get("authGrIds").toString();
+
+            if( authGrIds.length() > 0 ){
+                String[] authGrIdArr = authGrIds.split("/");
+                for (int i = 0; i < authGrIdArr.length; i++) {
+                    paramMap.put("authId", authGrIdArr[i]);
+                    paramMap.put("buildingId", newBuildingId );
+
+                    doorDAO.insertDoorIdForAuthDoor(paramMap);
+                }
+            }
+        }
+        return newBuildingId;
     }
 
 
 
     /**
-     * 출입문 그룹 검색
-     * @param commandMap
-     * @return
+     * 출입문 수정
+     * @param paramMap
      */
     @Override
-    public List<HashMap> getDoorGroupList(Map<String, Object> commandMap) {
+    public void updateBuilding(Map<String, Object> paramMap) {
+        doorDAO.updateBuilding(paramMap);
+        //출입권한-출입문 table에 door_id Delete-Insert
+        if( !StringUtil.isEmpty((String) paramMap.get("authGrIds"))){
 
-        return doorDAO.getDoorGroupList(commandMap);
+            String authGrIds = "";
+            authGrIds = paramMap.get("authGrIds").toString();
+
+            if( authGrIds.length() > 0 ){
+                String[] authGrIdArr = authGrIds.split("/");
+                for (int i = 0; i < authGrIdArr.length; i++) {
+                    paramMap.put("authId", authGrIdArr[i]);
+
+                    doorDAO.deleteBuildingIdForAuthBuilding(paramMap);
+                    doorDAO.insertBuildingIdForAuthBuilding(paramMap);
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public String addArea(HashMap paramMap) {
+
+        doorDAO.insertArea(paramMap);
+
+        String newAreaId = "";
+        newAreaId = paramMap.get("areaId").toString();
+        return newAreaId;
     }
 
     @Override
-    public int getDoorGroupListCount(Map<String, Object> commandMap) {
-        return doorDAO.getDoorGroupListCount(commandMap);
+    public void updateArea(Map<String, Object> paramMap) {
+        doorDAO.updateArea(paramMap);
     }
 
-    /**
-     * 출압문 그룹 상세
-     * @param commandMap
-     * @return
-     */
     @Override
-    public HashMap getDoorGroupDetail(Map<String, Object> commandMap) {
-        return  doorDAO.getDoorGroupDetail(commandMap);
+    public String addFloor(HashMap paramMap) {
+        doorDAO.insertFloor(paramMap);
+
+        String newFloorId = "";
+        newFloorId = paramMap.get("floorId").toString();
+
+        return newFloorId;
     }
 
-    /**
-     * 출입문 그룹 추가
-     * @param commandMap
-     */
     @Override
-    public void addDoorGroup(Map<String, Object> commandMap) {
-        doorDAO.addDoorGroup(commandMap);
-
-        commandMap.get("");
-        //doorDAO.addDoorGroupDoor(commandMap);
-
+    public void updateFloor(Map<String, Object> paramMap) {
+        doorDAO.updateFloor(paramMap);
     }
-
-    /**
-     * 출입문 그룹 수정
-     * @param commandMap
-     */
-    @Override
-    public void updateDoorGroup(Map<String, Object> commandMap) {
-        doorDAO.updateDoorGroup(commandMap);
-    }
-
-    /**
-     * 출입문 그룹 삭제
-     * @param commandMap
-     */
-    @Override
-    public void deleteDoorGroup(Map<String, Object> commandMap) {
-        doorDAO.deleteDoorGroup(commandMap);
-    }
-
-    /**
-     * 출입문 스케줄 목록 조회
-     * @param commandMap
-     * @return
-     */
-    @Override
-    public List<HashMap> getScheduleList(Map<String, Object> commandMap) {
-
-        return doorDAO.getScheduleList(commandMap);
-    }
-
-    /**
-     * 출입문 스케줄 상세
-     * @param commandMap
-     * @return
-     */
-    @Override
-    public HashMap getScheduleDetail(Map<String, Object> commandMap) {
-        return  doorDAO.getScheduleDetail(commandMap);
-    }
-
-    /**
-     * 출입문 스케줄 등록
-     * @param commandMap
-     */
-    @Override
-    public void addSchedule(Map<String, Object> commandMap) {
-        doorDAO.addSchedule(commandMap);
-    }
-
-    /**
-     * 출입문 스케쥴 수정
-     * @param commandMap
-     */
-    @Override
-    public void updateSchedule(Map<String, Object> commandMap) {
-        doorDAO.updateSchedule(commandMap);
-    }
-
-    /**
-     * 출입문 스케쥴 삭제
-     * @param commandMap
-     */
-    @Override
-    public void deleteSchedule(Map<String, Object> commandMap) {
-        doorDAO.deleteSchedule(commandMap);
-    }
-
-    /**
-     * 요일별 스게쥴 상세
-     * @param commandMap
-     * @return
-     */
-    @Override
-    public HashMap getScheduleByDayDetail(Map<String, Object> commandMap) {
-        return  doorDAO.getScheduleByDayDetail(commandMap);
-    }
-
-    /**
-     * 요일별 스케쥴 등록
-     * @param commandMap
-     */
-    @Override
-    public void addScheduleByDay(Map<String, Object> commandMap) {
-        doorDAO.addScheduleByDay(commandMap);
-    }
-
-    /**
-     * 요일별 스케쥴 수정
-     * @param commandMap
-     */
-    @Override
-    public void updateScheduleByDay(Map<String, Object> commandMap) {
-        doorDAO.updateScheduleByDay(commandMap);
-    }
-
-    /**
-     * 요일별 스케쥴 삭제
-     * @param commandMap
-     */
-    @Override
-    public void deleteScheduleByDay(Map<String, Object> commandMap) {
-        doorDAO.deleteScheduleByDay(commandMap);
-    }
-
-    /**
-     * 출입문 알람그룹 목록 조회
-     * @param commandMap
-     * @return
-     */
-    @Override
-    public List<HashMap> getDoorAlarmGrpList(Map<String, Object> commandMap) {
-        return  doorDAO.getDoorAlarmGrpList(commandMap);
-    }
-
-    /**
-     * 출입문 알람그룹 상세
-     * @param commandMap
-     * @return
-     */
-    @Override
-    public HashMap getDoorAlarmGrpDetail(Map<String, Object> commandMap) {
-        return doorDAO.getDoorAlarmGrpDetail(commandMap);
-    }
-
-    /**
-     * 출입문 알람그룹 등록
-     * @param commandMap
-     */
-    @Override
-    public void addDoorAlarmGrp(Map<String, Object> commandMap) {
-        doorDAO.addDoorAlarmGrp(commandMap);
-    }
-
-    /**
-     * 출입문 알람그룹 수정
-     * @param commandMap
-     */
-    @Override
-    public void updateDoorAlarmGrp(Map<String, Object> commandMap) {
-        doorDAO.updateDoorAlarmGrp(commandMap);
-    }
-
-    /**
-     * 출입문 알람그룹 삭제
-     * @param commandMap
-     */
-    @Override
-    public void deleteDoorAlarmGrp(Map<String, Object> commandMap) {
-        doorDAO.deleteDoorAlarmGrp(commandMap);
-    }
-
 
     /**
      * 단말기 목록 조회

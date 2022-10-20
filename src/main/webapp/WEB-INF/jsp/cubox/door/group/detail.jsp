@@ -146,13 +146,13 @@
             <tr>
                 <th>출입문 그룹 명</th>
                 <td>
-                    <input type="text" id="gpNm" name="detail" maxlength="50" value="3동 현관" class="input_com w_600px" disabled>
+                    <input type="text" id="gpNm" name="detail" maxlength="50" value="${doorGroupDetail.nm}" class="input_com w_600px" disabled>
                 </td>
             </tr>
             <tr>
                 <th>출입문 스케쥴</th>
                 <td>
-                    <input type="text" id="gpSchedule" name="detail" maxlength="50" value="3동 평일" class="input_com w_600px" disabled>
+                    <input type="text" id="gpSchedule" name="detail" maxlength="50" value="3${doorGroupDetail.nm}" class="input_com w_600px" disabled>
                 </td>
             </tr>
             <tr>
@@ -172,7 +172,7 @@
 </form>
 
 <div class="right_btn mt_20" id="btnboxDetail">
-    <button class="btn_middle color_basic" onclick="location='/door/group/listView.do'">목록</button>
+    <button class="btn_middle color_basic" onclick="location='/door/group/list.do'">목록</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnEdit();">수정</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
 </div>

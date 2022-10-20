@@ -146,211 +146,6 @@
 		</if>
 	</select>
 
-	<select id="selectDoorGroupList"  parameterType="HashMap" resultType="HashMap">
-		SELECT A.*
-          FROM (
-                SELECT TD.id
-                     , TD.nm
-                     , TD.door_sch_id
-                     , TDS.door_sch_nm
-                  FROM T_DOORGRP TD
-                     , T_DOOR_SCH TDS
-                 WHERE TD.door_sch_id = TDS.id
-                 <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-                   AND TD.id = #{id}
-                 </if>
-                 <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-                   AND TD.nm like CONCAT('%',#{keyword},'%')
-				 </if>
-               ) A
-	  ORDER BY A.nm DESC
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(offset)'>
-		 LIMIT #{srchCnt} OFFSET #{offset}
-		</if>
-	</select>
-
-	<select id="selectDoorGroupListCount"  parameterType="HashMap" resultType="int">
-		SELECT COUNT(*)
-		FROM (
-		SELECT TD.id
-		, TD.nm
-		, TD.door_sch_id
-		, TDS.door_sch_nm
-		FROM T_DOORGRP TD
-		, T_DOOR_SCH TDS
-		WHERE TD.door_sch_id = TDS.id
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-			AND TD.id = #{id}
-		</if>
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-			AND TD.nm like CONCAT('%',#{keyword},'%')
-		</if>
-		) A
-
-	</select>
-
-
-	<select id="selectDoorGroupDetail"   parameterType="HashMap" resultType="HashMap">
-		SELECT TD.id
-			 , TD.nm
-			 , TD.door_sch_id
-			 , TDS.door_sch_nm
-		  FROM T_DOORGRP TD
-			 , T_DOOR_SCH TDS
-		 WHERE TD.door_sch_id = TDS.id
-	</select>
-
-
-
-	<insert id="insertDoorGroup" parameterType="HashMap">
-		INSERT
-		  INTO T_DOORGRP
-		     ( id
-		     , nm
-		     , door_sch_id)
-	    VALUES
-	         ( #{id}
-			 , #{nm}
-			 , #{doorSchId}
-			 )
-	</insert>
-
-
-	<update id="updateDoorGroup" parameterType="HashMap">
-		UPDATE T_DOORGRP
-		   SET nm = #{nm}
-		     , door_sch_id = #{doorSchId}
-		 WHERE id = #{id}
-	</update>
-
-
-	<delete id="deleteDoorGroup" parameterType="HashMap" >
-		DELETE
-		  FROM T_DOORGRP
-		 WHERE id = #{id}
-
-	</delete>
-
-
-	<select id="selectDoorSchList"  parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-		       door_sch_nm,
-		       created_at,
-		       updated_at
-		  FROM T_DOOR_SCH TDS
-		 WHERE 1=1
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-		   AND TDS.id = #{id}
-		</if>
-
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-			AND TDS.door_sch_nm like CONCAT('%',#{keyword},'%')
-		</if>
-	</select>
-
-
-	<select id="selectScheduleDetail"  parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-			   door_sch_nm,
-			   created_at,
-			   updated_at
-		  FROM T_DOOR_SCH TDS
-		 WHERE 1=1
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-		   AND TDS.id = #{id}
-		</if>
-	</select>
-
-
-	<insert id="insertSchedule" parameterType="HashMap">
-		INSERT
-		  INTO T_DOOR_SCH
-		     ( id,
-			   door_sch_nm,
-			   created_at,
-			   updated_at
-		     )
-		VALUES
-		     ( #{id}
-			 , #{doorSchNm}
-		     , NOW()
-			 , NOW()
-			 )
-	</insert>
-
-
-	<update id="updateSchedule" parameterType="HashMap">
-		UPDATE T_DOOR_SCH
-		   SET door_sch_nm = #{doorSchNm}
-		     , updated_at= NOW()
-		 WHERE id = #{id}
-	</update>
-
-
-	<delete id="deleteSchedule" parameterType="HashMap" >
-		DELETE
-		  FROM T_DOOR_SCH
-		 WHERE id = #{id}
-	</delete>
-
-
-
-	<select id="selectScheduleByDayDetail"  parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-		       door_sch_id,
-		       weekday,
-		       beg_tm,
-		       end_tm,
-		       created_at,
-		       updated_at
-		  FROM T_DOOR_SCH_WEEKDAY TDSW
-		 WHERE 1=1
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-		   AND TDSW.id = #{id}
-		</if>
-	</select>
-
-
-	<insert id="insertScheduleByDay" parameterType="HashMap">
-		INSERT
-		  INTO T_DOOR_SCH_WEEKDAY
-		     ( id,
-			   door_sch_id,
-			   weekday,
-			   beg_tm,
-			   end_tm,
-			   created_at,
-			   updated_at
-		     )
-		VALUES
-		     ( #{id}
-			 , #{doorSchId}
-			 , #{weekday}
-			 , #{begTm}
-			 , #{endTm}
-			 , NOW()
-			 , NOW()
-			 )
-	</insert>
-
-
-	<update id="updateScheduleByDay" parameterType="HashMap">
-		UPDATE T_DOOR_SCH_WEEKDAY
-		   SET door_sch_id = #{doorSchId}
-		     , weekday= #{weekday}
-		     , beg_tm= #{begTm}
-		     , end_tm= #{endTm}
-		     , updated_at= NOW()
-		 WHERE id = #{id}
-	</update>
-
-
-	<delete id="deleteScheduleByDay" parameterType="HashMap" >
-		DELETE
-		  FROM T_DOOR_SCH_WEEKDAY
-		 WHERE id = #{id}
-
-	</delete>
 
 
 	<select id="selectTerminalDetail" parameterType="HashMap" resultType="HashMap">
@@ -405,71 +200,6 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 
 	</select>
 
-	<select id="selectDoorAlarmGrpList"  parameterType="HashMap" resultType="HashMap">
-		SELECT TDG.id
-		     , TDG.nm
-		     , TDG.time
-		     , TDG.created_at
-		  FROM T_DOORALARM_GRP TDG
-		 WHERE 1=1
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-		   AND TDG.id = #{id}
-		</if>
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-			AND TDG.nm like CONCAT('%',#{keyword},'%')
-		</if>
-	</select>
-
-
-	<select id="selectDoorAlarmGrpDetail"  parameterType="HashMap" resultType="HashMap">
-		SELECT TDG.id,
-		       TDG.nm,
-		       TDG.time,
-		       TDG.updated_at
-		  FROM T_DOORALARM_GRP TDG
-		 WHERE 1=1
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-		   AND TDG.id = #{id}
-		</if>
-	</select>
-
-
-	<insert id="insertDoorAlarmGrp" parameterType="HashMap">
-	  INSERT
-		INTO T_DOORALARM_GRP
-		   ( id
-		   , nm
-		   , time
-           , created_at
-           , updated_at
-		   )
-	  VALUES
-	       ( #{id}
-		   , #{nm}
-		   , #{time}
-		   , NOW()
-		   , NOW()
-		   )
-
-	</insert>
-
-
-	<update id="updateDoorAlarmGrp" parameterType="HashMap">
-		UPDATE T_DOORALARM_GRP
-		   SET nm = #{id}
-		     , time = #{time}
-		     , updated_at= NOW()
-		 WHERE id = #{id}
-	</update>
-
-
-	<delete id="deleteDoorAlarmGrp" parameterType="HashMap" >
-		DELETE
-		  FROM T_DOORALARM_GRP
-		 WHERE id = #{id}
-
-	</delete>
-
 
 	<update id="updateDoorIdForTerminal" parameterType="HashMap">
 		UPDATE T_TERMINAL
@@ -496,6 +226,93 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 		  FROM T_AUTH_DOOR
 		 WHERE auth_id = #{authId}
 		   AND door_id = #{doorId}
+	</delete>
+
+
+	<insert id="insertBuilding" parameterType="HashMap" useGeneratedKeys="true" keyProperty="buildingId" keyColumn="id">
+		INSERT
+		  INTO T_BUILDING
+		     ( workplace_id
+		     , building_nm
+		     , created_at)
+		VALUES
+			 ( #{workplaceId}
+			 , #{buildingNm}
+			 , NOW()
+			 )
+	</insert>
+
+	<update id="updateBuilding" parameterType="HashMap">
+		UPDATE T_BUILDING
+		   SET workplace_id = #{workplaceId}
+		     , building_nm = #{buildingNm}
+		     , updated_at = NOW()
+		 WHERE id = #{id}
+	</update>
+
+	<insert id="insertArea" parameterType="HashMap" useGeneratedKeys="true" keyProperty="areaId" keyColumn="id">
+		INSERT
+		  INTO T_AREA
+		     ( building_id
+		     , area_nm
+		     , created_at)
+		VALUES
+			 ( #{buildingId}
+			 , #{areaNm}
+			 , NOW()
+			 )
+	</insert>
+
+	<update id="updateArea" parameterType="HashMap">
+		UPDATE T_AREA
+		   SET building_id = #{buildingId}
+		     , area_nm = #{areaNm}
+		     , updated_at= NOW()
+		 WHERE id = #{id}
+	</update>
+
+	<insert id="insertFloor" parameterType="HashMap" useGeneratedKeys="true" keyProperty="floorId" keyColumn="id">
+		INSERT
+		  INTO T_FLOOR
+		     ( building_id
+		     , area_id
+		     , floor_nm
+		     , created_at)
+		VALUES
+			 ( #{buildingId}
+			 , #{areaId}
+			 , #{floorNm}
+			 , NOW()
+			 )
+	</insert>
+
+	<update id="updateFloor" parameterType="HashMap">
+		UPDATE T_FLOOR
+		   SET building_id = #{buildingId}
+		     , area_id = #{areaId}
+		     , floor_nm=#{floorNm}
+			 , updated_at = NOW()
+		 WHERE id = #{id}
+	</update>
+
+	<insert id="insertBuildingIdForAuthBuilding" parameterType="HashMap">
+		INSERT
+		  INTO T_AUTH_BUILDING
+		     ( auth_id
+		     , building_id
+		     , created_at)
+		VALUES
+			 ( #{authId}
+			 , #{buildingId}
+			 , NOW()
+			 )
+	</insert>
+
+	<delete id="deleteBuildingIdForAuthBuilding" parameterType="HashMap" >
+		DELETE
+		  FROM T_AUTH_BUILDING
+		 WHERE auth_id = #{authId}
+		   AND building_id = #{buildingId}
 	</delete>
 
 
