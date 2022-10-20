@@ -96,8 +96,10 @@
         let pathArr = [];
 
         // 빌딩 선택 시,
-        $("#dBuilding").change(function() {
+        // $("#dBuilding").change(function() {
+        $(".selectBuilding").change(function() {
             let val = $(this).val();
+            console.log("selectBuilding val = " + val);
 
             // 초기화
             $(".dArea").css("display", "block");
@@ -119,8 +121,14 @@
         });
 
         // 구역 선택 시,
-        $("#dArea").change(function() {
+        // $("#dArea").change(function() {
+        $(".selectArea").change(function() {
             let val = $(this).val();
+            let authType = $("#authType").val();
+
+            console.log("selectArea val = " + val);
+            ////////////////////////// authType 비교 -> gateDetailList의 ~클래스 ////////////////////////////////////////
+
 
             // 초기화
             $(".dFloor").css("display", "block");
