@@ -419,6 +419,20 @@
         viewBuildingDetail();
         setTitle("detail", "빌딩");
 
+        // 빌딩 정보
+        $.ajax({
+            type: "GET",
+            url: "<c:url value='/door/building/detail.do' />",
+            data: { buildingId: buildingId },
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                let dInfo = result.doorInfo;
+                $("#buildingPath").text(dInfo.building_nm);     // 경로
+                $("#buildingNm").val(dInfo.building_nm);        // 빌딩 명
+            }
+        });
+
     }
 
     // 구역 속성 뿌려주기
@@ -426,12 +440,30 @@
         console.log("getAreaDetail areaId => " + id);
         $("#areaId").val(id);
         let areaId = $("#areaId").val();
+        console.log(areaId);
 
         setAuthType("area");
         initDetail();
         fnCancelEdit();
         viewAreaDetail();
         setTitle("detail", "구역");
+
+        // 구역 정보
+        $.ajax({
+            type: "GET",
+            url: "<c:url value='/door/area/detail.do' />",
+            data: { areaId: areaId },
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                // TODO: 권한그룹 ID
+                let dInfo = result.doorInfo;
+                $("#areaPath").text(dInfo.area_nm.replaceAll(" ", " > "));  // 경로
+                $("#areaId").val(dInfo.id);                                 // 구역 id
+                $("#areaNm").val(dInfo.area_nm);                            // 구역 명
+                $(".areaDetailList #dBuilding").val(dInfo.building_id);     // 빌딩
+            }
+        });
     }
 
     // 층 속성 뿌려주기
@@ -445,6 +477,24 @@
         fnCancelEdit();
         viewFloorDetail();
         setTitle("detail", "층");
+
+        // 층 정보
+        $.ajax({
+            type: "GET",
+            url: "<c:url value='/door/floor/detail.do' />",
+            data: { floorId: floorId },
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                // TODO: 권한그룹 ID
+                let dInfo = result.doorInfo;
+                $("#floorPath").text(dInfo.floor_nm.replaceAll(" ", " > "));   // 경로
+                $("#floorId").val(dInfo.id);                                   // 층 id
+                $("#floorNm").val(dInfo.floor_nm);                             // 층 명
+                $(".floorDetailList #dBuilding").val(dInfo.building_id);       // 빌딩
+                $(".floorDetailList #dArea").val(dInfo.area_id);               // 구역
+            }
+        });
 
     }
 
@@ -461,7 +511,6 @@
         viewDoorDetail();
         setTitle("detail", "출입문");
 
-
         //출입문 정보
         $.ajax({
             type: "GET",
@@ -473,12 +522,12 @@
                 console.log(result);
 
                 let dInfo = result.doorInfo;
-                $("#doorId").val(dInfo.id);                                 // doorId
                 $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));  // 경로
+                $("#doorId").val(dInfo.id);                                 // doorId
                 $("#doorNm").val(dInfo.door_nm);                            // 출입문 명
-                $("#dBuilding").val(dInfo.building_id);                     // 빌딩
-                $("#dArea").val(dInfo.area_id);                             // 구역
-                $("#dFloor").val(dInfo.floor_id);                           // 층
+                $(".doorDetailList #dBuilding").val(dInfo.building_id);     // 빌딩
+                $(".doorDetailList #dArea").val(dInfo.area_id);             // 구역
+                $(".doorDetailList #dFloor").val(dInfo.floor_id);           // 층
                 $("#doorSchedule").val(dInfo.sch_id);                       // 스케쥴
                 $("#terminalId").val(dInfo.terminal_id);                    // 단말기 id
                 $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
