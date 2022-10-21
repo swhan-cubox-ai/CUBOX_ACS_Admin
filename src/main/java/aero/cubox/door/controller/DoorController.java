@@ -448,7 +448,7 @@ public class DoorController {
             e.getStackTrace();
             modelAndView.addObject("resultCode", "N");
         }
-        modelAndView.addObject("newBuildingId", newBuildingId );
+        modelAndView.addObject("z", newBuildingId );
         modelAndView.addObject("resultCode", "Y");
 
         return modelAndView;
