@@ -134,7 +134,7 @@
 		  FROM T_AREA TA
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-			AND TA.building_id = #{id}
+			AND TA.id = #{id}
 		</if>
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(buildingId)'>
 		   AND TA.building_id = #{buildingId}
