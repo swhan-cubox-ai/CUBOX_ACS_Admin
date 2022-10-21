@@ -797,8 +797,16 @@
         // } else {
         //     alert("취소하였습니다.");
         // }
-
-        fnDeleteDoorAjax();
+        let authType = $("#authType").val();
+        if (authType === "building") {
+            fnDeleteBuildingAjax();
+        } else if (authType === "area") {
+            fnDeleteAreaAjax();
+        } else if (authType === "floor") {
+            fnDeleteFloorAjax();
+        } else if (authType === "door") {
+            fnDeleteDoorAjax();
+        }
     }
 
     // 권한그룹 반영
@@ -850,17 +858,21 @@
 
         console.log(id);
 
+        //EAT001 - 건물 ( 빌딩, 구역, 층)
+        //EAT002 - 출입문 그룹
+        //EAT003 - 출입문
+
         if (id === "btnTerminalPick") {
             fnGetTerminalListAjax() // 단말기 목록
 
         } else if (id === "btnDoorAuthPick") {
-            fnGetAuthGroupListAjax("door"); // door 권한그룹 목록
+            fnGetAuthGroupListAjax("", "EAT003"); // 출입문 권한그룹 목록
 
         } else if (id === "btnAreaAuthPick") {
-            fnGetAuthGroupListAjax("area"); // area 권한그룹 목록
+            fnGetAuthGroupListAjax("", "EAT001"); // 구역 권한그룹 목록
 
         } else if (id === "btnFloorAuthPick") {
-            fnGetAuthGroupListAjax("floor"); // floor 권한그룹 목록
+            fnGetAuthGroupListAjax("", "EAT001"); // 층 권한그룹 목록
 
         }
 
@@ -894,7 +906,6 @@
 
     /////////////////  출입문 목록 ajax - start  /////////////////////
 
-
     function fnGetDoorListAjax() {
         console.log("fnGetDoorListAjax1");
 
@@ -916,14 +927,9 @@
 
     /////////////////  단말기 목록 ajax - start  /////////////////////
 
-
     function fnGetTerminalListAjax(param1, param2) {
 
         console.log("fnGetTerminalListAjax");
-
-        //EAT001 - 건물 ( 빌딩, 구역, 층)
-        //EAT002 - 출입문 그룹
-        //EAT003 - 출입문
 
         $.ajax({
             type: "GET",
@@ -964,19 +970,21 @@
 
     /////////////////  권한그룹 목록 ajax - start  /////////////////////
 
-
-    function fnGetAuthGroupListAjax(type, keyword) {
+    function fnGetAuthGroupListAjax(keyword, type) {
 
         console.log("fnGetAuthGroupListAjax");
         console.log("type" + type);
 
+        //EAT001 - 건물 ( 빌딩, 구역, 층)
+        //EAT002 - 출입문 그룹
+        //EAT003 - 출입문
 
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/authGroup/list.do' />",
             data: {
-                authType: "EAT001" // TODO: type(String) = 'building' / 'area' / 'floor' / 'door' 중 1
-                , keyword: keyword
+                keyword: keyword
+                , authType: type
             },
             dataType: "json",
             success: function (result) {
@@ -1288,6 +1296,108 @@
     }
 
     /////////////////  출입문 삭제 ajax - end  /////////////////////
+
+
+    /////////////////  빌딩 삭제 ajax - start  /////////////////////
+
+
+    function fnDeleteDoorAjax() {
+
+        <%--if (confirm("삭제 하시겠습니까?")) {--%>
+        <%--    $.ajax({--%>
+        <%--        type: "POST",--%>
+        <%--        url: "<c:url value='/door/building/delete.do' />",--%>
+        <%--        // data: { id: doorId },--%>
+        <%--        data: { id: $("#doorId").val() },--%>
+        <%--        dataType: "json",--%>
+        <%--        success: function (returnData) {--%>
+        <%--            console.log("fnDelete: ");--%>
+        <%--            console.log(returnData);--%>
+
+        <%--            if (returnData.resultCode == "Y") {--%>
+        <%--                // 삭제 성공--%>
+        <%--                alert("해당 출입문 정보를 삭제하였습니다.");--%>
+        <%--                fnGetDoorListAjax();--%>
+        <%--                initDetail();--%>
+        <%--                hideDoorDetail();--%>
+        <%--            } else {--%>
+        <%--                // TODO: 실패감지가 안됨--%>
+        <%--                alert("삭제 실패");--%>
+        <%--            }--%>
+        <%--        }--%>
+        <%--    });--%>
+        <%--}--%>
+    }
+
+    /////////////////  빌딩 삭제 ajax - end  /////////////////////
+
+
+    /////////////////  구역 삭제 ajax - start  /////////////////////
+
+
+    function fnDeleteAreaAjax() {
+
+        <%--if (confirm("삭제 하시겠습니까?")) {--%>
+        <%--    $.ajax({--%>
+        <%--        type: "POST",--%>
+        <%--        url: "<c:url value='/door/building/delete.do' />",--%>
+        <%--        // data: { id: doorId },--%>
+        <%--        data: { id: $("#doorId").val() },--%>
+        <%--        dataType: "json",--%>
+        <%--        success: function (returnData) {--%>
+        <%--            console.log("fnDelete: ");--%>
+        <%--            console.log(returnData);--%>
+
+        <%--            if (returnData.resultCode == "Y") {--%>
+        <%--                // 삭제 성공--%>
+        <%--                alert("해당 출입문 정보를 삭제하였습니다.");--%>
+        <%--                fnGetDoorListAjax();--%>
+        <%--                initDetail();--%>
+        <%--                hideDoorDetail();--%>
+        <%--            } else {--%>
+        <%--                // TODO: 실패감지가 안됨--%>
+        <%--                alert("삭제 실패");--%>
+        <%--            }--%>
+        <%--        }--%>
+        <%--    });--%>
+        <%--}--%>
+    }
+
+    /////////////////  구역 삭제 ajax - end  /////////////////////
+
+
+    /////////////////  층 삭제 ajax - start  /////////////////////
+
+
+    function fnDeleteFloorAjax() {
+
+        <%--if (confirm("삭제 하시겠습니까?")) {--%>
+        <%--    $.ajax({--%>
+        <%--        type: "POST",--%>
+        <%--        url: "<c:url value='/door/building/delete.do' />",--%>
+        <%--        // data: { id: doorId },--%>
+        <%--        data: { id: $("#doorId").val() },--%>
+        <%--        dataType: "json",--%>
+        <%--        success: function (returnData) {--%>
+        <%--            console.log("fnDelete: ");--%>
+        <%--            console.log(returnData);--%>
+
+        <%--            if (returnData.resultCode == "Y") {--%>
+        <%--                // 삭제 성공--%>
+        <%--                alert("해당 출입문 정보를 삭제하였습니다.");--%>
+        <%--                fnGetDoorListAjax();--%>
+        <%--                initDetail();--%>
+        <%--                hideDoorDetail();--%>
+        <%--            } else {--%>
+        <%--                // TODO: 실패감지가 안됨--%>
+        <%--                alert("삭제 실패");--%>
+        <%--            }--%>
+        <%--        }--%>
+        <%--    });--%>
+        <%--}--%>
+    }
+
+    /////////////////  층 삭제 ajax - end  /////////////////////
 
 
 </script>
