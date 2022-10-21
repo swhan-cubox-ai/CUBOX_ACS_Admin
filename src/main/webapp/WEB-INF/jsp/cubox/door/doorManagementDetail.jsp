@@ -319,6 +319,7 @@
             // $("option[name='selected']").prop("selected", true);
         }
         $("option[name='selected']").prop("selected", true);
+        $("#titleProp").text("속성");
 
     }
 
@@ -397,6 +398,15 @@
         $("#btn_wrapper").css("display", "none");
     }
 
+    // title 설정
+    function setTitle(type, txt) {
+        if (type === "add") {
+            $("#titleProp").text(txt + " 추가");
+        } else if (type === "detail") {
+            $("#titleProp").text(txt + " 속성");
+        }
+    }
+
     // 빌딩 속성 뿌려주기
     function getBuildingDetail(id) {
         console.log("getBuildingDetail buildingId => " + id);
@@ -407,6 +417,7 @@
         initDetail();
         fnCancelEdit();
         viewBuildingDetail();
+        setTitle("detail", "빌딩");
 
     }
 
@@ -420,6 +431,7 @@
         initDetail();
         fnCancelEdit();
         viewAreaDetail();
+        setTitle("detail", "구역");
     }
 
     // 층 속성 뿌려주기
@@ -432,6 +444,8 @@
         initDetail();
         fnCancelEdit();
         viewFloorDetail();
+        setTitle("detail", "층");
+
     }
 
     // 출입문 속성 뿌려주기
@@ -445,6 +459,8 @@
         initDetail();
         fnCancelEdit();
         viewDoorDetail();
+        setTitle("detail", "출입문");
+
 
         //출입문 정보
         $.ajax({
@@ -539,21 +555,25 @@
         initDetail();
 
         if (val === "building") {
+            setTitle("add", "빌딩(동)");
             $("#buildingId").val("");
             viewBuildingDetail();
             $("#buildingNm").focus();
 
         } else if (val === "area") {
+            setTitle("add", "구역");
             $("#areaId").val("");
             viewAreaDetail();
             $("#areaNm").focus();
 
         } else if (val === "floor") {
+            setTitle("add", "층");
             $("#floorId").val("");
             viewFloorDetail();
             $("#floorNm").focus();
 
         } else if (val === "door") {
+            setTitle("add", "출입문");
             // doorId = "";
             $("#doorId").val("");
             viewDoorDetail();
@@ -1024,7 +1044,7 @@
     <%--  속성  --%>
     <div style="width:550px;">
         <div class="totalbox mb_20">
-            <div class="title_s w_50p fl"><img src="/img/title_icon1.png" alt=""/>속성</div>
+            <div class="title_s w_50p fl"><img src="/img/title_icon1.png" alt=""/><span id="titleProp">속성</span></div>
         </div>
 
         <input type="hidden" id="authType" value="">
