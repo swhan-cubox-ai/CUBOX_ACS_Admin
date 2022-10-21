@@ -71,8 +71,15 @@
     .divAddNode {
         display: inline-block;
     }
-    .divAddNode label {
+    .divAddNode label,
+    .divAddNode label input {
+        /* 드래그 방지 */
         font-size: small;
+        -ms-user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
     }
     .title_box {
         margin-top: 10px;
@@ -99,25 +106,55 @@
         // $("#dBuilding").change(function() {
         $(".selectBuilding").change(function() {
             let val = $(this).val();
+            let authType = $("#authType").val();
+            let area;
+            let options;
+            pathArr.splice(1, 1);
+
             console.log("selectBuilding val = " + val);
+            console.log(authType);
+
+            if (authType === "area") {
+
+                pathArr[0] = $(".areaDetailList #dBuilding option:checked").text();
+                $("#areaPath").text(pathArr.join(" > "));
+                return;
+
+            } else if (authType === "floor") {
+                area = $(".floorDetailList #dArea");
+                options = $(".floorDetailList #dArea option");
+                $(".floorDetailList .dArea").css("display", "block");
+                $(".floorDetailList #dArea option[name=selected]").prop("selected", true);
+                pathArr[0] = $(".floorDetailList #dBuilding option:checked").text();
+                $("#floorPath").text(pathArr.join(" > "));
+
+            } else if (authType === "door") {
+                area = $(".doorDetailList #dArea");
+                options = $("doorDetailList #dArea option");
+                $(".doorDetailList .dArea").css("display", "block");
+                $(".doorDetailList #dArea option[name=selected]").prop("selected", true);
+                $(".doorDetailList #dFloor option[name=selected]").prop("selected", true);
+                pathArr[0] = $(".doorDetailList #dBuilding option:checked").text();
+                $("#doorPath").text(pathArr.join(" > "));
+            }
 
             // 초기화
-            $(".dArea").css("display", "block");
-            $("#dArea option[name=selected]").prop("selected", true);
-            $("#dFloor option[name=selected]").prop("selected", true);
+            // $(".dArea").css("display", "block");
+            // area.css("display", "block");
+            // $("#dArea option[name=selected]").prop("selected", true);
+            // $("#dFloor option[name=selected]").prop("selected", true);
 
-            $("#dArea option").each(function(i, option) { // 빌딩 id와 구역과 area의 bId 속성이 같지 않으면 option에서 제거
+            // $("#dArea option").each(function(i, option) { // 빌딩 id와 구역과 area의 bId 속성이 같지 않으면 option에서 제거
+            options.each(function(i, option) { // 빌딩 id와 구역과 area의 bId 속성이 같지 않으면 option에서 제거
                 if (val != $(option).attr("bId")) {
                     $(option).css("display", "none");
                 }
             });
             // $("#pathBuilding").text($("#dBuilding option:checked").text());
-            pathArr = [];
-            pathArr[0] = $("#dBuilding option:checked").text();
-            $("#doorPath").text(pathArr.join(" > "));
 
             // 구역 disabled 해제
-            $("#dArea").prop("disabled", false);
+            // $("#dArea").prop("disabled", false);
+            area.prop("disabled", false);
         });
 
         // 구역 선택 시,
@@ -125,30 +162,43 @@
         $(".selectArea").change(function() {
             let val = $(this).val();
             let authType = $("#authType").val();
+            let floor;
+            let options;
+            pathArr.splice(2, 1);
 
             console.log("selectArea val = " + val);
-            ////////////////////////// authType 비교 -> gateDetailList의 ~클래스 ////////////////////////////////////////
+            if (authType === "floor") {
 
+                pathArr[1] = $(".floorDetailList #dArea option:checked").text();
+                console.log(pathArr);
+                $("#floorPath").text(pathArr.join(" > "));
+                return;
 
-            // 초기화
-            $(".dFloor").css("display", "block");
-            $("#dFloor option[name=selected]").prop("selected", true);
+            } else if (authType === "door") {
+                floor = $(".doorDetailList #dFloor");
+                options = $(".doorDetailList #dFloor option");
 
-            $("#dFloor option").each(function(i, option) {
+                $(".doorDetailList .dFloor").css("display", "block");
+                $("#dFloor option[name=selected]").prop("selected", true);
+
+                // let txt = $("#doorPath").text() + " > " + $("#dArea option:checked").text();
+                // $("#doorPath").text(txt);
+                // $("#pathArea").text($("#dArea option:checked").text());
+                // pathArr.splice(2, 1);
+                pathArr[1] = $(".doorDetailList #dArea option:checked").text();
+                console.log(pathArr);
+                $("#doorPath").text(pathArr.join(" > "));
+            }
+
+            // $("#dFloor option").each(function(i, option) {
+            options.each(function (i, option) {
                 if (val != $(option).attr("aId")) {
                     $(option).css("display", "none");
                 }
             });
-            // let txt = $("#doorPath").text() + " > " + $("#dArea option:checked").text();
-            // $("#doorPath").text(txt);
-            // $("#pathArea").text($("#dArea option:checked").text());
-            pathArr.splice(2, 1);
-            pathArr[1] = $("#dArea option:checked").text();
-            $("#doorPath").text(pathArr.join(" > "));
-
 
             // 층 disabled 해제
-            $("#dFloor").prop("disabled", false);
+            floor.prop("disabled", false);
         });
 
         // 층 선택 시,
@@ -279,7 +329,7 @@
 
     // 출입문 속성 보여주기
     function viewDoorDetail() {
-        $(".gateDetailList").css("display", "table-row-group");
+        $(".doorDetailList").css("display", "table-row-group");
         hideBuildingDetail();
         hideAreaDetail();
         hideFloorDetail();
@@ -288,7 +338,7 @@
 
     // 출입문 속성 숨기기
     function hideDoorDetail() {
-        $(".gateDetailList").css("display", "none");
+        $(".doorDetailList").css("display", "none");
         hideButtons();
     }
 
@@ -339,13 +389,11 @@
 
     // 버튼 보여주기
     function viewButtons() {
-        console.log("viewButtons");
         $("#btn_wrapper").css("display", "block");
     }
 
     // 버튼 숨기기
     function hideButtons() {
-        console.log("hideButtons");
         $("#btn_wrapper").css("display", "none");
     }
 
@@ -724,6 +772,10 @@
 
         console.log("fnGetTerminalListAjax");
 
+        //EAT001 - 건물 ( 빌딩, 구역, 층)
+        //EAT002 - 출입문 그룹
+        //EAT003 - 출입문
+
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/terminal/list.do' />",
@@ -994,7 +1046,7 @@
                     </colgroup>
 
                     <%-- 출입문 추가 --%>
-                    <tbody class="gateDetailList detailList" style="display: none;">
+                    <tbody class="doorDetailList detailList" style="display: none;">
 
                     <tr>
                         <td colspan="3" style="font-size: 17px; text-align: left; padding-left: 20px">
