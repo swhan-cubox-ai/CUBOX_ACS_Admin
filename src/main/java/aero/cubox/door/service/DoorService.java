@@ -7,27 +7,45 @@ import java.util.Map;
 
 public interface DoorService {
 
+    //출입문
     List<Map> getDoorList(Map<String, Object> commandMap);
 
-    Map getDoorInformation(Map<String, Object> commandMap);
+    Map getDoorDetail(Map<String, Object> commandMap);
+    Map getBuildingDetail(Map<String, Object> commandMap);
+    Map getFloorDetail(Map<String, Object> commandMap);
 
-    List<HashMap> searchPermissionGroup(Map<String, Object> commandMap);
 
-    List<HashMap> getPermissionGroups(Map<String, Object> commandMap);
+    Map getAreaDetail(HashMap<String, Object> param);
 
-    List<HashMap> searchTerminalInformation(Map<String, Object> commandMap);
+    String addDoor(Map<String, Object> commandMap);
+
+    void updateDoor(Map<String, Object> commandMap);
 
     void deleteDoor(Map<String, Object> commandMap);
 
-    void updateDoorInformation(Map<String, Object> commandMap);
+    List<HashMap> getAreaList(Map<String, Object> commandMap);
 
-    HashMap getTerminalInformation(Map<String, Object> commandMap);
+    List<HashMap> getBuildingList(Map<String, Object> commandMap);
 
-    List<Map> getAreaList(Map<String, Object> commandMap);
+    List<HashMap> getWorkplaceList(Map<String, Object> commandMap);
 
-    List<Map> getBuildingList(Map<String, Object> commandMap);
+    List<HashMap> getFloorList(Map<String, Object> commandMap);
 
-    void addDoorInformation(Map<String, Object> commandMap);
+    //단말기
+    List<HashMap> getTerminalList(Map<String, Object> commandMap);
 
-    List<HashMap> getScheduleList(Map<String, Object> commandMap);
+
+    String addBuilding(HashMap param);
+
+    void updateBuilding(Map<String, Object> commandMap);
+
+    String addArea(HashMap param);
+
+    void updateArea(Map<String, Object> commandMap);
+
+    String addFloor(HashMap param);
+
+    void updateFloor(Map<String, Object> commandMap);
+
+
 }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="door.alarm">
+
+    <select id="selectDoorAlarmGrpList"  parameterType="HashMap" resultType="HashMap">
+        SELECT TDG.id
+        , TDG.nm
+        , TDG.time
+        , TDG.created_at
+        FROM T_DOORALARM_GRP TDG
+        WHERE 1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+            AND TDG.id = #{id}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            AND TDG.nm like CONCAT('%',#{keyword},'%')
+        </if>
+    </select>
+
+
+    <select id="selectDoorAlarmGrpDetail"  parameterType="HashMap" resultType="HashMap">
+        SELECT TDG.id,
+        TDG.nm,
+        TDG.time,
+        TDG.updated_at
+        FROM T_DOORALARM_GRP TDG
+        WHERE 1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+            AND TDG.id = #{id}
+        </if>
+    </select>
+
+
+    <insert id="insertDoorAlarmGrp" parameterType="HashMap">
+        INSERT
+        INTO T_DOORALARM_GRP
+        ( id
+        , nm
+        , time
+        , created_at
+        , updated_at
+        )
+        VALUES
+            ( #{id}
+            , #{nm}
+            , #{time}
+            , NOW()
+            , NOW()
+            )
+
+    </insert>
+
+
+    <update id="updateDoorAlarmGrp" parameterType="HashMap">
+        UPDATE T_DOORALARM_GRP
+        SET nm = #{nm}
+          , time = #{time}
+          , updated_at= NOW()
+        WHERE id = #{id}
+    </update>
+
+
+    <delete id="deleteDoorAlarmGrp" parameterType="HashMap" >
+        DELETE
+        FROM T_DOORALARM_GRP
+        WHERE id = #{id}
+
+    </delete>
+
+
+</mapper>

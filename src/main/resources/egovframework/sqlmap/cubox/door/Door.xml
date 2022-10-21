@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="door">
+	<select id="selectDoorDetail"  parameterType="HashMap" resultType="HashMap">
+		  SELECT TD.id
+		       , TD.door_nm
+		       , TD.building_id
+		       , TD.area_id
+		       , TD.floor_id
+		       , TD.alarm_typ
+		       , TDS.id as sch_id
+		       , TDS.door_sch_nm as sch_nm
+		       , (SELECT GROUP_CONCAT( TT.id  SEPARATOR '/ ') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_id
+		       , (SELECT GROUP_CONCAT( TT.terminal_cd  SEPARATOR '/ ') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_cd
+		       , (SELECT GROUP_CONCAT( TT.mgmt_num  SEPARATOR '/ ')  FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS mgmt_num
+		       , TAD.auth_id AS auth_id
+		       , (SELECT TA.auth_nm FROM T_AUTH TA WHERE TA.id = TAD.auth_id ) AS auth_nm
+		    FROM T_DOOR TD
+ LEFT OUTER JOIN T_DOORGRP_DOOR TDD ON TD.id = TDD.door_id
+ LEFT OUTER JOIN T_DOORGRP TDG      ON TDD.doorgrp_id = TDG.id
+ LEFT OUTER JOIN T_DOOR_SCH TDS     ON TDD.doorgrp_id = TDS.id
+ LEFT OUTER JOIN T_AUTH_DOOR TAD    ON TD.id = TAD.door_id
+		   WHERE TD.id = #{id}
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+			 AND TD.id = #{id}
+		</if>
+	</select>
+
+	<select id="selectDoorList" parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+			   building_id,
+			   area_id,
+			   floor_id,
+			   door_nm,
+			   alarm_typ,
+			   created_at,
+			   updated_at
+		FROM T_DOOR TD
+		WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(building_id)'>
+		  AND TD.building_id = #{building_id}
+		</if>
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(area_id)'>
+		  AND TD.area_id = #{area_id}
+		</if>
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(floor_id)'>
+		  AND TD.floor_id = #{floor_id}
+		</if>
+	</select>
+
+
+	<insert id="insertDoor" parameterType="HashMap" useGeneratedKeys="true" keyProperty="doorId" keyColumn="id">
+		insert
+		into
+			T_DOOR ( building_id
+				   , area_id
+				   , floor_id
+				   , door_nm
+				   , alarm_typ
+				   , created_at
+		)
+		values  ( #{buildingId}
+				, #{areaId}
+				, #{floorId}
+				, #{doorNm}
+				, #{alarmGroupId}
+				, NOW()
+				)
+
+	</insert>
+
+	<update id="updateDoor" parameterType="HashMap">
+		UPDATE T_DOOR
+		   SET building_id = #{buildingId}
+		     , area_id = #{areaId}
+		     , floor_id = #{floorId}
+		     , door_nm = #{doorNm}
+		     , alarm_typ = #{alarmGroupId}
+		     , updated_at = NOW()
+		 WHERE id = #{id}
+	</update>
+
+
+	<delete id="deleteDoor" parameterType="HashMap" >
+		DELETE
+		  FROM T_DOOR
+		 WHERE id = #{id}
+
+	</delete>
+
+
+	<select id="selectBuildingList" parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+		       workplace_id,
+		       building_nm,
+		       created_at,
+		       updated_at
+		  FROM T_BUILDING TB
+		 WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+		  AND TB.id = #{id}
+		</if><if test='@aero.cubox.util.CommonUtils@notEmpty(workplace_id)'>
+		  AND TB.workplace_id = #{workplace_id}
+		</if>
+	</select>
+
+
+	<select id="selectFloorList" parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+		       building_id,
+		       area_id,
+		       floor_nm,
+		       created_at,
+		       updated_at
+		  FROM T_FLOOR TF
+		 WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+			AND TF.id = #{id}
+		</if>
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(areaId)'>
+		  AND TF.area_id = #{areaId}
+		  AND TF.building_id = #{buildingId}
+		</if>
+	</select>
+
+
+	<select id="selectAreaList" parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+		       building_id,
+		       area_nm,
+		       created_at,
+		       updated_at
+		  FROM T_AREA TA
+		 WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+			AND TA.id = #{id}
+		</if>
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(buildingId)'>
+		   AND TA.building_id = #{buildingId}
+		</if>
+	</select>
+
+
+	<select id="selectWorkplaceList" parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+               workplace_nm,
+		       created_at,
+		       updated_at
+		  FROM T_WORKPLACE TW
+		 WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+		   AND TW.id = #{id}
+		</if>
+	</select>
+
+
+
+	<select id="selectTerminalDetail" parameterType="HashMap" resultType="HashMap">
+		SELECT id,
+			   terminal_cd,
+			   terminal_typ,
+			   door_id,
+			   mgmt_num,
+			   ip_addr,
+			   complex_auth_typ,
+			   face_auth_typ,
+			   created_at,
+			   updated_at
+		  FROM T_TERMINAL TT
+		 WHERE 1 = 1
+	</select>
+
+
+	<select id="selectTerminalList"  parameterType="HashMap" resultType="HashMap">
+		SELECT TM.id as id,
+		       TD.door_nm as doorNm,
+		       TM.mgmt_num as mgmtNum,
+		       TM.terminal_cd as terminalCd,
+		       TM.terminal_typ as terminalTyp,
+		       (SELECT cd_nm
+		          FROM T_CMMN_CD
+                 WHERE cd_typ = 'TerminalTyp'
+                   AND cd = TM.terminal_typ) AS terminalTypNm,
+               TM.ip_addr as ipAddr,
+               TM.complex_auth_typ as complexAuthTyp,
+               (SELECT cd_nm
+                  FROM T_CMMN_CD
+                 WHERE cd_typ = 'ComplexAuthTyp'
+                   AND cd = TM.complex_auth_typ) AS complexAuthTypNm,
+               TM.face_auth_typ as faceAuthTyp,
+               (SELECT cd_nm
+                  FROM T_CMMN_CD
+                 WHERE cd_typ = 'FaceAuthTyp'
+                   AND cd = TM.face_auth_typ) AS faceAuthTypNm,
+               TM.use_yn as useYn
+           FROM T_TERMINAL TM
+LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
+		  WHERE 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(registrationionStatus)'>
+			<if test='registrationionStatus.equals("N")'>
+			AND (TM.door_id is null or TM.door_id ='')
+			</if>
+		</if>
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+			AND (TM.model_nm like CONCAT('%',#{keyword},'%') OR TM.terminal_cd like CONCAT('%',#{keyword},'%') OR TM.mgmt_num like CONCAT('%',#{keyword},'%'))
+		</if>
+
+	</select>
+
+
+	<update id="updateDoorIdForTerminal" parameterType="HashMap">
+		UPDATE T_TERMINAL
+		   SET door_id = #{doorId}
+		     , updated_at= NOW()
+		 WHERE id = #{id}
+	</update>
+
+	<insert id="insertDoorIdForAuthDoor" parameterType="HashMap">
+		INSERT
+		  INTO T_AUTH_DOOR
+		     ( auth_id
+		     , door_id
+		     , created_at)
+		VALUES
+		     ( #{authId}
+			 , #{doorId}
+			 , NOW()
+			  )
+	</insert>
+
+	<delete id="deleteDoorIdForAuthDoor" parameterType="HashMap" >
+		DELETE
+		  FROM T_AUTH_DOOR
+		 WHERE auth_id = #{authId}
+		   AND door_id = #{doorId}
+	</delete>
+
+
+	<insert id="insertBuilding" parameterType="HashMap" useGeneratedKeys="true" keyProperty="buildingId" keyColumn="id">
+		INSERT
+		  INTO T_BUILDING
+		     ( workplace_id
+		     , building_nm
+		     , created_at)
+		VALUES
+			 ( #{workplaceId}
+			 , #{buildingNm}
+			 , NOW()
+			 )
+	</insert>
+
+	<update id="updateBuilding" parameterType="HashMap">
+		UPDATE T_BUILDING
+		   SET workplace_id = #{workplaceId}
+		     , building_nm = #{buildingNm}
+		     , updated_at = NOW()
+		 WHERE id = #{id}
+	</update>
+
+	<insert id="insertArea" parameterType="HashMap" useGeneratedKeys="true" keyProperty="areaId" keyColumn="id">
+		INSERT
+		  INTO T_AREA
+		     ( building_id
+		     , area_nm
+		     , created_at)
+		VALUES
+			 ( #{buildingId}
+			 , #{areaNm}
+			 , NOW()
+			 )
+	</insert>
+
+	<update id="updateArea" parameterType="HashMap">
+		UPDATE T_AREA
+		   SET building_id = #{buildingId}
+		     , area_nm = #{areaNm}
+		     , updated_at= NOW()
+		 WHERE id = #{id}
+	</update>
+
+	<insert id="insertFloor" parameterType="HashMap" useGeneratedKeys="true" keyProperty="floorId" keyColumn="id">
+		INSERT
+		  INTO T_FLOOR
+		     ( building_id
+		     , area_id
+		     , floor_nm
+		     , created_at)
+		VALUES
+			 ( #{buildingId}
+			 , #{areaId}
+			 , #{floorNm}
+			 , NOW()
+			 )
+	</insert>
+
+	<update id="updateFloor" parameterType="HashMap">
+		UPDATE T_FLOOR
+		   SET building_id = #{buildingId}
+		     , area_id = #{areaId}
+		     , floor_nm=#{floorNm}
+			 , updated_at = NOW()
+		 WHERE id = #{id}
+	</update>
+
+	<insert id="insertBuildingIdForAuthBuilding" parameterType="HashMap">
+		INSERT
+		  INTO T_AUTH_BUILDING
+		     ( auth_id
+		     , building_id
+		     , created_at)
+		VALUES
+			 ( #{authId}
+			 , #{buildingId}
+			 , NOW()
+			 )
+	</insert>
+
+	<delete id="deleteBuildingIdForAuthBuilding" parameterType="HashMap" >
+		DELETE
+		  FROM T_AUTH_BUILDING
+		 WHERE auth_id = #{authId}
+		   AND building_id = #{buildingId}
+	</delete>
+
+
+
+</mapper>

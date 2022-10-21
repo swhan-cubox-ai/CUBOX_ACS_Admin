@@ -13,46 +13,112 @@ public class DoorDAO extends EgovAbstractMapper {
 	private static final String sqlNameSpace = "door.";
 
 
-	public List<Map> getDoorList(Map<String, Object> commandMap) {
-		return selectList(sqlNameSpace+"selectDoorList", commandMap);
+	public List<Map> getDoorList(Map<String, Object> paramMap) {
+		return selectList(sqlNameSpace+"selectDoorList", paramMap);
 	}
 
-	public Map getDoorInformation(Map<String, Object> commandMap) {
-		return selectOne(sqlNameSpace+"selectDoorInformation", commandMap);
-	}
-
-	public List<HashMap> getPermissionGroups(Map<String, Object> commandMap) {
-		return selectList(sqlNameSpace+"selectPermissionGroup", commandMap);
+	public Map getDoorDetail(Map<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectDoorDetail", paramMap);
 	}
 
 
-	public List<HashMap> searchTerminalInformation(Map<String, Object> commandMap) {
-		return selectList(sqlNameSpace+"selectTerminalInformation", commandMap);
+	public int insertDoor(Map<String, Object> paramMap) {
+		insert(sqlNameSpace+"insertDoor", paramMap);
+        return 0;
+    }
+
+	public void updateDoor(Map<String, Object> paramMap) {
+		update(sqlNameSpace+"updateDoor", paramMap);
+	}
+	public void deleteDoor(Map<String, Object> paramMap) {
+		delete(sqlNameSpace+"deleteDoor", paramMap);
 	}
 
 
-	public void insertDoorInformation(Map<String, Object> commandMap) {
-		update(sqlNameSpace+"insertDoorInformation", commandMap);
+	public List<HashMap> getAreaList(Map<String, Object> paramMap) {
+		return selectList(sqlNameSpace+"selectAreaList", paramMap);
 	}
 
-	public void updateDoorInformation(Map<String, Object> commandMap) {
-		update(sqlNameSpace+"updateDoorInformation", commandMap);
-	}
-	public void deleteDoor(Map<String, Object> commandMap) {
-
-		delete(sqlNameSpace+"deleteDoor", commandMap);
+	public List<HashMap> getBuildingList(Map<String, Object> paramMap) {
+		return selectList(sqlNameSpace+"selectBuildingList", paramMap);
 	}
 
-	public HashMap getTerminalInformation(Map<String, Object> commandMap) {
-		return selectOne(sqlNameSpace+"selectTerminalInformation", commandMap);
+	public List<HashMap> getWorkplaceList(Map<String, Object> paramMap) {
+		return selectList(sqlNameSpace+"selectWorkplaceList", paramMap);
 	}
 
-	public List<Map> getAreaList(Map<String, Object> commandMap) {
-		return selectList(sqlNameSpace+"selectAreaList", commandMap);
+	public List<HashMap> getFloorList(Map<String, Object> paramMap) {
+		return selectList(sqlNameSpace+"selectFloorList", paramMap);
 	}
 
-	public List<Map> getBuildingList(Map<String, Object> commandMap) {
-		return selectList(sqlNameSpace+"selectBuildingList", commandMap);
+
+	public HashMap getTerminalDetail(Map<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectTerminalDetail", paramMap);
 	}
 
+
+	public List<HashMap> getTerminalList(Map<String, Object> paramMap) {
+		return selectList(sqlNameSpace+"selectTerminalList", paramMap);
+	}
+
+    public void updateDoorIdForTerminal(Map<String, Object> paramMap) {
+		update(sqlNameSpace+"updateDoorIdForTerminal", paramMap);
+	}
+
+	public void updateDoorIdForAuthDoor(Map<String, Object> paramMap) {
+		update(sqlNameSpace+"updateDoorIdForTerminal", paramMap);
+	}
+
+	public void insertDoorIdForAuthDoor(Map<String, Object> paramMap) {
+		insert(sqlNameSpace+"insertDoorIdForAuthDoor", paramMap);
+	}
+
+	public void deleteDoorIdForAuthDoor(Map<String, Object> paramMap) {
+		delete(sqlNameSpace+"deleteDoorIdForAuthDoor", paramMap);
+
+	}
+
+	public void insertBuilding(HashMap paramMap) {
+		insert(sqlNameSpace+"insertBuilding", paramMap);
+	}
+	public void updateBuilding(Map<String, Object> paramMap) {
+		update(sqlNameSpace+"updateBuilding", paramMap);
+	}
+
+	public void insertArea(HashMap paramMap) {
+		insert(sqlNameSpace+"insertArea", paramMap);
+	}
+
+	public void updateArea(Map<String, Object> paramMap) {
+		update(sqlNameSpace+"updateArea", paramMap);
+	}
+
+	public void insertFloor(HashMap paramMap) {
+		insert(sqlNameSpace+"insertFloor", paramMap);
+	}
+
+	public void updateFloor(Map<String, Object> paramMap) {
+		update(sqlNameSpace+"updateFloor", paramMap);
+	}
+
+
+	public void deleteBuildingIdForAuthBuilding(Map<String, Object> paramMap) {
+		delete(sqlNameSpace+"deleteBuildingIdForAuthBuilding", paramMap);
+	}
+
+	public void insertBuildingIdForAuthBuilding(Map<String, Object> paramMap) {
+		insert(sqlNameSpace+"insertBuildingIdForAuthBuilding", paramMap);
+	}
+
+	public Map getBuildingDetail(Map<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectBuildingList", paramMap);
+	}
+
+	public Map getFloorDetail(Map<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectFloorList", paramMap);
+	}
+
+	public Map getAreaDetail(Map<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectAreaList", paramMap);
+	}
 }

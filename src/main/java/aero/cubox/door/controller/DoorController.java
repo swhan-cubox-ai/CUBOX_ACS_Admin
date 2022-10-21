@@ -1,13 +1,25 @@
 package aero.cubox.door.controller;
 
+import aero.cubox.auth.service.AuthService;
+import aero.cubox.cmmn.service.CommonService;
+import aero.cubox.core.vo.AuthVO;
+import aero.cubox.core.vo.CommonVO;
+import aero.cubox.core.vo.PaginationVO;
+import aero.cubox.core.vo.TerminalVO;
+import aero.cubox.door.service.DoorAlarmService;
+import aero.cubox.door.service.DoorScheduleService;
 import aero.cubox.door.service.DoorService;
+import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.CommonUtils;
+import aero.cubox.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,118 +35,240 @@ import java.util.Map;
 @RequestMapping(value = "/door/")
 public class DoorController {
 
+    @Resource(name = "commonUtils")
+    private CommonUtils commonUtils;
+
+    @Resource(name = "commonService")
+    private CommonService commonService;
+
     @Resource(name = "doorService")
     private DoorService doorService;
 
-    @Resource(name = "commonUtils")
-    private CommonUtils commonUtils;
+    @Resource(name = "doorScheduleService")
+    private DoorScheduleService doorScheduleService;
+
+    @Resource(name = "doorAlarmService")
+    private DoorAlarmService doorAlarmService;
+
+    @Resource(name = "terminalService")
+    private TerminalService terminalService;
+
+    @Resource(name = "authService")
+    private AuthService authService;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DoorController.class);
 
     /**
      * 출입문관리 - view
+     *
      * @param model
-     * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/management.do")
-    public String managent(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/management.do", method = RequestMethod.GET)
+    public String doorManagementDetail(ModelMap model) throws Exception {
         //todo 세션처리
 
-        return "cubox/door/management";
+        // TODO : scheduleList, alarmGroupList 넘기기
+        HashMap parmaMap = new HashMap();
+        List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
+        List<Map> buildingList = doorService.getBuildingList(parmaMap);   //빌딩 목록
+        List<Map> areaList = doorService.getAreaList(parmaMap);           //지역 목록
+        List<HashMap> floorList = doorService.getFloorList(parmaMap);     //층 목록
+
+        List<HashMap> scheduleList = doorScheduleService.getScheduleList(parmaMap);      // 스케쥴 목록
+        List<HashMap> doorAlarmGrpList = doorAlarmService.getDoorAlarmGrpList(parmaMap); // 출입물 알람 그룹 목록
+
+        model.addAttribute("workplaceList", workplaceList);
+        model.addAttribute("buildingList", buildingList);
+        model.addAttribute("areaList", areaList);
+        model.addAttribute("floorList", floorList);
+        model.addAttribute("scheduleList", scheduleList);
+        model.addAttribute("doorAlarmGrpList", doorAlarmGrpList);
+
+        return "cubox/door/doorManagementDetail";
     }
+
 
     /**
-     * 스케줄 관리 - view
+     * 출입문 목록 조회
+     *
      * @param model
      * @param commandMap
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/schedule.do")
-    public String schedule(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
-        //todo 세션처리
-
-        return "cubox/door/schedule";
-    }
-
-    // 출입문 목록 가져오기
-    @RequestMapping(value="/getDoorList.do")
+    @RequestMapping(value = "/list.do", method = RequestMethod.GET)
     public ModelAndView getDoorList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        List<Map> areaList = doorService.getAreaList(commandMap);
-        List<Map> buildingList = doorService.getBuildingList(commandMap);
-        List<Map> doorList = doorService.getDoorList(commandMap);
+        String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+        HashMap parmaMap = new HashMap();
 
-        modelAndView.addObject("areaList", areaList);
-        modelAndView.addObject("buildingList", buildingList);
+        if( keyword.length() > 0){
+            parmaMap.put("keyword",keyword);
+        }
+
+        List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
+        List<Map>  buildingList = doorService.getBuildingList(parmaMap);   //빌딩 목록
+        List<Map>      areaList = doorService.getAreaList(parmaMap);           //지역 목록
+        List<HashMap> floorList = doorService.getFloorList(parmaMap);     //층 목록
+
+        List<Map> doorList = doorService.getDoorList(parmaMap);           //출입문 목록
+
+        model.addAttribute("workplaceList", workplaceList);
+        model.addAttribute("buildingList", buildingList);
+        model.addAttribute("areaList", areaList);
+        model.addAttribute("floorList", floorList);
+
         modelAndView.addObject("doorList", doorList);
 
         return modelAndView;
     }
 
-    // 출입문 상세정보 가져오기
-    @RequestMapping(value="/getDoorInformation.do")
+    /**
+     * 출입문 정보 상세 조회
+     *
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/detail.do", method = RequestMethod.GET)
     public ModelAndView getDoorInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        LOGGER.debug("getDoor");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        HashMap doorInfo = (HashMap) doorService.getDoorInformation(commandMap);
+        LOGGER.debug("param doorId=" + commandMap.get("doorId"));
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("id", commandMap.get("doorId"));
+
+        HashMap doorInfo = (HashMap) doorService.getDoorDetail(param); // TODO: 스케쥴 이름은 필요 없음
 
         modelAndView.addObject("doorInfo", doorInfo);
 
         return modelAndView;
     }
 
-    //출입문 등록
-    @RequestMapping(value="/addDoorInformation.do")
-    public ModelAndView addDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    /**
+     * 출입문 정보 등록
+     *
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/add.do", method = RequestMethod.POST)
+    public ModelAndView addDoor( @RequestParam Map<String, Object> commandMap) throws Exception {
+        LOGGER.debug("출입문 등록");
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
+        String doorNm = StringUtil.nvl(commandMap.get("doorNm"), "");;
+        String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");
+        String areaId = StringUtil.nvl(commandMap.get("areaId"), "");
+        String floorId = StringUtil.nvl(commandMap.get("floorId"), "");
+        String scheduleId = StringUtil.nvl(commandMap.get("scheduleId"), "");
+        String alarmGroupId = StringUtil.nvl(commandMap.get("alarmGroupId"), "");
+        String terminalIds = StringUtil.nvl(commandMap.get("terminalIds"), "");
+        String authGrIds = StringUtil.isNullToString(commandMap.get("authGrIds"));
+
+        HashMap param = new HashMap();
+
+        param.put("doorNm", doorNm);        //출입문 명
+        param.put("buildingId", buildingId);//빌딩 ID
+        param.put("areaId", areaId);        //지역 ID
+        param.put("floorId", floorId);      //층 ID
+        param.put("doorScheduleId", scheduleId); //출입문 스케쥴 ID
+        param.put("alarmGroupId", alarmGroupId); //알람 그룹 ID
+        param.put("terminalIds", terminalIds);   //단말기 ID - 복수저장?
+        param.put("authGrIds", authGrIds);       //권한그룹ID - 복수저장?
+
+        String newDoorId = "";
         try {
-            doorService.addDoorInformation(commandMap);
-
-        } catch(Exception e) {
+            newDoorId = doorService.addDoor(param);
+        } catch (Exception e) {
             e.getStackTrace();
-            modelAndView.addObject("result", "N");
+            modelAndView.addObject("resultCode", "N");
         }
-        modelAndView.addObject("result", "Y");
-
+        modelAndView.addObject("newDoorId", newDoorId );
+        modelAndView.addObject("resultCode", "Y");
 
         return modelAndView;
     }
 
 
-    // 출입문 수정
-    @RequestMapping(value="/updateDoorInformation.do")
-    public ModelAndView updateDoorInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    /**
+     * 출입문 정보 수정
+     *
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/update.do", method = RequestMethod.POST)
+    public ModelAndView updateDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        try {
-            doorService.updateDoorInformation(commandMap);
+        HashMap param = new HashMap();
 
-        } catch(Exception e) {
-            e.getStackTrace();
-            modelAndView.addObject("result", "N");
+        if (StringUtil.isEmpty(commandMap.get("doorId").toString() ) ){
+            modelAndView.addObject("resultCode", "N");
+            modelAndView.addObject("resultMsg", "no id");
+        } else {
+            String doorId = commandMap.get("doorId").toString();
+            String doorNm = StringUtil.nvl(commandMap.get("doorNm"), "");;
+            String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");
+            String areaId = StringUtil.nvl(commandMap.get("areaId"), "");
+            String floorId = StringUtil.nvl(commandMap.get("floorId"), "");
+            String scheduleId = StringUtil.nvl(commandMap.get("scheduleId"), "");
+            String alarmGroupId = StringUtil.nvl(commandMap.get("alarmGroupId"), "");
+            String terminalIds = StringUtil.nvl(commandMap.get("terminalIds"), "");
+            String authGrIds = StringUtil.nvl(commandMap.get("authGrIds"), "");
+
+            param.put("id", doorId);
+            param.put("doorNm", doorNm);
+            param.put("buildingId", buildingId);
+            param.put("areaId", areaId);
+            param.put("floorId", floorId);
+            param.put("doorScheduleId", scheduleId);
+            param.put("alarmGroupId", alarmGroupId);
+            param.put("terminalIds", terminalIds);
+            param.put("authGrIds", authGrIds);
         }
-        modelAndView.addObject("result", "Y");
+        try {
+            doorService.updateDoor(param);
 
+        } catch (Exception e) {
+            e.getStackTrace();
+            modelAndView.addObject("resultCode", "N");
+            modelAndView.addObject("resultMsg", e.getStackTrace());
+        }
+        modelAndView.addObject("resultCode", "Y");
 
         return modelAndView;
     }
 
 
-
-
-
-    // 출입문 삭제
-    @RequestMapping(value="/deleteDoor.do")
+    /**
+     * 출입문 삭제
+     *
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/delete.do", method = RequestMethod.POST)
     public ModelAndView deleteDoor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
@@ -142,76 +276,63 @@ public class DoorController {
 
         try {
             doorService.deleteDoor(commandMap);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.getStackTrace();
-            modelAndView.addObject("result", "N");
+            modelAndView.addObject("resultCode", "N");
         }
-        modelAndView.addObject("result", "Y");
+        modelAndView.addObject("resultCode", "Y");
 
         return modelAndView;
     }
 
-    // 단말기 정보 가져오기
-    @RequestMapping(value="/getTerminalInformation.do")
-    public ModelAndView getTerminalInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+
+
+
+    /**
+     * 단말기 목록 조회(검색)
+     *
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/terminal/list.do", method = RequestMethod.GET)
+    public ModelAndView searchTerminal(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        HashMap terminalInfo= doorService.getTerminalInformation(commandMap);
-        modelAndView.addObject("terminalInfo", terminalInfo);
+        try {
+
+            String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+            String registrationionStatus = StringUtil.nvl(commandMap.get("registrationionStatus"), "");
+
+            HashMap param = new HashMap<>();
+
+            if (keyword.length() > 0) {
+                param.put("keyword", keyword);
+            }
+
+            if (registrationionStatus.length() > 0) {
+                param.put("registrationionStatus", registrationionStatus);
+
+            }
+
+            List<HashMap> terminalList = doorService.getTerminalList(param);
+            model.addAttribute("terminalList", terminalList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
 
         return modelAndView;
     }
 
-    // 단말기 검색 (단말기명 / 관리번호 / 단말기코드로)
-    @RequestMapping(value="/searchTerminalInformation.do")
-    public ModelAndView searchTerminalInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("jsonView");
-
-        List<HashMap> terminalList = doorService.searchTerminalInformation(commandMap);
-
-        modelAndView.addObject("terminalList", terminalList);
-
-        return modelAndView;
-    }
-
-
-
-    // 권한 그룹 가져오기
-    @RequestMapping(value="/getPermissionGroups.do")
-    public ModelAndView getPermissionGroups(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("jsonView");
-
-        List<HashMap> permissionGroupList = doorService.getPermissionGroups(commandMap);
-
-        modelAndView.addObject("permissionGroupList", permissionGroupList);
-
-        return modelAndView;
-    }
-
-
-
-    // 권한그룹 검색 (권한그룹명)
-    @RequestMapping(value="/searchPermissionGroup.do")
-    public ModelAndView searchPermissionGroup(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("jsonView");
-
-        List<HashMap> permissionGroupList = doorService.searchPermissionGroup(commandMap);
-
-        modelAndView.addObject("permissionGroupList", permissionGroupList);
-
-        return modelAndView;
-    }
 
     // 일괄 등록 양식 다운로드(출입문)
-    @RequestMapping(value="/downloadRegistrationForm.do")
+    @RequestMapping(value = "/batch/registrationForm.do")
     public ModelAndView downloadRegistrationForm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
@@ -221,7 +342,7 @@ public class DoorController {
     }
 
     // 일괄 등록 (출입문 Excel)
-    @RequestMapping(value="/insertBatch.do")
+    @RequestMapping(value = "/batch/insert.do")
     public ModelAndView insertBatch(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
@@ -231,110 +352,240 @@ public class DoorController {
     }
 
 
-
-    // 스케쥴 목록 가져오기
-    @RequestMapping(value="/getScheduleList.do")
-    public ModelAndView getScheduleList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    /**
+     * 구역 목록 조회
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/area/list.do", method = RequestMethod.GET)
+    public ModelAndView getAreaList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        List<HashMap> scheduleList = doorService.getScheduleList(commandMap);
-        modelAndView.addObject("scheduleList", scheduleList);
+        List<HashMap> areaList = doorService.getAreaList(commandMap);
+
+        modelAndView.addObject("areaList", areaList);
+
+        return modelAndView;
+    }
+
+    /**
+     * 층 목록 조회
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/floor/list.do", method = RequestMethod.GET)
+    public ModelAndView getFloorList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        List<HashMap> floorList = doorService.getFloorList(commandMap);
+
+        modelAndView.addObject("floorList", floorList);
+
+        return modelAndView;
+    }
+
+    /**
+     * 권한 그룹 목록 조회
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/authGroup/list.do", method = RequestMethod.GET)
+    public ModelAndView getAuthList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        AuthVO vo = new AuthVO();
+
+        String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+        String srchCond = StringUtil.nvl(commandMap.get("authType"), "");
+
+        vo.setKeyword(keyword);
+        vo.setSrchCond(srchCond);
+        List<AuthVO> authList = authService.getAuthList(vo);
+
+        modelAndView.addObject("authList", authList);
 
         return modelAndView;
     }
 
 
-    @RequestMapping(value = "/schedule_add.do")
-    public String schedule_add(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    /**
+     * 빌딩 추가
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/building/add.do", method = RequestMethod.POST)
+    public ModelAndView addBuilding( @RequestParam Map<String, Object> commandMap) throws Exception {
+        LOGGER.debug("빌딩 추가");
 
-        if (commandMap.get("editMode").equals("edit")) {
-            model.addAttribute("schName", commandMap.get("schName"));
-            model.addAttribute("schUseYn", commandMap.get("schUseYn"));
-            model.addAttribute("gateGroup", commandMap.get("gateGroup"));
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String  buildingNm = StringUtil.nvl(commandMap.get("buildingNm"), "");;
+        String workplaceId = StringUtil.nvl(commandMap.get("workplaceId"), "");
+
+        HashMap param = new HashMap();
+
+        param.put( "buildingNm", buildingNm );        //출입문 명
+        param.put("workplaceId", workplaceId );//빌딩 ID
+
+        String newBuildingId = "";
+        try {
+            newBuildingId = doorService.addBuilding(param);
+        } catch (Exception e) {
+            e.getStackTrace();
+            modelAndView.addObject("resultCode", "N");
         }
-        model.addAttribute("editMode", commandMap.get("editMode"));
+        modelAndView.addObject("newDoorId", newBuildingId );
+        modelAndView.addObject("resultCode", "Y");
 
-        LOGGER.debug("editMode : " + model.get("editMode"));
-        LOGGER.debug("schName : " + model.get("schName"));
-        return "cubox/door/schedule_add";
-    }
-    //todo
-    @RequestMapping(value="/detail.do")
-    public String schedule_detail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
-
-        String[] days = {"월", "화", "수", "목", "금", "토", "일"};
-        String[] days_eng = {"mon", "tue", "wed", "thu", "fri", "sat", "sun"};
-
-        model.addAttribute("days", days);
-        model.addAttribute("days_eng", days_eng);
-        return "cubox/door/detail";
-    }
-    //todo
-    @RequestMapping(value="/schedule_delete.do")
-    public String schedule_delete(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
-
-        return "cubox/door/schedule";
+        return modelAndView;
     }
 
-    // 출입문 알람 그룹
-    @RequestMapping(value="/alarmGroup.do")
-    public String alarm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
-        //todo 세션처리
+    /**
+     * 구역 추가
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/area/add.do", method = RequestMethod.POST)
+    public ModelAndView addArea( @RequestParam Map<String, Object> commandMap) throws Exception {
+        LOGGER.debug("구역 추가");
 
-        return "cubox/door/alarmGroup";
-    }
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
 
-    // 출입문 알람 그룹 상세
-    @RequestMapping(value="/alarm_detail.do")
-    public String alarm_detail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+        String areaNm = StringUtil.nvl(commandMap.get("areaNm"), "");;
+        String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");
 
-        return "cubox/door/alarm_detail";
-    }
+        HashMap param = new HashMap();
 
-    // 출입문 알람 그룹 등록
-    @RequestMapping(value = "/alarm_add.do")
-    public String alarm_add(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+        param.put("areaNm", areaNm);        //출입문 명
+        param.put("buildingId", buildingId);//빌딩 ID
 
-        if (commandMap.get("editMode").equals("edit")) {
-            model.addAttribute("alNm", commandMap.get("alNm"));
-            model.addAttribute("alType", commandMap.get("alType"));
-            model.addAttribute("alTime", commandMap.get("alTime"));
-            model.addAttribute("alUseYn", commandMap.get("alUseYn"));
-            model.addAttribute("alDoorCnt", commandMap.get("alDoorCnt"));
+        String newAreaId = "";
+        try {
+            newAreaId = doorService.addArea(param);
+        } catch (Exception e) {
+            e.getStackTrace();
+            modelAndView.addObject("resultCode", "N");
         }
-        model.addAttribute("editMode", commandMap.get("editMode"));
+        modelAndView.addObject("newAreaId", newAreaId );
+        modelAndView.addObject("resultCode", "Y");
 
-        return "cubox/door/alarm_add";
+        return modelAndView;
     }
 
-    // 출입문 그룹 관리 목록
-    @RequestMapping(value="/group.do")
-    public String group(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
-        //todo 세션처리
+    /**
+     * 층 추가
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/floor/add.do", method = RequestMethod.POST)
+    public ModelAndView addFloor( @RequestParam Map<String, Object> commandMap) throws Exception {
+        LOGGER.debug("층 추가");
 
-        return "cubox/door/group";
-    }
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
 
-    // 출입문 그룹 관리 상세
-    @RequestMapping(value="/group_detail.do")
-    public String group_detail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+        String floorNm = StringUtil.nvl(commandMap.get("floorNm"), "");;
+        String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");
+        String areaId = StringUtil.nvl(commandMap.get("areaId"), "");
 
-        return "cubox/door/group_detail";
-    }
+        HashMap param = new HashMap();
 
-    // 출입문 그룹 관리 등록/수정
-    @RequestMapping(value = "/group_add.do")
-    public String group_add(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+        param.put("floorNm", floorNm);        //출입문 명
+        param.put("buildingId", buildingId);//빌딩 ID
+        param.put("areaId", areaId);        //지역 ID
 
-        if (commandMap.get("editMode").equals("edit")) {
-
+        String newfloorId = "";
+        try {
+            newfloorId = doorService.addFloor(param);
+        } catch (Exception e) {
+            e.getStackTrace();
+            modelAndView.addObject("resultCode", "N");
         }
-        model.addAttribute("editMode", commandMap.get("editMode"));
+        modelAndView.addObject("newfloorId", newfloorId );
+        modelAndView.addObject("resultCode", "Y");
 
-        return "cubox/door/group_add";
+        return modelAndView;
     }
+
+
+    @RequestMapping(value = "/building/detail.do", method = RequestMethod.GET)
+    public ModelAndView getBuildingInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        LOGGER.debug("getBuildingInformation");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        LOGGER.debug("param buildingId=" + commandMap.get("buildingId"));
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("id", commandMap.get("buildingId"));
+
+        HashMap doorInfo = (HashMap) doorService.getBuildingDetail(param);
+
+        modelAndView.addObject("doorInfo", doorInfo);
+
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/floor/detail.do", method = RequestMethod.GET)
+    public ModelAndView getFloorInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        LOGGER.debug("getFloorInformation");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        LOGGER.debug("param floorId=" + commandMap.get("floorId"));
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("id", commandMap.get("floorId"));
+
+        HashMap doorInfo = (HashMap) doorService.getFloorDetail(param);
+
+        modelAndView.addObject("doorInfo", doorInfo);
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/area/detail.do", method = RequestMethod.GET)
+    public ModelAndView getArearInformation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        LOGGER.debug("getArearInformation");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        LOGGER.debug("param areaId=" + commandMap.get("areaId"));
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("id", commandMap.get("areaId"));
+
+        HashMap doorInfo = (HashMap) doorService.getAreaDetail(param);
+
+        modelAndView.addObject("doorInfo", doorInfo);
+
+        return modelAndView;
+    }
+
 
 
 }

@@ -209,7 +209,7 @@
     </select>
 
     <select id="getDoorGrpList" resultType="HashMap">
-        SELECT
+        SELECTo
         id as id,
         nm as doorGrpNm,
         (SELECT COUNT(*) FROM T_DOORGRP_DOOR WHERE doorgrp_id = id) as doorCnt

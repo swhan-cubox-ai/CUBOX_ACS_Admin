@@ -4,36 +4,68 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
         http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd">
 
-	<!-- maria DB
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="validationQuery" value="select 1"/>
-        <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
-		<property name="url" value="jdbc:log4jdbc:mysql://13.209.174.31:3306/cubox_acs?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnection=true&amp;allowMultiQueries=true&amp;noAccessToProcedureBodies=true" />
-		<property name="username" value="acs"/>
-		<property name="password" value="cubox2022!"/>
-    </bean>
+	<!-- CUBOX AWS - 개발계 -->
+	<beans profile="dev-aws">
+		<!-- maria DB -->
+		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="validationQuery" value="select 1"/>
+			<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
+			<property name="url" value="jdbc:log4jdbc:mysql://13.209.174.31:3306/cubox_acs?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnection=true&amp;allowMultiQueries=true&amp;noAccessToProcedureBodies=true" />
+			<property name="username" value="acs"/>
+			<property name="password" value="cubox2022!"/>
+		</bean>
 
--->
-
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="validationQuery" value="select 1"/>
-		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
-		<property name="url" value="jdbc:log4jdbc:mysql://13.209.174.31:3306/cubox_acs?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnection=true&amp;allowMultiQueries=true&amp;noAccessToProcedureBodies=true" />
-		<property name="username" value="acs"/>
-		<property name="password" value="cubox2022!"/>
-	</bean>
-
-	<!-- cubrid mdm -->
-	<bean id="dataSource_mdm" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<!-- cubrid mdm -->
+		<bean id="dataSource_mdm" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="cubrid.jdbc.driver.CUBRIDDriver"/>
 		<property name="url" value="jdbc:CUBRID:13.209.174.31:30000:GACS_MDM:::?charset=UTF-8" />
 		<property name="username" value="dba"/>
 		<property name="password" value="cuboxdba"/>
 
-		<!--		<property name="url" value="jdbc:CUBRID:218.236.12.70:30000:KIPO:::?charset=UTF-8" />-->
-<!--		<property name="username" value="cubox_dba"/>-->
-<!--		<property name="password" value="cubox_dba"/>-->
 	</bean>
+	</beans>
+
+	<!-- 세종청사 - 개발계 -->
+	<beans profile="dev-sejong">
+		<!-- maria DB -->
+		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="validationQuery" value="select 1"/>
+			<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
+			<property name="url" value="jdbc:log4jdbc:mysql://999.999.999.999:3306/xxxxx?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnection=true&amp;allowMultiQueries=true&amp;noAccessToProcedureBodies=true" />
+			<property name="username" value="xxx"/>
+			<property name="password" value="xxxxxxx!"/>
+		</bean>
+
+		<!-- cubrid mdm -->
+		<bean id="dataSource_mdm" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="driverClassName" value="cubrid.jdbc.driver.CUBRIDDriver"/>
+			<property name="url" value="jdbc:CUBRID:888.888.888.888:30000:xxx_xxx:::?charset=UTF-8" />
+			<property name="username" value="xxx"/>
+			<property name="password" value="xxxxxxx"/>
+		</bean>
+	</beans>
+
+
+	<!-- 세종청사 - 운영계 -->
+	<beans profile="real-sejong">
+		<!-- maria DB -->
+		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="validationQuery" value="select 1"/>
+			<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
+			<property name="url" value="jdbc:log4jdbc:mysql://999.999.999.999:3306/xxxxx?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnection=true&amp;allowMultiQueries=true&amp;noAccessToProcedureBodies=true" />
+			<property name="username" value="xxx"/>
+			<property name="password" value="xxxxxxx!"/>
+		</bean>
+
+		<!-- cubrid mdm -->
+		<bean id="dataSource_mdm" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="driverClassName" value="cubrid.jdbc.driver.CUBRIDDriver"/>
+			<property name="url" value="jdbc:CUBRID:888.888.888.888:30000:xxx_xxx:::?charset=UTF-8" />
+			<property name="username" value="xxx"/>
+			<property name="password" value="xxxxxxx"/>
+		</bean>
+	</beans>
+
 
 
 </beans>
