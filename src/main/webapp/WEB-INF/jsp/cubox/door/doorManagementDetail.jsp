@@ -530,7 +530,6 @@
             success: function (result) {
                 // TODO : 알람그룹 가져오기, 스케쥴id
                 console.log(result);
-                console.log(result.doorInfo.alarm_typ);
 
                 let dInfo = result.doorInfo;
                 $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));  // 경로
@@ -540,6 +539,7 @@
                 $(".doorDetailList #dArea").val(dInfo.area_id);             // 구역
                 $(".doorDetailList #dFloor").val(dInfo.floor_id);           // 층
                 $("#doorSchedule").val(dInfo.sch_id);                       // 스케쥴
+                $("#doorAlarmGroup").val(dInfo.alarm_typ);                  // 알람그룹
                 $("#terminalId").val(dInfo.terminal_id);                    // 단말기 id
                 $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
                 $("#mgmtNum").val(dInfo.mgmt_num);                          // 단말기 관리번호
@@ -597,8 +597,6 @@
             $("#btnTerminalPick, #btnDoorAuthPick").removeClass("disabled");
         }
 
-       console.log(doorId);
-
         if (doorId === "") {
             $("#dArea").prop("disabled", true);
         } else {
@@ -647,6 +645,7 @@
     // 출입문 관리 - 취소
     function fnCancel() {
         let authType = $("#authType").val();
+        console.log("fnCancel " + authType);
 
         if (authType === "building") {
             let buildingId = $("#buildingId").val();
@@ -867,25 +866,19 @@
 
         } else if (id === "btnDoorAuthPick") {
             fnGetAuthGroupListAjax("", "EAT003"); // 출입문 권한그룹 목록
+            setAuthType("door");
 
         } else if (id === "btnAreaAuthPick") {
             fnGetAuthGroupListAjax("", "EAT001"); // 구역 권한그룹 목록
+            setAuthType("area");
 
         } else if (id === "btnFloorAuthPick") {
             fnGetAuthGroupListAjax("", "EAT001"); // 층 권한그룹 목록
-
+            setAuthType("floor");
         }
 
         // $("#authType").val(id);
-        setAuthType(id);
         $("#" + popupNm).PopupWindow("open");
-
-        // if (popupNm === "termPickPopup") {
-        //     fnGetTerminalListAjax(); // 단말기 목록
-        // }
-        // if (popupNm === "authPickPopup") {
-        //     fnGetAuthGroupListAjax(); // 권한그룹 목록
-        // }
     }
 
     // popup close (공통)
@@ -1118,9 +1111,9 @@
                     fnGetDoorListAjax();
 
                     if ("C" === mode ) {
-                        if (returnData.newDoorId !== "" ) {
+                        if (returnData.newBuildingId !== "" ) {
                             console.log("C");
-                            getBuildingDetail(returnData.newDoorId); //
+                            getBuildingDetail(returnData.newBuildingId); //
                         }
 
                     } else if ("U" === mode) {
@@ -1301,7 +1294,7 @@
     /////////////////  빌딩 삭제 ajax - start  /////////////////////
 
 
-    function fnDeleteDoorAjax() {
+    function fnDeleteBuildingAjax() {
 
         <%--if (confirm("삭제 하시겠습니까?")) {--%>
         <%--    $.ajax({--%>
@@ -1334,13 +1327,12 @@
 
     /////////////////  구역 삭제 ajax - start  /////////////////////
 
-
     function fnDeleteAreaAjax() {
 
         <%--if (confirm("삭제 하시겠습니까?")) {--%>
         <%--    $.ajax({--%>
         <%--        type: "POST",--%>
-        <%--        url: "<c:url value='/door/building/delete.do' />",--%>
+        <%--        url: "<c:url value='/door/area/delete.do' />",--%>
         <%--        // data: { id: doorId },--%>
         <%--        data: { id: $("#doorId").val() },--%>
         <%--        dataType: "json",--%>
@@ -1368,13 +1360,12 @@
 
     /////////////////  층 삭제 ajax - start  /////////////////////
 
-
     function fnDeleteFloorAjax() {
 
         <%--if (confirm("삭제 하시겠습니까?")) {--%>
         <%--    $.ajax({--%>
         <%--        type: "POST",--%>
-        <%--        url: "<c:url value='/door/building/delete.do' />",--%>
+        <%--        url: "<c:url value='/door/floor/delete.do' />",--%>
         <%--        // data: { id: doorId },--%>
         <%--        data: { id: $("#doorId").val() },--%>
         <%--        dataType: "json",--%>
