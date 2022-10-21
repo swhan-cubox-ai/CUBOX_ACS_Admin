@@ -71,8 +71,15 @@
     .divAddNode {
         display: inline-block;
     }
-    .divAddNode label {
+    .divAddNode label,
+    .divAddNode label input {
+        /* 드래그 방지 */
         font-size: small;
+        -ms-user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
     }
     .title_box {
         margin-top: 10px;
@@ -96,51 +103,102 @@
         let pathArr = [];
 
         // 빌딩 선택 시,
-        $("#dBuilding").change(function() {
+        // $("#dBuilding").change(function() {
+        $(".selectBuilding").change(function() {
             let val = $(this).val();
+            let authType = $("#authType").val();
+            let area;
+            let options;
+            pathArr.splice(1, 1);
+
+            console.log("selectBuilding val = " + val);
+            console.log(authType);
+
+            if (authType === "area") {
+
+                pathArr[0] = $(".areaDetailList #dBuilding option:checked").text();
+                $("#areaPath").text(pathArr.join(" > "));
+                return;
+
+            } else if (authType === "floor") {
+                area = $(".floorDetailList #dArea");
+                options = $(".floorDetailList #dArea option");
+                $(".floorDetailList .dArea").css("display", "block");
+                $(".floorDetailList #dArea option[name=selected]").prop("selected", true);
+                pathArr[0] = $(".floorDetailList #dBuilding option:checked").text();
+                $("#floorPath").text(pathArr.join(" > "));
+
+            } else if (authType === "door") {
+                area = $(".doorDetailList #dArea");
+                options = $("doorDetailList #dArea option");
+                $(".doorDetailList .dArea").css("display", "block");
+                $(".doorDetailList #dArea option[name=selected]").prop("selected", true);
+                $(".doorDetailList #dFloor option[name=selected]").prop("selected", true);
+                pathArr[0] = $(".doorDetailList #dBuilding option:checked").text();
+                $("#doorPath").text(pathArr.join(" > "));
+            }
 
             // 초기화
-            $(".dArea").css("display", "block");
-            $("#dArea option[name=selected]").prop("selected", true);
-            $("#dFloor option[name=selected]").prop("selected", true);
+            // $(".dArea").css("display", "block");
+            // area.css("display", "block");
+            // $("#dArea option[name=selected]").prop("selected", true);
+            // $("#dFloor option[name=selected]").prop("selected", true);
 
-            $("#dArea option").each(function(i, option) { // 빌딩 id와 구역과 area의 bId 속성이 같지 않으면 option에서 제거
+            // $("#dArea option").each(function(i, option) { // 빌딩 id와 구역과 area의 bId 속성이 같지 않으면 option에서 제거
+            options.each(function(i, option) { // 빌딩 id와 구역과 area의 bId 속성이 같지 않으면 option에서 제거
                 if (val != $(option).attr("bId")) {
                     $(option).css("display", "none");
                 }
             });
             // $("#pathBuilding").text($("#dBuilding option:checked").text());
-            pathArr = [];
-            pathArr[0] = $("#dBuilding option:checked").text();
-            $("#doorPath").text(pathArr.join(" > "));
 
             // 구역 disabled 해제
-            $("#dArea").prop("disabled", false);
+            // $("#dArea").prop("disabled", false);
+            area.prop("disabled", false);
         });
 
         // 구역 선택 시,
-        $("#dArea").change(function() {
+        // $("#dArea").change(function() {
+        $(".selectArea").change(function() {
             let val = $(this).val();
+            let authType = $("#authType").val();
+            let floor;
+            let options;
+            pathArr.splice(2, 1);
 
-            // 초기화
-            $(".dFloor").css("display", "block");
-            $("#dFloor option[name=selected]").prop("selected", true);
+            console.log("selectArea val = " + val);
+            if (authType === "floor") {
 
-            $("#dFloor option").each(function(i, option) {
+                pathArr[1] = $(".floorDetailList #dArea option:checked").text();
+                console.log(pathArr);
+                $("#floorPath").text(pathArr.join(" > "));
+                return;
+
+            } else if (authType === "door") {
+                floor = $(".doorDetailList #dFloor");
+                options = $(".doorDetailList #dFloor option");
+
+                $(".doorDetailList .dFloor").css("display", "block");
+                $("#dFloor option[name=selected]").prop("selected", true);
+
+                // let txt = $("#doorPath").text() + " > " + $("#dArea option:checked").text();
+                // $("#doorPath").text(txt);
+                // $("#pathArea").text($("#dArea option:checked").text());
+                // pathArr.splice(2, 1);
+                pathArr[1] = $(".doorDetailList #dArea option:checked").text();
+                console.log(pathArr);
+                $("#doorPath").text(pathArr.join(" > "));
+            }
+
+            // $("#dFloor option").each(function(i, option) {
+            options.each(function (i, option) {
                 if (val != $(option).attr("aId")) {
                     $(option).css("display", "none");
                 }
             });
-            // let txt = $("#doorPath").text() + " > " + $("#dArea option:checked").text();
-            // $("#doorPath").text(txt);
-            // $("#pathArea").text($("#dArea option:checked").text());
-            pathArr.splice(2, 1);
-            pathArr[1] = $("#dArea option:checked").text();
-            $("#doorPath").text(pathArr.join(" > "));
-
 
             // 층 disabled 해제
-            $("#dFloor").prop("disabled", false);
+            floor.prop("disabled", false);
         });
 
         // 층 선택 시,
@@ -261,6 +319,7 @@
             // $("option[name='selected']").prop("selected", true);
         }
         $("option[name='selected']").prop("selected", true);
+        $("#titleProp").text("속성");
 
     }
 
@@ -271,7 +330,7 @@
 
     // 출입문 속성 보여주기
     function viewDoorDetail() {
-        $(".gateDetailList").css("display", "table-row-group");
+        $(".doorDetailList").css("display", "table-row-group");
         hideBuildingDetail();
         hideAreaDetail();
         hideFloorDetail();
@@ -280,7 +339,7 @@
 
     // 출입문 속성 숨기기
     function hideDoorDetail() {
-        $(".gateDetailList").css("display", "none");
+        $(".doorDetailList").css("display", "none");
         hideButtons();
     }
 
@@ -331,14 +390,21 @@
 
     // 버튼 보여주기
     function viewButtons() {
-        console.log("viewButtons");
         $("#btn_wrapper").css("display", "block");
     }
 
     // 버튼 숨기기
     function hideButtons() {
-        console.log("hideButtons");
         $("#btn_wrapper").css("display", "none");
+    }
+
+    // title 설정
+    function setTitle(type, txt) {
+        if (type === "add") {
+            $("#titleProp").text(txt + " 추가");
+        } else if (type === "detail") {
+            $("#titleProp").text(txt + " 속성");
+        }
     }
 
     // 빌딩 속성 뿌려주기
@@ -351,6 +417,21 @@
         initDetail();
         fnCancelEdit();
         viewBuildingDetail();
+        setTitle("detail", "빌딩");
+
+        // 빌딩 정보
+        $.ajax({
+            type: "GET",
+            url: "<c:url value='/door/building/detail.do' />",
+            data: { buildingId: buildingId },
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                let dInfo = result.doorInfo;
+                $("#buildingPath").text(dInfo.building_nm);     // 경로
+                $("#buildingNm").val(dInfo.building_nm);        // 빌딩 명
+            }
+        });
 
     }
 
@@ -359,11 +440,30 @@
         console.log("getAreaDetail areaId => " + id);
         $("#areaId").val(id);
         let areaId = $("#areaId").val();
+        console.log(areaId);
 
         setAuthType("area");
         initDetail();
         fnCancelEdit();
         viewAreaDetail();
+        setTitle("detail", "구역");
+
+        // 구역 정보
+        $.ajax({
+            type: "GET",
+            url: "<c:url value='/door/area/detail.do' />",
+            data: { areaId: areaId },
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                // TODO: 권한그룹 ID
+                let dInfo = result.doorInfo;
+                $("#areaPath").text(dInfo.area_nm.replaceAll(" ", " > "));  // 경로
+                $("#areaId").val(dInfo.id);                                 // 구역 id
+                $("#areaNm").val(dInfo.area_nm);                            // 구역 명
+                $(".areaDetailList #dBuilding").val(dInfo.building_id);     // 빌딩
+            }
+        });
     }
 
     // 층 속성 뿌려주기
@@ -376,6 +476,26 @@
         initDetail();
         fnCancelEdit();
         viewFloorDetail();
+        setTitle("detail", "층");
+
+        // 층 정보
+        $.ajax({
+            type: "GET",
+            url: "<c:url value='/door/floor/detail.do' />",
+            data: { floorId: floorId },
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                // TODO: 권한그룹 ID
+                let dInfo = result.doorInfo;
+                $("#floorPath").text(dInfo.floor_nm.replaceAll(" ", " > "));   // 경로
+                $("#floorId").val(dInfo.id);                                   // 층 id
+                $("#floorNm").val(dInfo.floor_nm);                             // 층 명
+                $(".floorDetailList #dBuilding").val(dInfo.building_id);       // 빌딩
+                $(".floorDetailList #dArea").val(dInfo.area_id);               // 구역
+            }
+        });
+
     }
 
     // 출입문 속성 뿌려주기
@@ -389,6 +509,7 @@
         initDetail();
         fnCancelEdit();
         viewDoorDetail();
+        setTitle("detail", "출입문");
 
         //출입문 정보
         $.ajax({
@@ -401,12 +522,12 @@
                 console.log(result);
 
                 let dInfo = result.doorInfo;
-                $("#doorId").val(dInfo.id);                                 // doorId
                 $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));  // 경로
+                $("#doorId").val(dInfo.id);                                 // doorId
                 $("#doorNm").val(dInfo.door_nm);                            // 출입문 명
-                $("#dBuilding").val(dInfo.building_id);                     // 빌딩
-                $("#dArea").val(dInfo.area_id);                             // 구역
-                $("#dFloor").val(dInfo.floor_id);                           // 층
+                $(".doorDetailList #dBuilding").val(dInfo.building_id);     // 빌딩
+                $(".doorDetailList #dArea").val(dInfo.area_id);             // 구역
+                $(".doorDetailList #dFloor").val(dInfo.floor_id);           // 층
                 $("#doorSchedule").val(dInfo.sch_id);                       // 스케쥴
                 $("#terminalId").val(dInfo.terminal_id);                    // 단말기 id
                 $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
@@ -483,21 +604,25 @@
         initDetail();
 
         if (val === "building") {
+            setTitle("add", "빌딩(동)");
             $("#buildingId").val("");
             viewBuildingDetail();
             $("#buildingNm").focus();
 
         } else if (val === "area") {
+            setTitle("add", "구역");
             $("#areaId").val("");
             viewAreaDetail();
             $("#areaNm").focus();
 
         } else if (val === "floor") {
+            setTitle("add", "층");
             $("#floorId").val("");
             viewFloorDetail();
             $("#floorNm").focus();
 
         } else if (val === "door") {
+            setTitle("add", "출입문");
             // doorId = "";
             $("#doorId").val("");
             viewDoorDetail();
@@ -715,6 +840,10 @@
     function fnGetTerminalListAjax(param1, param2) {
 
         console.log("fnGetTerminalListAjax");
+
+        //EAT001 - 건물 ( 빌딩, 구역, 층)
+        //EAT002 - 출입문 그룹
+        //EAT003 - 출입문
 
         $.ajax({
             type: "GET",
@@ -964,7 +1093,7 @@
     <%--  속성  --%>
     <div style="width:550px;">
         <div class="totalbox mb_20">
-            <div class="title_s w_50p fl"><img src="/img/title_icon1.png" alt=""/>속성</div>
+            <div class="title_s w_50p fl"><img src="/img/title_icon1.png" alt=""/><span id="titleProp">속성</span></div>
         </div>
 
         <input type="hidden" id="authType" value="">
@@ -986,7 +1115,7 @@
                     </colgroup>
 
                     <%-- 출입문 추가 --%>
-                    <tbody class="gateDetailList detailList" style="display: none;">
+                    <tbody class="doorDetailList detailList" style="display: none;">
 
                     <tr>
                         <td colspan="3" style="font-size: 17px; text-align: left; padding-left: 20px">
