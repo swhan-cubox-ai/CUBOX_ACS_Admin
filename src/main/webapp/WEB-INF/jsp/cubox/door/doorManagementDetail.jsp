@@ -88,8 +88,6 @@
 
 <script type="text/javascript">
 
-    // let doorId = "";
-
     $(function () {
         $(".title_tx").html("출입문 관리");
 
@@ -104,7 +102,7 @@
 
         // 빌딩 선택 시,
         // $("#dBuilding").change(function() {
-        $(".selectBuilding").change(function() {
+        $(".selectBuilding").focus(function() {
             let val = $(this).val();
             let authType = $("#authType").val();
             let area;
@@ -159,7 +157,7 @@
 
         // 구역 선택 시,
         // $("#dArea").change(function() {
-        $(".selectArea").change(function() {
+        $(".selectArea").focus(function() {
             let val = $(this).val();
             let authType = $("#authType").val();
             let floor;
@@ -290,22 +288,28 @@
 
     // 속성 값 초기화
     function initDetail() {
-
         let authType = $("#authType").val();
 
         if (authType === "building") {
+            $("#buildingPath").text("");
             $("#buildingNm").val("");
             $("#buildingId").val("");
 
         } else if (authType === "area") {
+            $("#areaPath").text("");
             $("#areaNm").val("");
             $("#areaId").val("");
+            $("#authGroupId").val("");
+            $(".areaDetailList #dBuilding").val("");
 
         } else if (authType === "floor") {
+            $("#floorPath").text("");
             $("#floorNm").val("");
             $("#floorId").val("");
             $("#floorGroup").val("");
             $("#authGroupId").val("");
+            $(".floorDetailList #dBuilding").val("");
+            $(".floorDetailList #dArea").val("");
 
         } else if (authType === "door") {
             $("#doorPath").text("");
@@ -316,8 +320,12 @@
             $("#doorGroup").val("");
             $("#terminalId").val("");
             $("#authGroupId").val("");
+            $(".doorDetailList #dBuilding").val("");
+            $(".doorDetailList #dArea").val("");
+            $(".doorDetailList #dFloor").val("");
             // $("option[name='selected']").prop("selected", true);
         }
+
         $("option[name='selected']").prop("selected", true);
         $("#titleProp").text("속성");
 
@@ -410,14 +418,16 @@
     // 빌딩 속성 뿌려주기
     function getBuildingDetail(id) {
         console.log("getBuildingDetail buildingId => " + id);
-        $("#buildingId").val(id);
-        let buildingId = $("#buildingId").val();
 
         setAuthType("building");
         initDetail();
         fnCancelEdit();
         viewBuildingDetail();
         setTitle("detail", "빌딩");
+
+        $("#buildingId").val(id);
+        let buildingId = $("#buildingId").val();
+        console.log(buildingId);
 
         // 빌딩 정보
         $.ajax({
@@ -429,6 +439,7 @@
                 console.log(result);
                 let dInfo = result.doorInfo;
                 $("#buildingPath").text(dInfo.building_nm);     // 경로
+                $("#buildingId").val(dInfo.id);                 // 빌딩 id
                 $("#buildingNm").val(dInfo.building_nm);        // 빌딩 명
             }
         });
@@ -438,15 +449,16 @@
     // 구역 속성 뿌려주기
     function getAreaDetail(id) {
         console.log("getAreaDetail areaId => " + id);
-        $("#areaId").val(id);
-        let areaId = $("#areaId").val();
-        console.log(areaId);
 
         setAuthType("area");
         initDetail();
         fnCancelEdit();
         viewAreaDetail();
         setTitle("detail", "구역");
+
+        $("#areaId").val(id);
+        let areaId = $("#areaId").val();
+        console.log(areaId);
 
         // 구역 정보
         $.ajax({
@@ -469,14 +481,15 @@
     // 층 속성 뿌려주기
     function getFloorDetail(id) {
         console.log("getFloorDetail floorId => " + id);
-        $("#floorId").val(id);
-        let floorId = $("#floorId").val();
 
         setAuthType("floor");
         initDetail();
         fnCancelEdit();
         viewFloorDetail();
         setTitle("detail", "층");
+        $("#floorId").val(id);
+
+        let floorId = $("#floorId").val();
 
         // 층 정보
         $.ajax({
@@ -502,14 +515,14 @@
     function getDoorDetail(id) {
         console.log("getDoorDetail doorId => " + id);
 
-        $("#doorId").val(id);
-        let doorId = $("#doorId").val();
-
         setAuthType("door");
         initDetail();
         fnCancelEdit();
         viewDoorDetail();
         setTitle("detail", "출입문");
+
+        $("#doorId").val(id);
+        let doorId = $("#doorId").val();
 
         //출입문 정보
         $.ajax({
@@ -518,7 +531,7 @@
             data: { doorId: doorId },
             dataType: "json",
             success: function (result) {
-                // TODO : 알람그룹 가져오기
+                // TODO : 알람그룹 가져오기, 스케쥴id
                 console.log(result);
 
                 let dInfo = result.doorInfo;
@@ -544,7 +557,6 @@
         let authType = $("#authType").val();
         console.log("fnCancelEdit : " + authType);
 
-
         // [확인, 취소] --> [수정, 삭제] 버튼으로 변환
         $("#btnEdit").css("display", "inline-block");
         $("#btnDelete").css("display", "inline-block");
@@ -553,6 +565,7 @@
         $("[name=doorEdit]").prop("disabled", true);
         $("[name=doorEditSelect]").prop("disabled", true);
         $("[name=doorEditDisabled]").prop("disabled", true);
+        $("input[name=createNode]").removeAttr("checked");
 
         if (authType === "area") {
             $("#btnAreaAuthPick").addClass("disabled");
@@ -622,7 +635,6 @@
 
         } else if (val === "door") {
             setTitle("add", "출입문");
-            // doorId = "";
             $("#doorId").val("");
             viewDoorDetail();
             $("#doorNm").focus();
@@ -643,6 +655,7 @@
                 // 추가 저장 시 취소
                 initDetail();
                 hideBuildingDetail();
+                $("input[name=createNode]").removeAttr("checked");
             } else {
                 // 수정 시 취소
                 getBuildingDetail(buildingId);
@@ -653,6 +666,7 @@
             if (areaId === "") {
                 initDetail();
                 hideAreaDetail();
+                $("input[name=createNode]").removeAttr("checked");
             } else {
                 getAreaDetail(areaId);
             }
@@ -662,6 +676,7 @@
             if (floorId === "") {
                 initDetail();
                 hideFloorDetail();
+                $("input[name=createNode]").removeAttr("checked");
             } else {
                 getFloorDetail(floorId);
             }
@@ -671,6 +686,7 @@
             if (doorId === "") {
                 initDetail();
                 hideDoorDetail();
+                $("input[name=createNode]").removeAttr("checked");
             } else {
                 getDoorDetail(doorId);
             }
@@ -678,34 +694,99 @@
 
     }
 
-    // 출입문 저장
-    function fnSave() {
+    // 빌딩 validation
+    function buildingValid() {
+        let result = true;
+        if (fnIsEmpty($("#buildingNm").val())) {
+            alert("빌딩(동) 명칭을 입력하세요.");
+            $("#buildingNm").focus();
+            return;
+        }
+        return result;
+    }
 
+    // 구역 validation
+    function areaValid() {
+        let result = true;
+        if (fnIsEmpty($("#areaNm").val())) {
+            alert("구역 명칭을 입력하세요.");
+            $("#areaNm").focus();
+            return;
+        }
+        if (fnIsEmpty($(".areaDetailList #dBuilding").val())) {
+            alert("빌딩(동)을 선택해주세요.");
+            $(".areaDetailList #dBuilding").focus();
+            return;
+        }
+        return result;
+    }
+
+    // 층 validation
+    function floorValid() {
+        let result = true;
+        if (fnIsEmpty($("#floorNm").val())) {
+            alert("층 명칭을 입력하세요.");
+            $("#floorNm").focus();
+            return;
+        }
+        if (fnIsEmpty($(".floorDetailList #dBuilding").val())) {
+            alert("빌딩(동)을 선택해주세요.");
+            $(".floorDetailList #dBuilding").focus();
+            return;
+        }
+        if (fnIsEmpty($(".floorDetailList #dArea").val())) {
+            alert("구역을 선택해주세요.");
+            $(".floorDetailList #dArea").focus();
+            return;
+        }
+        return result;
+    }
+
+    // 출입문 validation
+    function doorValid() {
+        let result = true;
         // validation
         if (fnIsEmpty($("#doorNm").val())) {
             alert("출입문 명칭을 입력하세요.");
             $("#doorNm").focus();
             return;
         }
-        if (fnIsEmpty($("#dBuilding").val())) {
+        if (fnIsEmpty($(".doorDetailList #dBuilding").val())) {
             alert("빌딩(동)을 선택해주세요");
-            $("#dBuilding").focus();
+            $(".doorDetailList #dBuilding").focus();
             return;
         }
-        if (fnIsEmpty($("#dArea").val())) {
+        if (fnIsEmpty($(".doorDetailList #dArea").val())) {
             alert("구역을 선택해주세요");
-            $("#dArea").focus();
+            $(".doorDetailList #dArea").focus();
             return;
         }
-        if (fnIsEmpty($("#dFloor").val())) {
+        if (fnIsEmpty($(".doorDetailList #dFloor").val())) {
             alert("층을 선택해주세요");
-            $("#dFloor").focus();
+            $(".doorDetailList #dFloor").focus();
             return;
         }
+        return result;
+    }
+
+
+    // 출입문 저장
+    function fnSave() {
+
         // disabled 해제
         $(":disabled").prop("disabled", false);
 
-        fnSaveDoorAjax();
+        let authType = $("#authType").val();
+        if (authType === "building") {
+            if (buildingValid()) fnSaveBuildingAjax();
+        } else if (authType === "area") {
+            if (areaValid()) fnSaveAreaAjax();
+        } else if (authType === "floor") {
+            if (floorValid()) fnSaveFloorAjax();
+        } else if (authType === "door") {
+            if (doorValid()) fnSaveDoorAjax();
+        }
+
     }
 
     // 출입문 관리 - 삭제
@@ -717,38 +798,51 @@
         // } else {
         //     alert("취소하였습니다.");
         // }
-
-        fnDeleteDoorAjax();
+        let authType = $("#authType").val();
+        if (authType === "building") {
+            fnDeleteBuildingAjax();
+        } else if (authType === "area") {
+            fnDeleteAreaAjax();
+        } else if (authType === "floor") {
+            fnDeleteFloorAjax();
+        } else if (authType === "door") {
+            fnDeleteDoorAjax();
+        }
     }
 
     // 권한그룹 반영
     function authSave() {
-        $("#authGroupId").val($("input[name=chkAuthConf]").val());
+        // $("#authGroupId").val($("input[name=chkAuthConf]").val());
 
-        var authGroup = [];
+        let authGroupIds = [];
+        let authGroupHtml = [];
         $("input[name=chkAuthConf]").each(function (i) {
-            var auth = $(this).closest("tr").children().eq(1).html();
-            authGroup.push(auth);
+            let ids = $(this).val();
+            let html = $(this).closest("tr").children().eq(1).html();
+            authGroupIds.push(ids);
+            authGroupHtml.push(html);
         });
-        console.log(authGroup);
+        console.log(authGroupIds);
+        console.log(authGroupHtml);
+
+        $("#authGroupId").val(authGroupIds);
+        let authType = $("#authType").val();
 
         // 권한그룹 textarea에 뿌려주기
-        $("#doorGroup").val(authGroup.join("\r\n"));
+        if (authType === "area") {
+            $("#areaGroup").val(authGroupHtml.join("\r\n"));
+        } else if (authType === "floor") {
+            $("#floorGroup").val(authGroupHtml.join("\r\n"));
+        } else if (authType === "door") {
+            $("#doorGroup").val(authGroupHtml.join("\r\n"));
+        }
+
     }
 
     // 권한그룹 선택 저장
     function authConf() {
         console.log("authConf");
-        console.log($("#authType").val());
-        let authType = $("#authType").val();
 
-        if (authType === "area") {
-
-        } else if (authType === "floor") {
-
-        } else if (authType === "door") {
-
-        }
         authSave();
         closePopup("authPickPopup");
     }
@@ -769,7 +863,10 @@
     function openPopup(popupNm, id) {
 
         console.log(id);
-        
+
+        //EAT001 - 건물 ( 빌딩, 구역, 층)
+        //EAT002 - 출입문 그룹
+        //EAT003 - 출입문
         if (id === "btnTerminalPick") {
             fnGetTerminalListAjax() // 단말기 목록
 
@@ -808,7 +905,6 @@
 
     /////////////////  출입문 목록 ajax - start  /////////////////////
 
-
     function fnGetDoorListAjax() {
         console.log("fnGetDoorListAjax1");
 
@@ -830,14 +926,9 @@
 
     /////////////////  단말기 목록 ajax - start  /////////////////////
 
-
     function fnGetTerminalListAjax(param1, param2) {
 
         console.log("fnGetTerminalListAjax");
-
-        //EAT001 - 건물 ( 빌딩, 구역, 층)
-        //EAT002 - 출입문 그룹
-        //EAT003 - 출입문
 
         $.ajax({
             type: "GET",
@@ -865,7 +956,7 @@
                     });
 
                     if ($("#terminalId").val() !== "") {
-                        let terminalId = $("#terminalId").val(); // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
+                        let terminalId = $("#terminalId").val().split("/")[0]; // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
                         $('input[name=checkOne]:input[value=' + terminalId + ']').attr("checked", true);
                     }
                 }
@@ -878,19 +969,21 @@
 
     /////////////////  권한그룹 목록 ajax - start  /////////////////////
 
-
-    function fnGetAuthGroupListAjax(type, keyword) {
+    function fnGetAuthGroupListAjax(keyword, type) {
 
         console.log("fnGetAuthGroupListAjax");
         console.log("type" + type);
 
+        //EAT001 - 건물 ( 빌딩, 구역, 층)
+        //EAT002 - 출입문 그룹
+        //EAT003 - 출입문
 
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/authGroup/list.do' />",
             data: {
-                authType: "EAT001" // TODO: type(String) = 'building' / 'area' / 'floor' / 'door' 중 1
-                , keyword: keyword
+                keyword: keyword
+                , authType: type
             },
             dataType: "json",
             success: function (result) {
@@ -909,9 +1002,12 @@
                     console.log("authgroupId");
                     console.log($("#authGroupId").val());
                     if ($("#authGroupId").val() !== "") {
-                        let authGroupId = $("#authGroupId").val();
-                        $('input[name=chkAuth]:input[value=' + authGroupId + ']').prop("checked", true);
-                        $("#add_auth").click();
+                        let authGroupId = $("#authGroupId").val().split(",");
+                        $.each(authGroupId, function(j, authId) {
+                            $('input[name=chkAuth]:input[value=' + authId + ']').prop("checked", true);
+                            $("#add_auth").click();
+                        });
+
                     }
                 }
             }
@@ -927,6 +1023,8 @@
 
     function fnSaveDoorAjax() {
         let url = "";
+        let mode = "";
+        let doorId = $("#doorId").val();
         let data = {
             doorNm: Math.random().toString(36).substring(2, 11),
             buildingId: 1,
@@ -938,12 +1036,6 @@
             authGrIds: "1"
         };
 
-        let mode = "";
-        let doorId = $("#doorId").val();
-        // let doorId = "";
-        // doorId = $("#doorId").val();
-        // if (doorId === undefined || doorId === "") { // 등록 시
-
         if (doorId === "") { // 등록 시
             url = "<c:url value='/door/add.do' />";
             data = data;
@@ -953,6 +1045,9 @@
             data.doorId = doorId;
             mode = "U";
         }
+
+        console.log(url);
+        console.log(data);
 
         $.ajax({
             type: "POST",
@@ -964,7 +1059,6 @@
                 console.log(returnData);
 
                 if (returnData.resultCode == "Y") {
-                    //등록이 완료되었습니다.
                     alert("저장되었습니다.");
                     fnGetDoorListAjax();
 
@@ -995,6 +1089,7 @@
 
     /////////////////  빌딩 저장 ajax - start  /////////////////////
 
+
     function fnSaveBuildingAjax() {
         let url = "";
         let mode = "";
@@ -1005,10 +1100,12 @@
         };
 
         if (buildingId === "") { // 등록 시
+            console.log("빌딩 등록");
             url = "<c:url value='/door/building/add.do' />";
             data = data;
             mode = "C";
         } else { // 수정 시
+            console.log("빌딩 수정");
             url = "<c:url value='/door/building/update.do' />";
             data.buildingId = buildingId;
             mode = "U";
@@ -1637,7 +1734,6 @@
 
 <%--  권한그룹 선택 modal  --%>
 <div id="authPickPopup" class="example_content" style="display: none;">
-
 
     <div class="popup_box box_w3">
         <%--  검색 박스 --%>
