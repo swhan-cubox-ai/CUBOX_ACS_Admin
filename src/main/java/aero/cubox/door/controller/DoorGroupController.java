@@ -113,6 +113,55 @@ public class DoorGroupController {
     }
 
 
+    /**
+     * 출입문 그룹 목록 조회 ajax
+     * @param model
+     * @param commandMap
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/listAjax.do", method = RequestMethod.POST)
+    public ModelAndView listAjax(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        //todo 세션
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+            int srchPage       = Integer.parseInt(StringUtil.nvl(commandMap.get("srchPage"), "1"));
+            int srchRecPerPage = Integer.parseInt(StringUtil.nvl(commandMap.get("srchRecPerPage"), initSrchRecPerPage));
+            String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+
+            HashMap<String, Object> paramMap = new HashMap();
+
+            paramMap.put("keyword", keyword);
+            paramMap.put("srchCnt", srchRecPerPage);
+            paramMap.put("offset", autoOffset(srchPage, srchRecPerPage));
+
+            List<HashMap> doorGroupList = doorGroupService.getDoorGroupList(paramMap);
+            int totalCnt = doorGroupService.getDoorGroupListCount(paramMap);
+
+            PaginationVO pageVO = new PaginationVO();
+            pageVO.setCurPage(srchPage);
+            pageVO.setRecPerPage(srchRecPerPage);
+            pageVO.setTotRecord(totalCnt);
+            pageVO.setUnitPage(curPageUnit);
+            pageVO.calcPageList();
+
+            model.addAttribute("doorGroupList", doorGroupList);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("pagination", pageVO);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
+
+        return modelAndView;
+    }
+
 
     // 출입문 그룹 관리 상세
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
@@ -171,6 +220,8 @@ public class DoorGroupController {
 
         return modelAndView;
     }
+
+
     @ResponseBody
     @RequestMapping(value="/modify/{id}", method= RequestMethod.POST)
     public ModelAndView modify(ModelMap model, @PathVariable String id, HttpServletRequest request,@RequestParam Map<String, Object> commandMap) throws Exception {
@@ -179,7 +230,6 @@ public class DoorGroupController {
         modelAndView.setViewName("jsonView");
 
         String resultCode = "Y";
-
 
         if( id == null){
              resultCode = "N";
@@ -228,6 +278,24 @@ public class DoorGroupController {
 
         return modelAndView;
     }
+
+
+    @RequestMapping(value = "/name/verification.do", method = RequestMethod.GET)
+    public ModelAndView getDoorGroupNameValidation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("doorGroupNm", commandMap.get("doorGroupNm"));
+
+        int doorGroupNameVerificationCnt = doorGroupService.getDoorGroupNameVerification(param);
+
+        modelAndView.addObject("doorGroupNameVerificationCnt", doorGroupNameVerificationCnt);
+
+        return modelAndView;
+    }
+
 
 
 }

@@ -20,4 +20,7 @@ public interface DoorGroupService {
 
     void deleteDoorGroup(int commandMap);
 
+
+    int getDoorGroupNameVerification(HashMap<String, Object> param);
+
 }

@@ -74,4 +74,10 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
         doorGroupDAO.deleteDoorGroup(commandMap);
     }
 
+    @Override
+    public int getDoorGroupNameVerification(HashMap<String, Object> param) {
+        return doorGroupDAO.getDoorGroupNameVerification(param);
+    }
+
+
 }

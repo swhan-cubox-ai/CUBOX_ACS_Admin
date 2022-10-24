@@ -40,4 +40,7 @@ public class DoorGroupDAO extends EgovAbstractMapper {
         delete(sqlNameSpace+"deleteDoorGroup", id);
     }
 
+    public int getDoorGroupNameVerification(HashMap<String, Object> paramMap) {
+        return selectOne(sqlNameSpace+"selectDoorGroupNameVerification", paramMap);
+    }
 }
