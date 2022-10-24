@@ -7,7 +7,7 @@
     <select name="doorEdit" id="dBuilding" class="form-control selectBuilding" style="padding-left:10px;" disabled>
       <option value="" name="selected">선택</option>
       <c:forEach items="${buildingList}" var="building" varStatus="status">
-        <option value='<c:out value="${building.id}"/>'><c:out value="${building.building_nm}"/></option>
+        <option name="buildingData" value='<c:out value="${building.id}"/>'><c:out value="${building.building_nm}"/></option>
       </c:forEach>
     </select>
   </td>
