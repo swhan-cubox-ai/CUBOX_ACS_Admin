@@ -4,10 +4,38 @@
 <mapper namespace="door.schedule">
 
     <select id="selectDoorSchList"  parameterType="HashMap" resultType="HashMap">
-        SELECT id,
-        door_sch_nm,
-        created_at,
-        updated_at
+        SELECT A.id
+             , A.door_sch_nm
+             , A.created_at
+             , A.updated_at
+          FROM(
+                SELECT TDS.id
+                     , TDS.door_sch_nm
+                     , DATE_FORMAT(TDS.created_at, '%Y-%m-%d') as created_at
+                     , DATE_FORMAT(TDS.updated_at, '%Y-%m-%d') as updated_at
+                  FROM T_DOOR_SCH TDS
+                 WHERE 1=1
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+                   AND TDS.id = #{id}
+                </if>
+
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                   AND TDS.door_sch_nm like CONCAT('%',#{keyword},'%')
+                </if>
+               ) A
+        ORDER BY A.created_at DESC
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(offset)'>
+            LIMIT #{srchCnt} OFFSET #{offset}
+        </if>
+    </select>
+
+    <select id="getScheduleListCount"  parameterType="HashMap" resultType="int">
+        SELECT COUNT(A.id)
+          FROM (
+        SELECT TDS.id,
+        TDS.door_sch_nm,
+        , DATE_FORMAT(TDS.created_at, '%Y-%m-%d') as created_at
+        , DATE_FORMAT(TDS.updated_at, '%Y-%m-%d') as updated_at
         FROM T_DOOR_SCH TDS
         WHERE 1=1
         <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -17,6 +45,7 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
             AND TDS.door_sch_nm like CONCAT('%',#{keyword},'%')
         </if>
+        ) A
     </select>
 
 

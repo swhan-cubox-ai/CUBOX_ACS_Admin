@@ -6,7 +6,6 @@ import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,21 +36,6 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     public Map getDoorDetail(Map<String, Object> paramMap) {
 
         return doorDAO.getDoorDetail(paramMap);
-    }
-
-    @Override
-    public Map getBuildingDetail(Map<String, Object> paramMap) {
-        return doorDAO.getBuildingDetail(paramMap);
-    }
-
-    @Override
-    public Map getFloorDetail(Map<String, Object> paramMap) {
-        return doorDAO.getFloorDetail(paramMap);
-    }
-
-    @Override
-    public Map getAreaDetail(HashMap<String, Object> paramMap) {
-        return doorDAO.getAreaDetail(paramMap);
     }
 
     /**
@@ -165,6 +149,7 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         doorDAO.deleteDoor(commandMap);
     }
 
+   //Workplace
     /**
      * 사업장 목록 조회
      * @param paramMap
@@ -176,28 +161,8 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         return doorDAO.getWorkplaceList(paramMap);
     }
 
-    /**
-     * 구역 목록 조회
-     * @param paramMap
-     * @return
-     */
-    @Override
-    public List<HashMap> getAreaList(Map<String, Object> paramMap) {
 
-        return doorDAO.getAreaList(paramMap);
-    }
-
-    /**
-     * 층 목록
-     * @param paramMap
-     * @return
-     */
-    @Override
-    public List<HashMap> getFloorList(Map<String, Object> paramMap) {
-
-        return doorDAO.getFloorList(paramMap);
-    }
-
+    //Building
     /**
      * 빌딩 목록 조회
      * @param paramMap
@@ -207,6 +172,10 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     public List<HashMap> getBuildingList(Map<String, Object> paramMap) {
 
         return doorDAO.getBuildingList(paramMap);
+    }
+    @Override
+    public Map getBuildingDetail(Map<String, Object> paramMap) {
+        return doorDAO.getBuildingDetail(paramMap);
     }
 
     @Override
@@ -237,8 +206,6 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         return newBuildingId;
     }
 
-
-
     /**
      * 출입문 수정
      * @param paramMap
@@ -264,6 +231,29 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         }
     }
 
+    @Override
+    public void deleteBuilding(Map<String, Object> commandMap) {
+        doorDAO.deleteBuilding(commandMap);
+    }
+
+
+    //Area
+
+    /**
+     * 구역 목록 조회
+     * @param paramMap
+     * @return
+     */
+    @Override
+    public List<HashMap> getAreaList(Map<String, Object> paramMap) {
+
+        return doorDAO.getAreaList(paramMap);
+    }
+    @Override
+    public Map getAreaDetail(HashMap<String, Object> paramMap) {
+        return doorDAO.getAreaDetail(paramMap);
+    }
+
 
     @Override
     public String addArea(HashMap paramMap) {
@@ -277,9 +267,33 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
 
     @Override
     public void updateArea(Map<String, Object> paramMap) {
+
         doorDAO.updateArea(paramMap);
     }
 
+    @Override
+    public void deleteArea(Map<String, Object> commandMap) {
+        doorDAO.deleteArea(commandMap);
+    }
+
+
+
+    //Floor
+    /**
+     * 층 목록
+     * @param paramMap
+     * @return
+     */
+    @Override
+    public List<HashMap> getFloorList(Map<String, Object> paramMap) {
+
+        return doorDAO.getFloorList(paramMap);
+    }
+
+    @Override
+    public Map getFloorDetail(Map<String, Object> paramMap) {
+        return doorDAO.getFloorDetail(paramMap);
+    }
     @Override
     public String addFloor(HashMap paramMap) {
         doorDAO.insertFloor(paramMap);
@@ -295,6 +309,33 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         doorDAO.updateFloor(paramMap);
     }
 
+    @Override
+    public void deleteFloor(Map<String, Object> commandMap) {
+        doorDAO.deleteFloor(commandMap);
+    }
+
+    @Override
+    public int getTerminalUseCnt(HashMap<String, Object> param) {
+        return doorDAO.getTerminalUseCnt(param);
+    }
+
+    @Override
+    public int getBuildingNameVerification(HashMap<String, Object> param) {
+        return doorDAO.getBuildingNameVerification(param);
+    }
+    @Override
+    public int getAreaNameVerification(HashMap<String, Object> param) {
+        return doorDAO.getAreaNameVerification(param);
+    }
+    @Override
+    public int getFloorNameVerification(HashMap<String, Object> param) {
+        return doorDAO.getFloorNameVerification(param);
+    }
+    @Override
+    public int getDoorNameVerification(HashMap<String, Object> param) {
+        return doorDAO.getDoorNameVerification(param);
+    }
+
     /**
      * 단말기 목록 조회
      *
@@ -305,7 +346,6 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     public List<HashMap> getTerminalList(Map<String, Object> commandMap) {
         return doorDAO.getTerminalList(commandMap);
     }
-
 
 
 

@@ -27,6 +27,11 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
         return doorScheduleDAO.getScheduleList(commandMap);
     }
 
+    @Override
+    public int getScheduleListCount(Map<String, Object> commandMap) {
+        return doorScheduleDAO.getScheduleListCount(commandMap);
+    }
+
     /**
      * 출입문 스케줄 상세
      * @param commandMap

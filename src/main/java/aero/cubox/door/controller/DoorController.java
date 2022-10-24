@@ -107,7 +107,7 @@ public class DoorController {
         String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
         HashMap parmaMap = new HashMap();
 
-        if( keyword.length() > 0){
+        if( keyword.length() > 0 ){
             parmaMap.put("keyword",keyword);
         }
 
@@ -581,6 +581,301 @@ public class DoorController {
         HashMap doorInfo = (HashMap) doorService.getAreaDetail(param);
 
         modelAndView.addObject("doorInfo", doorInfo);
+
+        return modelAndView;
+    }
+
+    /**
+     * 빌딩 수정
+     *
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/building/update.do", method = RequestMethod.POST)
+    public ModelAndView updateBuilding(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        HashMap param = new HashMap();
+
+        if (StringUtil.isEmpty(commandMap.get("buildingId").toString() ) ){
+            modelAndView.addObject("resultCode", "N");
+            modelAndView.addObject("resultMsg", "no id");
+        } else {
+            String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");
+            String buildingNm = StringUtil.nvl(commandMap.get("buildingNm"), "");;
+            String workplaceId = StringUtil.nvl(commandMap.get("workplaceId"), "");
+            String authGrIds = StringUtil.nvl(commandMap.get("authGrIds"), "");
+
+
+            param.put("buildingId", buildingId);
+            param.put("buildingNm", buildingNm);
+            param.put("workplaceId", workplaceId);;
+            param.put("authGrIds", authGrIds);
+        }
+        try {
+            doorService.updateBuilding(param);
+
+        } catch (Exception e) {
+            e.getStackTrace();
+            modelAndView.addObject("resultCode", "N");
+            modelAndView.addObject("resultMsg", e.getStackTrace());
+        }
+        modelAndView.addObject("resultCode", "Y");
+
+        return modelAndView;
+    }
+
+
+    /**
+     * 빌딩 삭제
+     *
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/building/delete.do", method = RequestMethod.POST)
+    public ModelAndView deleteBuilding(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+            doorService.deleteBuilding(commandMap);
+        } catch (Exception e) {
+            e.getStackTrace();
+            modelAndView.addObject("resultCode", "N");
+        }
+        modelAndView.addObject("resultCode", "Y");
+
+        return modelAndView;
+    }
+
+    /**
+     * 구역 수정
+     *
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/area/update.do", method = RequestMethod.POST)
+    public ModelAndView updateArea(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        HashMap param = new HashMap();
+
+        if (StringUtil.isEmpty(commandMap.get("areaId").toString() ) ){
+            modelAndView.addObject("resultCode", "N");
+            modelAndView.addObject("resultMsg", "no id");
+        } else {
+            String areaId = StringUtil.nvl(commandMap.get("areaId"), "");
+            String areaNm = StringUtil.nvl(commandMap.get("areaNm"), "");;
+            String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");;
+
+
+            param.put("areaId", areaId);
+            param.put("areaNm", areaNm);
+            param.put("buildingId", buildingId);
+        }
+        try {
+            doorService.updateArea(param);
+
+        } catch (Exception e) {
+            e.getStackTrace();
+            modelAndView.addObject("resultCode", "N");
+            modelAndView.addObject("resultMsg", e.getStackTrace());
+        }
+        modelAndView.addObject("resultCode", "Y");
+
+        return modelAndView;
+    }
+
+
+    /**
+     * 빌딩 삭제
+     *
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/area/delete.do", method = RequestMethod.POST)
+    public ModelAndView deleteArea(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+            doorService.deleteArea(commandMap);
+        } catch (Exception e) {
+            e.getStackTrace();
+            modelAndView.addObject("resultCode", "N");
+        }
+        modelAndView.addObject("resultCode", "Y");
+
+        return modelAndView;
+    }
+
+    /**
+     *  수정
+     *
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/floor/update.do", method = RequestMethod.POST)
+    public ModelAndView updateFloor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        HashMap param = new HashMap();
+
+        if (StringUtil.isEmpty(commandMap.get("floorId").toString() ) ){
+            modelAndView.addObject("resultCode", "N");
+            modelAndView.addObject("resultMsg", "no id");
+        } else {
+            String floorId = StringUtil.nvl(commandMap.get("floorId"), "");
+            String floorNm = StringUtil.nvl(commandMap.get("floorNm"), "");
+            String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");
+            String areaId = StringUtil.nvl(commandMap.get("areaId"), "");
+
+            param.put("floorId", floorId);
+            param.put("floorNm", floorNm);
+            param.put("buildingId", buildingId);
+            param.put("areaId", areaId);
+        }
+
+        try {
+            doorService.updateFloor(param);
+
+        } catch (Exception e) {
+            e.getStackTrace();
+            modelAndView.addObject("resultCode", "N");
+            modelAndView.addObject("resultMsg", e.getStackTrace());
+        }
+        modelAndView.addObject("resultCode", "Y");
+
+        return modelAndView;
+    }
+
+
+    /**
+     * floor 삭제
+     *
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/floor/delete.do", method = RequestMethod.POST)
+    public ModelAndView deleteFloor(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+            doorService.deleteFloor(commandMap);
+        } catch (Exception e) {
+            e.getStackTrace();
+            modelAndView.addObject("resultCode", "N");
+        }
+        modelAndView.addObject("resultCode", "Y");
+
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/terminal/confirmUse.do", method = RequestMethod.GET)
+    public ModelAndView getTerminalConfirmUse(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("id", commandMap.get("terminalId"));
+
+        int terminalUseCnt = doorService.getTerminalUseCnt(param);
+
+        modelAndView.addObject("terminalUseCnt", terminalUseCnt);
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/building/name/verification.do", method = RequestMethod.GET)
+    public ModelAndView getBuildingNameValidation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("buildingNm", commandMap.get("buildingNm"));
+
+        int buildingNameVerificationCnt = doorService.getBuildingNameVerification(param);
+
+        modelAndView.addObject("buildingNameVerificationCnt", buildingNameVerificationCnt);
+
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/area/name/verification.do", method = RequestMethod.GET)
+    public ModelAndView getAreaNameValidation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("buildingNm", commandMap.get("buildingNm"));
+
+        int areaNameVerificationCnt = doorService.getAreaNameVerification(param);
+
+        modelAndView.addObject("areaNameVerificationCnt", areaNameVerificationCnt);
+
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/floor/name/verification.do", method = RequestMethod.GET)
+    public ModelAndView getFloorNameValidation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("floorNm", commandMap.get("floorNm"));
+
+        int floorNameVerificationCnt = doorService.getFloorNameVerification(param);
+
+        modelAndView.addObject("floorNameVerificationCnt", floorNameVerificationCnt);
+
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/name/verification.do", method = RequestMethod.GET)
+    public ModelAndView getDoorNameValidation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("doorNm", commandMap.get("doorNm"));
+
+        int doorNameVerificationCnt = doorService.getDoorNameVerification(param);
+
+        modelAndView.addObject("doorNameVerificationCnt", doorNameVerificationCnt);
 
         return modelAndView;
     }

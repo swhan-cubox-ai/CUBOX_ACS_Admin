@@ -1,6 +1,7 @@
 package aero.cubox.door.controller;
 
 import aero.cubox.cmmn.service.CommonService;
+import aero.cubox.core.vo.PaginationVO;
 import aero.cubox.door.service.DoorScheduleService;
 import aero.cubox.door.service.DoorService;
 import aero.cubox.util.CommonUtils;
@@ -39,6 +40,14 @@ public class DoorScheduleController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DoorScheduleController.class);
 
+    private int curPageUnit= 10; //한번에 표시할 페이지 번호 개수
+    private String initSrchRecPerPage = "10"; //한번에 표시할 페이지 번호 개수
+
+    public int autoOffset(int srchPage, int srchCnt ){
+        int off = (srchPage - 1) * srchCnt;
+        if(off<0) off = 0;
+        return off;
+    }
 
     /**
      * 스케줄 관리 - view
@@ -48,9 +57,41 @@ public class DoorScheduleController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/listView.do", method = RequestMethod.GET)
+    @RequestMapping(value = "/list.do", method = RequestMethod.GET)
     public String showScheduleList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
-        //todo 세션처리
+        //todo 세션
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+            int srchPage       = Integer.parseInt(StringUtil.nvl(commandMap.get("srchPage"), "1"));
+            int srchRecPerPage = Integer.parseInt(StringUtil.nvl(commandMap.get("srchRecPerPage"), initSrchRecPerPage));
+            String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+
+            HashMap<String, Object> paramMap = new HashMap();
+
+            paramMap.put("keyword", keyword);
+            paramMap.put("srchCnt", srchRecPerPage);
+            paramMap.put("offset", autoOffset(srchPage, srchRecPerPage));
+
+            List<HashMap> doorScheduleList = doorScheduleService.getScheduleList(paramMap);
+            int totalCnt = doorScheduleService.getScheduleListCount(paramMap);
+
+            PaginationVO pageVO = new PaginationVO();
+            pageVO.setCurPage(srchPage);
+            pageVO.setRecPerPage(srchRecPerPage);
+            pageVO.setTotRecord(totalCnt);
+            pageVO.setUnitPage(curPageUnit);
+            pageVO.calcPageList();
+
+            model.addAttribute("doorScheduleList", doorScheduleList);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("pagination", pageVO);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
 
         return "cubox/door/schedule/list";
     }
@@ -64,7 +105,7 @@ public class DoorScheduleController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/list.do", method = RequestMethod.GET)
+    @RequestMapping(value = "/list2.do", method = RequestMethod.GET)
     public ModelAndView getScheduleList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();

@@ -11,6 +11,9 @@ public interface DoorScheduleService {
     //출입문 스케쥴
     List<HashMap> getScheduleList(Map<String, Object> commandMap);
 
+
+    int getScheduleListCount(Map<String, Object> commandMap);
+
     HashMap getScheduleDetail(Map<String, Object> commandMap);
 
     void addSchedule(Map<String, Object> commandMap);
