@@ -149,8 +149,9 @@
                 <td>
                     <select id="gpSchedule" name="gpSchedule" class="form-control input_com w_600px" style="padding-left:10px;">
                         <option value="">선택</option>
-                        <option value="default" selected>3동 평일</option>
-                        <option value="setTime">3동 주말</option>
+                        <c:forEach items="${scheduleList}" var="schedule" varStatus="status">
+                            <option value='<c:out value="${schedule.id}"/>'><c:out value="${schedule.door_sch_nm}"/></option>
+                        </c:forEach>
                     </select>
                 </td>
             </tr>
