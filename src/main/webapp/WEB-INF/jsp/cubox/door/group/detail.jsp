@@ -113,7 +113,6 @@
         $("#btnboxDetail").css("display", "none");
         $("#btnboxEdit").css("display", "block");
         $("[name=detail]").attr("disabled", false);
-
     }
 
     // 삭제 버튼
@@ -182,17 +181,29 @@
                     <input type="text" id="gpNm" name="detail" maxlength="50" value="${doorGroupDetail.nm}" class="input_com w_600px" disabled>
                 </td>
             </tr>
+<%--            <tr>--%>
+<%--                <th>출입문 스케쥴</th>--%>
+<%--                <td>--%>
+<%--                    <input type="text" id="gpSchedule" name="detail" maxlength="50" value="3${doorGroupDetail.nm}" class="input_com w_600px" disabled>--%>
+<%--                </td>--%>
+<%--            </tr>--%>
             <tr>
                 <th>출입문 스케쥴</th>
                 <td>
-                    <input type="text" id="gpSchedule" name="detail" maxlength="50" value="3${doorGroupDetail.nm}" class="input_com w_600px" disabled>
+                    <select id="gpSchedule" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
+                        <option value="" selected>선택</option>
+                        <c:forEach items="${scheduleList}" var="schedule" varStatus="status">
+                            <option value='<c:out value="${schedule.id}"/>'<c:if test="${doorGroupDetail.id} eq ${schedule.id}">selected</c:if>>
+                                <c:out value="${schedule.door_sch_nm}"/>
+                            </option>
+                        </c:forEach>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <th>출입문</th>
                 <td style="display: flex;">
-                    <textarea id="gpDoor" name="detail" rows="10" cols="33" class="w_600px"
-                              style="border-color: #ccc; border-radius: 2px;
+                    <textarea id="gpDoor" name="gpDoor" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
                               font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>16동 현관</textarea>
                     <div class="ml_10" style="position: relative;">
                         <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px; display: none;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">출입문 선택</button>

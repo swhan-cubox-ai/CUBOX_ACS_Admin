@@ -101,15 +101,13 @@
         let pathArr = [];
 
         // 빌딩 선택 시,
-        // $("#dBuilding").change(function() {
-        $(".selectBuilding").focus(function() {
+        $(".selectBuilding").change(function() {
             let val = $(this).val();
             let authType = $("#authType").val();
             let area;
             let options;
             pathArr.splice(1, 1);
 
-            console.log("selectBuilding val = " + val);
             console.log(authType);
 
             if (authType === "area") {
@@ -136,35 +134,24 @@
                 $("#doorPath").text(pathArr.join(" > "));
             }
 
-            // 초기화
-            // $(".dArea").css("display", "block");
-            // area.css("display", "block");
-            // $("#dArea option[name=selected]").prop("selected", true);
-            // $("#dFloor option[name=selected]").prop("selected", true);
-
-            // $("#dArea option").each(function(i, option) { // 빌딩 id와 구역과 area의 bId 속성이 같지 않으면 option에서 제거
             options.each(function(i, option) { // 빌딩 id와 구역과 area의 bId 속성이 같지 않으면 option에서 제거
                 if (val != $(option).attr("bId")) {
                     $(option).css("display", "none");
                 }
             });
-            // $("#pathBuilding").text($("#dBuilding option:checked").text());
 
             // 구역 disabled 해제
-            // $("#dArea").prop("disabled", false);
             area.prop("disabled", false);
         });
 
         // 구역 선택 시,
-        // $("#dArea").change(function() {
-        $(".selectArea").focus(function() {
+        $(".selectArea").change(function() {
             let val = $(this).val();
             let authType = $("#authType").val();
             let floor;
             let options;
             pathArr.splice(2, 1);
 
-            console.log("selectArea val = " + val);
             if (authType === "floor") {
 
                 pathArr[1] = $(".floorDetailList #dArea option:checked").text();
@@ -179,16 +166,11 @@
                 $(".doorDetailList .dFloor").css("display", "block");
                 $("#dFloor option[name=selected]").prop("selected", true);
 
-                // let txt = $("#doorPath").text() + " > " + $("#dArea option:checked").text();
-                // $("#doorPath").text(txt);
-                // $("#pathArea").text($("#dArea option:checked").text());
-                // pathArr.splice(2, 1);
                 pathArr[1] = $(".doorDetailList #dArea option:checked").text();
                 console.log(pathArr);
                 $("#doorPath").text(pathArr.join(" > "));
             }
 
-            // $("#dFloor option").each(function(i, option) {
             options.each(function (i, option) {
                 if (val != $(option).attr("aId")) {
                     $(option).css("display", "none");
@@ -201,12 +183,9 @@
 
         // 층 선택 시,
         $("#dFloor").change(function() {
-            // let txt = $("#doorPath").text() + " > " + $("#dFloor option:checked").text();
-            // $("#doorPath").text(txt);
             $("#pathFloor").text($("dFloor option:checked").text());
             pathArr[2] = $("#dFloor option:checked").text();
             $("#doorPath").text(pathArr.join(" > "));
-
         });
 
         // 단말기 선택 확인
@@ -600,9 +579,11 @@
         }
 
         if (doorId === "") {
-            $("#dArea").prop("disabled", true);
+            console.log("doorId 없음");
+            $(".doorDetailList #dArea").prop("disabled", true);
         } else {
-            $("#dArea").prop("disabled", false); // 구역 disable 해제
+            console.log("doorId 있음");
+            $(".doorDetailList #dArea").prop("disabled", false); // 구역 disable 해제
         }
     }
 
@@ -612,30 +593,30 @@
 
         let val = $("input[name=createNode]:checked").val();
         setAuthType(val);
-        fnEdit();
         initDetail();
+        fnEdit();
 
         if (val === "building") {
             setTitle("add", "빌딩(동)");
-            $("#buildingId").val("");
+            // $("#buildingId").val("");
             viewBuildingDetail();
             $("#buildingNm").focus();
 
         } else if (val === "area") {
             setTitle("add", "구역");
-            $("#areaId").val("");
+            // $("#areaId").val("");
             viewAreaDetail();
             $("#areaNm").focus();
 
         } else if (val === "floor") {
             setTitle("add", "층");
-            $("#floorId").val("");
+            // $("#floorId").val("");
             viewFloorDetail();
             $("#floorNm").focus();
 
         } else if (val === "door") {
             setTitle("add", "출입문");
-            $("#doorId").val("");
+            // $("#doorId").val("");
             viewDoorDetail();
             $("#doorNm").focus();
         }
@@ -912,11 +893,33 @@
             type: "GET",
             data: {},
             dataType: "json",
+            async: false,
             url: "<c:url value='/door/list.do' />",
             success: function (result) {
                 console.log(result);
                 // tree 생성
                 createTree(true, result, $("#treeDiv"));
+
+                // 빌딩 list update
+                $("option[name=buildingData]").remove();
+                $.each(result.buildingList, function(i, building) {
+                    let tag = "<option name='buildingData' value='" + building.id + "'>" + building.building_nm + "</option>";
+                    $(".selectBuilding").append(tag);
+                });
+
+                // 구역 list update
+                $("option[name=areaData]").remove();
+                $.each(result.areaList, function(i, area) {
+                    let tag = "<option name='areaData' value='" + area.id + "' class='dArea' bId='" + area.building_id + "'>" + area.area_nm + "</option>";
+                    $(".selectArea").append(tag);
+                });
+
+                // 층 list update
+                $("option[name=floorData]").remove();
+                $.each(result.floorList, function(i, floor) {
+                   let tag = "<option name='floorData' value='" + floor.id + "' class='dFloor' aId='" + floor.area_id + "'>" + floor.floor_nm + "</option>";
+                   $(".selectFloor").append(tag);
+                });
             }
         });
     }
@@ -1188,7 +1191,7 @@
                     if ("C" === mode ) {
                         if (returnData.newAreaId !== "" ) {
                             console.log("C");
-                            getAreaDetail(returnData.newAreaId); //
+                            getAreaDetail(returnData.newAreaId);
                         }
 
                     } else if ("U" === mode) {
@@ -1200,6 +1203,7 @@
                     //등록에 문제가 발생
                     alert("등록에 실패하였습니다.");
                 }
+
             }
         });
 
@@ -1211,7 +1215,6 @@
 
 
     /////////////////  층 저장 ajax - start  /////////////////////
-
 
     function fnSaveFloorAjax() {
         let url = "";
@@ -1529,10 +1532,11 @@
                     <tr>
                         <th>층</th>
                         <td colspan="2">
-                            <select name="doorEditSelect" id="dFloor" class="form-control" style="padding-left:10px;" disabled>
+                            <select name="doorEditSelect" id="dFloor" class="form-control selectFloor" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
                                 <c:forEach items="${floorList}" var="floor" varStatus="status">
-                                    <option value='<c:out value="${floor.id}"/>' class="dFloor" aId='<c:out value="${floor.area_id}"/>'><c:out value="${floor.floor_nm}"/></option>
+                                    <option name="floorData" value='<c:out value="${floor.id}"/>' class="dFloor"
+                                            aId='<c:out value="${floor.area_id}"/>'><c:out value="${floor.floor_nm}"/></option>
                                 </c:forEach>
                             </select>
                         </td>
