@@ -70,7 +70,6 @@ public class DoorController {
     public String doorManagementDetail(ModelMap model) throws Exception {
         //todo 세션처리
 
-        // TODO : scheduleList, alarmGroupList 넘기기
         HashMap parmaMap = new HashMap();
         List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
         List<Map> buildingList = doorService.getBuildingList(parmaMap);   //빌딩 목록
@@ -171,7 +170,7 @@ public class DoorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
-        String doorNm = StringUtil.nvl(commandMap.get("doorNm"), "");;
+        String doorNm = StringUtil.nvl(commandMap.get("doorNm"), "");
         String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");
         String areaId = StringUtil.nvl(commandMap.get("areaId"), "");
         String floorId = StringUtil.nvl(commandMap.get("floorId"), "");
@@ -449,7 +448,7 @@ public class DoorController {
             e.getStackTrace();
             modelAndView.addObject("resultCode", "N");
         }
-        modelAndView.addObject("newDoorId", newBuildingId );
+        modelAndView.addObject("z", newBuildingId );
         modelAndView.addObject("resultCode", "Y");
 
         return modelAndView;
