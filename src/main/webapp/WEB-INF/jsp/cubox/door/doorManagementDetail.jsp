@@ -810,32 +810,37 @@
 
     // 권한그룹 반영
     function authSave() {
-        $("#authGroupId").val($("input[name=chkAuthConf]").val());
+        // $("#authGroupId").val($("input[name=chkAuthConf]").val());
 
-        var authGroup = [];
+        let authGroupIds = [];
+        let authGroupHtml = [];
         $("input[name=chkAuthConf]").each(function (i) {
-            var auth = $(this).closest("tr").children().eq(1).html();
-            authGroup.push(auth);
+            let ids = $(this).val();
+            let html = $(this).closest("tr").children().eq(1).html();
+            authGroupIds.push(ids);
+            authGroupHtml.push(html);
         });
-        console.log(authGroup);
+        console.log(authGroupIds);
+        console.log(authGroupHtml);
+
+        $("#authGroupId").val(authGroupIds);
+        let authType = $("#authType").val();
 
         // 권한그룹 textarea에 뿌려주기
-        $("#doorGroup").val(authGroup.join("\r\n"));
+        if (authType === "area") {
+            $("#areaGroup").val(authGroupHtml.join("\r\n"));
+        } else if (authType === "floor") {
+            $("#floorGroup").val(authGroupHtml.join("\r\n"));
+        } else if (authType === "door") {
+            $("#doorGroup").val(authGroupHtml.join("\r\n"));
+        }
+
     }
 
     // 권한그룹 선택 저장
     function authConf() {
         console.log("authConf");
-        console.log($("#authType").val());
-        let authType = $("#authType").val();
 
-        if (authType === "area") {
-
-        } else if (authType === "floor") {
-
-        } else if (authType === "door") {
-
-        }
         authSave();
         closePopup("authPickPopup");
     }
@@ -860,7 +865,6 @@
         //EAT001 - 건물 ( 빌딩, 구역, 층)
         //EAT002 - 출입문 그룹
         //EAT003 - 출입문
-
         if (id === "btnTerminalPick") {
             fnGetTerminalListAjax() // 단말기 목록
 
@@ -950,7 +954,7 @@
                     });
 
                     if ($("#terminalId").val() !== "") {
-                        let terminalId = $("#terminalId").val(); // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
+                        let terminalId = $("#terminalId").val().split("/")[0]; // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
                         $('input[name=checkOne]:input[value=' + terminalId + ']').attr("checked", true);
                     }
                 }
@@ -996,9 +1000,12 @@
                     console.log("authgroupId");
                     console.log($("#authGroupId").val());
                     if ($("#authGroupId").val() !== "") {
-                        let authGroupId = $("#authGroupId").val();
-                        $('input[name=chkAuth]:input[value=' + authGroupId + ']').prop("checked", true);
-                        $("#add_auth").click();
+                        let authGroupId = $("#authGroupId").val().split(",");
+                        $.each(authGroupId, function(j, authId) {
+                            $('input[name=chkAuth]:input[value=' + authId + ']').prop("checked", true);
+                            $("#add_auth").click();
+                        });
+
                     }
                 }
             }
@@ -1088,10 +1095,12 @@
         };
 
         if (buildingId === "") { // 등록 시
+            console.log("빌딩 등록");
             url = "<c:url value='/door/building/add.do' />";
             data = data;
             mode = "C";
         } else { // 수정 시
+            console.log("빌딩 수정");
             url = "<c:url value='/door/building/update.do' />";
             data.buildingId = buildingId;
             mode = "U";
@@ -1720,7 +1729,6 @@
 
 <%--  권한그룹 선택 modal  --%>
 <div id="authPickPopup" class="example_content" style="display: none;">
-
 
     <div class="popup_box box_w3">
         <%--  검색 박스 --%>
