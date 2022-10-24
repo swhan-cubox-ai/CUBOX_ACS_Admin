@@ -88,8 +88,6 @@
 
 <script type="text/javascript">
 
-    // let doorId = "";
-
     $(function () {
         $(".title_tx").html("출입문 관리");
 
@@ -104,7 +102,7 @@
 
         // 빌딩 선택 시,
         // $("#dBuilding").change(function() {
-        $(".selectBuilding").change(function() {
+        $(".selectBuilding").focus(function() {
             let val = $(this).val();
             let authType = $("#authType").val();
             let area;
@@ -159,7 +157,7 @@
 
         // 구역 선택 시,
         // $("#dArea").change(function() {
-        $(".selectArea").change(function() {
+        $(".selectArea").focus(function() {
             let val = $(this).val();
             let authType = $("#authType").val();
             let floor;
@@ -420,14 +418,16 @@
     // 빌딩 속성 뿌려주기
     function getBuildingDetail(id) {
         console.log("getBuildingDetail buildingId => " + id);
-        $("#buildingId").val(id);
-        let buildingId = $("#buildingId").val();
 
         setAuthType("building");
         initDetail();
         fnCancelEdit();
         viewBuildingDetail();
         setTitle("detail", "빌딩");
+
+        $("#buildingId").val(id);
+        let buildingId = $("#buildingId").val();
+        console.log(buildingId);
 
         // 빌딩 정보
         $.ajax({
@@ -439,6 +439,7 @@
                 console.log(result);
                 let dInfo = result.doorInfo;
                 $("#buildingPath").text(dInfo.building_nm);     // 경로
+                $("#buildingId").val(dInfo.id);                 // 빌딩 id
                 $("#buildingNm").val(dInfo.building_nm);        // 빌딩 명
             }
         });
@@ -448,15 +449,16 @@
     // 구역 속성 뿌려주기
     function getAreaDetail(id) {
         console.log("getAreaDetail areaId => " + id);
-        $("#areaId").val(id);
-        let areaId = $("#areaId").val();
-        console.log(areaId);
 
         setAuthType("area");
         initDetail();
         fnCancelEdit();
         viewAreaDetail();
         setTitle("detail", "구역");
+
+        $("#areaId").val(id);
+        let areaId = $("#areaId").val();
+        console.log(areaId);
 
         // 구역 정보
         $.ajax({
@@ -479,14 +481,15 @@
     // 층 속성 뿌려주기
     function getFloorDetail(id) {
         console.log("getFloorDetail floorId => " + id);
-        $("#floorId").val(id);
-        let floorId = $("#floorId").val();
 
         setAuthType("floor");
         initDetail();
         fnCancelEdit();
         viewFloorDetail();
         setTitle("detail", "층");
+        $("#floorId").val(id);
+
+        let floorId = $("#floorId").val();
 
         // 층 정보
         $.ajax({
@@ -512,14 +515,14 @@
     function getDoorDetail(id) {
         console.log("getDoorDetail doorId => " + id);
 
-        $("#doorId").val(id);
-        let doorId = $("#doorId").val();
-
         setAuthType("door");
         initDetail();
         fnCancelEdit();
         viewDoorDetail();
         setTitle("detail", "출입문");
+
+        $("#doorId").val(id);
+        let doorId = $("#doorId").val();
 
         //출입문 정보
         $.ajax({
@@ -553,7 +556,6 @@
     function fnCancelEdit() {
         let authType = $("#authType").val();
         console.log("fnCancelEdit : " + authType);
-
 
         // [확인, 취소] --> [수정, 삭제] 버튼으로 변환
         $("#btnEdit").css("display", "inline-block");
@@ -1043,6 +1045,9 @@
             data.doorId = doorId;
             mode = "U";
         }
+
+        console.log(url);
+        console.log(data);
 
         $.ajax({
             type: "POST",
