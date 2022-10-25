@@ -189,14 +189,14 @@
         // 단말기 선택 확인
         $('#doorPickConfirm').click(function () {
             console.log("단말기 선택 확인!");
+            let selTerminal = $("input[name=checkOne]:checked").val();
             let chkTerminal = $("input[name=checkOne]:checked").closest("tr").children();
 
             // TODO : 등록된 단말기 여부 확인
-
             $.ajax({
                 type: "GET",
                 url: "<c:url value='/door/terminal/confirmUse.do' />",
-                data: { terminalId: $("#terminalId").val() },
+                data: { terminalId: selTerminal },
                 dataType: "json",
                 success: function (result) {
                     let cnt = result.terminalUseCnt;
@@ -204,19 +204,20 @@
 
                     if (cnt == 1) {
                         alert("이미 사용중인 단말기입니다.");
+                        $("input[name=checkOne]").prop("checked", false);
+                        if ($("#terminalId").val() !== "") {  // 수정 시 원래대로 체크
+                            console.log($("#terminalId").val());
+                            $('input[name=checkOne]:input[value=' + $("#terminalId").val() + ']').prop("checked", true);
+                        }
                     } else {
                         console.log("사용가능한 단말기입니다.");
-                        // $("#terminalId").val($("input[name=checkOne]:checked").val());
-                        // $("#terminalCd").val(chkTerminal.eq(1).html()); // 단말기 코드
-                        // $("#mgmtNum").val(chkTerminal.eq(2).html());    // 단말기 관리번호
+                        $("#terminalId").val(selTerminal);              // set terminalId
+                        $("#terminalCd").val(chkTerminal.eq(1).html()); // 단말기 코드
+                        $("#mgmtNum").val(chkTerminal.eq(2).html());    // 단말기 관리번호
+                        closePopup('termPickPopup');
                     }
                 }
             });
-
-            // $("#terminalId").val($("input[name=checkOne]:checked").val());
-            // $("#terminalCd").val(chkTerminal.eq(1).html()); // 단말기 코드
-            // $("#mgmtNum").val(chkTerminal.eq(2).html());    // 단말기 관리번호
-            closePopup('termPickPopup');
         });
 
         // 권한그룹 추가
@@ -973,7 +974,7 @@
 
                     if ($("#terminalId").val() !== "") {
                         let terminalId = $("#terminalId").val().split("/")[0]; // TODO: '/' 다중으로 오는 데이터는 앞의 데어터만 적용
-                        $('input[name=checkOne]:input[value=' + terminalId + ']').attr("checked", true);
+                        $('input[name=checkOne]:input[value=' + terminalId + ']').prop("checked", true);
                     }
                 }
             }
@@ -1183,7 +1184,7 @@
         let data = {
             areaNm : $("#areaNm").val()
             , buildingId : $(".areaDetailList #dBuilding").val()
-            // , authGrIds: "1"
+            , authGrIds: $("#authGroupId").val()
         };
 
         if (areaId === "") { // 등록 시
