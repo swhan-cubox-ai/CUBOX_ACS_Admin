@@ -833,7 +833,7 @@ public class DoorController {
         modelAndView.setViewName("jsonView");
         HashMap<String, Object> param = new HashMap<String, Object>();
 
-        param.put("buildingNm", commandMap.get("buildingNm"));
+        param.put("areaNm", commandMap.get("areaNm"));
 
         int areaNameVerificationCnt = doorService.getAreaNameVerification(param);
 
