@@ -126,7 +126,7 @@
 
             } else if (authType === "door") {
                 area = $(".doorDetailList #dArea");
-                options = $("doorDetailList #dArea option");
+                options = $(".doorDetailList #dArea option");
                 $(".doorDetailList .dArea").css("display", "block");
                 $(".doorDetailList #dArea option[name=selected]").prop("selected", true);
                 $(".doorDetailList #dFloor option[name=selected]").prop("selected", true);
@@ -153,7 +153,6 @@
             pathArr.splice(2, 1);
 
             if (authType === "floor") {
-
                 pathArr[1] = $(".floorDetailList #dArea option:checked").text();
                 console.log(pathArr);
                 $("#floorPath").text(pathArr.join(" > "));
@@ -162,9 +161,8 @@
             } else if (authType === "door") {
                 floor = $(".doorDetailList #dFloor");
                 options = $(".doorDetailList #dFloor option");
-
                 $(".doorDetailList .dFloor").css("display", "block");
-                $("#dFloor option[name=selected]").prop("selected", true);
+                $(".doorDetailList #dFloor option[name=selected]").prop("selected", true);
 
                 pathArr[1] = $(".doorDetailList #dArea option:checked").text();
                 console.log(pathArr);
@@ -1029,14 +1027,22 @@
         let mode = "";
         let doorId = $("#doorId").val();
         let data = {
-            doorNm: Math.random().toString(36).substring(2, 11),
-            buildingId: 1,
-            areaId: 1,
-            floorId: 1,
-            scheduleId: 1,
-            alarmGroupId: 1,
-            terminalIds: 1,
-            authGrIds: "1"
+            doorNm: $("#doorNm").val(),
+            buildingId: $(".doorDetailList #dBuilding").val(),
+            areaId: $(".doorDetailList #dArea").val(),
+            floorId: $(".doorDetailList #dFloor").val(),
+            scheduleId: $("#doorSchedule").val(),
+            alarmGroupId: $("#doorAlarmGroup").val(),
+            terminalIds: $("#terminalId").val(),
+            authGrIds: $("#authGroupId").val()
+            // doorNm: Math.random().toString(36).substring(2, 11),
+            // buildingId: 1,
+            // areaId: 1,
+            // floorId: 1,
+            // scheduleId: 1,
+            // alarmGroupId: 1,
+            // terminalIds: 1,
+            // authGrIds: "1"
         };
 
         if (doorId === "") { // 등록 시
@@ -1278,16 +1284,17 @@
 
 
     function fnDeleteDoorAjax() {
+        console.log("fnDeleteDoorAjax");
+        console.log($("#doorId").val());
 
         if (confirm("삭제 하시겠습니까?")) {
             $.ajax({
                 type: "POST",
                 url: "<c:url value='/door/delete.do' />",
-                // data: { id: doorId },
                 data: { id: $("#doorId").val() },
                 dataType: "json",
                 success: function (returnData) {
-                    console.log("fnDelete: ");
+                    console.log("fnDelete door : ");
                     console.log(returnData);
 
                     if (returnData.resultCode == "Y") {
@@ -1312,31 +1319,32 @@
 
 
     function fnDeleteBuildingAjax() {
+        console.log("fnDeleteBuildingAjax");
+        console.log($("#buildingId").val());
 
-        <%--if (confirm("삭제 하시겠습니까?")) {--%>
-        <%--    $.ajax({--%>
-        <%--        type: "POST",--%>
-        <%--        url: "<c:url value='/door/building/delete.do' />",--%>
-        <%--        // data: { id: doorId },--%>
-        <%--        data: { id: $("#doorId").val() },--%>
-        <%--        dataType: "json",--%>
-        <%--        success: function (returnData) {--%>
-        <%--            console.log("fnDelete: ");--%>
-        <%--            console.log(returnData);--%>
+        if (confirm("삭제 하시겠습니까?")) {
+            $.ajax({
+                type: "POST",
+                url: "<c:url value='/door/building/delete.do' />",
+                data: { id: $("#buildingId").val() },
+                dataType: "json",
+                success: function (returnData) {
+                    console.log("fnDelete building: ");
+                    console.log(returnData);
 
-        <%--            if (returnData.resultCode == "Y") {--%>
-        <%--                // 삭제 성공--%>
-        <%--                alert("해당 출입문 정보를 삭제하였습니다.");--%>
-        <%--                fnGetDoorListAjax();--%>
-        <%--                initDetail();--%>
-        <%--                hideDoorDetail();--%>
-        <%--            } else {--%>
-        <%--                // TODO: 실패감지가 안됨--%>
-        <%--                alert("삭제 실패");--%>
-        <%--            }--%>
-        <%--        }--%>
-        <%--    });--%>
-        <%--}--%>
+                    if (returnData.resultCode == "Y") {
+                        // 삭제 성공
+                        alert("해당 빌딩 정보를 삭제하였습니다.");
+                        fnGetDoorListAjax();
+                        initDetail();
+                        hideBuildingDetail();
+                    } else {
+                        // TODO: 실패감지가 안됨
+                        alert("삭제 실패");
+                    }
+                }
+            });
+        }
     }
 
     /////////////////  빌딩 삭제 ajax - end  /////////////////////
@@ -1345,31 +1353,32 @@
     /////////////////  구역 삭제 ajax - start  /////////////////////
 
     function fnDeleteAreaAjax() {
+        console.log("fnDeleteAreaAjax");
+        console.log($("#areaId").val());
 
-        <%--if (confirm("삭제 하시겠습니까?")) {--%>
-        <%--    $.ajax({--%>
-        <%--        type: "POST",--%>
-        <%--        url: "<c:url value='/door/area/delete.do' />",--%>
-        <%--        // data: { id: doorId },--%>
-        <%--        data: { id: $("#doorId").val() },--%>
-        <%--        dataType: "json",--%>
-        <%--        success: function (returnData) {--%>
-        <%--            console.log("fnDelete: ");--%>
-        <%--            console.log(returnData);--%>
+        if (confirm("삭제 하시겠습니까?")) {
+            $.ajax({
+                type: "POST",
+                url: "<c:url value='/door/area/delete.do' />",
+                data: { id: $("#areaId").val() },
+                dataType: "json",
+                success: function (returnData) {
+                    console.log("fnDelete area : ");
+                    console.log(returnData);
 
-        <%--            if (returnData.resultCode == "Y") {--%>
-        <%--                // 삭제 성공--%>
-        <%--                alert("해당 출입문 정보를 삭제하였습니다.");--%>
-        <%--                fnGetDoorListAjax();--%>
-        <%--                initDetail();--%>
-        <%--                hideDoorDetail();--%>
-        <%--            } else {--%>
-        <%--                // TODO: 실패감지가 안됨--%>
-        <%--                alert("삭제 실패");--%>
-        <%--            }--%>
-        <%--        }--%>
-        <%--    });--%>
-        <%--}--%>
+                    if (returnData.resultCode == "Y") {
+                        // 삭제 성공
+                        alert("해당 구역 정보를 삭제하였습니다.");
+                        fnGetDoorListAjax();
+                        initDetail();
+                        hideAreaDetail();
+                    } else {
+                        // TODO: 실패감지가 안됨
+                        alert("삭제 실패");
+                    }
+                }
+            });
+        }
     }
 
     /////////////////  구역 삭제 ajax - end  /////////////////////
@@ -1378,31 +1387,32 @@
     /////////////////  층 삭제 ajax - start  /////////////////////
 
     function fnDeleteFloorAjax() {
+        console.log("fnDeleteFloorAjax");
+        console.log($("#floorId").val());
 
-        <%--if (confirm("삭제 하시겠습니까?")) {--%>
-        <%--    $.ajax({--%>
-        <%--        type: "POST",--%>
-        <%--        url: "<c:url value='/door/floor/delete.do' />",--%>
-        <%--        // data: { id: doorId },--%>
-        <%--        data: { id: $("#doorId").val() },--%>
-        <%--        dataType: "json",--%>
-        <%--        success: function (returnData) {--%>
-        <%--            console.log("fnDelete: ");--%>
-        <%--            console.log(returnData);--%>
+        if (confirm("삭제 하시겠습니까?")) {
+            $.ajax({
+                type: "POST",
+                url: "<c:url value='/door/floor/delete.do' />",
+                data: { id: $("#floorId").val() },
+                dataType: "json",
+                success: function (returnData) {
+                    console.log("fnDelete floor: ");
+                    console.log(returnData);
 
-        <%--            if (returnData.resultCode == "Y") {--%>
-        <%--                // 삭제 성공--%>
-        <%--                alert("해당 출입문 정보를 삭제하였습니다.");--%>
-        <%--                fnGetDoorListAjax();--%>
-        <%--                initDetail();--%>
-        <%--                hideDoorDetail();--%>
-        <%--            } else {--%>
-        <%--                // TODO: 실패감지가 안됨--%>
-        <%--                alert("삭제 실패");--%>
-        <%--            }--%>
-        <%--        }--%>
-        <%--    });--%>
-        <%--}--%>
+                    if (returnData.resultCode == "Y") {
+                        // 삭제 성공
+                        alert("해당 층 정보를 삭제하였습니다.");
+                        fnGetDoorListAjax();
+                        initDetail();
+                        hideFloorDetail();
+                    } else {
+                        // TODO: 실패감지가 안됨
+                        alert("삭제 실패");
+                    }
+                }
+            });
+        }
     }
 
     /////////////////  층 삭제 ajax - end  /////////////////////
