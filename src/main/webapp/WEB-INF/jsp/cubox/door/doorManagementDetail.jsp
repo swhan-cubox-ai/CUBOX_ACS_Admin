@@ -307,6 +307,7 @@
             $("#authGroupId").val("");
             $(".floorDetailList #dBuilding").val("");
             $(".floorDetailList #dArea").val("");
+            $(".floorDetailList [name=doorEditSelect]").prop("disabled", true);
 
         } else if (authType === "door") {
             $("#doorPath").text("");
@@ -320,7 +321,7 @@
             $(".doorDetailList #dBuilding").val("");
             $(".doorDetailList #dArea").val("");
             $(".doorDetailList #dFloor").val("");
-            // $("option[name='selected']").prop("selected", true);
+            $(".doorDetailList [name=doorEditSelect]").prop("disabled", true);
         }
 
         $("option[name='selected']").prop("selected", true);
@@ -1051,14 +1052,6 @@
             alarmGroupId: $("#doorAlarmGroup").val(),
             terminalIds: $("#terminalId").val(),
             authGrIds: $("#authGroupId").val()
-            // doorNm: Math.random().toString(36).substring(2, 11),
-            // buildingId: 1,
-            // areaId: 1,
-            // floorId: 1,
-            // scheduleId: 1,
-            // alarmGroupId: 1,
-            // terminalIds: 1,
-            // authGrIds: "1"
         };
 
         if (doorId === "") { // 등록 시
