@@ -74,7 +74,7 @@
 
     // 목록 버튼
     function fnList() {
-        location.href = "/door/alarmGroup/listView.do";
+        location.href = "/door/alarmGroup/list.do";
     }
 
     // 수정 확인
@@ -143,7 +143,7 @@
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-        location.href = "/door/alarmGroup/listView.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
+        location.href = "/door/alarmGroup/list.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
     }
 
     // popup open (공통)
@@ -177,7 +177,7 @@
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
-                    <input type="text" id="alNm" name="detail" maxlength="50" value="작업자 통로" class="input_com w_600px" disabled>
+                    <input type="text" id="alNm" name="detail" maxlength="50" value="${doorGroupDetail.nm}" class="input_com w_600px" disabled>
                 </td>
             </tr>
             <tr>
@@ -193,7 +193,7 @@
             <tr>
                 <th>시간</th>
                 <td>
-                    <input type="number" id="alTime" name="detail" maxlength="10" min="1" value="30" class="input_com w_600px"
+                    <input type="number" id="alTime" name="detail" maxlength="10" min="1" value="${doorGroupDetail.time}" class="input_com w_600px"
                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" disabled>&ensp;초
                 </td>
             </tr>
@@ -210,7 +210,7 @@
             <tr>
                 <th>출입문 수</th>
                 <td>
-                    <input type="text" id="alDoorCnt" name="detail" maxlength="50" value="2" class="input_com w_600px" disabled>
+                    <input type="text" id="alDoorCnt" name="detail" maxlength="50" value="${doorGroupDetail.door_cnt}" class="input_com w_600px" disabled>
                     <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>
                     <button type="button" id="btnEdit" class="btn_small color_basic" onclick="openPopup('doorEditPopup')" style="display: none">출입문 수정</button>
                 </td>

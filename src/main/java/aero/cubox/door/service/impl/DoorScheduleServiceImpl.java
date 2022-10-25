@@ -1,7 +1,6 @@
 package aero.cubox.door.service.impl;
 
 import aero.cubox.door.service.DoorScheduleService;
-import aero.cubox.door.service.DoorService;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -22,24 +21,24 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
      * @return
      */
     @Override
-    public List<HashMap> getScheduleList(Map<String, Object> commandMap) {
+    public List<HashMap> getDoorScheduleList(Map<String, Object> commandMap) {
 
-        return doorScheduleDAO.getScheduleList(commandMap);
+        return doorScheduleDAO.getDoorScheduleList(commandMap);
     }
 
     @Override
-    public int getScheduleListCount(Map<String, Object> commandMap) {
-        return doorScheduleDAO.getScheduleListCount(commandMap);
+    public int getDoorScheduleListCount(Map<String, Object> commandMap) {
+        return doorScheduleDAO.getDoorScheduleListCount(commandMap);
     }
 
     /**
      * 출입문 스케줄 상세
-     * @param commandMap
+     * @param id
      * @return
      */
     @Override
-    public HashMap getScheduleDetail(Map<String, Object> commandMap) {
-        return  doorScheduleDAO.getScheduleDetail(commandMap);
+    public HashMap getDoorScheduleDetail(int id) {
+        return  doorScheduleDAO.getDoorScheduleDetail(id);
     }
 
     /**

@@ -433,7 +433,7 @@
             dataType: 'json',
             success: function (data, status) {
                 if (data.result == "Y") {
-                    location.href = "/door/schedule/listView.do";
+                    location.href = "/door/schedule/list.do";
                 } else {
                     alert("삭제 중 오류가 발생하였습니다.");
                 }
@@ -549,7 +549,7 @@
             <tr>
                 <th>출입문 스케쥴 명</th>
                 <td>
-                    <input type="text" id="schName" name="detail" maxlength="50" size="50" value="16동 현관 출입문 남" class="w_600px input_com" disabled>
+                    <input type="text" id="schName" name="detail" maxlength="50" size="50" value="${doorScheduleDetail.door_sch_nm}" class="w_600px input_com" disabled>
                 </td>
             </tr>
             <tr>
@@ -567,7 +567,7 @@
                 <td style="display: flex;">
                     <textarea id="gateGroup" name="detail" rows="10" cols="33" class="w_600px"
                               style="border-color: #ccc; border-radius: 2px;
-                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>출입문 그룹 A</textarea>
+                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>${doorGroupList.size()}/${doorGroupList}</textarea>
                     <div class="ml_10" style="position:relative;">
                         <button id="btnEdit" type="button" class="btn_middle color_basic" onclick="openPopup('doorGroupPickPopup')" style="position:absolute; bottom:0; display:none;">선택</button>
                     </div>
@@ -579,7 +579,7 @@
 </form>
 
 <div class="right_btn mt_20" id="btnboxDetail">
-    <button class="btn_middle color_basic" onclick="location='/door/schedule/listView.do'">목록</button>
+    <button class="btn_middle color_basic" onclick="location='/door/schedule/list.do'">목록</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnEdit();">수정</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
     <button class="btn_middle ml_5 color_basic" onclick="openPopup('addByDayPopup');">요일 별 스케쥴 등록</button>

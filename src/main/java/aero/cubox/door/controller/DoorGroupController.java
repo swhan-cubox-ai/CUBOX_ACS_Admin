@@ -2,7 +2,6 @@ package aero.cubox.door.controller;
 
 import aero.cubox.auth.service.AuthService;
 import aero.cubox.cmmn.service.CommonService;
-import aero.cubox.core.vo.CommonVO;
 import aero.cubox.core.vo.PaginationVO;
 import aero.cubox.door.service.DoorGroupService;
 import aero.cubox.door.service.DoorScheduleService;
@@ -49,10 +48,6 @@ public class DoorGroupController {
     @Resource(name = "authService")
     private AuthService authService;
 
-    private int srchPage   =  1; //조회할 페이지 번호 기본 1페이지
-    private int srchCnt	   = 10; //조회할 페이지 수
-    private int offset	   =  0;
-    private int curPage	   =  1; //조회할 페이지 번호 기본 1페이지
     private int curPageUnit= 10; //한번에 표시할 페이지 번호 개수
     private String initSrchRecPerPage = "10"; //한번에 표시할 페이지 번호 개수
 
@@ -167,9 +162,9 @@ public class DoorGroupController {
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
     public String detail(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
 
-        HashMap DoorGroupDetail = doorGroupService.getDoorGroupDetail(id);
+        HashMap doorGroupDetail = doorGroupService.getDoorGroupDetail(id);
 
-        model.addAttribute("doorGroupDetail", DoorGroupDetail);
+        model.addAttribute("doorGroupDetail", doorGroupDetail);
 
         return "cubox/door/group/detail";
     }
@@ -182,14 +177,14 @@ public class DoorGroupController {
         modelAndView.setViewName("jsonView");
 
         HashMap param = new HashMap();
-        List<HashMap> scheduleList = doorScheduleService.getScheduleList(param);      // 스케쥴 목록
+        List<HashMap> scheduleList = doorScheduleService.getDoorScheduleList(param);      // 스케쥴 목록
 
         modelAndView.addObject("scheduleList", scheduleList);
 
         return "cubox/door/group/add";
     }
 
-    // 출입문 그룹 관리 등록화면
+    // 출입문 그룹 관리 등록
     @ResponseBody
     @RequestMapping(value = "/save.do", method = RequestMethod.POST)
     public ModelAndView saveDoorGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {

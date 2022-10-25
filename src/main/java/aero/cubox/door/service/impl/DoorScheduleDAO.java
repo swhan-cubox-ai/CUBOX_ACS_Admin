@@ -13,16 +13,16 @@ public class DoorScheduleDAO extends EgovAbstractMapper {
     private static final String sqlNameSpace = "door.schedule.";
 
 
-    public List<HashMap> getScheduleList(Map<String, Object> paramMap) {
+    public List<HashMap> getDoorScheduleList(Map<String, Object> paramMap) {
         return selectList(sqlNameSpace+"selectDoorSchList", paramMap);
     }
 
-    public int getScheduleListCount(Map<String, Object> paramMap) {
+    public int getDoorScheduleListCount(Map<String, Object> paramMap) {
         return selectOne(sqlNameSpace+"selectDoorSchListCount", paramMap);
     }
 
-    public HashMap getScheduleDetail(Map<String, Object> paramMap) {
-        return selectOne(sqlNameSpace+"selectScheduleDetail", paramMap);
+    public HashMap getDoorScheduleDetail(int id) {
+        return selectOne(sqlNameSpace+"selectDoorScheduleDetail", id);
     }
 
     public void addSchedule(Map<String, Object> paramMap) {

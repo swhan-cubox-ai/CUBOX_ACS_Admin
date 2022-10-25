@@ -3,9 +3,6 @@ package aero.cubox.door.controller;
 import aero.cubox.auth.service.AuthService;
 import aero.cubox.cmmn.service.CommonService;
 import aero.cubox.core.vo.AuthVO;
-import aero.cubox.core.vo.CommonVO;
-import aero.cubox.core.vo.PaginationVO;
-import aero.cubox.core.vo.TerminalVO;
 import aero.cubox.door.service.DoorAlarmService;
 import aero.cubox.door.service.DoorScheduleService;
 import aero.cubox.door.service.DoorService;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -76,7 +72,7 @@ public class DoorController {
         List<Map> areaList = doorService.getAreaList(parmaMap);           //지역 목록
         List<HashMap> floorList = doorService.getFloorList(parmaMap);     //층 목록
 
-        List<HashMap> scheduleList = doorScheduleService.getScheduleList(parmaMap);      // 스케쥴 목록
+        List<HashMap> scheduleList = doorScheduleService.getDoorScheduleList(parmaMap);      // 스케쥴 목록
         List<HashMap> doorAlarmGrpList = doorAlarmService.getDoorAlarmGrpList(parmaMap); // 출입물 알람 그룹 목록
 
         model.addAttribute("workplaceList", workplaceList);

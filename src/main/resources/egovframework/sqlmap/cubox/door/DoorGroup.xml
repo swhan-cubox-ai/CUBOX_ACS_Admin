@@ -28,6 +28,9 @@
               <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
                   AND TD.nm like CONCAT('%',#{keyword},'%')
               </if>
+              <if test='@aero.cubox.util.CommonUtils@notEmpty(doorSchId)'>
+                  AND TD.door_sch_id = #{doorSchId}
+              </if>
              ) A
       ORDER BY A.created_at DESC
        <if test='@aero.cubox.util.CommonUtils@notEmpty(offset)'>

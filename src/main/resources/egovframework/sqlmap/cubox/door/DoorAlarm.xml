@@ -4,10 +4,41 @@
 <mapper namespace="door.alarm">
 
     <select id="selectDoorAlarmGrpList"  parameterType="HashMap" resultType="HashMap">
+        SELECT A.id
+             , A.nm
+             , A.time
+             , A.env_yn
+             , A.delete_yn
+             , (select COUNT(TDA.door_id) from T_DOOR_ALARM TDA where TDA.dooralram_grp_id = A.id)  as door_cnt
+             , DATE_FORMAT(A.created_at, '%Y-%m-%d') as created_at
+             , DATE_FORMAT(A.updated_at, '%Y-%m-%d') as updated_at
+        FROM(
+             SELECT TDG.id
+                  , TDG.nm
+                  , TDG.time
+                  , TDG.env_yn
+                  , TDG.delete_yn
+                  , TDG.created_at
+                  , TDG.updated_at
+               FROM T_DOORALARM_GRP TDG
+              WHERE 1=1
+             <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+                 AND TDG.id = #{id}
+             </if>
+             <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                 AND TDG.nm like CONCAT('%',#{keyword},'%')
+             </if>
+              ) A
+     ORDER BY A.created_at DESC
+             <if test='@aero.cubox.util.CommonUtils@notEmpty(offset)'>
+        LIMIT #{srchCnt} OFFSET #{offset}
+             </if>
+    </select>
+
+    <select id="selectDoorAlarmGrpListCount"  parameterType="HashMap" resultType="int">
+        SELECT COUNT(A.id)
+        FROM (
         SELECT TDG.id
-        , TDG.nm
-        , TDG.time
-        , TDG.created_at
         FROM T_DOORALARM_GRP TDG
         WHERE 1=1
         <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -16,19 +47,19 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
             AND TDG.nm like CONCAT('%',#{keyword},'%')
         </if>
+        ) A
     </select>
 
-
-    <select id="selectDoorAlarmGrpDetail"  parameterType="HashMap" resultType="HashMap">
-        SELECT TDG.id,
-        TDG.nm,
-        TDG.time,
-        TDG.updated_at
+    <select id="selectDoorAlarmGrpDetail"  parameterType="int" resultType="HashMap">
+        SELECT TDG.id
+             , TDG.nm
+             , TDG.time
+             , (select COUNT(TDA.door_id) from T_DOOR_ALARM TDA where TDA.dooralram_grp_id = TDG.id) AS door_cnt
+             , TDG.created_at
+             , TDG.updated_at
         FROM T_DOORALARM_GRP TDG
         WHERE 1=1
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
             AND TDG.id = #{id}
-        </if>
     </select>
 
 
@@ -61,7 +92,7 @@
     </update>
 
 
-    <delete id="deleteDoorAlarmGrp" parameterType="HashMap" >
+    <delete id="deleteDoorAlarmGrp" parameterType="int" >
         DELETE
         FROM T_DOORALARM_GRP
         WHERE id = #{id}

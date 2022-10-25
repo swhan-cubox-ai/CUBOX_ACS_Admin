@@ -1,7 +1,6 @@
 package aero.cubox.door.service.impl;
 
 import aero.cubox.door.service.DoorAlarmService;
-import aero.cubox.door.service.DoorService;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -24,18 +23,23 @@ public class DoorAlarmServiceImpl extends EgovAbstractServiceImpl implements Doo
      * @return
      */
     @Override
-    public List<HashMap> getDoorAlarmGrpList(Map<String, Object> commandMap) {
-        return  doorAlarmDAO.getDoorAlarmGrpList(commandMap);
+    public List<HashMap> getDoorAlarmGrpList(Map<String, Object> paramMap) {
+        return  doorAlarmDAO.getDoorAlarmGrpList(paramMap);
+    }
+
+    @Override
+    public int getDoorAlarmGrpListCount(HashMap<String, Object> paramMap) {
+        return doorAlarmDAO.getDoorAlarmGrpListCount(paramMap);
     }
 
     /**
      * 출입문 알람그룹 상세
-     * @param commandMap
+     * @param int
      * @return
      */
     @Override
-    public HashMap getDoorAlarmGrpDetail(Map<String, Object> commandMap) {
-        return doorAlarmDAO.getDoorAlarmGrpDetail(commandMap);
+    public HashMap getDoorAlarmGrpDetail(int id) {
+        return doorAlarmDAO.getDoorAlarmGrpDetail(id);
     }
 
     /**
@@ -58,11 +62,11 @@ public class DoorAlarmServiceImpl extends EgovAbstractServiceImpl implements Doo
 
     /**
      * 출입문 알람그룹 삭제
-     * @param commandMap
+     * @param id
      */
     @Override
-    public void deleteDoorAlarmGrp(Map<String, Object> commandMap) {
-        doorAlarmDAO.deleteDoorAlarmGrp(commandMap);
+    public void deleteDoorAlarmGrp(int id) {
+        doorAlarmDAO.deleteDoorAlarmGrp(id);
     }
 
 

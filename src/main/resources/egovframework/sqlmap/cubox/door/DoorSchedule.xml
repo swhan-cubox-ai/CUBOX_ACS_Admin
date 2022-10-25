@@ -6,13 +6,13 @@
     <select id="selectDoorSchList"  parameterType="HashMap" resultType="HashMap">
         SELECT A.id
              , A.door_sch_nm
-             , A.created_at
-             , A.updated_at
-          FROM(
+             , DATE_FORMAT(A.created_at, '%Y-%m-%d') as created_at
+             , DATE_FORMAT(A.updated_at, '%Y-%m-%d') as updated_at
+        FROM(
                 SELECT TDS.id
                      , TDS.door_sch_nm
-                     , DATE_FORMAT(TDS.created_at, '%Y-%m-%d') as created_at
-                     , DATE_FORMAT(TDS.updated_at, '%Y-%m-%d') as updated_at
+                     , TDS.created_at
+                     , TDS.updated_at
                   FROM T_DOOR_SCH TDS
                  WHERE 1=1
                 <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -29,36 +29,33 @@
         </if>
     </select>
 
-    <select id="getScheduleListCount"  parameterType="HashMap" resultType="int">
+    <select id="selectDoorSchListCount"  parameterType="HashMap" resultType="int">
         SELECT COUNT(A.id)
           FROM (
-        SELECT TDS.id,
-        TDS.door_sch_nm,
-        , DATE_FORMAT(TDS.created_at, '%Y-%m-%d') as created_at
-        , DATE_FORMAT(TDS.updated_at, '%Y-%m-%d') as updated_at
-        FROM T_DOOR_SCH TDS
-        WHERE 1=1
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-            AND TDS.id = #{id}
-        </if>
-
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-            AND TDS.door_sch_nm like CONCAT('%',#{keyword},'%')
-        </if>
-        ) A
+                SELECT TDS.id
+                     , TDS.door_sch_nm
+                     , TDS.created_at
+                     , TDS.updated_at
+                FROM T_DOOR_SCH TDS
+                 WHERE 1=1
+               <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+                   AND TDS.id = #{id}
+               </if>
+               <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                   AND TDS.door_sch_nm like CONCAT('%',#{keyword},'%')
+               </if>
+               ) A
     </select>
 
 
-    <select id="selectScheduleDetail"  parameterType="HashMap" resultType="HashMap">
-        SELECT id,
-        door_sch_nm,
-        created_at,
-        updated_at
-        FROM T_DOOR_SCH TDS
-        WHERE 1=1
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-            AND TDS.id = #{id}
-        </if>
+    <select id="selectDoorScheduleDetail"  parameterType="int" resultType="HashMap">
+        SELECT TDS.id
+             , TDS.door_sch_nm
+             , DATE_FORMAT(TDS.created_at, '%Y-%m-%d') as created_at
+             , DATE_FORMAT(TDS.updated_at, '%Y-%m-%d') as updated_at
+          FROM T_DOOR_SCH TDS
+         WHERE 1=1
+           AND TDS.id = #{id}
     </select>
 
 

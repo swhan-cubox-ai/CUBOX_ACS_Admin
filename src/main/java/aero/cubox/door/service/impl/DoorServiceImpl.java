@@ -126,13 +126,13 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     @Override
     public void deleteDoor(Map<String, Object> commandMap) {
 
-        String doorId = commandMap.get("doorId").toString();
+        String doorId = commandMap.get("id").toString();
 
         HashMap paramMap = new HashMap();
 
         //단말기정보에 출입문 id - Update
         if( !StringUtil.isEmpty((String) commandMap.get("terminalIds"))){
-            paramMap.put("doorId", "" );
+            paramMap.put("doorId", doorId );
             paramMap.put("id", commandMap.get("terminalIds"));
             doorDAO.updateDoorIdForTerminal(paramMap);
         }
