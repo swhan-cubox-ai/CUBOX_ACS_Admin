@@ -327,7 +327,7 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 
 	<delete id="deleteBuilding" parameterType="HashMap" >
 		DELETE
-		FROM T_DOOR
+		FROM T_BUILDING
 		WHERE id = #{id}
 
 	</delete>
