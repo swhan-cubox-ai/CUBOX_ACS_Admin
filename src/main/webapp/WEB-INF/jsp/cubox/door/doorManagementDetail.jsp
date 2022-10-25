@@ -188,15 +188,34 @@
 
         // 단말기 선택 확인
         $('#doorPickConfirm').click(function () {
+            console.log("단말기 선택 확인!");
             let chkTerminal = $("input[name=checkOne]:checked").closest("tr").children();
 
             // TODO : 등록된 단말기 여부 확인
-            //  alert("이미 등록된 단말기입니다.");
 
-            // $("#terminalCd").attr("tId", $("input[name=checkOne]:checked").attr("id"));
-            $("#terminalId").val($("input[name=checkOne]:checked").val());
-            $("#terminalCd").val(chkTerminal.eq(1).html()); // 단말기 코드
-            $("#mgmtNum").val(chkTerminal.eq(2).html());    // 단말기 관리번호
+            $.ajax({
+                type: "GET",
+                url: "<c:url value='/door/terminal/confirmUse.do' />",
+                data: { terminalId: $("#terminalId").val() },
+                dataType: "json",
+                success: function (result) {
+                    let cnt = result.terminalUseCnt;
+                    console.log(cnt);
+
+                    if (cnt == 1) {
+                        alert("이미 사용중인 단말기입니다.");
+                    } else {
+                        console.log("사용가능한 단말기입니다.");
+                        // $("#terminalId").val($("input[name=checkOne]:checked").val());
+                        // $("#terminalCd").val(chkTerminal.eq(1).html()); // 단말기 코드
+                        // $("#mgmtNum").val(chkTerminal.eq(2).html());    // 단말기 관리번호
+                    }
+                }
+            });
+
+            // $("#terminalId").val($("input[name=checkOne]:checked").val());
+            // $("#terminalCd").val(chkTerminal.eq(1).html()); // 단말기 코드
+            // $("#mgmtNum").val(chkTerminal.eq(2).html());    // 단말기 관리번호
             closePopup('termPickPopup');
         });
 
@@ -596,25 +615,21 @@
 
         if (val === "building") {
             setTitle("add", "빌딩(동)");
-            // $("#buildingId").val("");
             viewBuildingDetail();
             $("#buildingNm").focus();
 
         } else if (val === "area") {
             setTitle("add", "구역");
-            // $("#areaId").val("");
             viewAreaDetail();
             $("#areaNm").focus();
 
         } else if (val === "floor") {
             setTitle("add", "층");
-            // $("#floorId").val("");
             viewFloorDetail();
             $("#floorNm").focus();
 
         } else if (val === "door") {
             setTitle("add", "출입문");
-            // $("#doorId").val("");
             viewDoorDetail();
             $("#doorNm").focus();
         }
