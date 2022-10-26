@@ -4,6 +4,7 @@ import aero.cubox.auth.service.AuthService;
 import aero.cubox.cmmn.service.CommonService;
 import aero.cubox.core.vo.PaginationVO;
 import aero.cubox.door.service.DoorAlarmService;
+import aero.cubox.door.service.DoorScheduleService;
 import aero.cubox.door.service.DoorService;
 import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.CommonUtils;
@@ -38,6 +39,9 @@ public class DoorAlarmController {
 
     @Resource(name = "doorAlarmService")
     private DoorAlarmService doorAlarmService;
+    
+    @Resource(name = "doorScheduleService")
+    private DoorScheduleService doorScheduleService;
 
     @Resource(name = "terminalService")
     private TerminalService terminalService;
@@ -136,6 +140,9 @@ public class DoorAlarmController {
     public String detail(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
 
         HashMap doorGroupDetail = doorAlarmService.getDoorAlarmGrpDetail(id);
+
+        HashMap parmaMap = new HashMap();
+        List<HashMap> scheduleList = doorScheduleService.getDoorScheduleList(parmaMap);      // 스케쥴 목록
 
         model.addAttribute("doorGroupDetail", doorGroupDetail);
 

@@ -4,6 +4,7 @@ import aero.cubox.auth.service.AuthService;
 import aero.cubox.cmmn.service.CommonService;
 import aero.cubox.core.vo.AuthVO;
 import aero.cubox.door.service.DoorAlarmService;
+import aero.cubox.door.service.DoorGroupService;
 import aero.cubox.door.service.DoorScheduleService;
 import aero.cubox.door.service.DoorService;
 import aero.cubox.terminal.service.TerminalService;
@@ -40,6 +41,9 @@ public class DoorController {
     @Resource(name = "doorService")
     private DoorService doorService;
 
+    @Resource(name = "doorGroupService")
+    private DoorGroupService doorGroupService;
+
     @Resource(name = "doorScheduleService")
     private DoorScheduleService doorScheduleService;
 
@@ -66,21 +70,23 @@ public class DoorController {
     public String doorManagementDetail(ModelMap model) throws Exception {
         //todo 세션처리
 
-        HashMap parmaMap = new HashMap();
-        List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
-        List<Map> buildingList = doorService.getBuildingList(parmaMap);   //빌딩 목록
-        List<Map> areaList = doorService.getAreaList(parmaMap);           //지역 목록
-        List<HashMap> floorList = doorService.getFloorList(parmaMap);     //층 목록
+        HashMap paramMap = new HashMap();
+        List<Map> workplaceList = doorService.getWorkplaceList(paramMap); //사업장 목록
+        List<Map> buildingList = doorService.getBuildingList(paramMap);   //빌딩 목록
+        List<Map> areaList = doorService.getAreaList(paramMap);           //지역 목록
+        List<HashMap> floorList = doorService.getFloorList(paramMap);     //층 목록
 
-        List<HashMap> scheduleList = doorScheduleService.getDoorScheduleList(parmaMap);      // 스케쥴 목록
-        List<HashMap> doorAlarmGrpList = doorAlarmService.getDoorAlarmGrpList(parmaMap); // 출입물 알람 그룹 목록
+        // List<HashMap> scheduleList = doorScheduleService.getDoorScheduleList(paramMap);      // 스케쥴 목록
+        List<HashMap> doorGroupList = doorGroupService.getDoorGroupList(paramMap);      // 스케쥴 목록
+        List<HashMap> doorAlarmGrpList = doorAlarmService.getDoorAlarmGrpList(paramMap); // 출입물 알람 그룹 목록
 
         model.addAttribute("workplaceList", workplaceList);
         model.addAttribute("buildingList", buildingList);
         model.addAttribute("areaList", areaList);
         model.addAttribute("floorList", floorList);
-        model.addAttribute("scheduleList", scheduleList);
         model.addAttribute("doorAlarmGrpList", doorAlarmGrpList);
+        model.addAttribute("doorGroupList", doorGroupList);
+        //model.addAttribute("scheduleList", scheduleList);
 
         return "cubox/door/doorManagementDetail";
     }
@@ -108,8 +114,8 @@ public class DoorController {
         }
 
         List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
-        List<Map>  buildingList = doorService.getBuildingList(parmaMap);   //빌딩 목록
-        List<Map>      areaList = doorService.getAreaList(parmaMap);           //지역 목록
+        List<Map>  buildingList = doorService.getBuildingList(parmaMap);  //빌딩 목록
+        List<Map>      areaList = doorService.getAreaList(parmaMap);      //지역 목록
         List<HashMap> floorList = doorService.getFloorList(parmaMap);     //층 목록
 
         List<Map> doorList = doorService.getDoorList(parmaMap);           //출입문 목록
@@ -170,6 +176,7 @@ public class DoorController {
         String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");
         String areaId = StringUtil.nvl(commandMap.get("areaId"), "");
         String floorId = StringUtil.nvl(commandMap.get("floorId"), "");
+        String doorGroupId = StringUtil.nvl(commandMap.get("doorGroupId"), "");
         String scheduleId = StringUtil.nvl(commandMap.get("scheduleId"), "");
         String alarmGroupId = StringUtil.nvl(commandMap.get("alarmGroupId"), "");
         String terminalIds = StringUtil.nvl(commandMap.get("terminalIds"), "");
@@ -182,6 +189,7 @@ public class DoorController {
         param.put("areaId", areaId);        //지역 ID
         param.put("floorId", floorId);      //층 ID
         param.put("doorScheduleId", scheduleId); //출입문 스케쥴 ID
+        param.put("doorGroupId", doorGroupId); //출입문 스케쥴 ID
         param.put("alarmGroupId", alarmGroupId); //알람 그룹 ID
         param.put("terminalIds", terminalIds);   //단말기 ID - 복수저장?
         param.put("authGrIds", authGrIds);       //권한그룹ID - 복수저장?
@@ -225,6 +233,7 @@ public class DoorController {
             String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");
             String areaId = StringUtil.nvl(commandMap.get("areaId"), "");
             String floorId = StringUtil.nvl(commandMap.get("floorId"), "");
+            String doorGroupId = StringUtil.nvl(commandMap.get("doorGroupId"), "");
             String scheduleId = StringUtil.nvl(commandMap.get("scheduleId"), "");
             String alarmGroupId = StringUtil.nvl(commandMap.get("alarmGroupId"), "");
             String terminalIds = StringUtil.nvl(commandMap.get("terminalIds"), "");
@@ -239,16 +248,17 @@ public class DoorController {
             param.put("alarmGroupId", alarmGroupId);
             param.put("terminalIds", terminalIds);
             param.put("authGrIds", authGrIds);
+            param.put("doorGroupId", doorGroupId);
         }
         try {
             doorService.updateDoor(param);
-
+            modelAndView.addObject("resultCode", "Y");
         } catch (Exception e) {
             e.getStackTrace();
             modelAndView.addObject("resultCode", "N");
             modelAndView.addObject("resultMsg", e.getStackTrace());
         }
-        modelAndView.addObject("resultCode", "Y");
+
 
         return modelAndView;
     }
