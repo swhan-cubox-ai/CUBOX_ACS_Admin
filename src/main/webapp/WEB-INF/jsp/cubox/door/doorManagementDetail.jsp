@@ -551,7 +551,7 @@
                 $(".doorDetailList #dBuilding").val(dInfo.building_id);     // 빌딩
                 $(".doorDetailList #dArea").val(dInfo.area_id);             // 구역
                 $(".doorDetailList #dFloor").val(dInfo.floor_id);           // 층
-                $("#doorSchedule").val(dInfo.sch_id);                       // 스케쥴
+                // $("#doorSchedule").val(dInfo.sch_id);                       // 스케쥴
                 $("#doorAlarmGroup").val(dInfo.alarm_typ);                  // 알람그룹
                 $("#terminalId").val(dInfo.terminal_id);                    // 단말기 id
                 $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
@@ -715,6 +715,10 @@
             $("#buildingNm").focus();
             return;
         }
+        if ($("#buildingId").val() == "" && !fnBuildingNameValidAjax()) {
+            return;
+        }
+
         return result;
     }
 
@@ -731,6 +735,10 @@
             $(".areaDetailList #dBuilding").focus();
             return;
         }
+        if ($("#areaId").val() == "" && !fnAreaNameValidAjax()) {
+            return;
+        }
+
         return result;
     }
 
@@ -750,6 +758,9 @@
         if (fnIsEmpty($(".floorDetailList #dArea").val())) {
             alert("구역을 선택해주세요.");
             $(".floorDetailList #dArea").focus();
+            return;
+        }
+        if ($("#floorId").val() == "" && !fnFloorNameValidAjax()) {
             return;
         }
         return result;
@@ -779,6 +790,11 @@
             $(".doorDetailList #dFloor").focus();
             return;
         }
+        // 출입문 명 중복확인
+        if ($("#doorId").val() == "" && !fnDoorNameValidAjax()) {
+            return;
+        }
+
         return result;
     }
 
@@ -789,24 +805,13 @@
 
         let authType = $("#authType").val();
         if (authType === "building") {
-            if (buildingValid()) {
-                fnSaveBuildingAjax();
-                // if ($("#buildingId").val() == "") fnBuildingNameValidAjax();
-            }
+            if (buildingValid()) fnSaveBuildingAjax();
         } else if (authType === "area") {
-            if (areaValid()) {
-                fnSaveAreaAjax();
-                // if ($("#areaId").val() == "") fnAreaNameValidAjax();
-            }
+            if (areaValid()) fnSaveAreaAjax();
         } else if (authType === "floor") {
-            if (floorValid()) {
-                fnSaveFloorAjax();
-                // if ($("#floorId").val() == "") fnFloorNameValidAjax();
-            }
+            if (floorValid()) fnSaveFloorAjax();
         } else if (authType === "door") {
-            if (doorValid()) {
-                if ($("#doorId").val() == "") fnDoorNameValidAjax();  // 추가 시에만 출입명 중복확인
-            }
+            if (doorValid()) fnSaveDoorAjax();
         }
     }
 
@@ -1074,7 +1079,8 @@
             buildingId: $(".doorDetailList #dBuilding").val(),
             areaId: $(".doorDetailList #dArea").val(),
             floorId: $(".doorDetailList #dFloor").val(),
-            scheduleId: $("#doorSchedule").val(),
+            // scheduleId: $("#doorSchedule").val(),
+            doorGroupId: $("#selDoorGroup").val(),
             alarmGroupId: $("#doorAlarmGroup").val(),
             terminalIds: $("#terminalId").val(),
             authGrIds: $("#authGroupId").val()
@@ -1455,11 +1461,13 @@
     function fnBuildingNameValidAjax() {
         console.log("fnBuildingNameValidAjax");
         console.log($(".buildingDetailList #buildingNm").val());
+        let rtnData;
 
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/building/name/verification.do' />",
             data: { buildingNm: $(".buildingDetailList #buildingNm").val() },
+            async: false,
             dataType: "json",
             success: function (result) {
                 console.log("빌딩명중복확인여부: ");
@@ -1469,12 +1477,15 @@
                     alert("이미 사용중인 빌딩 명 입니다.");
                     $("#buildingNm").val("");
                     $("#buildingNm").focus();
+                    rtnData = false;
                 } else {                                    // 사용 가능, 저장!
                     console.log("사용 가능한 빌딩명!");
-                    fnSaveBuildingAjax();
+                    rtnData = true;
                 }
             }
         });
+        console.log("rtnData =  " + rtnData);
+        return rtnData;
     }
 
     /////////////////  빌딩 명 중복 확인 ajax - start  /////////////////////
@@ -1485,11 +1496,13 @@
     function fnAreaNameValidAjax() {
         console.log("fnAreaNameValidAjax");
         console.log($(".areaDetailList #areaNm").val());
+        let rtnData;
 
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/area/name/verification.do' />",
             data: { areaNm: $(".areaDetailList #areaNm").val() },
+            async: false,
             dataType: "json",
             success: function (result) {
                 console.log("구역명중복확인여부: ");
@@ -1499,12 +1512,15 @@
                     alert("이미 사용중인 구역 명 입니다.");
                     $("#areaNm").val("");
                     $("#areaNm").focus();
+                    rtnData = false;
                 } else {                                    // 사용 가능, 저장!
                     console.log("사용 가능한 구역 명!");
-                    fnSaveAreaAjax();
+                    rtnData = true;
                 }
             }
         });
+        console.log("rtnData =  " + rtnData);
+        return rtnData;
     }
 
     /////////////////  구역 명 중복 확인 ajax - start  /////////////////////
@@ -1514,11 +1530,13 @@
     function fnFloorNameValidAjax() {
         console.log("fnFloorNameValidAjax");
         console.log($(".floorDetailList #floorNm").val());
+        let rtnData;
 
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/floor/name/verification.do' />",
             data: { floorNm: $(".floorDetailList #floorNm").val() },
+            async: false,
             dataType: "json",
             success: function (result) {
                 console.log("층명중복확인여부: ");
@@ -1528,12 +1546,15 @@
                     alert("이미 사용중인 층 명 입니다.");
                     $("#floorNm").val("");
                     $("#floorNm").focus();
+                    rtnData = false;
                 } else {                                    // 사용 가능, 저장!
                     console.log("사용 가능한 층 명!");
-                    fnSaveFloorAjax();
+                    rtnData = true;
                 }
             }
         });
+        console.log("rtnData =  " + rtnData);
+        return rtnData;
     }
 
     /////////////////  층 명 중복 확인 ajax - start  /////////////////////
@@ -1544,11 +1565,13 @@
     function fnDoorNameValidAjax() {
         console.log("fnDoorNameValidAjax");
         console.log($(".doorDetailList #doorNm").val());
+        let rtnData;
 
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/name/verification.do' />",
             data: { doorNm: $(".doorDetailList #doorNm").val() },
+            async: false,
             dataType: "json",
             success: function (result) {
                 console.log("출입문명중복확인여부: ");
@@ -1558,12 +1581,15 @@
                     alert("이미 사용중인 출입문 명 입니다.");
                     $("#doorNm").val("");
                     $("#doorNm").focus();
+                    rtnData = false;
                 } else {                                    // 사용 가능, 저장!
                     console.log("사용 가능한 출입문!");
-                    fnSaveDoorAjax();
+                    rtnData = true;
                 }
             }
         });
+        console.log("rtnData =  " + rtnData);
+        return rtnData;
     }
 
     /////////////////  출입문 명 중복 확인 ajax - start  /////////////////////
@@ -1702,13 +1728,24 @@
                             </select>
                         </td>
                     </tr>
+<%--                    <tr>--%>
+<%--                        <th>스케쥴</th>--%>
+<%--                        <td colspan="2">--%>
+<%--                            <select name="doorEdit" id="doorSchedule" class="form-control" style="padding-left:10px;" disabled>--%>
+<%--                                <option value="" name="selected">선택</option>--%>
+<%--                                <c:forEach items="${scheduleList}" var="schedule" varStatus="status">--%>
+<%--                                    <option value='<c:out value="${schedule.id}"/>'><c:out value="${schedule.door_sch_nm}"/></option>--%>
+<%--                                </c:forEach>--%>
+<%--                            </select>--%>
+<%--                        </td>--%>
+<%--                    </tr>--%>
                     <tr>
                         <th>스케쥴</th>
                         <td colspan="2">
-                            <select name="doorEdit" id="doorSchedule" class="form-control" style="padding-left:10px;" disabled>
+                            <select name="doorEdit" id="selDoorGroup" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
-                                <c:forEach items="${scheduleList}" var="schedule" varStatus="status">
-                                    <option value='<c:out value="${schedule.id}"/>'><c:out value="${schedule.door_sch_nm}"/></option>
+                                <c:forEach items="${doorGroupList}" var="doorGroup" varStatus="status">
+                                <option value='<c:out value="${doorGroup.id}"/>'><c:out value="${doorGroup.nm}"/></option>
                                 </c:forEach>
                             </select>
                         </td>
