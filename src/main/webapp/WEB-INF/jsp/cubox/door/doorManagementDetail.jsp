@@ -782,17 +782,24 @@
 
         let authType = $("#authType").val();
         if (authType === "building") {
-            if (buildingValid()) fnBuildingNameValidAjax();
-            // if (buildingValid()) fnSaveBuildingAjax();
+            if (buildingValid()) {
+                fnSaveBuildingAjax();
+                // if ($("#buildingId").val() == "") fnBuildingNameValidAjax();
+            }
         } else if (authType === "area") {
-            if (areaValid()) fnAreaNameValidAjax();
-            // if (areaValid()) fnSaveAreaAjax();
+            if (areaValid()) {
+                fnSaveAreaAjax();
+                // if ($("#areaId").val() == "") fnAreaNameValidAjax();
+            }
         } else if (authType === "floor") {
-            if (floorValid()) fnFloorNameValidAjax();
-            // if (floorValid()) fnSaveFloorAjax();
+            if (floorValid()) {
+                fnSaveFloorAjax();
+                // if ($("#floorId").val() == "") fnFloorNameValidAjax();
+            }
         } else if (authType === "door") {
-            if (doorValid()) fnDoorNameValidAjax();         // 출입명 중복확인
-            // if (doorValid()) fnSaveDoorAjax();
+            if (doorValid()) {
+                if ($("#doorId").val() == "") fnDoorNameValidAjax();  // 추가 시에만 출입명 중복확인
+            }
         }
     }
 
@@ -1246,7 +1253,7 @@
             floorNm : $("#floorNm").val()
             , buildingId : $(".floorDetailList #dBuilding").val()
             , areaId : $(".floorDetailList #dArea").val()
-            // , authGrIds: "1"
+            , authGrIds: $("#authGroupId").val()
         };
 
         if (floorId === "") { // 등록 시
@@ -1258,6 +1265,8 @@
             data.floorId = floorId;
             mode = "U";
         }
+        console.log(url);
+        console.log(data);
 
         $.ajax({
             type: "POST",
