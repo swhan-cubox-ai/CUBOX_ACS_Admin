@@ -556,8 +556,8 @@
                 $("#terminalId").val(dInfo.terminal_id);                    // 단말기 id
                 $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
                 $("#mgmtNum").val(dInfo.mgmt_num);                          // 단말기 관리번호
-                $("#authGroupId").val(dInfo.auth_id);                       // 권한그룹 id
-                $("#doorGroup").val(dInfo.auth_nm);                         // 권한그룹 명
+                $("#authGroupId").val(dInfo.auth_ids);                       // 권한그룹 id
+                $("#doorGroup").val(dInfo.auth_nms);                         // 권한그룹 명
             }
         });
     }
