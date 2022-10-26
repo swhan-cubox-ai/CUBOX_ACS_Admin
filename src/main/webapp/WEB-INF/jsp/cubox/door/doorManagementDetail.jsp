@@ -840,12 +840,18 @@
     function authSave() {
         // $("#authGroupId").val($("input[name=chkAuthConf]").val());
 
-        let authGroupIds = [];
+        // let authGroupIds = [];
+        let authGroupIds = "";
         let authGroupHtml = [];
         $("input[name=chkAuthConf]").each(function (i) {
             let ids = $(this).val();
             let html = $(this).closest("tr").children().eq(1).html();
-            authGroupIds.push(ids);
+            if (i == 0) {
+                authGroupIds += ids;
+            } else if (i > 0) {
+                authGroupIds += ("/" + ids);
+            }
+            // authGroupIds.push(ids);
             authGroupHtml.push(html);
         });
         console.log(authGroupIds);
@@ -1053,7 +1059,7 @@
                     console.log("authgroupId");
                     console.log($("#authGroupId").val());
                     if ($("#authGroupId").val() !== "") {
-                        let authGroupId = $("#authGroupId").val().split(",");
+                        let authGroupId = $("#authGroupId").val().split("/");
                         $.each(authGroupId, function(j, authId) {
                             $('input[name=chkAuth]:input[value=' + authId + ']').prop("checked", true);
                             $("#add_auth").click();
