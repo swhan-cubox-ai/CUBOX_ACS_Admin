@@ -145,7 +145,7 @@
         FROM
             T_ENT_HIST_BIO
         WHERE
-            end_hist_id = 4
+            end_hist_id = #{id}
     </select>
 
 </mapper>
