@@ -145,8 +145,8 @@
                 </td>
             </tr>
             <tr>
-                <th>출입문 스케쥴2ㄴ</th>
-                <td>${scheduleList}
+                <th>출입문 스케쥴</th>
+                <td>
                     <select id="gpSchedule" name="gpSchedule" class="form-control input_com w_600px" style="padding-left:10px;">
                         <option value="">선택</option>
                         <c:forEach items="${scheduleList}" var="schedule" varStatus="status">
