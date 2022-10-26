@@ -9,6 +9,7 @@
 		       , TD.area_id
 		       , TD.floor_id
 		       , TD.alarm_typ
+		       , TDD.doorgrp_id
 		       , TDS.id as sch_id
 		       , TDS.door_sch_nm as sch_nm
 		       , (SELECT GROUP_CONCAT( TT.id  SEPARATOR '/ ') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_id
@@ -22,9 +23,6 @@
  LEFT OUTER JOIN T_DOOR_SCH TDS     ON TDD.doorgrp_id = TDS.id
  LEFT OUTER JOIN T_AUTH_DOOR TAD    ON TD.id = TAD.door_id
 		   WHERE TD.id = #{id}
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-			 AND TD.id = #{id}
-		</if>
 	</select>
 
 	<select id="selectDoorList" parameterType="HashMap" resultType="HashMap">

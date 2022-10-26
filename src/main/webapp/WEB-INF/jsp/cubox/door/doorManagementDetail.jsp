@@ -551,7 +551,7 @@
                 $(".doorDetailList #dBuilding").val(dInfo.building_id);     // 빌딩
                 $(".doorDetailList #dArea").val(dInfo.area_id);             // 구역
                 $(".doorDetailList #dFloor").val(dInfo.floor_id);           // 층
-                // $("#doorSchedule").val(dInfo.sch_id);                       // 스케쥴
+                $("#selDoorGroup").val(dInfo.doorgrp_id);                   // 스케쥴
                 $("#doorAlarmGroup").val(dInfo.alarm_typ);                  // 알람그룹
                 $("#terminalId").val(dInfo.terminal_id);                    // 단말기 id
                 $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드

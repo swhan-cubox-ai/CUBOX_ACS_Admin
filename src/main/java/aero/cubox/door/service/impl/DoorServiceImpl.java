@@ -16,6 +16,9 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     @Resource(name="doorDAO")
     private DoorDAO doorDAO;
 
+    @Resource(name="doorGroupDAO")
+    private DoorGroupDAO doorGroupDAO;
+
     /**
      * 출입문 목록 조회
      * @param paramMap
@@ -54,7 +57,17 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
 
         HashMap paramMap = new HashMap();
 
-        if (!StringUtil.isEmpty(commandMap.get("doorId").toString() ) ){
+        if(!StringUtil.isEmpty(commandMap.get("doorId").toString() ) ){
+
+            //도어그룹의 스케줄에 출입문 id Update
+            if( !StringUtil.isEmpty((String) commandMap.get("doorGroupId"))){
+
+                paramMap.put("doorId", newDoorId );
+                paramMap.put("doorgrpId", commandMap.get("doorGroupId"));
+
+                doorGroupDAO.addDoorInDoorGroup(paramMap);
+            }
+
             //단말기정보에 출입문 id Update
             if( !StringUtil.isEmpty((String) commandMap.get("terminalIds"))){
 
@@ -93,16 +106,28 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         doorDAO.updateDoor(commandMap);
 
         HashMap paramMap = new HashMap();
-        paramMap.put("doorId", commandMap.get("doorId") );
+
+        
+        //출입문그룹의 스케줄에 출입문 id - Insert or Update
+        if( !StringUtil.isEmpty((String) commandMap.get("doorGroupId"))){
+
+            paramMap.put("doorId", commandMap.get("id") );
+            paramMap.put("doorgrpId", commandMap.get("doorGroupId"));
+            doorGroupDAO.deleteDoorInDoorGroup(paramMap);
+            doorGroupDAO.addDoorInDoorGroup(paramMap);
+        }
+
         //단말기정보에 출입문 id Update
         if( !StringUtil.isEmpty((String) commandMap.get("terminalIds"))){
-
+            paramMap.put("doorId", commandMap.get("id") );
             paramMap.put("id", commandMap.get("terminalIds"));
             doorDAO.updateDoorIdForTerminal(paramMap);
         }
 
         //출입권한-출입문 table에 door_id Delete-Insert
         if( !StringUtil.isEmpty((String) commandMap.get("authGrIds"))){
+
+            paramMap.put("doorId", commandMap.get("id") );
 
             String authGrIds = "";
             authGrIds = commandMap.get("authGrIds").toString();

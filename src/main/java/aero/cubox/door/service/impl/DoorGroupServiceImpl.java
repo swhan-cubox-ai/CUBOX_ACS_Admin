@@ -50,11 +50,17 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
     @Override
     public void addDoorGroup(Map<String, Object> commandMap) {
         doorGroupDAO.addDoorGroup(commandMap);
-
-        commandMap.get("");
-        //doorGroupDAO.addDoorGroupDoor(commandMap);
+        doorGroupDAO.addDoorInDoorGroup(commandMap);
 
     }
+
+    @Override
+    public void addDoorInDoorGroup(Map<String, Object> commandMap) {
+        doorGroupDAO.addDoorInDoorGroup(commandMap);
+    }
+
+
+
 
     /**
      * 출입문 그룹 수정
