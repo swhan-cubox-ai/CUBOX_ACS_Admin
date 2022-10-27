@@ -96,6 +96,18 @@ function setDoors() {
             success : function(result) {
                 console.log(result);
                 createTree(false, result, $("#treeDiv"));
+
+                $("#doorSelected").empty();
+
+                if ($("#gpDoorIds").val() != "") { // 수정일 떄
+                    let gpDoorId = $("#gpDoorIds").val().split("/");
+                    console.log(gpDoorId);
+                    $.each(gpDoorId, function(i, gpDoor) {
+                        $("span[id=" + gpDoor + "]").parent().toggleClass("node nodeSel");
+                        $("#add_door").click();
+                        $("span[id=" + gpDoor + "]").parent().toggleClass("nodeSel node");
+                    })
+                }
             }
         });
     }
@@ -126,19 +138,19 @@ function setDoors() {
 
         <%--  테이블  --%>
         <div style="width:45%;">
-            <div class="com_box"
-                 style="border: 1px solid black; background-color: white; overflow: auto; height: 400px;">
+            <div class="com_box" style="border: 1px solid black; background-color: white; overflow: auto; height: 400px;">
                 <table class="tb_list tb_write_02 tb_write_p1">
                     <colgroup>
                         <col style="width:10%">
                         <col style="width:90%">
                     </colgroup>
-                    <tbody id="doorSelected">
-                    <tr>
-                        <th><input type="checkbox" id="chkDoorConfAll"></th>
-                        <th>출입문</th>
-                    </tr>
-                    </tbody>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="chkDoorConfAll"></th>
+                            <th>출입문</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doorSelected"></tbody>
                 </table>
             </div>
         </div>

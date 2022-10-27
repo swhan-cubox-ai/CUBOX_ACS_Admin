@@ -7,6 +7,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
 
@@ -302,8 +303,10 @@
             <tr>
                 <th>출입문</th>
                 <td style="display: flex;">
+                    <%--  TODO: testarea에 공백 해결  --%>
                     <textarea id="gpDoorNms" name="gpDoorNms" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
-                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
+                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:set var="nm" value="${fn:split(doorGroupDetail.door_nms,'/')}" /><c:forEach items="${nm}" var="dName" varStatus="varStatus">
+${dName}</c:forEach></textarea>
                     <div class="ml_10" style="position: relative;">
                         <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px; display: none;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">출입문 선택</button>
                     </div>
