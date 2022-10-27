@@ -208,6 +208,7 @@
     /////////////////  출입문 그룹 수정 ajax - start  /////////////////////
 
     function fnUpdateGroupAjax() {
+        let id = $("#doorGroupId").val();
         let gpNm = $("#gpNm").val();
         let scheduleId = $("#gpSchedule").val();
         let doorIds = $("#gpDoorIds").val();
@@ -232,16 +233,17 @@
                 console.log("fnSave:" + result.resultCode);
 
                 if( result.resultCode == "Y" ) {
-                    $('#gpNm').prop('disabled', true);
-                    $('#gpSchedule').prop('disabled', true);
-                    $('#gpDoorNms').prop('disabled', true);
-
-                    $('#btnSelDoor').hide();
-                    $('#saveBtn').hide();
-                    $('#cancelBtn').hide();
-                    $('#listBtn').show();
+                    // $('#gpNm').prop('disabled', true);
+                    // $('#gpSchedule').prop('disabled', true);
+                    // $('#gpDoorNms').prop('disabled', true);
+                    //
+                    // $('#btnSelDoor').hide();
+                    // $('#saveBtn').hide();
+                    // $('#cancelBtn').hide();
+                    // $('#listBtn').show();
 
                     alert("수정이 완료되었습니다.");
+                    window.location.href = '/door/group/detail/' + id;
                 } else {
                     alert("수정에 실패하였습니다.");
                 }

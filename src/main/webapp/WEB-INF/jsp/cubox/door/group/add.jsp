@@ -125,6 +125,10 @@
                 console.log("fnSave:" + result.resultCode);
 
                 if( result.resultCode == "Y" ) {
+                    if (result.newDoorId !== "" ) {
+                        alert("등록이 완료되었습니다.");
+                        window.location.href = '/door/group/detail/' + result.newDoorId;
+                    }
                     // $('#gpNm').prop('disabled', true);
                     // $('#gpSchedule').prop('disabled', true);
                     // $('#gpDoorNms').prop('disabled', true);
@@ -133,10 +137,7 @@
                     // $('#saveBtn').hide();
                     // $('#cancelBtn').hide();
                     // $('#listBtn').show();
-
                     //
-                    alert("등록이 완료되었습니다.");
-
 
                 } else {
                     alert("등록에 실패하였습니다.");
