@@ -322,7 +322,7 @@
             $("#doorNm").val("");
             $("#terminalCd").val("");
             $("#mgmtNum").val("");
-            $("#doorGroup").val("");
+            $("#authGroupNm").val("");
             $("#terminalId").val("");
             $("#authGroupId").val("");
             $(".doorDetailList #dBuilding").val("");
@@ -545,19 +545,21 @@
                 console.log(result);
 
                 let dInfo = result.doorInfo;
-                $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));  // 경로
-                $("#doorId").val(dInfo.id);                                 // doorId
-                $("#doorNm").val(dInfo.door_nm);                            // 출입문 명
-                $(".doorDetailList #dBuilding").val(dInfo.building_id);     // 빌딩
-                $(".doorDetailList #dArea").val(dInfo.area_id);             // 구역
-                $(".doorDetailList #dFloor").val(dInfo.floor_id);           // 층
-                $("#selDoorGroup").val(dInfo.doorgrp_id);                   // 스케쥴
-                $("#doorAlarmGroup").val(dInfo.alarm_typ);                  // 알람그룹
-                $("#terminalId").val(dInfo.terminal_id);                    // 단말기 id
-                $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
-                $("#mgmtNum").val(dInfo.mgmt_num);                          // 단말기 관리번호
-                $("#authGroupId").val(dInfo.auth_ids);                       // 권한그룹 id
-                $("#authGroupNm").val(dInfo.auth_nms.split("/ ").join("\r\n")); // 권한그룹 명
+                $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));              // 경로
+                $("#doorId").val(dInfo.id);                                             // doorId
+                $("#doorNm").val(dInfo.door_nm);                                        // 출입문 명
+                $(".doorDetailList #dBuilding").val(dInfo.building_id);                 // 빌딩
+                $(".doorDetailList #dArea").val(dInfo.area_id);                         // 구역
+                $(".doorDetailList #dFloor").val(dInfo.floor_id);                       // 층
+                $("#selDoorGroup").val(dInfo.doorgrp_id);                               // 스케쥴
+                $("#doorAlarmGroup").val(dInfo.alarm_typ);                              // 알람그룹
+                $("#terminalId").val(dInfo.terminal_id);                                // 단말기 id
+                $("#terminalCd").val(dInfo.terminal_cd);                                // 단말기 코드
+                $("#mgmtNum").val(dInfo.mgmt_num);                                      // 단말기 관리번호
+                $("#authGroupId").val(dInfo.auth_ids);                                  // 권한그룹 id
+                if (dInfo.auth_nms != undefined || dInfo.auth_nms != null) {            // 권한그룹 이름
+                    $("#authGroupNm").val(dInfo.auth_nms.split("/ ").join("\r\n"));
+                }
             }
         });
     }
