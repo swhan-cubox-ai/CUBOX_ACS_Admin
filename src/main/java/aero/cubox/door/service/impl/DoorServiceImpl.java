@@ -91,7 +91,6 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
                         doorDAO.insertDoorIdForAuthDoor(paramMap);
                     }
                 }
-
             }
         }
         return newDoorId;
