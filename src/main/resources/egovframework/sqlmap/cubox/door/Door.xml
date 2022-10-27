@@ -12,11 +12,11 @@
 		       , TDD.doorgrp_id
 		       , TDS.id as sch_id
 		       , TDS.door_sch_nm as sch_nm
-		       , (SELECT GROUP_CONCAT( TT.id  SEPARATOR '/ ') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_id
-		       , (SELECT GROUP_CONCAT( TT.terminal_cd  SEPARATOR '/ ') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_cd
-		       , (SELECT GROUP_CONCAT( TT.mgmt_num  SEPARATOR '/ ')  FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS mgmt_num
-		       , (SELECT GROUP_CONCAT( TT.auth_id  SEPARATOR '/ ')  FROM T_AUTH_DOOR TT WHERE TT.door_id= TD.id ) AS auth_ids
-			   , (SELECT GROUP_CONCAT( (SELECT TA.auth_nm FROM T_AUTH TA WHERE TA.id = TT.auth_id)  SEPARATOR '/ ')  FROM T_AUTH_DOOR TT WHERE TT.door_id =TD.id ) AS auth_nms
+		       , (SELECT GROUP_CONCAT( TT.id  SEPARATOR '/') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_id
+		       , (SELECT GROUP_CONCAT( TT.terminal_cd  SEPARATOR '/') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_cd
+		       , (SELECT GROUP_CONCAT( TT.mgmt_num  SEPARATOR '/')  FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS mgmt_num
+		       , (SELECT GROUP_CONCAT( TT.auth_id  SEPARATOR '/')  FROM T_AUTH_DOOR TT WHERE TT.door_id= TD.id ) AS auth_ids
+			   , (SELECT GROUP_CONCAT( (SELECT TA.auth_nm FROM T_AUTH TA WHERE TA.id = TT.auth_id)  SEPARATOR '/')  FROM T_AUTH_DOOR TT WHERE TT.door_id =TD.id ) AS auth_nms
 		    FROM T_DOOR TD
  LEFT OUTER JOIN T_DOORGRP_DOOR TDD ON TD.id = TDD.door_id
  LEFT OUTER JOIN T_DOORGRP TDG      ON TDD.doorgrp_id = TDG.id

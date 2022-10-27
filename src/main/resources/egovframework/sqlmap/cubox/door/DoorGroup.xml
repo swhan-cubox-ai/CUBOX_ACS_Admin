@@ -16,9 +16,9 @@
                     , TD.nm
                     , TD.door_sch_id
                     , TDC.door_sch_nm
+                    , (select COUNT(TDD.door_id) FROM T_DOORGRP_DOOR TDD where TDD.doorgrp_id = TD.id )AS door_cnt
                     , TD.created_at
                     , TD.updated_at
-                    , (select COUNT(TDD.door_id) FROM T_DOORGRP_DOOR TDD where TDD.doorgrp_id = TD.id )AS door_cnt
                  FROM T_DOORGRP TD
             LEFT JOIN T_DOOR_SCH TDC on TD.door_sch_id = TDC.id
                 WHERE 1=1
@@ -42,11 +42,6 @@
         SELECT COUNT(*)
           FROM (
                 SELECT TD.id
-                     , TD.nm
-                     , TD.door_sch_id
-                     , TDC.door_sch_nm
-        , DATE_FORMAT(TD.created_at, '%Y-%m-%d') as created_at
-        , DATE_FORMAT(TD.updated_at, '%Y-%m-%d') as updated_at
                   FROM T_DOORGRP TD
              LEFT JOIN T_DOOR_SCH TDC on TD.door_sch_id = TDC.id
                  WHERE 1=1
@@ -65,6 +60,8 @@
              , TD.nm
              , TD.door_sch_id
              , TDC.door_sch_nm
+             , (SELECT GROUP_CONCAT( TDD.door_id  SEPARATOR '/')  FROM T_DOORGRP_DOOR TDD WHERE TDD.doorgrp_id= TD.id ) AS door_ids
+             , (SELECT GROUP_CONCAT( (SELECT A.door_nm FROM T_DOOR A where A.id = TDD.door_id ) SEPARATOR '/')  FROM T_DOORGRP_DOOR TDD WHERE TDD.doorgrp_id= TD.id ) AS door_nms
              , DATE_FORMAT(TD.created_at, '%Y-%m-%d') as created_at
              , DATE_FORMAT(TD.updated_at, '%Y-%m-%d') as updated_at
         FROM T_DOORGRP TD
