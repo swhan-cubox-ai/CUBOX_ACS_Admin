@@ -120,7 +120,7 @@
             return;
         }
 
-        fnSaveGroupAjax();
+        fnUpdateGroupAjax();
     }
 
     // 수정 취소
@@ -216,23 +216,24 @@
         $("#" + popupNm).PopupWindow("close");
     }
 
-    /////////////////  출입문 그룹 저장 ajax - start  /////////////////////
+    /////////////////  출입문 그룹 수정 ajax - start  /////////////////////
 
-    function fnSaveGroupAjax() {
+    function fnUpdateGroupAjax() {
         let gpNm = $("#gpNm").val();
         let scheduleId = $("#gpSchedule").val();
         let doorIds = $("#gpDoorIds").val();
 
+        console.log(${doorGroupDetail.id});
         console.log(gpNm);
         console.log(scheduleId);
         console.log(doorIds);
 
         $.ajax({
             type: "POST",
-            url: "<c:url value='/door/group/save.do' />",
+            url: "<c:url value='/door/group/modify/${doorGroupDetail.id}.do' />",
             data:{
                 nm: gpNm,
-                scheduleId: scheduleId,
+                doorSchId: scheduleId,
                 doorIds: doorIds // 1, 1/2  2개 이상일 경우 "/" 으로 구분자 추가
             },
             dataType: "json",
@@ -249,17 +250,16 @@
                     $('#cancelBtn').hide();
                     $('#listBtn').show();
 
-                    alert("등록이 완료되었습니다.");
-
+                    alert("수정이 완료되었습니다.");
                 } else {
-                    alert("등록에 실패하였습니다.");
+                    alert("수정에 실패하였습니다.");
                 }
 
             }
         });
     }
 
-    /////////////////  출입문 그룹 저장 ajax - end  /////////////////////
+    /////////////////  출입문 그룹 수정 ajax - end  /////////////////////
 
 
 </script>
@@ -271,7 +271,8 @@
                 <col style="width:90%">
             </colgroup>
             <tbody id="tdGroupDetail">
-            <input type="hidden" id="gpDoorIds" value="">
+            <input type="hidden" id="doorGroupId" value="${doorGroupDetail.id}">
+            <input type="hidden" id="gpDoorIds" value="${doorGroupDetail.door_ids}">
             <tr>
                 <th>출입문 그룹 명</th>
                 <td>
@@ -302,7 +303,7 @@
                 <th>출입문</th>
                 <td style="display: flex;">
                     <textarea id="gpDoorNms" name="gpDoorNms" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
-                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>16동 현관</textarea>
+                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
                     <div class="ml_10" style="position: relative;">
                         <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px; display: none;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">출입문 선택</button>
                     </div>
