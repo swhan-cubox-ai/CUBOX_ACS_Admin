@@ -223,18 +223,20 @@
         let gpNm = $("#gpNm").val();
         let scheduleId = $("#gpSchedule").val();
         let doorIds = $("#gpDoorIds").val();
+        let url = "<c:url value='/door/group/modify/${doorGroupDetail.id}.do' />";
 
         console.log(${doorGroupDetail.id});
         console.log(gpNm);
         console.log(scheduleId);
         console.log(doorIds);
+        console.log(url);
 
         $.ajax({
             type: "POST",
-            url: "<c:url value='/door/group/modify/${doorGroupDetail.id}.do' />",
+            url: url,
             data:{
                 nm: gpNm,
-                doorSchId: scheduleId,
+                scheduleId: scheduleId,
                 doorIds: doorIds // 1, 1/2  2개 이상일 경우 "/" 으로 구분자 추가
             },
             dataType: "json",

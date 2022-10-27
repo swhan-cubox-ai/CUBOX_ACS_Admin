@@ -18,13 +18,13 @@
 $(function () {
 
     // 출입문 추가
-    $("#add_door").click(function () {
+    $(".add_door").click(function () {
         let nodeSel = $(".nodeSel").html();
         let nodeSelId = $(".nodeSel").find("span").attr("id");
         let doorSelected = $("#doorSelected").children();
         console.log(nodeSelId);
         // 이미 같은 출입문 있을 경우 return
-        for (let i = 1; i < doorSelected.length; i++) {
+        for (let i = 0; i < doorSelected.length; i++) {
             let doorPath = doorSelected.eq(i).children().last().html();
             if (doorPath == nodeSel) {
                 return;
@@ -38,7 +38,7 @@ $(function () {
     });
 
     // 출입문 삭제
-    $("#delete_door").click(function () {
+    $(".delete_door").click(function () {
         let ckd = $("input[name=chkDoorConf]:checked").length;
         for (let i = ckd - 1; i > -1; i--) {
             $("input[name=chkDoorConf]:checked").eq(i).closest("tr").remove();
@@ -104,7 +104,7 @@ function setDoors() {
                     console.log(gpDoorId);
                     $.each(gpDoorId, function(i, gpDoor) {
                         $("span[id=" + gpDoor + "]").parent().toggleClass("node nodeSel");
-                        $("#add_door").click();
+                        $(".add_door").click();
                         $("span[id=" + gpDoor + "]").parent().toggleClass("nodeSel node");
                     })
                 }
@@ -128,10 +128,10 @@ function setDoors() {
         <%--  화살표 이동  --%>
         <div style="height: 400px; display: flex; justify-content: center; flex-wrap: wrap; flex-direction: column; align-items: center;">
             <div class="btn_box" style="margin:5px 0;">
-                <img src="/img/ar_r.png" alt="" id="add_door"/>
+                <img src="/img/ar_r.png" alt="" class="add_door"/>
             </div>
             <div class="btn_box" style="margin:5px 0;">
-                <img src="/img/ar_l.png" alt="" id="delete_door"/>
+                <img src="/img/ar_l.png" alt="" class="delete_door"/>
             </div>
         </div>
         <%--  end of 화살표 이동  --%>
