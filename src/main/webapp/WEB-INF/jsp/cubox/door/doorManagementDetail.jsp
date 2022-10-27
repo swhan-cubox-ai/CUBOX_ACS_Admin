@@ -322,7 +322,7 @@
             $("#doorNm").val("");
             $("#terminalCd").val("");
             $("#mgmtNum").val("");
-            $("#doorGroup").val("");
+            $("#authGroupNm").val("");
             $("#terminalId").val("");
             $("#authGroupId").val("");
             $(".doorDetailList #dBuilding").val("");
@@ -545,19 +545,21 @@
                 console.log(result);
 
                 let dInfo = result.doorInfo;
-                $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));  // 경로
-                $("#doorId").val(dInfo.id);                                 // doorId
-                $("#doorNm").val(dInfo.door_nm);                            // 출입문 명
-                $(".doorDetailList #dBuilding").val(dInfo.building_id);     // 빌딩
-                $(".doorDetailList #dArea").val(dInfo.area_id);             // 구역
-                $(".doorDetailList #dFloor").val(dInfo.floor_id);           // 층
-                $("#selDoorGroup").val(dInfo.doorgrp_id);                   // 스케쥴
-                $("#doorAlarmGroup").val(dInfo.alarm_typ);                  // 알람그룹
-                $("#terminalId").val(dInfo.terminal_id);                    // 단말기 id
-                $("#terminalCd").val(dInfo.terminal_cd);                    // 단말기 코드
-                $("#mgmtNum").val(dInfo.mgmt_num);                          // 단말기 관리번호
-                $("#authGroupId").val(dInfo.auth_ids);                       // 권한그룹 id
-                $("#doorGroup").val(dInfo.auth_nms);                         // 권한그룹 명
+                $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));              // 경로
+                $("#doorId").val(dInfo.id);                                             // doorId
+                $("#doorNm").val(dInfo.door_nm);                                        // 출입문 명
+                $(".doorDetailList #dBuilding").val(dInfo.building_id);                 // 빌딩
+                $(".doorDetailList #dArea").val(dInfo.area_id);                         // 구역
+                $(".doorDetailList #dFloor").val(dInfo.floor_id);                       // 층
+                $("#selDoorGroup").val(dInfo.doorgrp_id);                               // 스케쥴
+                $("#doorAlarmGroup").val(dInfo.alarm_typ);                              // 알람그룹
+                $("#terminalId").val(dInfo.terminal_id);                                // 단말기 id
+                $("#terminalCd").val(dInfo.terminal_cd);                                // 단말기 코드
+                $("#mgmtNum").val(dInfo.mgmt_num);                                      // 단말기 관리번호
+                $("#authGroupId").val(dInfo.auth_ids);                                  // 권한그룹 id
+                if (dInfo.auth_nms != undefined || dInfo.auth_nms != null) {            // 권한그룹 이름
+                    $("#authGroupNm").val(dInfo.auth_nms.split("/ ").join("\r\n"));
+                }
             }
         });
     }
@@ -838,9 +840,7 @@
 
     // 권한그룹 반영
     function authSave() {
-        // $("#authGroupId").val($("input[name=chkAuthConf]").val());
 
-        // let authGroupIds = [];
         let authGroupIds = "";
         let authGroupHtml = [];
         $("input[name=chkAuthConf]").each(function (i) {
@@ -851,25 +851,14 @@
             } else if (i > 0) {
                 authGroupIds += ("/" + ids);
             }
-            // authGroupIds.push(ids);
             authGroupHtml.push(html);
         });
         console.log(authGroupIds);
         console.log(authGroupHtml);
 
-        $("#authGroupId").val(authGroupIds);
         // let authType = $("#authType").val();
-
-        $("#doorGroup").val(authGroupHtml.join("\r\n"));
-
-        // 권한그룹 textarea에 뿌려주기
-        // if (authType === "area") {
-        //     $("#areaGroup").val(authGroupHtml.join("\r\n"));
-        // } else if (authType === "floor") {
-        //     $("#floorGroup").val(authGroupHtml.join("\r\n"));
-        // } else if (authType === "door") {
-        //     $("#doorGroup").val(authGroupHtml.join("\r\n"));
-        // }
+        $("#authGroupId").val(authGroupIds);
+        $("#authGroupNm").val(authGroupHtml.join("\r\n"));
 
     }
 
@@ -1059,7 +1048,7 @@
                     console.log("authgroupId");
                     console.log($("#authGroupId").val());
                     if ($("#authGroupId").val() !== "") {
-                        let authGroupId = $("#authGroupId").val().split("/");
+                        let authGroupId = $("#authGroupId").val().split("/ ");
                         $.each(authGroupId, function(j, authId) {
                             $('input[name=chkAuth]:input[value=' + authId + ']').prop("checked", true);
                             $("#add_auth").click();
@@ -1785,7 +1774,7 @@
                     <tr>
                         <th>권한 그룹</th>
                         <td style="border-right:none; padding-right:0; padding-left:12px;">
-                            <textarea id="doorGroup" name="doorEditDisabled" rows="4" cols="33" class="mt_5 mb_5" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled></textarea>
+                            <textarea id="authGroupNm" name="doorEditDisabled" rows="4" cols="33" class="mt_5 mb_5" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled></textarea>
                         </td>
                         <td>
                             <button type="button" id="btnDoorAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup', this.id);">선택</button>
