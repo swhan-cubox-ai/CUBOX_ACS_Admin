@@ -7,6 +7,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
 
@@ -100,27 +101,14 @@
     // 출입문 저장, 등록
     function fnSave() {
         console.log("fnSave");
-        let gpNm = $("#gpNm").val();
-        let gpSchedule = $("#gpSchedule").val();
-        let gpDoorIds = $("#gpDoorIds").val();
-        // let gpDoorNms = $("#gpDoorNms").val();
-        console.log(gpDoorIds);
-
         // 입력값 유효성 체크
-        if (fnIsEmpty(gpNm)) {
+        if (fnIsEmpty($("#gpNm").val())) {
             alert("출입문 그룹 명을 입력해주세요.");
             $("#gpNm").focus();
             return;
-        } else if (fnIsEmpty(gpSchedule)) {
-            alert("출입문 스케쥴을 선택해주세요.");
-            $("#gpSchedule").focus();
-            return;
-        } else if (fnIsEmpty(gpDoorIds)) {
-            alert("출입문을 선택해주세요.");
-            return;
         }
 
-        fnSaveGroupAjax();
+        fnUpdateGroupAjax();
     }
 
     // 수정 취소
@@ -144,7 +132,7 @@
     // 삭제 버튼
     function fnDelete() {
         // 연결된 출입문 존재 시
-        if ($("#alDoorCnt").val() != "0" || $("#alDoorCnt").val() != "") {
+        if ($("#gpDoorIds").val() != "") {
             alert("연결된 출입문을 모두 해제한 후 삭제하세요.");
             return;
         }
@@ -153,16 +141,17 @@
             return;
         }
 
-        let id="1"; // example - doorgroup id
+        // let id="1"; // example - doorgroup id
+        let id= $("#doorGroupId").val(); // example - doorgroup id
 
         $.ajax({
             type: "post",
-            url: "/door/group/delete/"+id,
+            url: "/door/group/delete/" + id,
             dataType: 'json',
             success: function (data, status) {
                 if (data.resultCode == "Y") {
-                    location.href = "/door/group/list.do";
                     alert("삭제가 완료되었습니다.");
+                    location.href = "/door/group/list.do";
                 } else {
                     alert("삭제 중 오류가 발생하였습니다.");
                 }
@@ -216,20 +205,23 @@
         $("#" + popupNm).PopupWindow("close");
     }
 
-    /////////////////  출입문 그룹 저장 ajax - start  /////////////////////
+    /////////////////  출입문 그룹 수정 ajax - start  /////////////////////
 
-    function fnSaveGroupAjax() {
+    function fnUpdateGroupAjax() {
         let gpNm = $("#gpNm").val();
         let scheduleId = $("#gpSchedule").val();
         let doorIds = $("#gpDoorIds").val();
+        let url = "<c:url value='/door/group/modify/${doorGroupDetail.id}' />";
 
+        console.log(${doorGroupDetail.id});
         console.log(gpNm);
         console.log(scheduleId);
         console.log(doorIds);
+        console.log(url);
 
         $.ajax({
             type: "POST",
-            url: "<c:url value='/door/group/save.do' />",
+            url: url,
             data:{
                 nm: gpNm,
                 scheduleId: scheduleId,
@@ -249,17 +241,16 @@
                     $('#cancelBtn').hide();
                     $('#listBtn').show();
 
-                    alert("등록이 완료되었습니다.");
-
+                    alert("수정이 완료되었습니다.");
                 } else {
-                    alert("등록에 실패하였습니다.");
+                    alert("수정에 실패하였습니다.");
                 }
 
             }
         });
     }
 
-    /////////////////  출입문 그룹 저장 ajax - end  /////////////////////
+    /////////////////  출입문 그룹 수정 ajax - end  /////////////////////
 
 
 </script>
@@ -271,7 +262,8 @@
                 <col style="width:90%">
             </colgroup>
             <tbody id="tdGroupDetail">
-            <input type="hidden" id="gpDoorIds" value="">
+            <input type="hidden" id="doorGroupId" value="${doorGroupDetail.id}">
+            <input type="hidden" id="gpDoorIds" value="${doorGroupDetail.door_ids}">
             <tr>
                 <th>출입문 그룹 명</th>
                 <td>
@@ -301,8 +293,10 @@
             <tr>
                 <th>출입문</th>
                 <td style="display: flex;">
+                    <%--  TODO: testarea에 공백 해결  --%>
                     <textarea id="gpDoorNms" name="gpDoorNms" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
-                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>16동 현관</textarea>
+                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:set var="nm" value="${fn:split(doorGroupDetail.door_nms,'/')}" /><c:forEach items="${nm}" var="dName" varStatus="varStatus">
+${dName}</c:forEach></textarea>
                     <div class="ml_10" style="position: relative;">
                         <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px; display: none;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">출입문 선택</button>
                     </div>
