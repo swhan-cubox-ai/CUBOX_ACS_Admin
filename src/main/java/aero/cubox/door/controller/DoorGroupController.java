@@ -169,8 +169,6 @@ public class DoorGroupController {
 
         model.addAttribute("doorGroupDetail", doorGroupDetail);
         model.addAttribute("scheduleList", scheduleList);
-        System.out.println(doorGroupDetail);
-        System.out.println(scheduleList);
 
         return "cubox/door/group/detail";
     }
@@ -209,15 +207,16 @@ public class DoorGroupController {
         param.put("nm", nm);
         param.put("doorSchId", scheduleId);
         param.put("doorIds", doorIds);
-
+        String newDoorId = "";
         try {
-            doorGroupService.addDoorGroup(param);
+             newDoorId = doorGroupService.addDoorGroup(param);
         } catch (Exception e) {
             e.getStackTrace();
             resultCode = "N";
         }
 
         modelAndView.addObject("resultCode", resultCode);
+        modelAndView.addObject("newDoorId", newDoorId);
 
         return modelAndView;
     }

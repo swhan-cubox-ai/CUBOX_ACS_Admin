@@ -46,10 +46,12 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
 
     /**
      * 출입문 그룹 추가
+     *
      * @param commandMap
+     * @return
      */
     @Override
-    public void addDoorGroup(Map<String, Object> commandMap) {
+    public String addDoorGroup(Map<String, Object> commandMap) {
         doorGroupDAO.addDoorGroup(commandMap);
 
         String newDoorGroupId = "";
@@ -73,6 +75,7 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
                 }
             }
         }
+        return newDoorGroupId;
     }
 
     @Override

@@ -14,7 +14,7 @@ public interface DoorGroupService {
 
     HashMap getDoorGroupDetail(int id);
 
-    void addDoorGroup(Map<String, Object> commandMap);
+    String addDoorGroup(Map<String, Object> commandMap);
     void addDoorInDoorGroup(Map<String, Object> commandMap);
 
     void updateDoorGroup(Map<String, Object> commandMap);
