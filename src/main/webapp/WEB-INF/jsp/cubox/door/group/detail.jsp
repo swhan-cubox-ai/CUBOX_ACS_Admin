@@ -101,23 +101,10 @@
     // 출입문 저장, 등록
     function fnSave() {
         console.log("fnSave");
-        let gpNm = $("#gpNm").val();
-        let gpSchedule = $("#gpSchedule").val();
-        let gpDoorIds = $("#gpDoorIds").val();
-        // let gpDoorNms = $("#gpDoorNms").val();
-        console.log(gpDoorIds);
-
         // 입력값 유효성 체크
-        if (fnIsEmpty(gpNm)) {
+        if (fnIsEmpty($("#gpNm").val())) {
             alert("출입문 그룹 명을 입력해주세요.");
             $("#gpNm").focus();
-            return;
-        } else if (fnIsEmpty(gpSchedule)) {
-            alert("출입문 스케쥴을 선택해주세요.");
-            $("#gpSchedule").focus();
-            return;
-        } else if (fnIsEmpty(gpDoorIds)) {
-            alert("출입문을 선택해주세요.");
             return;
         }
 
@@ -145,7 +132,7 @@
     // 삭제 버튼
     function fnDelete() {
         // 연결된 출입문 존재 시
-        if ($("#alDoorCnt").val() != "0" || $("#alDoorCnt").val() != "") {
+        if ($("#gpDoorIds").val() != "") {
             alert("연결된 출입문을 모두 해제한 후 삭제하세요.");
             return;
         }
@@ -154,16 +141,17 @@
             return;
         }
 
-        let id="1"; // example - doorgroup id
+        // let id="1"; // example - doorgroup id
+        let id= $("#doorGroupId").val(); // example - doorgroup id
 
         $.ajax({
             type: "post",
-            url: "/door/group/delete/"+id,
+            url: "/door/group/delete/" + id,
             dataType: 'json',
             success: function (data, status) {
                 if (data.resultCode == "Y") {
-                    location.href = "/door/group/list.do";
                     alert("삭제가 완료되었습니다.");
+                    location.href = "/door/group/list.do";
                 } else {
                     alert("삭제 중 오류가 발생하였습니다.");
                 }
@@ -223,7 +211,7 @@
         let gpNm = $("#gpNm").val();
         let scheduleId = $("#gpSchedule").val();
         let doorIds = $("#gpDoorIds").val();
-        let url = "<c:url value='/door/group/modify/${doorGroupDetail.id}.do' />";
+        let url = "<c:url value='/door/group/modify/${doorGroupDetail.id}' />";
 
         console.log(${doorGroupDetail.id});
         console.log(gpNm);

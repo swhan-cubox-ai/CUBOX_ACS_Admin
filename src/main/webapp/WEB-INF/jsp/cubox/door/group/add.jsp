@@ -56,26 +56,12 @@
     // 출입문 저장, 등록
     function fnSave() {
         console.log("fnSave");
-        let gpNm = $("#gpNm").val();
-        let gpSchedule = $("#gpSchedule").val();
-        let gpDoorIds = $("#gpDoorIds").val();
-        // let gpDoorNms = $("#gpDoorNms").val();
-        console.log(gpDoorIds);
-
         // 입력값 유효성 체크
-        if (fnIsEmpty(gpNm)) {
+        if (fnIsEmpty($("#gpNm").val())) {
             alert("출입문 그룹 명을 입력해주세요.");
             $("#gpNm").focus();
             return;
-        } else if (fnIsEmpty(gpSchedule)) {
-            alert("출입문 스케쥴을 선택해주세요.");
-            $("#gpSchedule").focus();
-            return;
-        } else if (fnIsEmpty(gpDoorIds)) {
-            alert("출입문을 선택해주세요.");
-            return;
         }
-
         fnSaveGroupAjax();
     }
 
@@ -139,16 +125,18 @@
                 console.log("fnSave:" + result.resultCode);
 
                 if( result.resultCode == "Y" ) {
-                    $('#gpNm').prop('disabled', true);
-                    $('#gpSchedule').prop('disabled', true);
-                    $('#gpDoorNms').prop('disabled', true);
+                    // $('#gpNm').prop('disabled', true);
+                    // $('#gpSchedule').prop('disabled', true);
+                    // $('#gpDoorNms').prop('disabled', true);
+                    //
+                    // $('#btnSelDoor').hide();
+                    // $('#saveBtn').hide();
+                    // $('#cancelBtn').hide();
+                    // $('#listBtn').show();
 
-                    $('#btnSelDoor').hide();
-                    $('#saveBtn').hide();
-                    $('#cancelBtn').hide();
-                    $('#listBtn').show();
-
+                    //
                     alert("등록이 완료되었습니다.");
+
 
                 } else {
                     alert("등록에 실패하였습니다.");
