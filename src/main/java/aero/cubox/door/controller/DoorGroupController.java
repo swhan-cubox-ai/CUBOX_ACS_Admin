@@ -183,7 +183,7 @@ public class DoorGroupController {
         HashMap param = new HashMap();
         List<HashMap> scheduleList = doorScheduleService.getDoorScheduleList(param);      // 스케쥴 목록
 
-        modelAndView.addObject("scheduleList", scheduleList);
+        model.addAttribute("scheduleList", scheduleList);
 
         return "cubox/door/group/add";
     }

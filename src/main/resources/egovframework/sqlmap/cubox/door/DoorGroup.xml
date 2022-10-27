@@ -74,7 +74,7 @@
 
 
 
-    <insert id="insertDoorGroup" parameterType="HashMap">
+    <insert id="insertDoorGroup" parameterType="HashMap" useGeneratedKeys="true" keyProperty="doorgrpId" keyColumn="id">
         INSERT
         INTO T_DOORGRP
         ( nm
