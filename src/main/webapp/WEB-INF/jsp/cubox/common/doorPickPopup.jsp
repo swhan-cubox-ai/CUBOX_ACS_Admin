@@ -15,44 +15,72 @@
 </style>
 
 <script type="text/javascript">
-    $(function () {
+$(function () {
 
-        // 출입문 추가
-        $("#add_door").click(function () {
-            let nodeSel = $(".nodeSel").html();
-            let doorSelected = $("#doorSelected").children();
-
-            // 이미 같은 출입문 있을 경우 return
-            for (let i = 1; i < doorSelected.length; i++) {
-                let doorPath = doorSelected.eq(i).children().last().html();
-                if (doorPath == nodeSel) {
-                    return;
-                }
+    // 출입문 추가
+    $("#add_door").click(function () {
+        let nodeSel = $(".nodeSel").html();
+        let nodeSelId = $(".nodeSel").find("span").attr("id");
+        let doorSelected = $("#doorSelected").children();
+        console.log(nodeSelId);
+        // 이미 같은 출입문 있을 경우 return
+        for (let i = 1; i < doorSelected.length; i++) {
+            let doorPath = doorSelected.eq(i).children().last().html();
+            if (doorPath == nodeSel) {
+                return;
             }
-            let tag = "<tr><td><input type='checkbox' name='chkDoorConf'></td><td>" + nodeSel + "</td></tr>";
+        }
+        if (nodeSelId != null || nodeSelId != undefined) {
+            let tag = "<tr><td><input type='checkbox' id='" + nodeSelId + "' name='chkDoorConf'></td><td>" + nodeSel + "</td></tr>";
             $("#doorSelected").append(tag);
-        });
+        }
 
-        // 출입문 삭제
-        $("#delete_door").click(function () {
-            let ckd = $("input[name=chkDoorConf]:checked").length;
-            for (let i = ckd - 1; i > -1; i--) {
-                $("input[name=chkDoorConf]:checked").eq(i).closest("tr").remove();
-            }
-
-            if ($("#chkDoorConfAll").prop("checked")) {
-                $("#chkDoorConfAll").prop("checked", false);
-            }
-        });
-
-        $("#chkDoorConfAll").click(function () {
-            if ($("#chkDoorConfAll").prop("checked")) {
-                $("input[name=chkDoorConf]").prop("checked", true);
-            } else {
-                $("input[name=chkDoorConf]").prop("checked", false);
-            }
-        });
     });
+
+    // 출입문 삭제
+    $("#delete_door").click(function () {
+        let ckd = $("input[name=chkDoorConf]:checked").length;
+        for (let i = ckd - 1; i > -1; i--) {
+            $("input[name=chkDoorConf]:checked").eq(i).closest("tr").remove();
+        }
+
+        if ($("#chkDoorConfAll").prop("checked")) {
+            $("#chkDoorConfAll").prop("checked", false);
+        }
+    });
+
+    $("#chkDoorConfAll").click(function () {
+        if ($("#chkDoorConfAll").prop("checked")) {
+            $("input[name=chkDoorConf]").prop("checked", true);
+        } else {
+            $("input[name=chkDoorConf]").prop("checked", false);
+        }
+    });
+});
+
+
+// 출입문선택 반영
+function setDoors() {
+
+    let doorGpIds = "";
+    let doorGpHtml = [];
+    $("input[name=chkDoorConf]").each(function (i) {
+        let ids = $(this).attr("id");
+        let html = $(this).closest("tr").children().eq(1).find("span").html();
+        if (i == 0) {
+            doorGpIds += ids;
+        } else if (i > 0) {
+            doorGpIds += ("/" + ids);
+        }
+        doorGpHtml.push(html);
+    });
+    console.log(doorGpIds);
+    console.log(doorGpHtml);
+
+    $("#gpDoorIds").val(doorGpIds);
+    $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
+
+}
 
     /////////////////  출입문 목록 ajax - start  /////////////////////
 

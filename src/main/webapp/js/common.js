@@ -248,19 +248,34 @@ function createTree(isMngmt, result, treeDiv) {
 
 			$.each(result.buildingList, function(j, building) { // building
 				if (building.workplace_id === workplace.id) {
-					let bTag = '<span id="' + building.id + '" onclick="' + fnBuilding + '">' + building.building_nm + '</span>';
-					d.add("b_" + building.id, "w_" + workplace.id, bTag, '#','','','/img/folder.gif');
+					let bTag;
+					if (isMngmt) {
+						bTag = '<span id="' + building.id + '" onclick="' + fnBuilding + '">' + building.building_nm + '</span>';
+					} else {
+						bTag = building.building_nm;
+					}
+					d.add("b_" + building.id, "w_" + workplace.id, bTag, '','','','/img/folder.gif');
 					// d.add("b_" + building.id, "w_" + workplace.id, building.building_nm, '','','','/img/folder.gif');
 
 					$.each(result.areaList, function(k, area) {
 						if (area.building_id === building.id) {
-							let aTag = '<span id="' + area.id + '" onclick="' + fnArea + '">' + area.area_nm + '</span>';
+							let aTag;
+							if (isMngmt) {
+								aTag = '<span id="' + area.id + '" onclick="' + fnArea + '">' + area.area_nm + '</span>';
+							} else {
+								aTag = area.area_nm;
+							}
 							d.add("a_" + area.id, "b_" + building.id, aTag, '#','','','/img/folder.gif');
 							// d.add("a_" + area.id, "b_" + building.id, area.area_nm, '','','','/img/folder.gif');
 
 							$.each(result.floorList, function(l, floor) { // floor
 								if (floor.area_id === area.id) {
-									let fTag = '<span id="' + floor.id + '" onclick="' + fnFloor + '">' + floor.floor_nm + '</span>';
+									let fTag;
+									if (isMngmt) {
+										fTag = '<span id="' + floor.id + '" onclick="' + fnFloor + '">' + floor.floor_nm + '</span>';
+									} else {
+										fTag = floor.floor_nm;
+									}
 									d.add("f_" + floor.id, "a_" + area.id, fTag, '#','','','/img/folder.gif');
 									// d.add("f_" + floor.id, "a_" + area.id, floor.floor_nm, '','','','/img/folder.gif');
 
@@ -270,7 +285,8 @@ function createTree(isMngmt, result, treeDiv) {
 											if (isMngmt) { 	// 출입문관리일 경우
 												tag = '<span id="' + door.id + '" onclick="' + fnDoor + '">' + door.door_nm + '</span>';
 											} else {  // 그 외(그룹관리, 알람그룹)
-												tag = door.door_nm;
+												// tag = door.door_nm;
+												tag = '<span id="' + door.id + '">' + door.door_nm + '</span>';
 											}
 											d.add("d_" + door.id, "f_" + floor.id, tag, "#", '','','/img/page.gif');
 										}

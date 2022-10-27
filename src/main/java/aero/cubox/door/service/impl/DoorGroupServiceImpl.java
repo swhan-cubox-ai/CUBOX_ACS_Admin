@@ -74,7 +74,7 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
             }
         }
 
-        doorGroupDAO.addDoorInDoorGroup(commandMap);
+//        doorGroupDAO.addDoorInDoorGroup(commandMap);
 
     }
 

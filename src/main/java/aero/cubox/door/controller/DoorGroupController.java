@@ -169,6 +169,8 @@ public class DoorGroupController {
 
         model.addAttribute("doorGroupDetail", doorGroupDetail);
         model.addAttribute("scheduleList", scheduleList);
+        System.out.println(doorGroupDetail);
+        System.out.println(scheduleList);
 
         return "cubox/door/group/detail";
     }
