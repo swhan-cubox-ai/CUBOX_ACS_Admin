@@ -60,7 +60,8 @@ $(function () {
 
 
 // 출입문선택 반영
-function setDoors() {
+function setDoors(type) {
+
 
     let doorGpIds = "";
     let doorGpHtml = [];
@@ -77,9 +78,17 @@ function setDoors() {
     console.log(doorGpIds);
     console.log(doorGpHtml);
 
-    $("#gpDoorIds").val(doorGpIds);
-    $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
-
+    if (type === "Group") { // 그룹관리 추가 시
+        $("#gpDoorIds").val(doorGpIds);
+        $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
+    } else if (type === "AlarmGroup") { // 알람그룹 추가 시
+        $("#doorIds").val(doorGpIds);
+        $("#tdGroupTotal").empty();
+        $.each(doorGpHtml, function(i, html) {
+           let tag = "<tr><td>" + html + "</td></tr>";
+           $("#tdGroupTotal").append(tag);
+        });
+    }
 }
 
     /////////////////  출입문 목록 ajax - start  /////////////////////

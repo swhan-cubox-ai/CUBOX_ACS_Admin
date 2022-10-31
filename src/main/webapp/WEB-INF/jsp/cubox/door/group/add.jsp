@@ -94,7 +94,7 @@
 
     // popup close (공통)
     function closePopup(popupNm) {
-        setDoors();
+        setDoors("Group");
         $("#" + popupNm).PopupWindow("close");
     }
 

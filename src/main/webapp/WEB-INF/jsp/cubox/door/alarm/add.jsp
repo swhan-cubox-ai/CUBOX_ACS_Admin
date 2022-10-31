@@ -97,6 +97,7 @@
     }
 
 
+
     /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
 
     function fnSaveAlarmGroupAjax() {
@@ -154,7 +155,7 @@
 
         if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
             // TODO : 출입문 저장 로직
-
+            setDoors("AlarmGroup");
             $("#alDoorCnt").val($("input[name=chkDoorConf]").length);
         }
     }
@@ -205,7 +206,7 @@
             <tr>
                 <th>출입문 수</th>
                 <td>
-                    <input type="number" id="alDoorCnt" name="alDoorCnt" maxlength="50" value="" class="input_com w_600px" disabled>&ensp;
+                    <input type="number" id="alDoorCnt" name="alDoorCnt" maxlength="50" value="0" class="input_com w_600px" disabled>&ensp;
                     <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>
                     <button type="button" class="btn_small color_basic" onclick="openPopup('doorEditPopup')">출입문 등록</button>
                 </td>

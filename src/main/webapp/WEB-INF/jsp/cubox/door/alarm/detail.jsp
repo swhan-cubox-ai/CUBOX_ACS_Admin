@@ -201,7 +201,7 @@
 
         if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
             // TODO : 출입문 저장 로직
-
+            setDoors("AlarmGroup");
             $("#alDoorCnt").val($("input[name=chkDoorConf]").length);
         }
     }

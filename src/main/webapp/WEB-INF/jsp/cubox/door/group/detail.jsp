@@ -201,7 +201,7 @@
         // });
         // $("#gpDoor").val(doorGroup.join("\r\n"));
 
-        setDoors();
+        setDoors("Group");
         $("#" + popupNm).PopupWindow("close");
     }
 
