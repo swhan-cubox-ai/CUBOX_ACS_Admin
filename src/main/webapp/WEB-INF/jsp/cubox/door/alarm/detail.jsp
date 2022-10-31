@@ -13,7 +13,6 @@
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorListPopup.jsp" flush="false"/>
 
-
 <style>
     .title_box {
         margin-top: 10px;
@@ -54,8 +53,7 @@
 
         // 유형 - 기본시간
         $("#alType").change(function() {
-            console.log("유형");
-            console.log(this);
+            console.log("alType 유형");
             console.log($(this).val());
 
             chkAlType();
@@ -72,19 +70,9 @@
         }
     }
 
-    // 목록 버튼
-    function fnList() {
-        location.href = "/door/alarmGroup/list.do";
-    }
-
     // 수정 확인
     function fnSave() {
-        let alNm = $("#alNm").val();
-        let alType = $("#alType").val();
-        let alTime = $("#alTime").val();
-        let alUseYn = $("#alUseYn").val();
-        let alDoorCnt = $("#alDoorCnt").val();
-        // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
+        console.log("fnSave");
 
         // 입력값 유효성 체크
         if (alNm == "") {
@@ -103,21 +91,66 @@
             alert("출입문을 선택해주세요.");
             return;
         }
-        fnCancel();
-        // TODO: 저장 ajax
+        fnUpdateAlarmGroupAjax();
     }
+
+
+    /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
+
+    function fnUpdateAlarmGroupAjax() {
+        let alNm = $("#alNm").val();
+        let alType = $("#alType").val();
+        let alTime = $("#alTime").val();
+        let alUseYn = $("#alUseYn").val();
+        let doorIds = $("#doorIds").val();
+        let url = "<c:url value='/door/alarm/modify/${doorGroupDetail.id}'/>"
+        // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
+
+        console.log(alNm);
+        console.log(alType);
+        console.log(alTime);
+        console.log(alUseYn);
+        console.log(doorIds);
+        console.log(url);
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                nm: alNm,
+                type: alType,
+                time: alTime,
+                useYn: alUseYn,
+                doorIds: doorIds
+            },
+            dataType: "json",
+            success: function(result) {
+                console.log("fnSave : " + result.resultCode);
+                if (result.resultCode == "Y") {
+                    alert("수정이 완료되었습니다.");
+                    window.location.href = '/door/alarm/detail/${doorGroupDetail.id}';
+                } else {
+                    alert("수정에 실패하였습니다.");
+                }
+            }
+        });
+    }
+
+    /////////////////  출입문 알람그룹 저장 ajax - end  /////////////////////
+
 
     // 수정 취소
     function fnCancel() {
-        $(".title_tx").html("출입문 스케쥴 - 상세");
-        $("#btnEdit").css("display", "none");
-        $("#btnboxDetail").css("display", "block");
-        $("#btnboxEdit").css("display", "none");
-        $("[name=detail]").attr("disabled", true);
+        // $(".title_tx").html("출입문 스케쥴 - 상세");
+        // $("#btnEdit").css("display", "none");
+        // $("#btnboxDetail").css("display", "block");
+        // $("#btnboxEdit").css("display", "none");
+        // $("[name=detail]").attr("disabled", true);
+        window.location.href = '/door/alarm/detail/${doorGroupDetail.id}';
     }
 
     // 수정 버튼
-    function fnEdit() {
+    function fnEditMode() {
         $(".title_tx").html("출입문 알람 그룹 - 수정");
         $("#btnEdit").css("display", "inline-block");
         $("#btnboxDetail").css("display", "none");
@@ -125,17 +158,10 @@
         $("[name=detail]").attr("disabled", false);
     }
 
-    // 출입문 선택
-    // function selectDoor(self) {
-    //     let door = $(self);
-    //     console.log(door.html());
-    //     console.log(door.attr("value"));
-    // }
-
     // 삭제 버튼
     function fnDelete() {
         // 연결된 출입문 존재 시
-        if ($("#alDoorCnt").val() != "0" || $("#alDoorCnt").val() != "") {
+        if (("#doorIds").val() != "") {
             alert("연결된 출입문을 모두 해제한 후 삭제하세요.");
             return;
         }
@@ -143,14 +169,29 @@
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-        location.href = "/door/alarmGroup/list.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
+
+        let id = $("#alarmGroupId").val();
+
+        $.ajax({
+           type: "post",
+           url: "/door/alarm/delete/" + id,
+           dataType: 'json',
+           success: function(result, status) {
+               if (result.resultCode == "Y") {
+                   alert("삭제가 완료되었습니다.");
+                   location.href = "/door/alarm/list.do";
+               } else {
+                   alert("삭제 중 오류가 발생했습니다.");
+               }
+           }
+        });
     }
 
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
         if (popupNm === "doorEditPopup") {
-            fnGetDoorListAjax(); //출입문 목록
+            fnGetDoorListAjax("AlarmGroup"); //출입문 목록
         }
     }
 
@@ -174,6 +215,8 @@
                 <col style="width:90%">
             </colgroup>
             <tbody id="tdAlarmDetail">
+            <input type="hidden" id="alarmGroupId" value="${doorGroupDetail.id}">
+            <input type="hidden" id="doorIds" value="">
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
@@ -186,7 +229,7 @@
                     <select id="alType" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
                         <option value="">선택</option>
                         <option value="default" selected>기본 시간</option>
-                        <option value="setTime">지정시간</option>
+                        <option value="setTime">지정 시간</option>
                     </select>
                 </td>
             </tr>
@@ -210,7 +253,7 @@
             <tr>
                 <th>출입문 수</th>
                 <td>
-                    <input type="text" id="alDoorCnt" name="detail" maxlength="50" value="${doorGroupDetail.door_cnt}" class="input_com w_600px" disabled>
+                    <input type="text" id="alDoorCnt" name="alDoorCnt" maxlength="50" value="${doorGroupDetail.door_cnt}" class="input_com w_600px" disabled>
                     <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>
                     <button type="button" id="btnEdit" class="btn_small color_basic" onclick="openPopup('doorEditPopup')" style="display: none">출입문 수정</button>
                 </td>
@@ -221,8 +264,8 @@
 </form>
 
 <div class="right_btn mt_20" id="btnboxDetail">
-    <button class="btn_middle color_basic" onclick="fnList();">목록</button>
-    <button class="btn_middle ml_5 color_basic" onclick="fnEdit();">수정</button>
+    <button class="btn_middle color_basic" onclick="location='/door/alarm/list.do'">목록</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnEditMode();">수정</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
 </div>
 <div class="right_btn mt_20" id="btnboxEdit" style="display: none;">

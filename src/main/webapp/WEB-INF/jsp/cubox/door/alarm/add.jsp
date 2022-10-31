@@ -72,22 +72,9 @@
         }
     }
 
-    // 수정 버튼
-    function fnEdit() {
-        f = document.detailForm;
-        f.action = "/door/alarmGroup/addView.do";
-        f.submit();
-    }
-
     // 출입문 저장, 등록
     function fnSave() {
         console.log("fnSave");
-        let alNm = $("#alNm").val();
-        let alType = $("#alType").val();
-        let alTime = $("#alTime").val();
-        let alUseYn = $("#alUseYn").val();
-        let alDoorCnt = $("#alDoorCnt").val();
-        // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
 
         // 입력값 유효성 체크
         if (alNm == "") {
@@ -106,21 +93,58 @@
             alert("출입문을 선택해주세요.");
             return;
         }
+        fnSaveAlarmGroupAjax();
+    }
 
-        location.href = "/door/alarmGroup/detail.do";
+
+    /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
+
+    function fnSaveAlarmGroupAjax() {
+        let alNm = $("#alNm").val();
+        let alType = $("#alType").val();
+        let alTime = $("#alTime").val();
+        let alUseYn = $("#alUseYn").val();
+        let doorIds = $("#doorIds").val();
+        // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
+
+        console.log(alNm);
+        console.log(alType);
+        console.log(alTime);
+        console.log(alUseYn);
+        console.log(doorIds);
+
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='/door/alarm/save.do'/>",
+            data: {
+                nm: alNm,
+                type: alType,
+                time: alTime,
+                useYn: alUseYn,
+                doorIds: doorIds
+            },
+            dataType: "json",
+            success: function(result) {
+                console.log("fnSave : " + result.resultCode);
+                if (result.resultCode == "Y") {
+                    alert("등록이 완료되었습니다.");
+
+                } else {
+                    alert("등록에 실패하였습니다.");
+                }
+            }
+        });
 
     }
 
-    // 알람그룹 수정 취소
-    function fnCancel() {
-        $("#detailForm").attr("action", "/door/alarmGroup/listView.do");
-    }
+    /////////////////  출입문 알람그룹 저장 ajax - end  /////////////////////
+
 
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
         if (popupNm === "doorEditPopup") {
-            fnGetDoorListAjax(); //출입문 목록
+            fnGetDoorListAjax("AlarmGroup"); //출입문 목록
         }
     }
 
@@ -144,6 +168,7 @@
                 <col style="width:90%">
             </colgroup>
             <tbody id="tdAlarmDetail">
+            <input type="hidden" id="doorIds" value="">
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
@@ -192,6 +217,6 @@
 
 <div class="right_btn mt_20">
     <button class="btn_middle ml_5 color_basic" onclick="fnSave();">등록</button>
-    <button class="btn_middle ml_5 color_basic" onclick="location='/door/alarmGroup/listView.do'">취소</button>
+    <button class="btn_middle ml_5 color_basic" onclick="location='/door/alarm/list.do'">취소</button>
 </div>
 

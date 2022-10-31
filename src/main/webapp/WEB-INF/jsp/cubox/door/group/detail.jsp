@@ -113,11 +113,12 @@
 
     // 수정 취소
     function fnCancel() {
-        $(".title_tx").html("출입문 그룹 관리 - 상세");
-        $("#btnboxDetail").css("display", "block");
-        $("#btnboxEdit").css("display", "none");
-        $("#btnEdit").css("display", "none");
-        $("[name=detail]").attr("disabled", true);
+        // $(".title_tx").html("출입문 그룹 관리 - 상세");
+        // $("#btnboxDetail").css("display", "block");
+        // $("#btnboxEdit").css("display", "none");
+        // $("#btnEdit").css("display", "none");
+        // $("[name=detail]").attr("disabled", true);
+        window.location.href = '/door/group/detail/${doorGroupDetail.id}';
     }
 
     // 수정 버튼
@@ -157,7 +158,6 @@
                 }
             }
         });
-        // location.href = "/door/group/listView.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
     }
 
     // 출입문선택 반영
@@ -187,7 +187,7 @@
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
         if (popupNm === "doorEditPopup") {
-            fnGetDoorListAjax(); //출입문 목록
+            fnGetDoorListAjax("Group"); //출입문 목록
         }
     }
 
@@ -232,16 +232,17 @@
                 console.log("fnSave:" + result.resultCode);
 
                 if( result.resultCode == "Y" ) {
-                    $('#gpNm').prop('disabled', true);
-                    $('#gpSchedule').prop('disabled', true);
-                    $('#gpDoorNms').prop('disabled', true);
-
-                    $('#btnSelDoor').hide();
-                    $('#saveBtn').hide();
-                    $('#cancelBtn').hide();
-                    $('#listBtn').show();
+                    // $('#gpNm').prop('disabled', true);
+                    // $('#gpSchedule').prop('disabled', true);
+                    // $('#gpDoorNms').prop('disabled', true);
+                    //
+                    // $('#btnSelDoor').hide();
+                    // $('#saveBtn').hide();
+                    // $('#cancelBtn').hide();
+                    // $('#listBtn').show();
 
                     alert("수정이 완료되었습니다.");
+                    window.location.href = '/door/group/detail/${doorGroupDetail.id}';
                 } else {
                     alert("수정에 실패하였습니다.");
                 }

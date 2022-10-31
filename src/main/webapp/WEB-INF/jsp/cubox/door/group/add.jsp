@@ -33,8 +33,6 @@
 
 <script type="text/javascript">
 
-    const defaultTime = 60; // 기본 시간 설정
-
     $(function () {
 
         $(".title_tx").html("출입문 그룹 관리 - 등록");
@@ -91,7 +89,7 @@
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
-        fnGetDoorListAjax(); //출입문 목록
+        fnGetDoorListAjax("Group"); //출입문 목록
     }
 
     // popup close (공통)
@@ -124,7 +122,9 @@
             success: function (result) {
                 console.log("fnSave:" + result.resultCode);
 
-                if( result.resultCode == "Y" ) {
+                if(result.resultCode == "Y" && result.newDoorId !== "") {
+                    alert("등록이 완료되었습니다.");
+                    window.location.href = '/door/group/detail/' + result.newDoorId + '.do';
                     // $('#gpNm').prop('disabled', true);
                     // $('#gpSchedule').prop('disabled', true);
                     // $('#gpDoorNms').prop('disabled', true);
@@ -133,11 +133,6 @@
                     // $('#saveBtn').hide();
                     // $('#cancelBtn').hide();
                     // $('#listBtn').show();
-
-                    //
-                    alert("등록이 완료되었습니다.");
-
-
                 } else {
                     alert("등록에 실패하였습니다.");
                 }
