@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static aero.cubox.util.StringUtil.isEmpty;
+
 @Service("doorGroupService")
 public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements DoorGroupService {
 
@@ -60,7 +62,7 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
         HashMap paramMap = new HashMap();
 
         //출입권한-출입문 table에 door_id Insert
-        if( !StringUtil.isEmpty((String) commandMap.get("doorIds"))){
+        if( !isEmpty((String) commandMap.get("doorIds"))){
 
             String doorIds = "";
             doorIds = commandMap.get("doorIds").toString();
@@ -90,6 +92,22 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
     @Override
     public void updateDoorGroup(Map<String, Object> commandMap) {
         doorGroupDAO.updateDoorGroup(commandMap);
+
+        //출입권한-출입문 table에 door_id Insert
+        if( !isEmpty((String) commandMap.get("doorIds"))){
+
+            String doorIds = "";
+            doorIds = commandMap.get("doorIds").toString();
+
+            if( doorIds.length() > 0 ){
+                String[] doorIdArr = doorIds.split("/");
+                for (int i = 0; i < doorIdArr.length; i++) {
+                    commandMap.put("doorId", doorIdArr[i]);
+                    doorGroupDAO.deleteDoorInDoorGroup(commandMap);
+                    doorGroupDAO.addDoorInDoorGroup(commandMap);
+                }
+            }
+        }
     }
 
     /**
