@@ -99,7 +99,6 @@
             success: function (result) {
                 console.log("fnSave:" + result.resultCode);
 
-
                 if( result.resultCode === "Y" && result.newDoorId !== "") {
                     alert("등록이 완료되었습니다.");
                     window.location.href = '/door/group/detail/' + result.newDoorId;

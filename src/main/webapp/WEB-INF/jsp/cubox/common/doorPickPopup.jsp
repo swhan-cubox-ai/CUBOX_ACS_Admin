@@ -108,9 +108,9 @@ function setDoors(type) {
 
                 $("#doorSelected").empty();
                 let doorList;
-                if (type === "Group" && $("#gpDoorIds").val() != "") {              // 그룹관리 수정 시
+                if (type === "Group" && $("#gpDoorIds").val() != "") { // 수정일 떄
                     doorList = $("#gpDoorIds").val().split("/");
-                } else if (type === "AlarmGroup" && $("#doorIds").val() !== "") {   // 알람그룹 수정 시
+                } else if (type === "AlarmGroup" && $("#doorIds").val() !== "") {
                     doorList = $("#doorIds").val().split("/");
                 }
 
@@ -118,7 +118,6 @@ function setDoors(type) {
                     $("span[id=" + door + "]").parent().toggleClass("node nodeSel");
                     $(".add_door").click();
                     $("span[id=" + door + "]").parent().toggleClass("nodeSel node");
-
                 });
             }
         });
