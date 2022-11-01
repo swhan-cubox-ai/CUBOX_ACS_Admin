@@ -33,8 +33,6 @@
 
 <script type="text/javascript">
 
-    const defaultTime = 60; // 기본 시간 설정
-
     $(function () {
 
         $(".title_tx").html("출입문 그룹 관리 - 등록");
@@ -91,7 +89,7 @@
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
-        fnGetDoorListAjax(); //출입문 목록
+        fnGetDoorListAjax("Group"); //출입문 목록
     }
 
     // popup close (공통)
