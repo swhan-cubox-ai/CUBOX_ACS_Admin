@@ -13,7 +13,6 @@
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorListPopup.jsp" flush="false"/>
 
-
 <style>
     .title_box {
         margin-top: 10px;
@@ -54,8 +53,7 @@
 
         // 유형 - 기본시간
         $("#alType").change(function() {
-            console.log("유형");
-            console.log(this);
+            console.log("alType 유형");
             console.log($(this).val());
 
             // chkAlType();
@@ -72,20 +70,8 @@
     //     }
     // }
 
-    // 목록 버튼
-    function fnList() {
-        location.href = "/door/alarmGroup/list.do";
-    }
-
     // 수정 확인
     function fnSave() {
-        let alNm = $("#alNm").val();
-        let alType = $("#alType").val();
-        let alTime = $("#alTime").val();
-        let alUseYn = $("#alUseYn").val();
-        let alDoorCnt = $("#alDoorCnt").val();
-        // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
-
         // 입력값 유효성 체크
         if (fnIsEmpty($("#alNm").val())) {
             alert("출입문 알람 그룹 명을 입력해주세요.");
@@ -106,9 +92,6 @@
         fnCancel();
         // TODO: 저장 ajax
     }
-
-<<<<<<< HEAD
-=======
 
     /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
 
@@ -154,31 +137,24 @@
     /////////////////  출입문 알람그룹 저장 ajax - end  /////////////////////
 
 
->>>>>>> 384da92 (Mod: 알림그룹 상세, 추가 수정)
     // 수정 취소
     function fnCancel() {
-        $(".title_tx").html("출입문 스케쥴 - 상세");
-        $("#btnEdit").css("display", "none");
-        $("#btnboxDetail").css("display", "block");
-        $("#btnboxEdit").css("display", "none");
-        $("[name=detail]").attr("disabled", true);
+        // $(".title_tx").html("출입문 스케쥴 - 상세");
+        // $("#btnEdit").css("display", "none");
+        // $("#btnboxDetail").css("display", "block");
+        // $("#btnboxEdit").css("display", "none");
+        // $("[name=detail]").attr("disabled", true);
+        window.location.href = '/door/alarm/detail/${doorGroupDetail.id}';
     }
 
     // 수정 버튼
-    function fnEdit() {
+    function fnEditMode() {
         $(".title_tx").html("출입문 알람 그룹 - 수정");
         $("#btnEdit").css("display", "inline-block");
         $("#btnboxDetail").css("display", "none");
         $("#btnboxEdit").css("display", "block");
         $("[name=detail]").attr("disabled", false);
     }
-
-    // 출입문 선택
-    // function selectDoor(self) {
-    //     let door = $(self);
-    //     console.log(door.html());
-    //     console.log(door.attr("value"));
-    // }
 
     // 삭제 버튼
     function fnDelete() {
@@ -219,13 +195,11 @@
 
     // popup close (공통)
     function closePopup(popupNm) {
-        $("#" + popupNm).PopupWindow("close");
-
         if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
             // TODO : 출입문 저장 로직
-
-            $("#alDoorCnt").val($("input[name=chkDoorConf]").length);
+            setDoors("AlarmGroup");
         }
+        $("#" + popupNm).PopupWindow("close");
     }
 
 </script>
@@ -237,6 +211,8 @@
                 <col style="width:90%">
             </colgroup>
             <tbody id="tdAlarmDetail">
+            <input type="hidden" id="alarmGroupId" value="${doorGroupDetail.id}">
+            <input type="hidden" id="doorIds" value="">
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
@@ -281,7 +257,7 @@
             <tr>
                 <th>출입문 수</th>
                 <td>
-                    <input type="text" id="alDoorCnt" name="detail" maxlength="50" value="${doorGroupDetail.door_cnt}" class="input_com w_600px" disabled>
+                    <input type="text" id="alDoorCnt" name="alDoorCnt" maxlength="50" value="${doorGroupDetail.door_cnt}" class="input_com w_600px" disabled>
                     <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>
                     <button type="button" id="btnEdit" class="btn_small color_basic" onclick="openPopup('doorEditPopup')" style="display: none">출입문 수정</button>
                 </td>
@@ -292,8 +268,8 @@
 </form>
 
 <div class="right_btn mt_20" id="btnboxDetail">
-    <button class="btn_middle color_basic" onclick="fnList();">목록</button>
-    <button class="btn_middle ml_5 color_basic" onclick="fnEdit();">수정</button>
+    <button class="btn_middle color_basic" onclick="location='/door/alarm/list.do'">목록</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnEditMode();">수정</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
 </div>
 <div class="right_btn mt_20" id="btnboxEdit" style="display: none;">

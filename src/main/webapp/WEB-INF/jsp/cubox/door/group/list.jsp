@@ -1,16 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <script type="text/javascript">
     $(function () {
         $(".title_tx").html("출입문 그룹 관리 - 목록");
-    });
-
-    $(function () {
-
-
     });
 
     //페이지 검색
@@ -45,7 +39,7 @@
     <!--//검색박스 -->
 </form>
 
-<div class="com_box ">
+<div class="com_box">
     <div class="totalbox">
         <div class="txbox">
             <!-- 건수 -->
@@ -53,7 +47,7 @@
             <!-- // 건수 -->
         </div>
         <!--버튼 -->
-        <div class="r_btnbox  mb_10">
+        <div class="r_btnbox mb_10">
             <button type="button" class="btn_excel" id="excelDown">엑셀다운로드</button>
             <button type="button" class="btn_middle color_basic" id="addDoorGroup" onclick="fnAddDoorGroup()">신규등록
             </button>
