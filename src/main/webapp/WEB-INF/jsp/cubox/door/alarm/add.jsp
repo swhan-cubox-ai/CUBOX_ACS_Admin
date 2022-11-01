@@ -90,25 +90,61 @@
         // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
 
         // 입력값 유효성 체크
-        if (alNm == "") {
+        if (fnIsEmpty($("#alNm").val())) {
             alert("출입문 알람 그룹 명을 입력해주세요.");
             $("#alNm").focus(); return;
-        } else if (alType == "") {
+        } else if (fnIsEmpty($("#alType").val())) {
             alert("유형을 선택해주세요.");
             $("#alType").focus(); return;
-        } else if (alTime == "") {
+        } else if (fnIsEmpty($("#alTime").val())) {
             alert("시간을 입력해주세요.");
             $("#alTime").focus(); return;
-        } else if (alUseYn == "") {
+        } else if (fnIsEmpty($("#alUseYn").val())) {
             alert("사용여부를 선택해주세요.");
             $("#alUseYn").focus(); return;
-        } else if (alDoorCnt == "" || alDoorCnt == 0) {
+        } else if (fnIsEmpty($("#doorIds").val() || $("#alDoorCnt").val()) == 0) {
             alert("출입문을 선택해주세요.");
             return;
         }
 
         location.href = "/door/alarmGroup/detail.do";
+    /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
 
+    function fnSaveAlarmGroupAjax() {
+        let alNm = $("#alNm").val();
+        let alType = $("#alType").val();
+        let alTime = $("#alTime").val();
+        let alUseYn = $("#alUseYn").val();
+        let doorIds = $("#doorIds").val();
+        // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
+
+        console.log(alNm);
+        console.log(alType);
+        console.log(alTime);
+        console.log(alUseYn);
+        console.log(doorIds);
+
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='/door/alarm/save.do'/>",
+            data: {
+                nm: alNm,
+                type: alType,
+                time: alTime,
+                useYn: alUseYn,
+                doorIds: doorIds
+            },
+            dataType: "json",
+            success: function(result) {
+                console.log("fnSave : " + result.resultCode);
+                if (result.resultCode == "Y") {
+                    alert("등록이 완료되었습니다.");
+
+                } else {
+                    alert("등록에 실패하였습니다.");
+                }
+            }
+        });
     }
 
     // 알람그룹 수정 취소
@@ -119,20 +155,19 @@
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
-        if (popupNm === "doorEditPopup") {
-            fnGetDoorListAjax(); //출입문 목록
+        if (popupNm === "doorEditPopup") { // 출입문 등록
+            fnGetDoorListAjax("AlarmGroup");
         }
     }
 
     // popup close (공통)
     function closePopup(popupNm) {
-        $("#" + popupNm).PopupWindow("close");
-
         if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
             // TODO : 출입문 저장 로직
-
             $("#alDoorCnt").val($("input[name=chkDoorConf]").length);
+            setDoors("AlarmGroup");
         }
+        $("#" + popupNm).PopupWindow("close");
     }
 
 </script>

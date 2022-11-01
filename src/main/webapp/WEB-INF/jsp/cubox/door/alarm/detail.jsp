@@ -43,7 +43,7 @@
         modalPopup("doorListPopup", "출입문 목록", 450, 550);
         modalPopup("doorEditPopup", "출입문 수정", 900, 600);
 
-        chkAlType();
+        // chkAlType();
 
         // 출입문 알람그룹 명 유효성 체크
         $("#alNm").focusout(function() {
@@ -58,19 +58,19 @@
             console.log(this);
             console.log($(this).val());
 
-            chkAlType();
+            // chkAlType();
         });
 
     });
 
     // 유형:기본시간 --> 시간 고정
-    function chkAlType() {
-        if ($("#alType").val() == "default") {
-            $("#alTime").val(defaultTime).attr("disabled", true);
-        } else {
-            $("#alTime").val("").attr("disabled", false);
-        }
-    }
+    // function chkAlType() {
+    //     if ($("#alType").val() == "default") {
+    //         $("#alTime").val(defaultTime).attr("disabled", true);
+    //     } else {
+    //         $("#alTime").val("").attr("disabled", false);
+    //     }
+    // }
 
     // 목록 버튼
     function fnList() {
@@ -87,19 +87,19 @@
         // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
 
         // 입력값 유효성 체크
-        if (alNm == "") {
+        if (fnIsEmpty($("#alNm").val())) {
             alert("출입문 알람 그룹 명을 입력해주세요.");
             $("#alNm").focus(); return;
-        } else if (alType == "") {
+        } else if (fnIsEmpty($("#alType").val())) {
             alert("유형을 선택해주세요.");
             $("#alType").focus(); return;
-        } else if (alTime == "") {
+        } else if (fnIsEmpty($("#alTime").val())) {
             alert("시간을 입력해주세요.");
             $("#alTime").focus(); return;
-        } else if (alUseYn == "") {
+        } else if (fnIsEmpty($("#alUseYn").val())) {
             alert("사용여부를 선택해주세요.");
             $("#alUseYn").focus(); return;
-        } else if (alDoorCnt == "" || alDoorCnt == 0) {
+        } else if (fnIsEmpty($("#doorIds").val() || $("#alDoorCnt").val()) == 0) {
             alert("출입문을 선택해주세요.");
             return;
         }
@@ -107,6 +107,54 @@
         // TODO: 저장 ajax
     }
 
+<<<<<<< HEAD
+=======
+
+    /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
+
+    function fnUpdateAlarmGroupAjax() {
+        let alNm = $("#alNm").val();
+        let alType = $("#alType").val();
+        let alTime = $("#alTime").val();
+        let alUseYn = $("#alUseYn").val();
+        let doorIds = $("#doorIds").val();
+        let url = "<c:url value='/door/alarm/modify/${doorGroupDetail.id}'/>"
+        // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
+
+        console.log(alNm);
+        console.log(alType);
+        console.log(alTime);
+        console.log(alUseYn);
+        console.log(doorIds);
+        console.log(url);
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                nm: alNm,
+                type: alType,
+                time: alTime,
+                useYn: alUseYn,
+                doorIds: doorIds
+            },
+            dataType: "json",
+            success: function(result) {
+                console.log("fnSave : " + result.resultCode);
+                if (result.resultCode === "Y") {
+                    alert("수정이 완료되었습니다.");
+                    window.location.href = '/door/alarm/detail/${doorGroupDetail.id}';
+                } else {
+                    alert("수정에 실패하였습니다.");
+                }
+            }
+        });
+    }
+
+    /////////////////  출입문 알람그룹 저장 ajax - end  /////////////////////
+
+
+>>>>>>> 384da92 (Mod: 알림그룹 상세, 추가 수정)
     // 수정 취소
     function fnCancel() {
         $(".title_tx").html("출입문 스케쥴 - 상세");
@@ -135,7 +183,7 @@
     // 삭제 버튼
     function fnDelete() {
         // 연결된 출입문 존재 시
-        if ($("#alDoorCnt").val() != "0" || $("#alDoorCnt").val() != "") {
+        if (("#doorIds").val() !== "") {
             alert("연결된 출입문을 모두 해제한 후 삭제하세요.");
             return;
         }
@@ -143,14 +191,29 @@
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-        location.href = "/door/alarmGroup/list.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
+
+        let id = $("#alarmGroupId").val();
+
+        $.ajax({
+           type: "post",
+           url: "/door/alarm/delete/" + id,
+           dataType: 'json',
+           success: function(result, status) {
+               if (result.resultCode === "Y") {
+                   alert("삭제가 완료되었습니다.");
+                   location.href = "/door/alarm/list.do";
+               } else {
+                   alert("삭제 중 오류가 발생했습니다.");
+               }
+           }
+        });
     }
 
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
-        if (popupNm === "doorEditPopup") {
-            fnGetDoorListAjax(); //출입문 목록
+        if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
+            fnGetDoorListAjax("AlarmGroup"); //출입문 목록
         }
     }
 
@@ -158,7 +221,7 @@
     function closePopup(popupNm) {
         $("#" + popupNm).PopupWindow("close");
 
-        if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
+        if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
             // TODO : 출입문 저장 로직
 
             $("#alDoorCnt").val($("input[name=chkDoorConf]").length);
@@ -185,8 +248,16 @@
                 <td>
                     <select id="alType" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
                         <option value="">선택</option>
-                        <option value="default" selected>기본 시간</option>
-                        <option value="setTime">지정시간</option>
+                        <option value="Y" selected>Y</option>
+<%--                        <c:choose>--%>
+<%--                            <c:when test="${doorGroupDetail.env_yn eq 'Y'}">--%>
+<%--                                <option value="Y" selected>Y</option>--%>
+<%--                            </c:when>--%>
+<%--                            <c:otherwise>--%>
+<%--                                <option value="default" selected>기본 시간</option>--%>
+<%--                                <option value="setTime">지정 시간</option>--%>
+<%--                            </c:otherwise>--%>
+<%--                        </c:choose>--%>
                     </select>
                 </td>
             </tr>

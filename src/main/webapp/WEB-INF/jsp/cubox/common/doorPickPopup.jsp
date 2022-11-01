@@ -80,6 +80,18 @@ function setDoors() {
     $("#gpDoorIds").val(doorGpIds);
     $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
 
+    if (type === "Group") {                 // 그룹관리
+        $("#gpDoorIds").val(doorGpIds);
+        $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
+    } else if (type === "AlarmGroup") {     // 알람그룹
+        $("#doorIds").val(doorGpIds);
+        $("#tdGroupTotal").empty();
+        $("#alDoorCnt").val($("input[name=chkDoorConf]").length);   // 출입문 수
+        $.each(doorGpHtml, function(i, html) {                      // 출입문 목록에 반영
+           let tag = "<tr><td>" + html + "</td></tr>";
+           $("#tdGroupTotal").append(tag);
+        });
+    }
 }
 
     /////////////////  출입문 목록 ajax - start  /////////////////////
@@ -107,6 +119,11 @@ function setDoors() {
                         $(".add_door").click();
                         $("span[id=" + gpDoor + "]").parent().toggleClass("nodeSel node");
                     })
+                let doorList;
+                if (type === "Group" && $("#gpDoorIds").val() != "") {              // 그룹관리 수정 시
+                    doorList = $("#gpDoorIds").val().split("/");
+                } else if (type === "AlarmGroup" && $("#doorIds").val() !== "") {   // 알람그룹 수정 시
+                    doorList = $("#doorIds").val().split("/");
                 }
             }
         });
