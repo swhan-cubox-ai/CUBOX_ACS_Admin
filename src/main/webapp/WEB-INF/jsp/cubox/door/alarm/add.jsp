@@ -85,20 +85,17 @@
         // 입력값 유효성 체크
         if (fnIsEmpty($("#alNm").val())) {
             alert("출입문 알람 그룹 명을 입력해주세요.");
-            $("#alNm").focus();
-            return;
+
+            $("#alNm").focus(); return;
         } else if (fnIsEmpty($("#alType").val())) {
             alert("유형을 선택해주세요.");
-            $("#alType").focus();
-            return;
+            $("#alType").focus(); return;
         } else if (fnIsEmpty($("#alTime").val())) {
             alert("시간을 입력해주세요.");
-            $("#alTime").focus();
-            return;
+            $("#alTime").focus(); return;
         } else if (fnIsEmpty($("#alUseYn").val())) {
             alert("사용여부를 선택해주세요.");
-            $("#alUseYn").focus();
-            return;
+            $("#alUseYn").focus(); return;
         } else if (fnIsEmpty($("#doorIds").val() || $("#alDoorCnt").val()) == 0) {
             alert("출입문을 선택해주세요.");
             return;
@@ -152,16 +149,14 @@
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
-        if (popupNm === "doorEditPopup") {
-            fnGetDoorListAjax("AlarmGroup");  // 출입문 등록
+        if (popupNm === "doorEditPopup") { // 출입문 등록
+            fnGetDoorListAjax("AlarmGroup");
         }
     }
 
     // popup close (공통)
     function closePopup(popupNm) {
         if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
-            // TODO : 출입문 저장 로직
-            $("#alDoorCnt").val($("input[name=chkDoorConf]").length);
             setDoors("AlarmGroup");
         }
         $("#" + popupNm).PopupWindow("close");

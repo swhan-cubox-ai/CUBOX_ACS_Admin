@@ -195,6 +195,7 @@
 
     // popup close (공통)
     function closePopup(popupNm) {
+
         if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
             // TODO : 출입문 저장 로직
             setDoors("AlarmGroup");

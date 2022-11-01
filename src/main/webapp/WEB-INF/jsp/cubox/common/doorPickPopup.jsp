@@ -77,9 +77,6 @@ function setDoors(type) {
     console.log(doorGpIds);
     console.log(doorGpHtml);
 
-    $("#gpDoorIds").val(doorGpIds);
-    $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
-
     if (type === "Group") {                 // 그룹관리
         $("#gpDoorIds").val(doorGpIds);
         $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
@@ -111,9 +108,9 @@ function setDoors(type) {
 
                 $("#doorSelected").empty();
                 let doorList;
-                if (type === "Group" && $("#gpDoorIds").val() != "") { // 수정일 떄
+                if (type === "Group" && $("#gpDoorIds").val() != "") {              // 그룹관리 수정 시
                     doorList = $("#gpDoorIds").val().split("/");
-                } else if (type === "AlarmGroup" && $("#doorIds").val() !== "") {
+                } else if (type === "AlarmGroup" && $("#doorIds").val() !== "") {   // 알람그룹 수정 시
                     doorList = $("#doorIds").val().split("/");
                 }
 
