@@ -194,16 +194,26 @@ public class DoorAlarmController {
 
         if( id == null){
             resultCode = "N";
+            model.addAttribute("resultCode", resultCode);
+
+            return modelAndView;
         }
+        String scheduleId = StringUtil.nvl(id);
+
         String nm = StringUtil.nvl(commandMap.get("nm"), "");
-        String scheduleId = StringUtil.nvl(commandMap.get("scheduleId"), "");
+        String time = StringUtil.nvl(commandMap.get("doorIds"), "");
+        String envYn = StringUtil.nvl(commandMap.get("doorIds"), "");
+        String deleteYn = StringUtil.nvl(commandMap.get("doorIds"), "");
+
         String doorIds = StringUtil.nvl(commandMap.get("doorIds"), "");
 
         HashMap param = new HashMap();
 
-        param.put("id", Integer.parseInt(id));
+        param.put("id", scheduleId);
         param.put("nm", nm);
-        param.put("doorSchId", scheduleId);
+        param.put("time", time);
+        param.put("envYn", envYn);
+        param.put("deleteYn", deleteYn);
         param.put("doorIds", doorIds);
 
         try {
