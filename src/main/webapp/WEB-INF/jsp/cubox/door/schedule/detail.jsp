@@ -472,8 +472,31 @@
                 });
             });
         });
-        console.log("data");
-        console.log(data);
+
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='/door/schedule/day/add.do' />",
+            data:  {
+                "doorSchId" : "1" ,
+                "day_schedule" : JSON.stringify(data)
+            },
+            dataType: "json",
+            success: function (returnData) {
+                console.log("schedule-day-add-ajax");
+                console.log(returnData);
+
+                if (returnData.resultCode == "Y") {
+                    alert("저장되었습니다.");
+                } else {
+                    //등록에 문제가 발생
+                    alert("등록에 실패하였습니다.");
+                }
+            }
+        });
+
+
+
+        console.log("data : [ " +data +" ]");
         // TODO: 저장 ajax
     }
 

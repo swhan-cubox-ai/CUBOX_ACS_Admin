@@ -43,11 +43,16 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
 
     /**
      * 출입문 스케줄 등록
+     *
      * @param commandMap
+     * @return
      */
     @Override
-    public void addSchedule(Map<String, Object> commandMap) {
+    public String addSchedule(Map<String, Object> commandMap) {
+        String newScheduleId = "";
         doorScheduleDAO.addSchedule(commandMap);
+        newScheduleId = commandMap.get("scheduleId").toString();
+        return newScheduleId;
     }
 
     /**
@@ -84,6 +89,7 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
      */
     @Override
     public void addScheduleByDay(Map<String, Object> commandMap) {
+
         doorScheduleDAO.addScheduleByDay(commandMap);
     }
 
@@ -103,5 +109,10 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
     @Override
     public void deleteScheduleByDay(Map<String, Object> commandMap) {
         doorScheduleDAO.deleteScheduleByDay(commandMap);
+    }
+
+    @Override
+    public int getDoorScheduleNameVerification(HashMap<String, Object> param) {
+        return doorScheduleDAO.getDoorScheduleNameVerification(param);
     }
 }

@@ -37,4 +37,7 @@ public class DoorAlarmDAO extends EgovAbstractMapper {
     }
 
 
+    public int getDoorAlarmGroupNameVerification(HashMap<String, Object> param) {
+        return selectOne(sqlNameSpace+"selectDoorAlarmGrpNameVerification", param);
+    }
 }

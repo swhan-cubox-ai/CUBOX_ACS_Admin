@@ -16,7 +16,7 @@ public interface DoorScheduleService {
 
     HashMap getDoorScheduleDetail(int id);
 
-    void addSchedule(Map<String, Object> commandMap);
+    String addSchedule(Map<String, Object> commandMap);
     void updateSchedule(Map<String, Object> commandMap);
     void deleteSchedule(Map<String, Object> commandMap);
 
@@ -27,4 +27,5 @@ public interface DoorScheduleService {
     void deleteScheduleByDay(Map<String, Object> commandMap);
 
 
+    int getDoorScheduleNameVerification(HashMap<String, Object> param);
 }
