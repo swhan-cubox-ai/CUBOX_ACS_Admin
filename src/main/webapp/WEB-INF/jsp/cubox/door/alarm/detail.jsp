@@ -85,10 +85,11 @@
         } else if (fnIsEmpty($("#alUseYn").val())) {
             alert("사용여부를 선택해주세요.");
             $("#alUseYn").focus(); return;
-        } else if (fnIsEmpty($("#doorIds").val() || $("#alDoorCnt").val()) == 0) {
-            alert("출입문을 선택해주세요.");
-            return;
         }
+        // else if (fnIsEmpty($("#doorIds").val() || $("#alDoorCnt").val()) == 0) {
+        //     alert("출입문을 선택해주세요.");
+        //     return;
+        // }
         fnUpdateAlarmGroupAjax();
     }
 
@@ -96,17 +97,17 @@
 
     function fnUpdateAlarmGroupAjax() {
         let alNm = $("#alNm").val();
-        let alType = $("#alType").val();
+        let envYn = $("#alType").val();
         let alTime = $("#alTime").val();
-        let alUseYn = $("#alUseYn").val();
+        let deleteYn = $("#alUseYn").val();
         let doorIds = $("#doorIds").val();
         let url = "<c:url value='/door/alarm/modify/${doorGroupDetail.id}'/>"
         // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
 
         console.log(alNm);
-        console.log(alType);
+        console.log(envYn);
         console.log(alTime);
-        console.log(alUseYn);
+        console.log(deleteYn);
         console.log(doorIds);
         console.log(url);
 
@@ -115,10 +116,10 @@
             url: url,
             data: {
                 nm: alNm,
-                type: alType,
+                envYn: envYn,
                 time: alTime,
-                useYn: alUseYn,
-                doorIds: doorIds
+                deleteYn: deleteYn,
+                // doorIds: doorIds
             },
             dataType: "json",
             success: function(result) {
@@ -138,12 +139,14 @@
 
     // 수정 취소
     function fnCancel() {
-        // $(".title_tx").html("출입문 스케쥴 - 상세");
-        // $("#btnEdit").css("display", "none");
-        // $("#btnboxDetail").css("display", "block");
-        // $("#btnboxEdit").css("display", "none");
-        // $("[name=detail]").attr("disabled", true);
-        window.location.href = '/door/alarm/detail/${doorGroupDetail.id}';
+        $(".title_tx").html("출입문 스케쥴 - 상세");
+        $("#btnEdit").css("display", "none");
+        $("#btnboxDetail").css("display", "block");
+        $("#btnboxEdit").css("display", "none");
+        $("[name=detail]").attr("disabled", true);
+
+        // 전체페이지 리로드 대신 html만 리로드
+        $("#detailForm").load(location.href + ' #detailForm');
     }
 
     // 수정 버튼
@@ -158,7 +161,7 @@
     // 삭제 버튼
     function fnDelete() {
         // 연결된 출입문 존재 시
-        if (("#doorIds").val() !== "") {
+        if ($("#doorIds").val() !== "") {
             alert("연결된 출입문을 모두 해제한 후 삭제하세요.");
             return;
         }
@@ -211,7 +214,7 @@
             </colgroup>
             <tbody id="tdAlarmDetail">
             <input type="hidden" id="alarmGroupId" value="${doorGroupDetail.id}">
-            <input type="hidden" id="doorIds" value="">
+            <input type="hidden" id="doorIds" value="${doorGroupDetail.door_ids}">
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
@@ -248,8 +251,8 @@
                 <td>
                     <select id="alUseYn" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
                         <option value="">선택</option>
-                        <option value="yes" selected>Y</option>
-                        <option value="no">N</option>
+                        <option value="Y" <c:if test="${doorGroupDetail.delete_yn eq 'Y'}" >selected </c:if>>Y</option>
+                        <option value="N" <c:if test="${doorGroupDetail.delete_yn eq 'N'}" >selected </c:if>>N</option>
                     </select>
                 </td>
             </tr>

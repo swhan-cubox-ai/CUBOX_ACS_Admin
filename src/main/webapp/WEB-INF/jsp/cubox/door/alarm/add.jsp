@@ -92,10 +92,11 @@
             alert("사용여부를 선택해주세요.");
             $("#alUseYn").focus();
             return;
-        } else if (fnIsEmpty($("#doorIds").val() || $("#alDoorCnt").val()) == 0) {
-            alert("출입문을 선택해주세요.");
-            return;
         }
+        // else if (fnIsEmpty($("#doorIds").val() || $("#alDoorCnt").val()) == 0) {
+        //     alert("출입문을 선택해주세요.");
+        //     return;
+        // }
         fnSaveAlarmGroupAjax();
     }
 
@@ -104,9 +105,9 @@
 
     function fnSaveAlarmGroupAjax() {
         let alNm = $("#alNm").val();
-        let alType = $("#alType").val();
+        let envYn = $("#alType").val();
         let alTime = $("#alTime").val();
-        let alUseYn = $("#alUseYn").val();
+        let deleteYn = $("#alUseYn").val();
         let doorIds = $("#doorIds").val();
         // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
 
@@ -121,17 +122,17 @@
             url: "<c:url value='/door/alarm/save.do'/>",
             data: {
                 nm: alNm,
-                type: alType,
                 time: alTime,
-                useYn: alUseYn,
-                doorIds: doorIds
+                envYn: envYn,
+                deleteYn: deleteYn,
+                // doorAlarmGrpId: doorIds
             },
             dataType: "json",
             success: function(result) {
                 console.log("fnSave : " + result.resultCode);
-                if (result.resultCode == "Y") {
+                if (result.resultCode === "Y" && result.newDoorId !== "") {
                     alert("등록이 완료되었습니다.");
-
+                    window.location.href = '/door/alarm/detail/' + result.newDoorId;
                 } else {
                     alert("등록에 실패하였습니다.");
                 }
@@ -179,8 +180,8 @@
                 <td>
                     <select id="alType" name="alType" class="form-control input_com w_600px" style="padding-left:10px;">
                         <option value="" selected>선택</option>
-                        <option value="default">기본 시간</option>
-                        <option value="setTime">지정시간</option>
+                        <option value="Y">기본 시간</option>
+                        <option value="N">지정시간</option>
                     </select>
                 </td>
             </tr>
@@ -196,8 +197,8 @@
                 <td>
                     <select id="alUseYn" name="alUseYn" class="form-control input_com w_600px" style="padding-left:10px;">
                         <option value="" selected>선택</option>
-                        <option value="yes">Y</option>
-                        <option value="no">N</option>
+                        <option value="Y">Y</option>
+                        <option value="N">N</option>
                     </select>
                 </td>
             </tr>
