@@ -119,7 +119,7 @@
                 envYn: envYn,
                 time: alTime,
                 deleteYn: deleteYn,
-                // doorIds: doorIds
+                doorIds: doorIds
             },
             dataType: "json",
             success: function(result) {
