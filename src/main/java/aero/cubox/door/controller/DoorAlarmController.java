@@ -201,10 +201,9 @@ public class DoorAlarmController {
         String scheduleId = StringUtil.nvl(id);
 
         String nm = StringUtil.nvl(commandMap.get("nm"), "");
-        String time = StringUtil.nvl(commandMap.get("doorIds"), "");
-        String envYn = StringUtil.nvl(commandMap.get("doorIds"), "");
-        String deleteYn = StringUtil.nvl(commandMap.get("doorIds"), "");
-
+        String time = StringUtil.nvl(commandMap.get("time"), "");
+        String envYn = StringUtil.nvl(commandMap.get("envYn"), "");
+        String deleteYn = StringUtil.nvl(commandMap.get("deleteYn"), "");
         String doorIds = StringUtil.nvl(commandMap.get("doorIds"), "");
 
         HashMap param = new HashMap();
