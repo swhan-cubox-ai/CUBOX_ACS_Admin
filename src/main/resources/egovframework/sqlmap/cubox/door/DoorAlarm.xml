@@ -54,28 +54,33 @@
         SELECT TDG.id
              , TDG.nm
              , TDG.time
+             , TDG.env_yn
+             , TDG.delete_yn
              , (select COUNT(TDA.door_id) from T_DOOR_ALARM TDA where TDA.dooralram_grp_id = TDG.id) AS door_cnt
+             , (SELECT GROUP_CONCAT( TDA.door_id  SEPARATOR '/') FROM T_DOOR_ALARM TDA WHERE TDA.dooralram_grp_id = TDG.id ) AS door_ids
              , TDG.created_at
              , TDG.updated_at
-        FROM T_DOORALARM_GRP TDG
-        WHERE 1=1
-            AND TDG.id = #{id}
+          FROM T_DOORALARM_GRP TDG
+         WHERE 1=1
+           AND TDG.id = #{id}
     </select>
 
 
-    <insert id="insertDoorAlarmGrp" parameterType="HashMap">
+    <insert id="insertDoorAlarmGrp" parameterType="HashMap" useGeneratedKeys="true" keyProperty="doorAlarmGrpId" keyColumn="id">
         INSERT
         INTO T_DOORALARM_GRP
-        ( id
-        , nm
+        ( nm
         , time
+        , env_yn
+        , delete_yn
         , created_at
         , updated_at
         )
         VALUES
-            ( #{id}
-            , #{nm}
+            ( #{nm}
             , #{time}
+            , #{envYn}
+            , #{deleteYn}
             , NOW()
             , NOW()
             )
@@ -85,9 +90,11 @@
 
     <update id="updateDoorAlarmGrp" parameterType="HashMap">
         UPDATE T_DOORALARM_GRP
-        SET nm = #{nm}
-          , time = #{time}
-          , updated_at= NOW()
+           SET nm = #{nm}
+             , time = #{time}
+             , env_yn = #{envYn}
+             , delete_yn = #{deleteYn}
+             , updated_at= NOW()
         WHERE id = #{id}
     </update>
 
@@ -98,6 +105,13 @@
         WHERE id = #{id}
 
     </delete>
+
+    <select id="selectDoorAlarmGrpNameVerification" parameterType="HashMap" resultType="int">
+        SELECT COUNT(TDG.id) AS vCnt
+          FROM T_DOORALARM_GRP TDG
+         WHERE 1 = 1
+           AND replace(TDG.nm, ' ', '') = replace(#{nm}, ' ', '')
+    </select>
 
 
 </mapper>

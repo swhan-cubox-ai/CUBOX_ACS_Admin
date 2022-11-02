@@ -59,17 +59,15 @@
     </select>
 
 
-    <insert id="insertSchedule" parameterType="HashMap">
+    <insert id="insertSchedule" parameterType="HashMap" useGeneratedKeys="true" keyProperty="scheduleId" keyColumn="id">
         INSERT
         INTO T_DOOR_SCH
-        ( id,
-          door_sch_nm,
+        ( door_sch_nm,
           created_at,
           updated_at
         )
         VALUES
-            ( #{id}
-            , #{doorSchNm}
+            ( #{doorSchNm}
             , NOW()
             , NOW()
             )
@@ -96,6 +94,7 @@
         SELECT id,
         door_sch_id,
         weekday,
+        order_no,
         beg_tm,
         end_tm,
         created_at,
@@ -111,18 +110,19 @@
     <insert id="insertScheduleByDay" parameterType="HashMap">
         INSERT
         INTO T_DOOR_SCH_WEEKDAY
-        ( id,
-          door_sch_id,
+        ( door_sch_id,
           weekday,
+          order_no,
           beg_tm,
           end_tm,
           created_at,
           updated_at
         )
         VALUES
-            ( #{id}
-            , #{doorSchId}
+            (
+             #{doorSchId}
             , #{weekday}
+            , #{orderNo}
             , #{begTm}
             , #{endTm}
             , NOW()
@@ -135,6 +135,7 @@
         UPDATE T_DOOR_SCH_WEEKDAY
         SET door_sch_id = #{doorSchId}
           , weekday= #{weekday}
+          , order_no = #{orderNo}
           , beg_tm= #{begTm}
           , end_tm= #{endTm}
           , updated_at= NOW()
@@ -148,5 +149,12 @@
         WHERE id = #{id}
     </delete>
 
+
+    <select id="selectDoorScheduleNameVerification" parameterType="HashMap" resultType="int">
+        SELECT COUNT(TDS.id) AS vCnt
+        FROM T_DOOR_SCH TDS
+        WHERE 1 = 1
+          AND replace(TDS.door_sch_nm, ' ', '') = replace(#{doorSchNm}, ' ', '')
+    </select>
 
 </mapper>

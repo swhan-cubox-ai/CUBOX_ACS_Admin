@@ -28,7 +28,7 @@
     <!--검색박스 -->
     <div class="search_box mb_20">
         <div class="search_in">
-            <div class="comm_search  mr_10">
+            <div class="comm_search mr_10">
                 <input type="text" class="w_300px input_com" id="keyword" name="keyword" value="<c:out value="${data.keyword}"/>" placeholder="출입문 알람 그룹명">
             </div>
             <div class="comm_search ml_40">

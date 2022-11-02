@@ -44,11 +44,16 @@ public class DoorAlarmServiceImpl extends EgovAbstractServiceImpl implements Doo
 
     /**
      * 출입문 알람그룹 등록
+     *
      * @param commandMap
+     * @return
      */
     @Override
-    public void addDoorAlarmGrp(Map<String, Object> commandMap) {
+    public String addDoorAlarmGrp(Map<String, Object> commandMap) {
+        String newAlarmGroupId = "";
         doorAlarmDAO.addDoorAlarmGrp(commandMap);
+        newAlarmGroupId = commandMap.get("doorAlarmGrpId").toString();
+        return newAlarmGroupId;
     }
 
     /**
@@ -67,6 +72,11 @@ public class DoorAlarmServiceImpl extends EgovAbstractServiceImpl implements Doo
     @Override
     public void deleteDoorAlarmGrp(int id) {
         doorAlarmDAO.deleteDoorAlarmGrp(id);
+    }
+
+    @Override
+    public int getDoorAlarmGroupNameVerification(HashMap<String, Object> param) {
+        return doorAlarmDAO.getDoorAlarmGroupNameVerification(param);
     }
 
 

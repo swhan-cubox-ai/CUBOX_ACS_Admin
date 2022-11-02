@@ -72,8 +72,6 @@
 
     // 수정 확인
     function fnSave() {
-        console.log("fnSave");
-
         // 입력값 유효성 체크
         if (fnIsEmpty($("#alNm").val())) {
             alert("출입문 알람 그룹 명을 입력해주세요.");
@@ -197,13 +195,12 @@
 
     // popup close (공통)
     function closePopup(popupNm) {
-        $("#" + popupNm).PopupWindow("close");
 
         if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
             // TODO : 출입문 저장 로직
             setDoors("AlarmGroup");
-            $("#alDoorCnt").val($("input[name=chkDoorConf]").length);
         }
+        $("#" + popupNm).PopupWindow("close");
     }
 
 </script>

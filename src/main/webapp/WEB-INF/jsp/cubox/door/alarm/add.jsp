@@ -75,10 +75,10 @@
     // 출입문 저장, 등록
     function fnSave() {
         console.log("fnSave");
-
         // 입력값 유효성 체크
         if (fnIsEmpty($("#alNm").val())) {
             alert("출입문 알람 그룹 명을 입력해주세요.");
+
             $("#alNm").focus(); return;
         } else if (fnIsEmpty($("#alType").val())) {
             alert("유형을 선택해주세요.");
@@ -134,7 +134,6 @@
                 }
             }
         });
-
     }
 
     /////////////////  출입문 알람그룹 저장 ajax - end  /////////////////////

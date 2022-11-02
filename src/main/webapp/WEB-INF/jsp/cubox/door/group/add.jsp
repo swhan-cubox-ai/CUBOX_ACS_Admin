@@ -63,29 +63,6 @@
         fnSaveGroupAjax();
     }
 
-    // // 출입문선택 반영
-    // function setDoors() {
-    //
-    //     let doorGpIds = "";
-    //     let doorGpHtml = [];
-    //     $("input[name=chkDoorConf]").each(function (i) {
-    //         let ids = $(this).attr("id");
-    //         let html = $(this).closest("tr").children().eq(1).find("span").html();
-    //         if (i == 0) {
-    //             doorGpIds += ids;
-    //         } else if (i > 0) {
-    //             doorGpIds += ("/" + ids);
-    //         }
-    //         doorGpHtml.push(html);
-    //     });
-    //     console.log(doorGpIds);
-    //     console.log(doorGpHtml);
-    //
-    //     $("#gpDoorIds").val(doorGpIds);
-    //     $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
-    //
-    // }
-
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
@@ -122,17 +99,18 @@
             success: function (result) {
                 console.log("fnSave:" + result.resultCode);
 
-                if(result.resultCode == "Y" && result.newDoorId !== "") {
+
+                if( result.resultCode === "Y" && result.newDoorId !== "") {
                     alert("등록이 완료되었습니다.");
-                    window.location.href = '/door/group/detail/' + result.newDoorId + '.do';
+                    window.location.href = '/door/group/detail/' + result.newDoorId;
                     // $('#gpNm').prop('disabled', true);
                     // $('#gpSchedule').prop('disabled', true);
                     // $('#gpDoorNms').prop('disabled', true);
-                    //
                     // $('#btnSelDoor').hide();
                     // $('#saveBtn').hide();
                     // $('#cancelBtn').hide();
                     // $('#listBtn').show();
+
                 } else {
                     alert("등록에 실패하였습니다.");
                 }

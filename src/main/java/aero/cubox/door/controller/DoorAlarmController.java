@@ -168,14 +168,16 @@ public class DoorAlarmController {
         modelAndView.setViewName("jsonView");
 
         String resultCode = "Y";
+        String newDoorId = "";
         try {
-            doorAlarmService.addDoorAlarmGrp(commandMap);
+            newDoorId = doorAlarmService.addDoorAlarmGrp(commandMap);
         } catch (Exception e) {
             e.getStackTrace();
             resultCode = "N";
         }
 
         modelAndView.addObject("resultCode", resultCode);
+        modelAndView.addObject("newDoorId", newDoorId);
 
         return modelAndView;
     }
@@ -234,6 +236,22 @@ public class DoorAlarmController {
 
 
         model.addAttribute("resultCode", resultCode);
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/name/verification.do", method = RequestMethod.GET)
+    public ModelAndView getDoorAlarmGroupNameValidation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("doorGroupNm", commandMap.get("doorGroupNm"));
+
+        int doorAlarmGroupNameVerificationCnt = doorAlarmService.getDoorAlarmGroupNameVerification(param);
+
+        modelAndView.addObject("doorAlarmGroupNameVerificationCnt", doorAlarmGroupNameVerificationCnt);
 
         return modelAndView;
     }

@@ -62,7 +62,6 @@ $(function () {
 // 출입문선택 반영
 function setDoors(type) {
 
-
     let doorGpIds = "";
     let doorGpHtml = [];
     $("input[name=chkDoorConf]").each(function (i) {
@@ -119,7 +118,8 @@ function setDoors(type) {
                     $("span[id=" + door + "]").parent().toggleClass("node nodeSel");
                     $(".add_door").click();
                     $("span[id=" + door + "]").parent().toggleClass("nodeSel node");
-                })
+
+                });
             }
         });
     }
