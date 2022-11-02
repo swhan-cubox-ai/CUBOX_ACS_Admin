@@ -91,19 +91,32 @@
 
 
     <select id="selectScheduleByDayDetail"  parameterType="HashMap" resultType="HashMap">
-        SELECT id,
-        door_sch_id,
-        weekday,
-        order_no,
-        beg_tm,
-        end_tm,
-        created_at,
-        updated_at
-        FROM T_DOOR_SCH_WEEKDAY TDSW
-        WHERE 1=1
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-            AND TDSW.id = #{id}
-        </if>
+        SELECT A.door_sch_id
+             , A.weekday_order_no
+             , A.beg_tm
+             , A.end_tm
+         FROM (
+               SELECT id
+                    , door_sch_id
+                    , weekday
+                    ,(CASE weekday WHEN 'mon' THEN '1'
+                                   WHEN 'tue' THEN '2'
+                                   WHEN 'wed' THEN '3'
+                                   WHEN 'thu' THEN '4'
+                                   WHEN 'fri' THEN '5'
+                                   WHEN 'sat' THEN '6'
+                                   WHEN 'sun' THEN '7'
+                      END ) weekday_order
+                    ,  CONCAT(weekday,'_',order_no) weekday_order_no
+                    ,  order_no
+                    ,  beg_tm
+                    ,  end_tm
+                    ,  created_at
+                    ,  updated_at
+               FROM T_DOOR_SCH_WEEKDAY TDSW
+              WHERE TDSW.door_sch_id = #{doorSchId}
+           ORDER BY weekday_order, order_no
+        ) A
     </select>
 
 
