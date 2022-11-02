@@ -70,7 +70,13 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
      */
     @Override
     public void deleteSchedule(Map<String, Object> commandMap) {
+        HashMap paramMap = new HashMap();
+
+        paramMap.put("doorSchId",  commandMap.get("id"));
+
+        doorScheduleDAO.deleteScheduleByDay(paramMap);
         doorScheduleDAO.deleteSchedule(commandMap);
+
     }
 
     /**
@@ -99,7 +105,8 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
      */
     @Override
     public void updateScheduleByDay(Map<String, Object> commandMap) {
-        doorScheduleDAO.updateScheduleByDay(commandMap);
+        doorScheduleDAO.deleteScheduleByDay(commandMap);
+        doorScheduleDAO.addScheduleByDay(commandMap);
     }
 
     /**

@@ -91,7 +91,8 @@
 
 
     <select id="selectScheduleByDayDetail"  parameterType="HashMap" resultType="HashMap">
-        SELECT A.door_sch_id
+        SELECT A.id
+             , A.door_sch_id
              , A.weekday_order_no
              , A.beg_tm
              , A.end_tm
@@ -146,20 +147,20 @@
 
     <update id="updateScheduleByDay" parameterType="HashMap">
         UPDATE T_DOOR_SCH_WEEKDAY
-        SET door_sch_id = #{doorSchId}
-          , weekday= #{weekday}
-          , order_no = #{orderNo}
-          , beg_tm= #{begTm}
-          , end_tm= #{endTm}
-          , updated_at= NOW()
-        WHERE id = #{id}
+           SET door_sch_id = #{doorSchId}
+             , weekday= #{weekday}
+             , order_no = #{orderNo}
+             , beg_tm= #{begTm}
+             , end_tm= #{endTm}
+             , updated_at= NOW()
+         WHERE id = #{id}
     </update>
 
 
     <delete id="deleteScheduleByDay" parameterType="HashMap" >
         DELETE
-        FROM T_DOOR_SCH_WEEKDAY
-        WHERE id = #{id}
+          FROM T_DOOR_SCH_WEEKDAY
+         WHERE door_sch_id = #{doorSchId}
     </delete>
 
 

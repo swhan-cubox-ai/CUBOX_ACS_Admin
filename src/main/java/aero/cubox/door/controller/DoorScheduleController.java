@@ -159,7 +159,7 @@ public class DoorScheduleController {
 
     
     /**
-     * 스케쥴 추가
+     * 스케쥴 등록 View
      *
      * @param model
      * @param commandMap
@@ -173,7 +173,14 @@ public class DoorScheduleController {
         return "cubox/door/schedule/add";
     }
 
-    // 출입문 그룹 관리 상세
+    /**
+     * 출입문 스케쥴 상세
+     * @param model
+     * @param id
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
     public String detail(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
 
@@ -189,6 +196,14 @@ public class DoorScheduleController {
         return "cubox/door/schedule/detail";
     }
 
+    /**
+     * 출입문 스케쥴 저장
+     * @param model
+     * @param commandMap
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
     @ResponseBody
     @RequestMapping(value = "/save.do", method = RequestMethod.POST)
     public ModelAndView saveSchedule(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
@@ -213,6 +228,82 @@ public class DoorScheduleController {
 
 
     /**
+     * 출입문 스케쥴 수정
+     * @param model
+     * @param id
+     * @param request
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value="/modify/{id}", method= RequestMethod.POST)
+    public ModelAndView modify(ModelMap model, @PathVariable String id, HttpServletRequest request,@RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String resultCode = "Y";
+
+        if( id == null){
+            resultCode = "N";
+            model.addAttribute("resultCode", resultCode);
+
+            return modelAndView;
+        }
+        String scheduleId = StringUtil.nvl(id);
+        String doorSchNm = StringUtil.nvl(commandMap.get("doorSchNm"), "");
+
+        HashMap param = new HashMap();
+
+        param.put("id", scheduleId);
+        param.put("doorSchNm", doorSchNm);
+
+        try {
+            doorScheduleService.updateSchedule(param);
+
+        } catch (Exception e) {
+            e.getStackTrace();
+            resultCode = "N";
+        }
+
+        model.addAttribute("resultCode", resultCode);
+
+        return modelAndView;
+    }
+
+    /**
+     * 스케줄 삭제
+     *
+     * @param model
+     * @param commandMap
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/delete.do", method = RequestMethod.POST)
+    public ModelAndView deleteSchedule(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String resultCode = "N";
+
+        try {
+            doorScheduleService.deleteSchedule(commandMap);
+            resultCode = "Y";
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+
+        model.addAttribute("resultCode", resultCode);
+        return modelAndView;
+    }
+
+
+
+    /**
      * 요일별 스케쥴 등록
      * @param commandMap
      * @param request
@@ -233,26 +324,115 @@ public class DoorScheduleController {
 
         List<Map<String, Object>> dayScheduleList = getListMapFromJsonArray((JSONArray) obj);
 
-        try {
+        if( dayScheduleList.size() > 0 ){
 
-            if( dayScheduleList.size() > 0 ){
+            try {
+
                 for (int i = 0; i < dayScheduleList.size(); i++) {
                     Map<String, Object> dayScheduleParam = dayScheduleList.get(i);
                     dayScheduleParam.put("doorSchId", commandMap.get("doorSchId"));
-                    dayScheduleParam.put("id", commandMap.get("id"));
-                    dayScheduleParam.put("id", commandMap.get("id"));
-                    dayScheduleParam.put("weekday", dayScheduleParam.get("weekday"));
+
+                    if( commandMap.get("id") != null && (commandMap.get("id").toString().length() > 0) ){
+                        String[] dayScheduleOrder = commandMap.get("id").toString().split("_");
+                        dayScheduleParam.put("orderNo", dayScheduleOrder[1]);
+                    }
                     dayScheduleParam.put("begTm", dayScheduleParam.get("beg_tm"));
                     dayScheduleParam.put("endTm", dayScheduleParam.get("end_tm"));
                     doorScheduleService.addScheduleByDay(dayScheduleParam);
                 }
+            } catch (Exception e) {
+                e.getStackTrace();
+                resultCode = "N";
             }
-        } catch (Exception e) {
-            e.getStackTrace();
+        } else {
+            resultCode = "N";
+        }
+        modelAndView.addObject("resultCode", resultCode);
+
+        return modelAndView;
+    }
+
+
+    /**
+     * 출입문 요일별 스케쥴 수정
+     * @param model
+     * @param id
+     * @param request
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value="/day/modify/{id}", method= RequestMethod.POST)
+    public ModelAndView modifyScheduleByDay(ModelMap model, @PathVariable String id, HttpServletRequest request,@RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String resultCode = "Y";
+
+        if( id == null){
+            resultCode = "N";
+            model.addAttribute("resultCode", resultCode);
+
+            return modelAndView;
+        }
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse((String) commandMap.get("day_schedule"));
+
+        List<Map<String, Object>> dayScheduleList = getListMapFromJsonArray((JSONArray) obj);
+
+        if( dayScheduleList.size() > 0 ){
+
+            try {
+                Map<String, Object> dayScheduleParam;
+
+                for (int i = 0; i < dayScheduleList.size(); i++) {
+                    dayScheduleParam = dayScheduleList.get(i);
+                    dayScheduleParam.put("doorSchId", commandMap.get("doorSchId"));
+
+                    if( commandMap.get("id") != null && (commandMap.get("id").toString().length() > 0) ){
+                        String[] dayScheduleOrder = commandMap.get("id").toString().split("_");
+                        dayScheduleParam.put("orderNo", dayScheduleOrder[1]);
+                    }
+                    dayScheduleParam.put("begTm", dayScheduleParam.get("beg_tm"));
+                    dayScheduleParam.put("endTm", dayScheduleParam.get("end_tm"));
+
+                    doorScheduleService.updateScheduleByDay(dayScheduleParam);
+                    dayScheduleParam.clear();
+                }
+            } catch (Exception e) {
+                e.getStackTrace();
+                resultCode = "N";
+            }
+        } else {
             resultCode = "N";
         }
 
-        modelAndView.addObject("resultCode", resultCode);
+        model.addAttribute("resultCode", resultCode);
+
+        return modelAndView;
+    }
+
+    /**
+     * 스케줄명 validation
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/name/verification.do", method = RequestMethod.GET)
+    public ModelAndView getDoorScheduleNameValidation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("doorGroupNm", commandMap.get("doorGroupNm"));
+
+        int doorScheduleNameVerificationCnt = doorScheduleService.getDoorScheduleNameVerification(param);
+
+        modelAndView.addObject("doorScheduleNameVerificationCnt", doorScheduleNameVerificationCnt);
 
         return modelAndView;
     }
@@ -269,45 +449,5 @@ public class DoorScheduleController {
             builder.append(buffer);
         }
         return builder.toString();
-    }
-
-
-    /**
-     * 스케줄 삭제
-     *
-     * @param model
-     * @param commandMap
-     * @param redirectAttributes
-     * @return
-     * @throws Exception
-     */
-    @ResponseBody
-    @RequestMapping(value = "/delete.do", method = RequestMethod.POST)
-    public ModelAndView deleteSchedule(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("jsonView");
-
-        String resultCode = "N";
-
-        resultCode = "Y";
-        model.addAttribute("resultCode", resultCode);
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/name/verification.do", method = RequestMethod.GET)
-    public ModelAndView getDoorScheduleNameValidation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("jsonView");
-        HashMap<String, Object> param = new HashMap<String, Object>();
-
-        param.put("doorGroupNm", commandMap.get("doorGroupNm"));
-
-        int doorScheduleNameVerificationCnt = doorScheduleService.getDoorScheduleNameVerification(param);
-
-        modelAndView.addObject("doorScheduleNameVerificationCnt", doorScheduleNameVerificationCnt);
-
-        return modelAndView;
     }
 }
