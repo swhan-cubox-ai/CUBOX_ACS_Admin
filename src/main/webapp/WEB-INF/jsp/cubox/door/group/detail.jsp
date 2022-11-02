@@ -59,12 +59,14 @@
 
     // 수정 취소
     function fnCancel() {
-        // $(".title_tx").html("출입문 그룹 관리 - 상세");
-        // $("#btnboxDetail").css("display", "block");
-        // $("#btnboxEdit").css("display", "none");
-        // $("#btnEdit").css("display", "none");
-        // $("[name=detail]").attr("disabled", true);
-        window.location.href = '/door/group/detail/${doorGroupDetail.id}';
+        $(".title_tx").html("출입문 그룹 관리 - 상세");
+        $("#btnboxDetail").css("display", "block");
+        $("#btnboxEdit").css("display", "none");
+        $("#btnEdit").css("display", "none");
+        $("[name=detail]").attr("disabled", true);
+
+        $("#detailForm").load(location.href + ' #detailForm');
+        <%--window.location.href = '/door/group/detail/${doorGroupDetail.id}';--%>
     }
 
     // 수정 버튼
