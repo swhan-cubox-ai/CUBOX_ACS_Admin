@@ -89,8 +89,7 @@
             alert("출입문을 선택해주세요.");
             return;
         }
-        fnCancel();
-        // TODO: 저장 ajax
+        fnUpdateAlarmGroupAjax();
     }
 
     /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////

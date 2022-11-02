@@ -158,6 +158,7 @@
                     // $('#listBtn').show();
 
                     alert("수정이 완료되었습니다.");
+
                     window.location.href = '/door/group/detail/' + id;
                 } else {
                     alert("수정에 실패하였습니다.");

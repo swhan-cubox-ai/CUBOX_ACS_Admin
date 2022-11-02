@@ -77,9 +77,6 @@ function setDoors(type) {
     console.log(doorGpIds);
     console.log(doorGpHtml);
 
-    $("#gpDoorIds").val(doorGpIds);
-    $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
-
     if (type === "Group") {                 // 그룹관리
         $("#gpDoorIds").val(doorGpIds);
         $("#gpDoorNms").val(doorGpHtml.join("\r\n"));

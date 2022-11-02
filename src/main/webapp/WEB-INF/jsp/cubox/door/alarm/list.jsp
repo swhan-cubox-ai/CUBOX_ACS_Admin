@@ -47,7 +47,7 @@
             <!-- // 건수 -->
         </div>
         <!--버튼 -->
-        <div class="r_btnbox  mb_10">
+        <div class="r_btnbox mb_10">
             <button type="button" class="btn_excel" id="excelDown">엑셀다운로드</button>
             <button type="button" class="btn_middle color_basic" id="addDoorAlarm" onclick="fnAddDoorAlarm()">신규등록
             </button>
@@ -79,7 +79,7 @@
                 <th>수정일자</th>
             </tr>
             </thead>
-            <tbody id="doorAarmListBody">
+            <tbody id="doorAlarmListBody">
             <c:if test="${doorAlarmGroupList == null || fn:length(doorAlarmGroupList) == 0}">
                 <tr>
                     <td class="h_35px" colspan="13">조회 목록이 없습니다.</td>

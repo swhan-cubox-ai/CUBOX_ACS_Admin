@@ -72,13 +72,6 @@
         }
     }
 
-    // 수정 버튼
-    function fnEdit() {
-        f = document.detailForm;
-        f.action = "/door/alarmGroup/addView.do";
-        f.submit();
-    }
-
     // 출입문 저장, 등록
     function fnSave() {
         console.log("fnSave");
@@ -160,8 +153,6 @@
     // popup close (공통)
     function closePopup(popupNm) {
         if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
-            // TODO : 출입문 저장 로직
-            $("#alDoorCnt").val($("input[name=chkDoorConf]").length);
             setDoors("AlarmGroup");
         }
         $("#" + popupNm).PopupWindow("close");
