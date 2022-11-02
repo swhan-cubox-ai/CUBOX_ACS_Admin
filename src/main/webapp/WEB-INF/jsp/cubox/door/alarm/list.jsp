@@ -1,16 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <script type="text/javascript">
     $(function () {
         $(".title_tx").html("출입문 알람 그룹 - 목록");
-    });
-
-    $(function () {
-
-
     });
 
     //페이지 검색
@@ -24,7 +18,7 @@
     }
 
     //출입문 알람그룹 추가
-    function fnAddDoorAarm() {
+    function fnAddDoorAlarm() {
         window.location.href = '/door/alarm/add.do';
     }
 </script>
@@ -34,7 +28,7 @@
     <!--검색박스 -->
     <div class="search_box mb_20">
         <div class="search_in">
-            <div class="comm_search  mr_10">
+            <div class="comm_search mr_10">
                 <input type="text" class="w_300px input_com" id="keyword" name="keyword" value="<c:out value="${data.keyword}"/>" placeholder="출입문 알람 그룹명">
             </div>
             <div class="comm_search ml_40">
@@ -55,7 +49,7 @@
         <!--버튼 -->
         <div class="r_btnbox  mb_10">
             <button type="button" class="btn_excel" id="excelDown">엑셀다운로드</button>
-            <button type="button" class="btn_middle color_basic" id="addDoorAarm" onclick="fnAddDoorAarm()">신규등록
+            <button type="button" class="btn_middle color_basic" id="addDoorAlarm" onclick="fnAddDoorAlarm()">신규등록
             </button>
         </div>
         <!--//버튼  -->

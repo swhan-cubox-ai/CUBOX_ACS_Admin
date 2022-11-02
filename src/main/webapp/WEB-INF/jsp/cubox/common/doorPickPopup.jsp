@@ -60,7 +60,7 @@ $(function () {
 
 
 // 출입문선택 반영
-function setDoors() {
+function setDoors(type) {
 
     let doorGpIds = "";
     let doorGpHtml = [];
@@ -80,12 +80,24 @@ function setDoors() {
     $("#gpDoorIds").val(doorGpIds);
     $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
 
+    if (type === "Group") {                 // 그룹관리
+        $("#gpDoorIds").val(doorGpIds);
+        $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
+    } else if (type === "AlarmGroup") {     // 알람그룹
+        $("#doorIds").val(doorGpIds);
+        $("#tdGroupTotal").empty();
+        $("#alDoorCnt").val($("input[name=chkDoorConf]").length);   // 출입문 수
+        $.each(doorGpHtml, function(i, html) {                      // 출입문 목록에 반영
+           let tag = "<tr><td>" + html + "</td></tr>";
+           $("#tdGroupTotal").append(tag);
+        });
+    }
 }
 
     /////////////////  출입문 목록 ajax - start  /////////////////////
 
 
-    function fnGetDoorListAjax() {
+    function fnGetDoorListAjax(type) {
         console.log( "fnGetDoorListAjax2");
 
         $.ajax({
@@ -98,16 +110,18 @@ function setDoors() {
                 createTree(false, result, $("#treeDiv"));
 
                 $("#doorSelected").empty();
-
-                if ($("#gpDoorIds").val() != "") { // 수정일 떄
-                    let gpDoorId = $("#gpDoorIds").val().split("/");
-                    console.log(gpDoorId);
-                    $.each(gpDoorId, function(i, gpDoor) {
-                        $("span[id=" + gpDoor + "]").parent().toggleClass("node nodeSel");
-                        $(".add_door").click();
-                        $("span[id=" + gpDoor + "]").parent().toggleClass("nodeSel node");
-                    })
+                let doorList;
+                if (type === "Group" && $("#gpDoorIds").val() != "") { // 수정일 떄
+                    doorList = $("#gpDoorIds").val().split("/");
+                } else if (type === "AlarmGroup" && $("#doorIds").val() !== "") {
+                    doorList = $("#doorIds").val().split("/");
                 }
+
+                $.each(doorList, function(i, door) {
+                    $("span[id=" + door + "]").parent().toggleClass("node nodeSel");
+                    $(".add_door").click();
+                    $("span[id=" + door + "]").parent().toggleClass("nodeSel node");
+                });
             }
         });
     }

@@ -254,7 +254,7 @@ function createTree(isMngmt, result, treeDiv) {
 					} else {
 						bTag = building.building_nm;
 					}
-					d.add("b_" + building.id, "w_" + workplace.id, bTag, '','','','/img/folder.gif');
+					d.add("b_" + building.id, "w_" + workplace.id, bTag, '#','','','/img/folder.gif');
 					// d.add("b_" + building.id, "w_" + workplace.id, building.building_nm, '','','','/img/folder.gif');
 
 					$.each(result.areaList, function(k, area) {

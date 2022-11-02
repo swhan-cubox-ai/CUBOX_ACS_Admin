@@ -44,60 +44,6 @@
         });
     });
 
-    // // 출입문 저장, 등록
-    // function fnSave() {
-    //     console.log("fnSave");
-    //     let gpNm = $("#gpNm").val();
-    //     let gpSchedule = $("#gpSchedule").val();
-    //     let gpDoor = $("#gpDoor").val();
-    //
-    //     // 입력값 유효성 체크
-    //     if (fnIsEmpty(gpNm)) {
-    //         alert("출입문 그룹 명을 입력해주세요.");
-    //         $("#gpNm").focus(); return;
-    //     } else if (fnIsEmpty(gpSchedule)) {
-    //         alert("출입문 스케쥴을 선택해주세요.");
-    //         $("#gpSchedule").focus(); return;
-    //     } else if (fnIsEmpty(gpDoor)) {
-    //         alert("출입문을 선택해주세요."); return;
-    //     }
-    //
-    //
-    //
-    //     let id = "1"; // example - doorgroup id
-    //
-    //     $.ajax({
-    //         type: "post",
-    //         url: "/door/group/modify/" + id,
-    //         data :{
-    //             nm: "춥입문 테스트 그룹1",
-    //             scheduleId: "1",
-    //             doorIds: "1/2/3"
-    //         },
-    //         dataType: 'json',
-    //         success: function (data, status) {
-    //             if (data.resultCode == "Y") {
-    //                 $('#gpNm').prop('disabled', true);
-    //                 $('#gpSchedule').prop('disabled', true);
-    //                 $('#gpDoor').prop('disabled', true);
-    //
-    //                 $('#btnSelDoor').hide();
-    //                 $('#saveBtn').hide();
-    //                 $('#cancelBtn').hide();
-    //                 $('#listBtn').show();
-    //
-    //                 alert("저장되었습니다.");
-    //             } else {
-    //                 alert("저장 중 오류가 발생하였습니다.");
-    //             }
-    //         }
-    //     });
-    //
-    //
-    //     // TODO : gpDoor 출입문 disabled 해제!
-    //     // location.href = "/door/group/detail.do";
-    // }
-
     // 출입문 저장, 등록
     function fnSave() {
         console.log("fnSave");
@@ -160,29 +106,6 @@
         });
     }
 
-    // 출입문선택 반영
-    // function setDoors() {
-    //
-    //     let doorGpIds = "";
-    //     let doorGpHtml = [];
-    //     $("input[name=chkDoorConf]").each(function (i) {
-    //         let ids = $(this).attr("id");
-    //         let html = $(this).closest("tr").children().eq(1).find("span").html();
-    //         if (i == 0) {
-    //             doorGpIds += ids;
-    //         } else if (i > 0) {
-    //             doorGpIds += ("/" + ids);
-    //         }
-    //         doorGpHtml.push(html);
-    //     });
-    //     console.log(doorGpIds);
-    //     console.log(doorGpHtml);
-    //
-    //     $("#gpDoorIds").val(doorGpIds);
-    //     $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
-    //
-    // }
-
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
@@ -193,15 +116,7 @@
 
     // popup close (공통)
     function closePopup(popupNm) {
-        // let doorGroup = [];
-        //
-        // $("input[name=chkDoorConf]").each(function (i) {
-        //     let chkDoor = $(this).closest("tr").children().eq(1).html();
-        //     doorGroup.push(chkDoor);
-        // });
-        // $("#gpDoor").val(doorGroup.join("\r\n"));
-
-        setDoors();
+        setDoors("Group");
         $("#" + popupNm).PopupWindow("close");
     }
 
@@ -247,7 +162,6 @@
                 } else {
                     alert("수정에 실패하였습니다.");
                 }
-
             }
         });
     }

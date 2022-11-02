@@ -82,57 +82,89 @@
     // 출입문 저장, 등록
     function fnSave() {
         console.log("fnSave");
+        // 입력값 유효성 체크
+        if (fnIsEmpty($("#alNm").val())) {
+            alert("출입문 알람 그룹 명을 입력해주세요.");
+            $("#alNm").focus();
+            return;
+        } else if (fnIsEmpty($("#alType").val())) {
+            alert("유형을 선택해주세요.");
+            $("#alType").focus();
+            return;
+        } else if (fnIsEmpty($("#alTime").val())) {
+            alert("시간을 입력해주세요.");
+            $("#alTime").focus();
+            return;
+        } else if (fnIsEmpty($("#alUseYn").val())) {
+            alert("사용여부를 선택해주세요.");
+            $("#alUseYn").focus();
+            return;
+        } else if (fnIsEmpty($("#doorIds").val() || $("#alDoorCnt").val()) == 0) {
+            alert("출입문을 선택해주세요.");
+            return;
+        }
+        fnSaveAlarmGroupAjax();
+    }
+
+
+    /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
+
+    function fnSaveAlarmGroupAjax() {
         let alNm = $("#alNm").val();
         let alType = $("#alType").val();
         let alTime = $("#alTime").val();
         let alUseYn = $("#alUseYn").val();
-        let alDoorCnt = $("#alDoorCnt").val();
+        let doorIds = $("#doorIds").val();
         // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
 
-        // 입력값 유효성 체크
-        if (alNm == "") {
-            alert("출입문 알람 그룹 명을 입력해주세요.");
-            $("#alNm").focus(); return;
-        } else if (alType == "") {
-            alert("유형을 선택해주세요.");
-            $("#alType").focus(); return;
-        } else if (alTime == "") {
-            alert("시간을 입력해주세요.");
-            $("#alTime").focus(); return;
-        } else if (alUseYn == "") {
-            alert("사용여부를 선택해주세요.");
-            $("#alUseYn").focus(); return;
-        } else if (alDoorCnt == "" || alDoorCnt == 0) {
-            alert("출입문을 선택해주세요.");
-            return;
-        }
+        console.log(alNm);
+        console.log(alType);
+        console.log(alTime);
+        console.log(alUseYn);
+        console.log(doorIds);
 
-        location.href = "/door/alarmGroup/detail.do";
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='/door/alarm/save.do'/>",
+            data: {
+                nm: alNm,
+                type: alType,
+                time: alTime,
+                useYn: alUseYn,
+                doorIds: doorIds
+            },
+            dataType: "json",
+            success: function(result) {
+                console.log("fnSave : " + result.resultCode);
+                if (result.resultCode == "Y") {
+                    alert("등록이 완료되었습니다.");
 
+                } else {
+                    alert("등록에 실패하였습니다.");
+                }
+            }
+        });
     }
 
-    // 알람그룹 수정 취소
-    function fnCancel() {
-        $("#detailForm").attr("action", "/door/alarmGroup/listView.do");
-    }
+    /////////////////  출입문 알람그룹 저장 ajax - end  /////////////////////
+
 
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
         if (popupNm === "doorEditPopup") {
-            fnGetDoorListAjax(); //출입문 목록
+            fnGetDoorListAjax("AlarmGroup");  // 출입문 등록
         }
     }
 
     // popup close (공통)
     function closePopup(popupNm) {
-        $("#" + popupNm).PopupWindow("close");
-
         if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
             // TODO : 출입문 저장 로직
-
             $("#alDoorCnt").val($("input[name=chkDoorConf]").length);
+            setDoors("AlarmGroup");
         }
+        $("#" + popupNm).PopupWindow("close");
     }
 
 </script>
@@ -144,6 +176,7 @@
                 <col style="width:90%">
             </colgroup>
             <tbody id="tdAlarmDetail">
+            <input type="hidden" id="doorIds" value="">
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
@@ -180,7 +213,7 @@
             <tr>
                 <th>출입문 수</th>
                 <td>
-                    <input type="number" id="alDoorCnt" name="alDoorCnt" maxlength="50" value="" class="input_com w_600px" disabled>&ensp;
+                    <input type="number" id="alDoorCnt" name="alDoorCnt" maxlength="50" value="0" class="input_com w_600px" disabled>&ensp;
                     <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>
                     <button type="button" class="btn_small color_basic" onclick="openPopup('doorEditPopup')">출입문 등록</button>
                 </td>
@@ -192,6 +225,6 @@
 
 <div class="right_btn mt_20">
     <button class="btn_middle ml_5 color_basic" onclick="fnSave();">등록</button>
-    <button class="btn_middle ml_5 color_basic" onclick="location='/door/alarmGroup/listView.do'">취소</button>
+    <button class="btn_middle ml_5 color_basic" onclick="location='/door/alarm/list.do'">취소</button>
 </div>
 
