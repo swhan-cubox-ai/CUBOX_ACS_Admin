@@ -192,6 +192,7 @@
         if (ifValid(startId, endId, start, end, day, schNum)) {
             console.log("색칠하기_ifEnd");
             colorSchedule(start, end, day, schNum);
+
         } else {
             console.log("색칠안하기_ifEnd");
             alert("중복된 스케쥴이 존재합니다. 다시 선택해주세요.");
@@ -535,7 +536,14 @@
 
     // endPicker 클릭 시 다음 timepicker disable 해제
     function activeNextTimepicker(day, schNum) {
-
+        if (schNum === "1" && $("#" + day + "_2_end").val() === "") {  // 2 스케쥴에 값 없을 때
+            console.log("1클릭");
+            $("." + day + "_timepick.sch2_timepick").prop("disabled", false);
+        }
+        if (schNum === "2" && $("#" + day + "_3_end").val() === "") {  // 3 스케쥴에 값 없을 때
+            console.log("2클릭");
+            $("." + day + "_timepick.sch3_timepick").prop("disabled", false);
+        }
     }
 
     // timepicker disable 해제
