@@ -352,6 +352,42 @@ public class DoorScheduleController {
         return modelAndView;
     }
 
+    /**
+     * 요일별 스케쥴 조회
+     * @param model
+     * @param id : 스케쥴 아이디 (door_sch_id)
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/day/detail/{id}", method = RequestMethod.POST)
+    public ModelAndView getScheduleByDay(ModelMap model, @PathVariable String id) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String resultCode = "N";
+
+        if( id != null ){
+            HashMap paramMap = new HashMap();
+
+            paramMap.put("doorSchId", id);
+
+            try {
+                HashMap scheduleByDayDetail = doorScheduleService.getScheduleByDayDetail(paramMap);
+                resultCode = "Y";
+                modelAndView.addObject("scheduleByDayDetail", scheduleByDayDetail);
+            } catch (Exception e){
+                e.getStackTrace();
+                resultCode = "N";
+            }
+        }
+
+        modelAndView.addObject("resultCode", resultCode);
+
+        return modelAndView;
+    }
+
 
     /**
      * 출입문 요일별 스케쥴 수정
@@ -377,6 +413,7 @@ public class DoorScheduleController {
 
             return modelAndView;
         }
+
         JSONParser parser = new JSONParser();
         Object obj = parser.parse((String) commandMap.get("day_schedule"));
 
