@@ -89,14 +89,14 @@
 
 <script type="text/javascript">
     let tmp = [
-        {id: "mon_1", weekday: "mon", beg_tm: "13:40:27", end_tm: "19:40:30"},
-        {id: "mon_2", weekday: "mon", beg_tm: "09:00:00", end_tm: "10:00:30"},
+        {id: "mon_1", weekday: "mon", beg_tm: "13:00:27", end_tm: "13:40:30"},
+        {id: "mon_2", weekday: "mon", beg_tm: "13:45:00", end_tm: "18:00:30"},
         {id: "mon_3", weekday: "mon", beg_tm: "", end_tm: ""},
         {id: "tue_1", weekday: "tue", beg_tm: "13:00:00", end_tm: "15:00:00"},
-        {id: "tue_2", weekday: "tue", beg_tm: "", end_tm: ""},
-        {id: "tue_3", weekday: "tue", beg_tm: "19:40:27", end_tm: "22:00:20"},
+        {id: "tue_2", weekday: "tue", beg_tm: "19:40:27", end_tm: "22:00:20"},
+        {id: "tue_3", weekday: "tue", beg_tm: "", end_tm: ""},
         {id: "wed_1", weekday: "wed", beg_tm: "01:50:00", end_tm: "08:20:30"},
-        {id: "wed_2", weekday: "wed", beg_tm: "11:40:00", end_tm: "12:00:00"},
+        {id: "wed_2", weekday: "wed", beg_tm: "08:40:00", end_tm: "12:00:00"},
         {id: "wed_3", weekday: "wed", beg_tm: "13:40:50", end_tm: "23:59:59"},
         {id: "thu_1", weekday: "thu", beg_tm: "", end_tm: ""},
         {id: "thu_2", weekday: "thu", beg_tm: "", end_tm: ""},
@@ -104,12 +104,12 @@
         {id: "fri_1", weekday: "fri", beg_tm: "10:30:00", end_tm: "19:30:00"},
         {id: "fri_2", weekday: "fri", beg_tm: "", end_tm: ""},
         {id: "fri_3", weekday: "fri", beg_tm: "", end_tm: ""},
-        {id: "sat_1", weekday: "sat", beg_tm: "", end_tm: ""},
-        {id: "sat_2", weekday: "sat", beg_tm: "07:00:00", end_tm: "16:30:30"},
-        {id: "sat_3", weekday: "sat", beg_tm: "17:40:20", end_tm: "20:20:00"},
-        {id: "sun_1", weekday: "sun", beg_tm: "", end_tm: ""},
+        {id: "sat_1", weekday: "sat", beg_tm: "07:00:00", end_tm: "16:30:30"},
+        {id: "sat_2", weekday: "sat", beg_tm: "17:40:20", end_tm: "20:20:00"},
+        {id: "sat_3", weekday: "sat", beg_tm: "", end_tm: ""},
+        {id: "sun_1", weekday: "sun", beg_tm: "01:00:00", end_tm: "23:59:59"},
         {id: "sun_2", weekday: "sun", beg_tm: "", end_tm: ""},
-        {id: "sun_3", weekday: "sun", beg_tm: "01:00:00", end_tm: "23:59:59"}
+        {id: "sun_3", weekday: "sun", beg_tm: "", end_tm: ""}
     ];
 
     $(function () {
@@ -141,6 +141,8 @@
                     end.hour = el.val().split(":")[0];
                     end.min = el.val().split(":")[1];
                     end.sec = el.val().split(":")[2];
+
+                    activeNextTimepicker(day, schNum);
 
                 } else {
                     console.log("ifStart");
@@ -396,6 +398,8 @@
 
     // 수정 취소
     function fnCancel() {
+        $("#detailForm").load(location.href + ' #detailForm');
+
         $(".title_tx").html("출입문 스케쥴 - 상세");
         $("#btnboxDetail").css("display", "block");
         $("#btnboxEdit").css("display", "none");
@@ -443,18 +447,21 @@
 
     // 스케쥴 저장
     function saveSchedule() {
+        console.log("saveSchedule");
         const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
         const schNums = ["1", "2", "3"];
         let data = [];
+        let tmp = [];
         let schSet = {};
 
         clearPickers();
         closePopup("addByDayPopup");
 
         $.each($("input[name=timepicker]"), function (i, pick) {
-            let pId = $(pick).attr("id");
-            let weekday = pId.split("_")[0]; // 요일
-            let schNum = pId.split("_")[1]; // 스케쥴번호
+            console.log(pick);
+            let pId = $(pick).attr("id");    // mon_1_start
+            let weekday = pId.split("_")[0]; // 요일 mon
+            let schNum = pId.split("_")[1];  // 스케쥴번호 1
 
             $.each(days, function (j, day) {
                 $.each(schNums, function (k, num) {
@@ -465,7 +472,13 @@
                             schSet.beg_tm = $(pick).val();
                         } else if ($(pick).hasClass("end")) {
                             schSet.end_tm = $(pick).val();
-                            data.push(schSet);
+                            console.log(schSet);
+                            tmp.push(schSet);
+                            if (schNum === "3") {
+                                let sortedTmpData = sortByTime(tmp);
+                                data.push(sortedTmpData);
+                                tmp = [];
+                            }
                             schSet = {};
                         }
                     }
@@ -473,31 +486,31 @@
             });
         });
 
-        $.ajax({
-            type: "POST",
-            url: "<c:url value='/door/schedule/day/add.do' />",
-            data:  {
-                "doorSchId" : "1" ,
-                "day_schedule" : JSON.stringify(data)
-            },
-            dataType: "json",
-            success: function (returnData) {
-                console.log("schedule-day-add-ajax");
-                console.log(returnData);
+        console.log(data);
 
-                if (returnData.resultCode == "Y") {
-                    alert("저장되었습니다.");
-                } else {
-                    //등록에 문제가 발생
-                    alert("등록에 실패하였습니다.");
-                }
+        // TODO: 저장 ajax
+        fnAddScheduleByDay(data);
+
+    }
+
+    // 시간 순 정렬
+    function sortByTime(data) {
+
+        data.sort(function (a, b) {
+            if (a.beg_tm === "" && b.beg_tm !== "") {
+                return 1;
+            }
+            if (a.beg_tm !== "" && b.beg_tm === "") {
+                return -1;
+            }
+            if (a.beg_tm !== "" && b.beg_tm !== "") {
+                return a.beg_tm.localeCompare(b.beg_tm);
             }
         });
 
+        console.log(data);
+        return data;
 
-
-        console.log("data : [ " +data +" ]");
-        // TODO: 저장 ajax
     }
 
     // start 또는 end 시간만 있는 스케쥴 clear
@@ -520,27 +533,36 @@
         }
     }
 
+    // endPicker 클릭 시 다음 timepicker disable 해제
+    function activeNextTimepicker(day, schNum) {
+
+    }
+
+    // timepicker disable 해제
+    function activeTimepicker() {
+        $(".sch1_timepick").prop("disabled", false);
+        $.each($(".sch2_timepick"), function (i, sch2) {
+            let weekday = $(sch2).attr("id").split("_")[0];
+            if ($(sch2).val() !== "") {  // 2번 스케쥴에 값이 있을 경우
+                $(sch2).prop("disabled", false);
+                $("." + weekday + "_timepick.sch3_timepick").prop("disabled", false);
+                // $("#" + weekday + "_3_start").prop("disabled", false);
+                // $("#" + weekday + "_3_end").prop("disabled", false);
+            } else {  // 2번 스케쥴에 값이 없을 경우
+                if ($("#" + weekday + "_1_start").val() !== "") {   // 1번 스케줄에 값이 있을 경우
+                    $(sch2).prop("disabled", false);
+                }
+            }
+        });
+    }
+
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
 
         if (popupNm === "addByDayPopup") {
-
-            // 스케쥴 뿌려주기
-            $.each(tmp, function (i, sch) {
-                console.log(sch);
-
-                let beg_tm = sch.beg_tm.split(":");
-                let end_tm = sch.end_tm.split(":");
-                let start = {hour: beg_tm[0], min: beg_tm[1], sec: beg_tm[2]};
-                let end = {hour: end_tm[0], min: end_tm[1], sec: end_tm[2]};
-                let day = sch.weekday;
-                let schNum = sch.id.split("_")[1];
-                $("#" + sch.id + "_start").val(sch.beg_tm);
-                $("#" + sch.id + "_end").val(sch.end_tm);
-
-                colorSchedule(start, end, day, schNum);
-            });
+            fnGetScheduleByDayDetail();
+            activeTimepicker();
         }
     }
 
@@ -557,6 +579,70 @@
             clearPickers();
         }
     }
+
+
+
+    /////////////////  요일별 스케쥴 뿌려주기 ajax - start  /////////////////////
+
+    function fnGetScheduleByDayDetail() {
+
+        <%--$.ajax({--%>
+        <%--    type : "GET",--%>
+        <%--    data : {},--%>
+        <%--    dataType : "json",--%>
+        <%--    url : "<c:url value='/door/schedule/'/>,--%>
+        <%--    success : function(result) {--%>
+        <%--    --%>
+        <%--    }--%>
+        <%--});--%>
+
+        // 스케쥴 뿌려주기
+        $.each(tmp, function (i, sch) {
+            console.log(sch);
+
+            let beg_tm = sch.beg_tm.split(":");
+            let end_tm = sch.end_tm.split(":");
+            let start = {hour: beg_tm[0], min: beg_tm[1], sec: beg_tm[2]};
+            let end = {hour: end_tm[0], min: end_tm[1], sec: end_tm[2]};
+            let day = sch.weekday;
+            let schNum = sch.id.split("_")[1];
+            $("#" + sch.id + "_start").val(sch.beg_tm);
+            $("#" + sch.id + "_end").val(sch.end_tm);
+
+            colorSchedule(start, end, day, schNum);
+        });
+    }
+
+    /////////////////  요일별 스케쥴 뿌려주기 ajax - end  /////////////////////
+
+
+    /////////////////  요일별 스케쥴 저장 ajax - start  /////////////////////
+
+    function fnAddScheduleByDay(data) {
+        <%--$.ajax({--%>
+        <%--    type: "POST",--%>
+        <%--    url: "<c:url value='/door/schedule/day/add.do' />",--%>
+        <%--    data:  {--%>
+        <%--        "doorSchId" : "1" ,--%>
+        <%--        "day_schedule" : JSON.stringify(data)--%>
+        <%--    },--%>
+        <%--    dataType: "json",--%>
+        <%--    success: function (returnData) {--%>
+        <%--        console.log("schedule-day-add-ajax");--%>
+        <%--        console.log(returnData);--%>
+
+        <%--        if (returnData.resultCode == "Y") {--%>
+        <%--            alert("저장되었습니다.");--%>
+        <%--        } else {--%>
+        <%--            //등록에 문제가 발생--%>
+        <%--            alert("등록에 실패하였습니다.");--%>
+        <%--        }--%>
+        <%--    }--%>
+        <%--});--%>
+    }
+
+    /////////////////  요일별 스케쥴 저장 ajax - end  /////////////////////
+
 
 </script>
 
@@ -694,8 +780,8 @@
                                 <c:forEach begin="1" end="3" varStatus="status">
                                     <fmt:formatNumber var="no" value="${status.index}" type="number"/>
                                     <td>
-                                        <input type="time" id="${day}_${no}_start" name="timepicker" class="start ${day}_timepick sch${no}_timepick" value="" min="00:00:00" max="23:59:59" step="1"><br>~
-                                        <input type="time" id="${day}_${no}_end" name="timepicker" class="end ${day}_timepick sch${no}_timepick" value="" min="00:00:00" max="23:59:59" step="1" >
+                                        <input type="time" id="${day}_${no}_start" name="timepicker" class="start ${day}_timepick sch${no}_timepick" value="" min="00:00:00" max="23:59:59" step="1" disabled><br>~
+                                        <input type="time" id="${day}_${no}_end" name="timepicker" class="end ${day}_timepick sch${no}_timepick" value="" min="00:00:00" max="23:59:59" step="1" disabled>
                                     </td>
                                 </c:forEach>
                             </tr>
