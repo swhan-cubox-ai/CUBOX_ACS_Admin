@@ -65,7 +65,7 @@
         let doorSchNm = $("#schNm").val();
         let useYn = $("#schUseYn").val();
         let doorIds = $("#doorIds").val();
-        let url = "<c:url value='/door/schedule/modify/${doorScheduleDetail.id}'/>";
+        let url = "<c:url value='/door/schedule/save.do'/>";
 
         console.log(doorSchNm);
         console.log(useYn);
@@ -83,11 +83,11 @@
             url : url,
             success : function(result) {
                 console.log(result);
-                if (result.resultCode === "Y") {
-                    alert("수정이 완료되었습니다.");
-                    window.location.href = '/door/schedule/detail/${doorScheduleDetail.id}';
+                if (result.resultCode === "Y" && result.newDoorId !== "") {
+                    alert("등록이 완료되었습니다.");
+                    window.location.href = '/door/schedule/detail/' + result.newDoorId;
                 } else {
-                    console.log("스케쥴 저장 실패");
+                    console.log("스케쥴 등록에 실패하였습니다.");
                 }
             }
         });

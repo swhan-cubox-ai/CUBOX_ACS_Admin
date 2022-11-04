@@ -419,7 +419,7 @@
             return;
         }
 
-        fnDeleteSchedule();
+        fnDeleteScheduleAjax();
     }
 
     // 스케쥴 저장
@@ -600,16 +600,13 @@
 
     /////////////////  출입문 스케쥴 삭제 ajax - start  /////////////////////
 
-    function fnDeleteSchedule() {
+    function fnDeleteScheduleAjax() {
         $.ajax({
             type: "post",
-            url: "/door/schedule/delete.do",
-            data: {
-                // "id" : id
-            },
+            url: "/door/schedule/delete/${doorScheduleDetail.id}",
             dataType: 'json',
-            success: function (data, status) {
-                if (data.result == "Y") {
+            success: function (result, status) {
+                if (result.resultCode === "Y") {
                     location.href = "/door/schedule/list.do";
                 } else {
                     alert("삭제 중 오류가 발생하였습니다.");
