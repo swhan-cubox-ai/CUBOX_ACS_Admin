@@ -481,7 +481,7 @@
         console.log(data);
 
         // TODO: 저장 ajax
-        // fnAddScheduleByDay(data);
+        fnAddScheduleByDay(data);
 
     }
 
@@ -650,11 +650,31 @@
             type : "POST",
             data : {},
             dataType : "json",
+            async: false,
             url : "<c:url value='/door/schedule/day/detail/${doorScheduleDetail.id}'/>",
             success : function(result) {
-                console.log(result);
                 if (result.resultCode === "Y") {
-                    console.log(result.scheduleByDayDetail);
+                    console.log(result.scheduleByDayDetailList);
+
+                    // 스케쥴 뿌려주기
+                    $.each(result.scheduleByDayDetailList, function (i, sch) {
+
+                        let beg_tm = sch.beg_tm.split(":");
+                        let end_tm = sch.end_tm.split(":");
+                        let start = {hour: beg_tm[0], min: beg_tm[1], sec: beg_tm[2]};
+                        let end = {hour: end_tm[0], min: end_tm[1], sec: end_tm[2]};
+                        let day = sch.weekday_order_no.split("_")[0];
+                        let schNum = sch.weekday_order_no.split("_")[1];
+                        // let day = sch.weekday;
+                        // let schNum = sch.id.split("_")[1];
+                        // timepicker 값 넣기
+                        $("#" + sch.weekday_order_no + "_start").val(sch.beg_tm);
+                        $("#" + sch.weekday_order_no + "_end").val(sch.end_tm);
+                        // $("#" + sch.id + "_start").val(sch.beg_tm);
+                        // $("#" + sch.id + "_end").val(sch.end_tm);
+
+                        colorSchedule(start, end, day, schNum);
+                    });
                 } else {
                     console.log("스케쥴 불러오기 실패");
                 }
@@ -662,21 +682,7 @@
         });
 
 
-        // 스케쥴 뿌려주기
-        $.each(tmp, function (i, sch) {
-            console.log(sch);
 
-            let beg_tm = sch.beg_tm.split(":");
-            let end_tm = sch.end_tm.split(":");
-            let start = {hour: beg_tm[0], min: beg_tm[1], sec: beg_tm[2]};
-            let end = {hour: end_tm[0], min: end_tm[1], sec: end_tm[2]};
-            let day = sch.weekday;
-            let schNum = sch.id.split("_")[1];
-            $("#" + sch.id + "_start").val(sch.beg_tm);
-            $("#" + sch.id + "_end").val(sch.end_tm);
-
-            colorSchedule(start, end, day, schNum);
-        });
     }
 
     /////////////////  요일별 스케쥴 뿌려주기 ajax - end  /////////////////////
@@ -689,7 +695,7 @@
             type: "POST",
             url: "<c:url value='/door/schedule/day/add.do' />",
             data:  {
-                "doorSchId" : "1" ,
+                "doorSchId" : $("#scheduleId").val() ,
                 "day_schedule" : JSON.stringify(data)
             },
             dataType: "json",
