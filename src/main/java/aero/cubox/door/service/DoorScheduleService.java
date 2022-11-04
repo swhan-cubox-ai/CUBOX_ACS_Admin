@@ -28,4 +28,6 @@ public interface DoorScheduleService {
 
 
     int getDoorScheduleNameVerification(HashMap<String, Object> param);
+
+    int getDayScheduleExistsCount(Map<String, Object> commandMap);
 }

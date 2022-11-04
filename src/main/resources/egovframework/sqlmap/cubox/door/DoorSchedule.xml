@@ -171,4 +171,14 @@
           AND replace(TDS.door_sch_nm, ' ', '') = replace(#{doorSchNm}, ' ', '')
     </select>
 
+
+    <select id="selectDayScheduleExistsCount"  parameterType="HashMap" resultType="int">
+        SELECT COUNT(A.id) AS cnt
+        FROM (
+        SELECT TDSW.id
+        FROM T_DOOR_SCH_WEEKDAY TDSW
+        WHERE TDSW.door_sch_id = #{doorSchId}
+        ) A
+    </select>
+
 </mapper>

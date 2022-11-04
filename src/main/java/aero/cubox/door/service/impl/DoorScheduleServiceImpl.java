@@ -122,4 +122,9 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
     public int getDoorScheduleNameVerification(HashMap<String, Object> param) {
         return doorScheduleDAO.getDoorScheduleNameVerification(param);
     }
+
+    @Override
+    public int getDayScheduleExistsCount(Map<String, Object> commandMap) {
+        return doorScheduleDAO.getDayScheduleExistsCount(commandMap);
+    }
 }

@@ -282,13 +282,15 @@ public class DoorScheduleController {
      * @throws Exception
      */
     @ResponseBody
-    @RequestMapping(value = "/delete.do", method = RequestMethod.POST)
-    public ModelAndView deleteSchedule(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+    @RequestMapping(value = "/delete/{id}")
+    public ModelAndView deleteSchedule(ModelMap model, @PathVariable int id,@RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
         String resultCode = "N";
+
+        commandMap.put("id", id);
 
         try {
             doorScheduleService.deleteSchedule(commandMap);
@@ -468,6 +470,62 @@ public class DoorScheduleController {
         int doorScheduleNameVerificationCnt = doorScheduleService.getDoorScheduleNameVerification(param);
 
         modelAndView.addObject("doorScheduleNameVerificationCnt", doorScheduleNameVerificationCnt);
+
+        return modelAndView;
+    }
+
+    /**
+     * 출입문 그룹 목록 조회 ajax
+     * @param model
+     * @param commandMap
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/group/listAjax.do", method = RequestMethod.POST)
+    public ModelAndView getGroupListAjax(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        //todo 세션
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+
+            HashMap<String, Object> paramMap = new HashMap();
+
+            List<HashMap> doorGroupList = doorGroupService.getDoorGroupList(paramMap);
+
+            model.addAttribute("doorGroupList", doorGroupList);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
+
+        return modelAndView;
+    }
+
+    /**
+     * 스케줄명 validation
+     * @param model
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/day/existsCount.do", method = RequestMethod.GET)
+    public ModelAndView getDayScheduleExistsCount(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+            int getDayScheduleExistsCount = doorScheduleService.getDayScheduleExistsCount(commandMap);
+            modelAndView.addObject("getDayScheduleExistsCount", getDayScheduleExistsCount);
+        } catch (Exception e){
+            e.getStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
 
         return modelAndView;
     }

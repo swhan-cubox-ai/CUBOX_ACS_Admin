@@ -60,7 +60,11 @@ public class DoorScheduleDAO extends EgovAbstractMapper {
     }
 
 
-    public int getDoorScheduleNameVerification(HashMap<String, Object> param) {
-        return selectOne(sqlNameSpace+"selectDoorScheduleNameVerification", param);
+    public int getDoorScheduleNameVerification(HashMap<String, Object> paramMap) {
+        return selectOne(sqlNameSpace+"selectDoorScheduleNameVerification", paramMap);
+    }
+
+    public int getDayScheduleExistsCount(Map<String, Object> paramMap) {
+        return selectOne(sqlNameSpace+"selectDayScheduleExistsCount", paramMap);
     }
 }

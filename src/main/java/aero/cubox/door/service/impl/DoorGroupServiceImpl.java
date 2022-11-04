@@ -112,11 +112,11 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
 
     /**
      * 출입문 그룹 삭제
-     * @param commandMap
+     * @param id
      */
     @Override
-    public void deleteDoorGroup(int commandMap) {
-        doorGroupDAO.deleteDoorGroup(commandMap);
+    public void deleteDoorGroup(int id) {
+        doorGroupDAO.deleteDoorGroup(id);
     }
 
     @Override
