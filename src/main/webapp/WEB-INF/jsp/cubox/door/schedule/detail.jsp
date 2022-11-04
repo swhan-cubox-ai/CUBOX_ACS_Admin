@@ -468,7 +468,9 @@
                             tmp.push(schSet);
                             if (schNum === "3") {
                                 let sortedTmpData = sortByTime(tmp);
-                                data.push(sortedTmpData);
+                                $.each(sortedTmpData, function (l, dt) {
+                                    data.push(dt);
+                                });
                                 tmp = [];
                             }
                             schSet = {};
@@ -477,17 +479,14 @@
                 });
             });
         });
-
         console.log(data);
 
         // TODO: 저장 ajax
         fnAddScheduleByDay(data);
-
     }
 
     // 시간 순 정렬
     function sortByTime(data) {
-
         data.sort(function (a, b) {
             if (a.beg_tm === "" && b.beg_tm !== "") {
                 return 1;
@@ -502,7 +501,6 @@
 
         console.log(data);
         return data;
-
     }
 
     // start 또는 end 시간만 있는 스케쥴 clear
