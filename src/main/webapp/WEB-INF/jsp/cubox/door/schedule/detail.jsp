@@ -395,6 +395,7 @@
     function fnAdd() {
         fnCancel();
         // TODO: 저장 ajax
+
     }
 
     // 수정 취소
@@ -594,15 +595,21 @@
 
     function fnGetScheduleByDayDetail() {
 
-        <%--$.ajax({--%>
-        <%--    type : "GET",--%>
-        <%--    data : {},--%>
-        <%--    dataType : "json",--%>
-        <%--    url : "<c:url value='/door/schedule/'/>,--%>
-        <%--    success : function(result) {--%>
-        <%--    --%>
-        <%--    }--%>
-        <%--});--%>
+        $.ajax({
+            type : "POST",
+            data : {},
+            dataType : "json",
+            url : "<c:url value='/door/schedule/day/detail/${doorScheduleDetail.id}'/>",
+            success : function(result) {
+                console.log(result);
+                if (result.resultCode === "Y") {
+                    console.log(result.scheduleByDayDetail);
+                } else {
+                    console.log("스케쥴 불러오기 실패");
+                }
+            }
+        });
+
 
         // 스케쥴 뿌려주기
         $.each(tmp, function (i, sch) {
@@ -663,6 +670,7 @@
                 <col style="width:90%">
             </colgroup>
             <tbody id="tdScheduleDetail">
+            <input type="hidden" id="scheduleId" value="${doorScheduleDetail.id}">
             <tr>
                 <th>출입문 스케쥴 명</th>
                 <td>
