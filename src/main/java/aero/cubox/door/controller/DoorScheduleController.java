@@ -332,10 +332,8 @@ public class DoorScheduleController {
                     Map<String, Object> dayScheduleParam = dayScheduleList.get(i);
                     dayScheduleParam.put("doorSchId", commandMap.get("doorSchId"));
 
-                    if( commandMap.get("id") != null && (commandMap.get("id").toString().length() > 0) ){
-                        String[] dayScheduleOrder = commandMap.get("id").toString().split("_");
-                        dayScheduleParam.put("orderNo", dayScheduleOrder[1]);
-                    }
+                    String[] dayScheduleOrder = dayScheduleParam.get("id").toString().split("_");
+                    dayScheduleParam.put("orderNo", dayScheduleOrder[1]);
                     dayScheduleParam.put("begTm", dayScheduleParam.get("beg_tm"));
                     dayScheduleParam.put("endTm", dayScheduleParam.get("end_tm"));
                     doorScheduleService.addScheduleByDay(dayScheduleParam);
