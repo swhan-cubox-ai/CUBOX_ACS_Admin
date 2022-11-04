@@ -35,62 +35,13 @@
 
     // 출입문 스케줄 등록 저장
     function fnAdd() {
-        let sName = $("#schName");
-        let sUseYn = $("#schUseYn");
-        let sGroup = $("#gateGroup");
-
-        if (fnIsEmpty(sName.val())) {
+        // 입력값 유효성 체크
+        if (fnIsEmpty($("#schNm").val())) {
             alert ("출입문 스케쥴 명을 입력하세요.");
-            sName.focus();
-            return;
-        }
-        // 이미 등록된 스케쥴 이름일 경우,
-        if (sName.val() == "testName") {
-            alert("이미 등록된 출입문 스케쥴 명 입니다.");
-            sName.val("");
-            sName.focus();
-            return;
+            $("#schNm").focus(); return;
         }
 
-        // 데이터 저장
-        // 출입문 목록으로 페이지 이동
-        location.href = "/door/schedule/detail.do";
-
-        // $.ajax({
-        //     url: "gate/schedule_save.do",
-        //     type: "POST",
-        //     data: {
-        //         "sName": sName,
-        //         "sUseYn": sUseYn,
-        //         "sGroup": sGroup
-        //     },
-        //     dataType: "json",
-        //     success: function(data) {
-        //         if(data.result == "1") {
-        //             location.href = "/door/schedule.do";
-        //         } else {
-        //             alert(data.message);
-        //         }
-        //         return;
-        //     },
-        //     error: function (jqXHR) {
-        //         alert("저장에 실패했습니다.");
-        //         return;
-        //     }
-        // });
-
-    }
-
-    // 출입문 스케줄 등록 취소
-    function fnCancel() {
-        if (${editMode eq 'edit'}) { //
-            $("#addForm").attr("action", "/door/schedule/detail.do");
-            $("#addForm").submit();
-        } else {
-            // $("#addForm").attr("action", "/door/schedule.do");
-            location.href = "/door/schedule/listView.do";
-        }
-
+        fnSaveScheduleAjax();
     }
 
     // popup open
@@ -106,10 +57,47 @@
         totalCheck();
         userCheck();
     }
+
+
+    /////////////////  출입문 스케쥴 저장 ajax - start  /////////////////////
+
+    function fnSaveScheduleAjax() {
+        let doorSchNm = $("#schNm").val();
+        let useYn = $("#schUseYn").val();
+        let doorIds = $("#doorIds").val();
+        let url = "<c:url value='/door/schedule/modify/${doorScheduleDetail.id}'/>";
+
+        console.log(doorSchNm);
+        console.log(useYn);
+        console.log(doorIds);
+        console.log(url);
+
+        $.ajax({
+            type : "POST",
+            data : {
+                doorSchNm: doorSchNm
+                // ,useYn: useYn
+                // ,doorIds: doorIds
+            },
+            dataType : "json",
+            url : url,
+            success : function(result) {
+                console.log(result);
+                if (result.resultCode === "Y") {
+                    alert("수정이 완료되었습니다.");
+                    window.location.href = '/door/schedule/detail/${doorScheduleDetail.id}';
+                } else {
+                    console.log("스케쥴 저장 실패");
+                }
+            }
+        });
+
+    }
+    /////////////////  출입문 스케쥴 저장 ajax - end  /////////////////////
+
 </script>
 
 <form id="addForm" name="addForm" method="post" enctype="multipart/form-data">
-<%--    <input type="hidden" id="editMode" name="editMode" value="edit"/>--%>
     <div class="tb_01_box">
         <table class="tb_write_02 tb_write_p1 box">
             <colgroup>
@@ -117,11 +105,11 @@
                 <col style="width:90%">
             </colgroup>
             <tbody id="tdScheduleAdd">
+                <input type="hidden" id="scheduleId" value="${doorScheduleDetail.id}">
                 <tr>
                     <th>출입문 스케쥴 명</th>
                     <td>
-                        <input type="text" id="schName" name="schName" maxlength="50" size="50"
-                               value='' class="w_600px input_com">
+                        <input type="text" id="schNm" name="schNm" maxlength="50" size="50" value='' class="w_600px input_com">
                     </td>
                 </tr>
                 <tr>
@@ -129,15 +117,15 @@
                     <td>
                         <select id="schUseYn" name="schUseYn" class="form-control w_600px" style="padding-left:10px;">
                             <option value="" name="selected">선택</option>
-                            <option value="yes">Y</option>
-                            <option value="no">N</option>
+                            <option value="Y">Y</option>
+                            <option value="N">N</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
                     <th>출입문 그룹</th>
                     <td style="display: flex;">
-                        <textarea id="gateGroup" name="gateGroup" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
+                        <textarea id="doorGroup" name="doorGroup" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
                                     font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
                         <div class="ml_10" style="position:relative;">
                             <button type="button" class="btn_middle color_basic" onclick="openPopup('doorGroupPickPopup')" style="position:absolute; bottom:0;">선택</button>
@@ -151,6 +139,6 @@
 
 <div class="right_btn mt_20">
     <button class="btn_middle color_basic" onclick="fnAdd();">확인</button>
-    <button class="btn_middle ml_5 color_basic" onclick="fnCancel();">취소</button>
+    <button class="btn_middle ml_5 color_basic" onclick="location='/door/schedule/list.do'">취소</button>
 </div>
 

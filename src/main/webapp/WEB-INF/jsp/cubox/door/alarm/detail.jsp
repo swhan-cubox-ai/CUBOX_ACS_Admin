@@ -93,6 +93,64 @@
         fnUpdateAlarmGroupAjax();
     }
 
+
+
+
+    // 수정 취소
+    function fnCancel() {
+        $(".title_tx").html("출입문 스케쥴 - 상세");
+        $("#btnEdit").css("display", "none");
+        $("#btnboxDetail").css("display", "block");
+        $("#btnboxEdit").css("display", "none");
+        $("[name=detail]").attr("disabled", true);
+
+        // 전체페이지 리로드 대신 html만 리로드
+        $("#detailForm").load(location.href + ' #detailForm');
+    }
+
+    // 수정 버튼
+    function fnEditMode() {
+        $(".title_tx").html("출입문 알람 그룹 - 수정");
+        $("#btnEdit").css("display", "inline-block");
+        $("#btnboxDetail").css("display", "none");
+        $("#btnboxEdit").css("display", "block");
+        $("[name=detail]").attr("disabled", false);
+    }
+
+    // 삭제 버튼
+    function fnDelete() {
+        // 연결된 출입문 존재 시
+        if ($("#doorIds").val() !== "") {
+            alert("연결된 출입문을 모두 해제한 후 삭제하세요.");
+            return;
+        }
+
+        if (!confirm("삭제하시겠습니까?")) {
+            return;
+        }
+
+        fnDeleteAlarmGroupAjax();
+    }
+
+    // popup open (공통)
+    function openPopup(popupNm) {
+        $("#" + popupNm).PopupWindow("open");
+        if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
+            fnGetDoorListAjax("AlarmGroup"); //출입문 목록
+        }
+    }
+
+    // popup close (공통)
+    function closePopup(popupNm) {
+        if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
+            // TODO : 출입문 저장 로직
+            setDoors("AlarmGroup");
+        }
+        $("#" + popupNm).PopupWindow("close");
+    }
+
+
+
     /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
 
     function fnUpdateAlarmGroupAjax() {
@@ -137,72 +195,25 @@
     /////////////////  출입문 알람그룹 저장 ajax - end  /////////////////////
 
 
-    // 수정 취소
-    function fnCancel() {
-        $(".title_tx").html("출입문 스케쥴 - 상세");
-        $("#btnEdit").css("display", "none");
-        $("#btnboxDetail").css("display", "block");
-        $("#btnboxEdit").css("display", "none");
-        $("[name=detail]").attr("disabled", true);
+    /////////////////  출입문 알람그룹 삭제 ajax - start  /////////////////////
 
-        // 전체페이지 리로드 대신 html만 리로드
-        $("#detailForm").load(location.href + ' #detailForm');
-    }
-
-    // 수정 버튼
-    function fnEditMode() {
-        $(".title_tx").html("출입문 알람 그룹 - 수정");
-        $("#btnEdit").css("display", "inline-block");
-        $("#btnboxDetail").css("display", "none");
-        $("#btnboxEdit").css("display", "block");
-        $("[name=detail]").attr("disabled", false);
-    }
-
-    // 삭제 버튼
-    function fnDelete() {
-        // 연결된 출입문 존재 시
-        if ($("#doorIds").val() !== "") {
-            alert("연결된 출입문을 모두 해제한 후 삭제하세요.");
-            return;
-        }
-
-        if (!confirm("삭제하시겠습니까?")) {
-            return;
-        }
-
-        let id = $("#alarmGroupId").val();
-
+    function fnDeleteAlarmGroupAjax() {
         $.ajax({
-           type: "post",
-           url: "/door/alarm/delete/" + id,
-           dataType: 'json',
-           success: function(result, status) {
-               if (result.resultCode === "Y") {
-                   alert("삭제가 완료되었습니다.");
-                   location.href = "/door/alarm/list.do";
-               } else {
-                   alert("삭제 중 오류가 발생했습니다.");
-               }
-           }
+            type: "post",
+            url: "/door/alarm/delete/${doorGroupDetail.id}',
+            dataType: 'json',
+            success: function(result, status) {
+                if (result.resultCode === "Y") {
+                    alert("삭제가 완료되었습니다.");
+                    location.href = "/door/alarm/list.do";
+                } else {
+                    alert("삭제 중 오류가 발생했습니다.");
+                }
+            }
         });
     }
 
-    // popup open (공통)
-    function openPopup(popupNm) {
-        $("#" + popupNm).PopupWindow("open");
-        if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
-            fnGetDoorListAjax("AlarmGroup"); //출입문 목록
-        }
-    }
-
-    // popup close (공통)
-    function closePopup(popupNm) {
-        if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
-            // TODO : 출입문 저장 로직
-            setDoors("AlarmGroup");
-        }
-        $("#" + popupNm).PopupWindow("close");
-    }
+    /////////////////  출입문 알람그룹 삭제 ajax - end  /////////////////////
 
 </script>
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
