@@ -66,15 +66,15 @@
 
     // 출입문그룹 선택 저장
     function fnGroupSave() {
-        let gateGroup = [];
+        let doorGroup = [];
         $("input[name=chkGroupConf]").each(function (i) { // 체크된 것 말고 오른쪽 박스에 들어온 모든 항목
             let auth = $(this).closest("tr").children().eq(1).html();
-            gateGroup.push(auth);
+            doorGroup.push(auth);
         });
-        console.log(gateGroup);
+        console.log(doorGroup);
 
         // 권한그룹 textarea에 뿌려주기
-        $("#gateGroup").val(gateGroup.join("\r\n"));
+        $("#doorGroup").val(doorGroup.join("\r\n"));
         closePopup("doorGroupPickPopup");
     }
 
