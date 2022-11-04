@@ -392,9 +392,14 @@
     }
 
     // 수정 확인
-    function fnAdd() {
-        fnCancel();
-        // TODO: 저장 ajax
+    function fnSave() {
+        // 입력값 유효성 체크
+        if (fnIsEmpty($("#schNm").val())) {
+            alert ("출입문 스케쥴 명을 입력하세요.");
+            $("#schNm").focus(); return;
+        }
+
+        fnUpdateScheduleAjax();
     }
 
     // 수정 취소
@@ -409,7 +414,7 @@
     }
 
     // 수정 버튼
-    function fnEdit() {
+    function fnEditMode() {
         $(".title_tx").html("출입문 스케쥴 - 수정");
         $("#btnEdit").css("display", "block");
         $("#btnboxDetail").css("display", "none");
@@ -420,7 +425,7 @@
     // 삭제 버튼
     function fnDelete() {
         // 출입문 그룹에 그룹이 있으면,
-        if ($("#gateGroup").html() == "") {
+        if ($("#doorGroup").html() == "") {
             alert("연결된 출입문 그룹을 해제 후 삭제 하시기 바랍니다.");
             return;
         }
@@ -429,21 +434,7 @@
             return;
         }
 
-        $.ajax({
-            type: "post",
-            url: "/door/schedule/delete.do",
-            data: {
-                // "id" : id
-            },
-            dataType: 'json',
-            success: function (data, status) {
-                if (data.result == "Y") {
-                    location.href = "/door/schedule/list.do";
-                } else {
-                    alert("삭제 중 오류가 발생하였습니다.");
-                }
-            }
-        });
+        fnDeleteSchedule();
     }
 
     // 스케쥴 저장
@@ -589,36 +580,109 @@
     }
 
 
+    /////////////////  출입문 스케쥴 수정 ajax - start  /////////////////////
+
+    function fnUpdateScheduleAjax() {
+        let doorSchNm = $("#schNm").val();
+        let useYn = $("#schUseYn").val();
+        let doorIds = $("#doorIds").val();
+        let url = "<c:url value='/door/schedule/modify/${doorScheduleDetail.id}'/>";
+
+        console.log(doorSchNm);
+        console.log(useYn);
+        console.log(doorIds);
+        console.log(url);
+
+        $.ajax({
+            type : "POST",
+            data : {
+                doorSchNm: doorSchNm
+                // ,useYn: useYn
+                // ,doorIds: doorIds
+            },
+            dataType : "json",
+            url : url,
+            success : function(result) {
+                console.log(result);
+                if (result.resultCode === "Y") {
+                    alert("수정이 완료되었습니다.");
+                    window.location.href = '/door/schedule/detail/${doorScheduleDetail.id}';
+                } else {
+                    console.log("스케쥴 수정 실패");
+                }
+            }
+        });
+
+    }
+
+    /////////////////  출입문 스케쥴 수정 ajax - end  /////////////////////
+
+
+    /////////////////  출입문 스케쥴 삭제 ajax - start  /////////////////////
+
+    function fnDeleteSchedule() {
+        $.ajax({
+            type: "post",
+            url: "/door/schedule/delete.do",
+            data: {
+                // "id" : id
+            },
+            dataType: 'json',
+            success: function (data, status) {
+                if (data.result == "Y") {
+                    location.href = "/door/schedule/list.do";
+                } else {
+                    alert("삭제 중 오류가 발생하였습니다.");
+                }
+            }
+        });
+    }
+
+    /////////////////  출입문 스케쥴 삭제 ajax - end  /////////////////////
+
+
 
     /////////////////  요일별 스케쥴 뿌려주기 ajax - start  /////////////////////
 
     function fnGetScheduleByDayDetail() {
 
-        <%--$.ajax({--%>
-        <%--    type : "GET",--%>
-        <%--    data : {},--%>
-        <%--    dataType : "json",--%>
-        <%--    url : "<c:url value='/door/schedule/'/>,--%>
-        <%--    success : function(result) {--%>
-        <%--    --%>
-        <%--    }--%>
-        <%--});--%>
+        $.ajax({
+            type : "POST",
+            data : {},
+            dataType : "json",
+            async: false,
+            url : "<c:url value='/door/schedule/day/detail/${doorScheduleDetail.id}'/>",
+            success : function(result) {
+                if (result.resultCode === "Y") {
+                    console.log(result.scheduleByDayDetailList);
 
-        // 스케쥴 뿌려주기
-        $.each(tmp, function (i, sch) {
-            console.log(sch);
+                    // 스케쥴 뿌려주기
+                    $.each(result.scheduleByDayDetailList, function (i, sch) {
 
-            let beg_tm = sch.beg_tm.split(":");
-            let end_tm = sch.end_tm.split(":");
-            let start = {hour: beg_tm[0], min: beg_tm[1], sec: beg_tm[2]};
-            let end = {hour: end_tm[0], min: end_tm[1], sec: end_tm[2]};
-            let day = sch.weekday;
-            let schNum = sch.id.split("_")[1];
-            $("#" + sch.id + "_start").val(sch.beg_tm);
-            $("#" + sch.id + "_end").val(sch.end_tm);
+                        let beg_tm = sch.beg_tm.split(":");
+                        let end_tm = sch.end_tm.split(":");
+                        let start = {hour: beg_tm[0], min: beg_tm[1], sec: beg_tm[2]};
+                        let end = {hour: end_tm[0], min: end_tm[1], sec: end_tm[2]};
+                        let day = sch.weekday_order_no.split("_")[0];
+                        let schNum = sch.weekday_order_no.split("_")[1];
+                        // let day = sch.weekday;
+                        // let schNum = sch.id.split("_")[1];
+                        // timepicker 값 넣기
+                        $("#" + sch.weekday_order_no + "_start").val(sch.beg_tm);
+                        $("#" + sch.weekday_order_no + "_end").val(sch.end_tm);
+                        // $("#" + sch.id + "_start").val(sch.beg_tm);
+                        // $("#" + sch.id + "_end").val(sch.end_tm);
 
-            colorSchedule(start, end, day, schNum);
+                        colorSchedule(start, end, day, schNum);
+                    });
+                } else {
+                    console.log("스케쥴 불러오기 실패");
+                }
+            }
         });
+
+
+
     }
 
     /////////////////  요일별 스케쥴 뿌려주기 ajax - end  /////////////////////
@@ -627,35 +691,35 @@
     /////////////////  요일별 스케쥴 저장 ajax - start  /////////////////////
 
     function fnAddScheduleByDay(data) {
-        <%--$.ajax({--%>
-        <%--    type: "POST",--%>
-        <%--    url: "<c:url value='/door/schedule/day/add.do' />",--%>
-        <%--    data:  {--%>
-        <%--        "doorSchId" : "1" ,--%>
-        <%--        "day_schedule" : JSON.stringify(data)--%>
-        <%--    },--%>
-        <%--    dataType: "json",--%>
-        <%--    success: function (returnData) {--%>
-        <%--        console.log("schedule-day-add-ajax");--%>
-        <%--        console.log(returnData);--%>
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='/door/schedule/day/add.do' />",
+            data:  {
+                "doorSchId" : $("#scheduleId").val() ,
+                "day_schedule" : JSON.stringify(data)
+            },
+            dataType: "json",
+            success: function (returnData) {
+                console.log("schedule-day-add-ajax");
+                console.log(returnData);
 
-        <%--        if (returnData.resultCode == "Y") {--%>
-        <%--            alert("저장되었습니다.");--%>
-        <%--        } else {--%>
-        <%--            //등록에 문제가 발생--%>
-        <%--            alert("등록에 실패하였습니다.");--%>
-        <%--        }--%>
-        <%--    }--%>
-        <%--});--%>
+                if (returnData.resultCode == "Y") {
+                    alert("저장되었습니다.");
+                } else {
+                    //등록에 문제가 발생
+                    alert("등록에 실패하였습니다.");
+                }
+            }
+        });
     }
 
     /////////////////  요일별 스케쥴 저장 ajax - end  /////////////////////
 
 
+
 </script>
 
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
-<%--    <input type="hidden" id="editMode" name="editMode" value="edit"/>--%>
     <div class="tb_01_box">
         <table class="tb_write_02 tb_write_p1 box">
             <colgroup>
@@ -663,10 +727,12 @@
                 <col style="width:90%">
             </colgroup>
             <tbody id="tdScheduleDetail">
+            <input type="hidden" id="scheduleId" value="${doorScheduleDetail.id}">
+            <input type="hidden" id="doorIds" value="${doorGroupList}">
             <tr>
                 <th>출입문 스케쥴 명</th>
                 <td>
-                    <input type="text" id="schName" name="detail" maxlength="50" size="50" value="${doorScheduleDetail.door_sch_nm}" class="w_600px input_com" disabled>
+                    <input type="text" id="schNm" name="detail" maxlength="50" size="50" value="${doorScheduleDetail.door_sch_nm}" class="w_600px input_com" disabled>
                 </td>
             </tr>
             <tr>
@@ -674,16 +740,15 @@
                 <td>
                     <select id="schUseYn" name="detail" class="form-control w_600px" style="padding-left:10px;" disabled>
                         <option value="" name="selected">선택</option>
-                        <option value="yes" selected>Y</option>
-                        <option value="no">N</option>
+                        <option value="Y" selected>Y</option>
+                        <option value="N">N</option>
                     </select>
                 </td>
             </tr>
             <tr>
                 <th>출입문 그룹</th>
                 <td style="display: flex;">
-                    <textarea id="gateGroup" name="detail" rows="10" cols="33" class="w_600px"
-                              style="border-color: #ccc; border-radius: 2px;
+                    <textarea id="doorGroup" name="detail" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
                               font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>${doorGroupList.size()}/${doorGroupList}</textarea>
                     <div class="ml_10" style="position:relative;">
                         <button id="btnEdit" type="button" class="btn_middle color_basic" onclick="openPopup('doorGroupPickPopup')" style="position:absolute; bottom:0; display:none;">선택</button>
@@ -697,12 +762,12 @@
 
 <div class="right_btn mt_20" id="btnboxDetail">
     <button class="btn_middle color_basic" onclick="location='/door/schedule/list.do'">목록</button>
-    <button class="btn_middle ml_5 color_basic" onclick="fnEdit();">수정</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnEditMode();">수정</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
     <button class="btn_middle ml_5 color_basic" onclick="openPopup('addByDayPopup');">요일 별 스케쥴 등록</button>
 </div>
 <div class="right_btn mt_20" id="btnboxEdit" style="display:none;">
-    <button class="btn_middle color_basic" onclick="fnAdd();">확인</button>
+    <button class="btn_middle color_basic" onclick="fnSave();">확인</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnCancel();">취소</button>
 </div>
 
@@ -715,8 +780,8 @@
         <div class="search_box">
             <div class="search_in">
                 <div class="comm_search mr_10">
-                    <label for="gateSchNm" class="mr_10">출입문 스케쥴 명</label>
-                    <input type="text" class="w_600px input_com" id="gateSchNm" name="gateSchNm" value="" placeholder="출입문 스케쥴 명" maxlength="30" disabled>
+                    <label for="srchschNm" class="mr_10">출입문 스케쥴 명</label>
+                    <input type="text" class="w_600px input_com" id="srchschNm" name="srchschNm" value="" placeholder="출입문 스케쥴 명" maxlength="30" disabled>
                 </div>
             </div>
         </div>
