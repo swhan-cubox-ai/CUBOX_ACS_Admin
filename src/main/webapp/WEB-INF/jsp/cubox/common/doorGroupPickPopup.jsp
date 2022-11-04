@@ -114,13 +114,20 @@
                     </tr>
                     </thead>
                     <tbody id="tdGroupTotal">
-                    <c:forEach var="i" begin="1" end="10" varStatus="status">
-                        <tr>
-                            <td style="padding: 0 14px;"><input type="checkbox" name="chkGroup"/></td>
-                            <td>CUBOX123</td>
-                            <td>출입문그룹 A</td>
-                        </tr>
-                    </c:forEach>
+<%--                    <c:forEach items="${doorGroupList}" var="doorGroup" varStatus="status">--%>
+<%--                        <tr>--%>
+<%--                            <td style="padding: 0 14px;"><input type="checkbox" name="chkGroup"/></td>--%>
+<%--                            <td>${doorGroupList.door_sch_id}</td>--%>
+<%--                            <td>${doorGroupList.door_sch_nm}</td>--%>
+<%--                        </tr>--%>
+<%--                    </c:forEach>--%>
+<%--                    <c:forEach var="i" begin="1" end="10" varStatus="status">--%>
+<%--                        <tr>--%>
+<%--                            <td style="padding: 0 14px;"><input type="checkbox" name="chkGroup"/></td>--%>
+<%--                            <td>CUBOX123</td>--%>
+<%--                            <td>출입문그룹 A</td>--%>
+<%--                        </tr>--%>
+<%--                    </c:forEach>--%>
                     </tbody>
                 </table>
             </div>
@@ -157,16 +164,16 @@
                     </tr>
                     </thead>
                     <tbody id="tdGroupConf">
-                    <tr>
-                        <td style="padding: 0 14px;"><input type="checkbox" name="chkGroupConf"/></td>
-                        <td>CUBOX123</td>
-                        <td>출입문그룹 A</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0 14px;"><input type="checkbox" name="chkGroupConf"/></td>
-                        <td>CUBOX123</td>
-                        <td>출입문그룹 B</td>
-                    </tr>
+<%--                    <tr>--%>
+<%--                        <td style="padding: 0 14px;"><input type="checkbox" name="chkGroupConf"/></td>--%>
+<%--                        <td>CUBOX123</td>--%>
+<%--                        <td>출입문그룹 A</td>--%>
+<%--                    </tr>--%>
+<%--                    <tr>--%>
+<%--                        <td style="padding: 0 14px;"><input type="checkbox" name="chkGroupConf"/></td>--%>
+<%--                        <td>CUBOX123</td>--%>
+<%--                        <td>출입문그룹 B</td>--%>
+<%--                    </tr>--%>
                     </tbody>
                 </table>
             </div>

@@ -17,48 +17,38 @@
         margin-top: 10px;
         margin-bottom: 20px;
     }
-
     .box {
         border: 1px solid #ccc;
     }
-
     #tdScheduleDetail tr th {
         text-align: center;
     }
-
     thead {
         position: sticky;
         top: 0;
     }
-
     #tdTimePick tr td input {
         width: 125px;
         height: 25px;
         text-align: center;
         margin: 0 auto;
     }
-
     #tb_Schedule tr td,
     #tb_SchTimepick tr th, #tb_SchTimepick tr td {
         background: none;
     }
-
     #tb_SchTimepick tr th, #tb_SchTimepick tr td {
         border: none;
     }
-
     .tb_list tbody tr:nth-child(2n) td {
         background-color: transparent !important;
     }
-
     .col_days {
         font-weight: bold;
     }
-
     .colored {
         background-color: coral;
     }
-
     .sch1_timepick {
         background-color: aliceblue;
     }
@@ -66,22 +56,17 @@
         background-color: mistyrose;
     }
     .sch3_timepick {
-        /*background-color: lemonchiffon;*/
         background-color: floralwhite;
     }
-
     .sch1 {
         background-color: lightblue;
     }
-
     .sch2 {
         background-color: lightsalmon;
     }
-
     .sch3 {
         background-color: gold;
     }
-
     input[name=timepicker] {
         border: 1px solid gray;
     }
@@ -450,7 +435,6 @@
         closePopup("addByDayPopup");
 
         $.each($("input[name=timepicker]"), function (i, pick) {
-            console.log(pick);
             let pId = $(pick).attr("id");    // mon_1_start
             let weekday = pId.split("_")[0]; // 요일 mon
             let schNum = pId.split("_")[1];  // 스케쥴번호 1
@@ -464,7 +448,6 @@
                             schSet.beg_tm = $(pick).val();
                         } else if ($(pick).hasClass("end")) {
                             schSet.end_tm = $(pick).val();
-                            console.log(schSet);
                             tmp.push(schSet);
                             if (schNum === "3") {
                                 let sortedTmpData = sortByTime(tmp);
@@ -499,7 +482,6 @@
             }
         });
 
-        console.log(data);
         return data;
     }
 
@@ -779,7 +761,7 @@
             <div class="search_in">
                 <div class="comm_search mr_10">
                     <label for="srchschNm" class="mr_10">출입문 스케쥴 명</label>
-                    <input type="text" class="w_600px input_com" id="srchschNm" name="srchschNm" value="" placeholder="출입문 스케쥴 명" maxlength="30" disabled>
+                    <input type="text" class="w_600px input_com" id="srchschNm" name="srchschNm" value="${doorScheduleDetail.door_sch_nm}" maxlength="30" disabled>
                 </div>
             </div>
         </div>
