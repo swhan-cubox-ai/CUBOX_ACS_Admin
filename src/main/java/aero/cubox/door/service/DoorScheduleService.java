@@ -21,7 +21,7 @@ public interface DoorScheduleService {
     void deleteSchedule(Map<String, Object> commandMap);
 
     //요일별 스케쥴
-    HashMap getScheduleByDayDetail(Map<String, Object> commandMap);
+    List<HashMap> getScheduleByDayDetailList(Map<String, Object> commandMap);
     void addScheduleByDay(Map<String, Object> commandMap);
     void updateScheduleByDay(Map<String, Object> commandMap);
     void deleteScheduleByDay(Map<String, Object> commandMap);

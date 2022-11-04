@@ -374,9 +374,9 @@ public class DoorScheduleController {
             paramMap.put("doorSchId", id);
 
             try {
-                HashMap scheduleByDayDetail = doorScheduleService.getScheduleByDayDetail(paramMap);
+                List<HashMap> scheduleByDayDetailList = doorScheduleService.getScheduleByDayDetailList(paramMap);
                 resultCode = "Y";
-                modelAndView.addObject("scheduleByDayDetail", scheduleByDayDetail);
+                modelAndView.addObject("scheduleByDayDetailList", scheduleByDayDetailList);
             } catch (Exception e){
                 e.getStackTrace();
                 resultCode = "N";

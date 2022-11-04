@@ -85,8 +85,8 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
      * @return
      */
     @Override
-    public HashMap getScheduleByDayDetail(Map<String, Object> commandMap) {
-        return  doorScheduleDAO.getScheduleByDayDetail(commandMap);
+    public List<HashMap> getScheduleByDayDetailList(Map<String, Object> commandMap) {
+        return  doorScheduleDAO.getScheduleByDayDetailList(commandMap);
     }
 
     /**

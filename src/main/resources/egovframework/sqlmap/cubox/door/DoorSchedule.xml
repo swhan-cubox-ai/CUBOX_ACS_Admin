@@ -90,7 +90,7 @@
 
 
 
-    <select id="selectScheduleByDayDetail"  parameterType="HashMap" resultType="HashMap">
+    <select id="selectScheduleByDayDetailList"  parameterType="HashMap" resultType="HashMap">
         SELECT A.id
              , A.door_sch_id
              , A.weekday_order_no

@@ -40,8 +40,8 @@ public class DoorScheduleDAO extends EgovAbstractMapper {
         delete(sqlNameSpace+"deleteSchedule", paramMap);
     }
 
-    public HashMap getScheduleByDayDetail(Map<String, Object> paramMap) {
-        return selectOne(sqlNameSpace+"selectScheduleByDayDetail", paramMap);
+    public List<HashMap> getScheduleByDayDetailList(Map<String, Object> paramMap) {
+        return selectList(sqlNameSpace+"selectScheduleByDayDetailList", paramMap);
     }
 
     public void addScheduleByDay(Map<String, Object> paramMap) {
