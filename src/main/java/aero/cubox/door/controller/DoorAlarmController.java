@@ -2,7 +2,9 @@ package aero.cubox.door.controller;
 
 import aero.cubox.auth.service.AuthService;
 import aero.cubox.cmmn.service.CommonService;
+import aero.cubox.core.vo.PaginationVO;
 import aero.cubox.door.service.DoorAlarmService;
+import aero.cubox.door.service.DoorScheduleService;
 import aero.cubox.door.service.DoorService;
 import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.CommonUtils;
@@ -11,14 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +39,9 @@ public class DoorAlarmController {
 
     @Resource(name = "doorAlarmService")
     private DoorAlarmService doorAlarmService;
+    
+    @Resource(name = "doorScheduleService")
+    private DoorScheduleService doorScheduleService;
 
     @Resource(name = "terminalService")
     private TerminalService terminalService;
@@ -48,6 +51,14 @@ public class DoorAlarmController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DoorAlarmController.class);
 
+    private int curPageUnit= 10; //한번에 표시할 페이지 번호 개수
+    private String initSrchRecPerPage = "10"; //한번에 표시할 페이지 번호 개수
+
+    public int autoOffset(int srchPage, int srchCnt ){
+        int off = (srchPage - 1) * srchCnt;
+        if(off<0) off = 0;
+        return off;
+    }
     /**
      * 출입문 알람 그룹 화면
      * @param model
@@ -55,9 +66,41 @@ public class DoorAlarmController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/listView.do", method = RequestMethod.GET)
+    @RequestMapping(value = "/list.do")
     public String showAlarmGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
-        //todo 세션처리
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+            int srchPage       = Integer.parseInt(StringUtil.nvl(commandMap.get("srchPage"), "1"));
+            int srchRecPerPage = Integer.parseInt(StringUtil.nvl(commandMap.get("srchRecPerPage"), initSrchRecPerPage));
+            String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+
+            HashMap<String, Object> paramMap = new HashMap();
+
+            paramMap.put("keyword", keyword);
+            paramMap.put("srchCnt", srchRecPerPage);
+            paramMap.put("offset", autoOffset(srchPage, srchRecPerPage));
+
+            List<HashMap> doorAlarmGroupList = doorAlarmService.getDoorAlarmGrpList(paramMap);
+            int totalCnt = doorAlarmService.getDoorAlarmGrpListCount(paramMap);
+
+            PaginationVO pageVO = new PaginationVO();
+            pageVO.setCurPage(srchPage);
+            pageVO.setRecPerPage(srchRecPerPage);
+            pageVO.setTotRecord(totalCnt);
+            pageVO.setUnitPage(curPageUnit);
+            pageVO.calcPageList();
+
+            model.addAttribute("doorAlarmGroupList", doorAlarmGroupList);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("pagination", pageVO);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
 
         return "cubox/door/alarm/list";
     }
@@ -70,8 +113,8 @@ public class DoorAlarmController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/list.do", method = RequestMethod.GET)
-    public ModelAndView getAlarmGroupList(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+    @RequestMapping(value = "/listAjax.do", method = RequestMethod.GET)
+    public ModelAndView getAlarmGroupListAjax(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -89,15 +132,26 @@ public class DoorAlarmController {
         return modelAndView;
     }
 
-    // 출입문 알람 그룹 상세
-    @RequestMapping(value = "/detail.do", method = RequestMethod.GET)
-    public String showAlarmDetail(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+
+
+    // 출입문 알람 그룹 관리 상세
+    @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+    public String detail(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
+
+        HashMap doorGroupDetail = doorAlarmService.getDoorAlarmGrpDetail(id);
+
+        HashMap parmaMap = new HashMap();
+        List<HashMap> scheduleList = doorScheduleService.getDoorScheduleList(parmaMap);      // 스케쥴 목록
+
+        model.addAttribute("doorGroupDetail", doorGroupDetail);
 
         return "cubox/door/alarm/detail";
     }
 
+
     // 출입문 알람 그룹 등록 화면
-    @RequestMapping(value = "/addView.do", method = RequestMethod.GET)
+    @RequestMapping(value = "/add.do", method = RequestMethod.GET)
     public String showAlarmGroupAddView(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         return "cubox/door/alarm/add";
@@ -107,23 +161,109 @@ public class DoorAlarmController {
 
     // 출입문 알람 그룹 등록
     @ResponseBody
-    @RequestMapping(value = "/add.do", method = RequestMethod.POST)
+    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
     public ModelAndView addAalarmGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
         String resultCode = "Y";
+        String newDoorId = "";
         try {
-            doorAlarmService.addDoorAlarmGrp(commandMap);
+            newDoorId = doorAlarmService.addDoorAlarmGrp(commandMap);
         } catch (Exception e) {
             e.getStackTrace();
             resultCode = "N";
         }
 
         modelAndView.addObject("resultCode", resultCode);
+        modelAndView.addObject("newDoorId", newDoorId);
 
         return modelAndView;
     }
+
+
+    @ResponseBody
+    @RequestMapping(value="/modify/{id}", method= RequestMethod.POST)
+    public ModelAndView modify(ModelMap model, @PathVariable String id, HttpServletRequest request,@RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String resultCode = "Y";
+
+        if( id == null){
+            resultCode = "N";
+            model.addAttribute("resultCode", resultCode);
+
+            return modelAndView;
+        }
+        String scheduleId = StringUtil.nvl(id);
+
+        String nm = StringUtil.nvl(commandMap.get("nm"), "");
+        String time = StringUtil.nvl(commandMap.get("time"), "");
+        String envYn = StringUtil.nvl(commandMap.get("envYn"), "");
+        String deleteYn = StringUtil.nvl(commandMap.get("deleteYn"), "");
+        String doorIds = StringUtil.nvl(commandMap.get("doorIds"), "");
+
+        HashMap param = new HashMap();
+
+        param.put("id", scheduleId);
+        param.put("nm", nm);
+        param.put("time", time);
+        param.put("envYn", envYn);
+        param.put("deleteYn", deleteYn);
+        param.put("doorIds", doorIds);
+
+        try {
+            doorAlarmService.updateDoorAlarmGrp(param);
+
+        } catch (Exception e) {
+            e.getStackTrace();
+            resultCode = "N";
+        }
+
+        model.addAttribute("resultCode", resultCode);
+
+        return modelAndView;
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/delete/{id}")
+    public ModelAndView delete(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        String resultCode = "Y";
+
+        try {
+            doorAlarmService.deleteDoorAlarmGrp(id);
+        } catch (Exception e) {
+            e.getStackTrace();
+            resultCode = "N";
+        }
+
+
+        model.addAttribute("resultCode", resultCode);
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/name/verification.do", method = RequestMethod.GET)
+    public ModelAndView getDoorAlarmGroupNameValidation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("doorGroupNm", commandMap.get("doorGroupNm"));
+
+        int doorAlarmGroupNameVerificationCnt = doorAlarmService.getDoorAlarmGroupNameVerification(param);
+
+        modelAndView.addObject("doorAlarmGroupNameVerificationCnt", doorAlarmGroupNameVerificationCnt);
+
+        return modelAndView;
+    }
+
 
 }

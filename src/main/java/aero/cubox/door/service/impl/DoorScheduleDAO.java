@@ -13,12 +13,16 @@ public class DoorScheduleDAO extends EgovAbstractMapper {
     private static final String sqlNameSpace = "door.schedule.";
 
 
-    public List<HashMap> getScheduleList(Map<String, Object> paramMap) {
+    public List<HashMap> getDoorScheduleList(Map<String, Object> paramMap) {
         return selectList(sqlNameSpace+"selectDoorSchList", paramMap);
     }
 
-    public HashMap getScheduleDetail(Map<String, Object> paramMap) {
-        return selectOne(sqlNameSpace+"selectScheduleDetail", paramMap);
+    public int getDoorScheduleListCount(Map<String, Object> paramMap) {
+        return selectOne(sqlNameSpace+"selectDoorSchListCount", paramMap);
+    }
+
+    public HashMap getDoorScheduleDetail(int id) {
+        return selectOne(sqlNameSpace+"selectDoorScheduleDetail", id);
     }
 
     public void addSchedule(Map<String, Object> paramMap) {
@@ -36,8 +40,8 @@ public class DoorScheduleDAO extends EgovAbstractMapper {
         delete(sqlNameSpace+"deleteSchedule", paramMap);
     }
 
-    public HashMap getScheduleByDayDetail(Map<String, Object> paramMap) {
-        return selectOne(sqlNameSpace+"selectScheduleByDayDetail", paramMap);
+    public List<HashMap> getScheduleByDayDetailList(Map<String, Object> paramMap) {
+        return selectList(sqlNameSpace+"selectScheduleByDayDetailList", paramMap);
     }
 
     public void addScheduleByDay(Map<String, Object> paramMap) {
@@ -56,5 +60,11 @@ public class DoorScheduleDAO extends EgovAbstractMapper {
     }
 
 
+    public int getDoorScheduleNameVerification(HashMap<String, Object> paramMap) {
+        return selectOne(sqlNameSpace+"selectDoorScheduleNameVerification", paramMap);
+    }
 
+    public int getDayScheduleExistsCount(Map<String, Object> paramMap) {
+        return selectOne(sqlNameSpace+"selectDayScheduleExistsCount", paramMap);
+    }
 }

@@ -15,49 +15,86 @@
 </style>
 
 <script type="text/javascript">
-    $(function () {
+$(function () {
 
-        // 출입문 추가
-        $("#add_door").click(function () {
-            let nodeSel = $(".nodeSel").html();
-            let doorSelected = $("#doorSelected").children();
-
-            // 이미 같은 출입문 있을 경우 return
-            for (let i = 1; i < doorSelected.length; i++) {
-                let doorPath = doorSelected.eq(i).children().last().html();
-                if (doorPath == nodeSel) {
-                    return;
-                }
+    // 출입문 추가
+    $(".add_door").click(function () {
+        let nodeSel = $(".nodeSel").html();
+        let nodeSelId = $(".nodeSel").find("span").attr("id");
+        let doorSelected = $("#doorSelected").children();
+        console.log(nodeSelId);
+        // 이미 같은 출입문 있을 경우 return
+        for (let i = 0; i < doorSelected.length; i++) {
+            let doorPath = doorSelected.eq(i).children().last().html();
+            if (doorPath == nodeSel) {
+                return;
             }
-            let tag = "<tr><td><input type='checkbox' name='chkDoorConf'></td><td>" + nodeSel + "</td></tr>";
+        }
+        if (nodeSelId != null || nodeSelId != undefined) {
+            let tag = "<tr><td><input type='checkbox' id='" + nodeSelId + "' name='chkDoorConf'></td><td>" + nodeSel + "</td></tr>";
             $("#doorSelected").append(tag);
-        });
+        }
 
-        // 출입문 삭제
-        $("#delete_door").click(function () {
-            let ckd = $("input[name=chkDoorConf]:checked").length;
-            for (let i = ckd - 1; i > -1; i--) {
-                $("input[name=chkDoorConf]:checked").eq(i).closest("tr").remove();
-            }
-
-            if ($("#chkDoorConfAll").prop("checked")) {
-                $("#chkDoorConfAll").prop("checked", false);
-            }
-        });
-
-        $("#chkDoorConfAll").click(function () {
-            if ($("#chkDoorConfAll").prop("checked")) {
-                $("input[name=chkDoorConf]").prop("checked", true);
-            } else {
-                $("input[name=chkDoorConf]").prop("checked", false);
-            }
-        });
     });
+
+    // 출입문 삭제
+    $(".delete_door").click(function () {
+        let ckd = $("input[name=chkDoorConf]:checked").length;
+        for (let i = ckd - 1; i > -1; i--) {
+            $("input[name=chkDoorConf]:checked").eq(i).closest("tr").remove();
+        }
+
+        if ($("#chkDoorConfAll").prop("checked")) {
+            $("#chkDoorConfAll").prop("checked", false);
+        }
+    });
+
+    $("#chkDoorConfAll").click(function () {
+        if ($("#chkDoorConfAll").prop("checked")) {
+            $("input[name=chkDoorConf]").prop("checked", true);
+        } else {
+            $("input[name=chkDoorConf]").prop("checked", false);
+        }
+    });
+});
+
+
+// 출입문선택 반영
+function setDoors(type) {
+
+    let doorGpIds = "";
+    let doorGpHtml = [];
+    $("input[name=chkDoorConf]").each(function (i) {
+        let ids = $(this).attr("id");
+        let html = $(this).closest("tr").children().eq(1).find("span").html();
+        if (i == 0) {
+            doorGpIds += ids;
+        } else if (i > 0) {
+            doorGpIds += ("/" + ids);
+        }
+        doorGpHtml.push(html);
+    });
+    console.log(doorGpIds);
+    console.log(doorGpHtml);
+
+    if (type === "Group") {                 // 그룹관리
+        $("#gpDoorIds").val(doorGpIds);
+        $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
+    } else if (type === "AlarmGroup") {     // 알람그룹
+        $("#doorIds").val(doorGpIds);
+        $("#tdGroupTotal").empty();
+        $("#alDoorCnt").val($("input[name=chkDoorConf]").length);   // 출입문 수
+        $.each(doorGpHtml, function(i, html) {                      // 출입문 목록에 반영
+           let tag = "<tr><td>" + html + "</td></tr>";
+           $("#tdGroupTotal").append(tag);
+        });
+    }
+}
 
     /////////////////  출입문 목록 ajax - start  /////////////////////
 
 
-    function fnGetDoorListAjax() {
+    function fnGetDoorListAjax(type) {
         console.log( "fnGetDoorListAjax2");
 
         $.ajax({
@@ -68,6 +105,20 @@
             success : function(result) {
                 console.log(result);
                 createTree(false, result, $("#treeDiv"));
+
+                $("#doorSelected").empty();
+                let doorList;
+                if (type === "Group" && $("#gpDoorIds").val() != "") { // 수정일 떄
+                    doorList = $("#gpDoorIds").val().split("/");
+                } else if (type === "AlarmGroup" && $("#doorIds").val() !== "") {
+                    doorList = $("#doorIds").val().split("/");
+                }
+
+                $.each(doorList, function(i, door) {
+                    $("span[id=" + door + "]").parent().toggleClass("node nodeSel");
+                    $(".add_door").click();
+                    $("span[id=" + door + "]").parent().toggleClass("nodeSel node");
+                });
             }
         });
     }
@@ -88,29 +139,29 @@
         <%--  화살표 이동  --%>
         <div style="height: 400px; display: flex; justify-content: center; flex-wrap: wrap; flex-direction: column; align-items: center;">
             <div class="btn_box" style="margin:5px 0;">
-                <img src="/img/ar_r.png" alt="" id="add_door"/>
+                <img src="/img/ar_r.png" alt="" class="add_door"/>
             </div>
             <div class="btn_box" style="margin:5px 0;">
-                <img src="/img/ar_l.png" alt="" id="delete_door"/>
+                <img src="/img/ar_l.png" alt="" class="delete_door"/>
             </div>
         </div>
         <%--  end of 화살표 이동  --%>
 
         <%--  테이블  --%>
         <div style="width:45%;">
-            <div class="com_box"
-                 style="border: 1px solid black; background-color: white; overflow: auto; height: 400px;">
+            <div class="com_box" style="border: 1px solid black; background-color: white; overflow: auto; height: 400px;">
                 <table class="tb_list tb_write_02 tb_write_p1">
                     <colgroup>
                         <col style="width:10%">
                         <col style="width:90%">
                     </colgroup>
-                    <tbody id="doorSelected">
-                    <tr>
-                        <th><input type="checkbox" id="chkDoorConfAll"></th>
-                        <th>출입문</th>
-                    </tr>
-                    </tbody>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="chkDoorConfAll"></th>
+                            <th>출입문</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doorSelected"></tbody>
                 </table>
             </div>
         </div>

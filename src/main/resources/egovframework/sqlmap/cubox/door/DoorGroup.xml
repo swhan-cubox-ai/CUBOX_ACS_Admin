@@ -16,9 +16,9 @@
                     , TD.nm
                     , TD.door_sch_id
                     , TDC.door_sch_nm
+                    , (select COUNT(TDD.door_id) FROM T_DOORGRP_DOOR TDD where TDD.doorgrp_id = TD.id )AS door_cnt
                     , TD.created_at
                     , TD.updated_at
-                    , (select COUNT(TDD.door_id) FROM T_DOORGRP_DOOR TDD where TDD.doorgrp_id = TD.id )AS door_cnt
                  FROM T_DOORGRP TD
             LEFT JOIN T_DOOR_SCH TDC on TD.door_sch_id = TDC.id
                 WHERE 1=1
@@ -27,6 +27,9 @@
               </if>
               <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
                   AND TD.nm like CONCAT('%',#{keyword},'%')
+              </if>
+              <if test='@aero.cubox.util.CommonUtils@notEmpty(doorSchId)'>
+                  AND TD.door_sch_id = #{doorSchId}
               </if>
              ) A
       ORDER BY A.created_at DESC
@@ -39,11 +42,6 @@
         SELECT COUNT(*)
           FROM (
                 SELECT TD.id
-                     , TD.nm
-                     , TD.door_sch_id
-                     , TDC.door_sch_nm
-        , DATE_FORMAT(TD.created_at, '%Y-%m-%d') as created_at
-        , DATE_FORMAT(TD.updated_at, '%Y-%m-%d') as updated_at
                   FROM T_DOORGRP TD
              LEFT JOIN T_DOOR_SCH TDC on TD.door_sch_id = TDC.id
                  WHERE 1=1
@@ -62,6 +60,8 @@
              , TD.nm
              , TD.door_sch_id
              , TDC.door_sch_nm
+             , (SELECT GROUP_CONCAT( TDD.door_id  SEPARATOR '/')  FROM T_DOORGRP_DOOR TDD WHERE TDD.doorgrp_id= TD.id ) AS door_ids
+             , (SELECT GROUP_CONCAT( (SELECT A.door_nm FROM T_DOOR A where A.id = TDD.door_id ) SEPARATOR '/')  FROM T_DOORGRP_DOOR TDD WHERE TDD.doorgrp_id= TD.id ) AS door_nms
              , DATE_FORMAT(TD.created_at, '%Y-%m-%d') as created_at
              , DATE_FORMAT(TD.updated_at, '%Y-%m-%d') as updated_at
         FROM T_DOORGRP TD
@@ -71,7 +71,7 @@
 
 
 
-    <insert id="insertDoorGroup" parameterType="HashMap">
+    <insert id="insertDoorGroup" parameterType="HashMap" useGeneratedKeys="true" keyProperty="doorgrpId" keyColumn="id">
         INSERT
         INTO T_DOORGRP
         ( nm
@@ -95,8 +95,40 @@
         DELETE
         FROM T_DOORGRP
         WHERE id = #{id}
-
     </delete>
+
+    <insert id="insertDoorInDoorGroup" parameterType="HashMap">
+        INSERT
+        INTO T_DOORGRP_DOOR
+        ( door_id
+        , doorgrp_id)
+        VALUES
+            ( #{doorId}
+            , #{doorgrpId}
+            )
+    </insert>
+
+
+    <update id="updateDoorInDoorGroup" parameterType="HashMap">
+        UPDATE T_DOORGRP_DOOR
+        SET doorgrp_id = #{doorgrpId}
+        WHERE door_id = #{doorId}
+    </update>
+
+
+    <delete id="deleteDoorInDoorGroup" parameterType="HashMap" >
+        DELETE
+        FROM T_DOORGRP_DOOR
+        WHERE door_id = #{doorId}
+    </delete>
+
+
+    <select id="selectDoorGroupNameVerification" parameterType="HashMap" resultType="int">
+        SELECT COUNT(TD.id) AS vCnt
+        FROM T_DOORGRP TD
+        WHERE 1 = 1
+          AND replace(TD.nm, ' ', '') = replace(#{doorGroupNm}, ' ', '')
+    </select>
 
 
 </mapper>

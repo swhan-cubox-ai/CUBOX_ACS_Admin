@@ -12,12 +12,12 @@ public class DoorGroupDAO extends EgovAbstractMapper {
 
     private static final String sqlNameSpace = "door.group.";
 
-    public int getDoorGroupListCount(Map<String, Object> paramMap) {
-        return selectOne (sqlNameSpace+"selectDoorGroupListCount", paramMap);
-    }
-
     public List<HashMap> getDoorGroupList(Map<String, Object> paramMap) {
         return selectList(sqlNameSpace+"selectDoorGroupList", paramMap);
+    }
+
+    public int getDoorGroupListCount(Map<String, Object> paramMap) {
+        return selectOne (sqlNameSpace+"selectDoorGroupListCount", paramMap);
     }
 
 
@@ -29,6 +29,8 @@ public class DoorGroupDAO extends EgovAbstractMapper {
 
         insert(sqlNameSpace+"insertDoorGroup", paramMap);
     }
+    
+
 
     public void updateDoorGroup(Map<String, Object> paramMap) {
 
@@ -40,4 +42,22 @@ public class DoorGroupDAO extends EgovAbstractMapper {
         delete(sqlNameSpace+"deleteDoorGroup", id);
     }
 
+    public int getDoorGroupNameVerification(HashMap<String, Object> paramMap) {
+        return selectOne(sqlNameSpace+"selectDoorGroupNameVerification", paramMap);
+    }
+
+    public void addDoorInDoorGroup(Map<String, Object> paramMap) {
+
+        insert(sqlNameSpace+"insertDoorInDoorGroup", paramMap);
+    }
+
+    public void updateDoorInDoorGroup(Map<String, Object> paramMap) {
+
+        update(sqlNameSpace+"updateDoorInDoorGroup", paramMap);
+    }
+
+    public void deleteDoorInDoorGroup(Map<String, Object> paramMap) {
+
+        update(sqlNameSpace+"deleteDoorInDoorGroup", paramMap);
+    }
 }

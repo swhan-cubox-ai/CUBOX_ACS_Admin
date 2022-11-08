@@ -9,22 +9,19 @@
 		       , TD.area_id
 		       , TD.floor_id
 		       , TD.alarm_typ
+		       , TDD.doorgrp_id
 		       , TDS.id as sch_id
 		       , TDS.door_sch_nm as sch_nm
-		       , (SELECT GROUP_CONCAT( TT.id  SEPARATOR '/ ') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_id
-		       , (SELECT GROUP_CONCAT( TT.terminal_cd  SEPARATOR '/ ') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_cd
-		       , (SELECT GROUP_CONCAT( TT.mgmt_num  SEPARATOR '/ ')  FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS mgmt_num
-		       , TAD.auth_id AS auth_id
-		       , (SELECT TA.auth_nm FROM T_AUTH TA WHERE TA.id = TAD.auth_id ) AS auth_nm
+		       , (SELECT GROUP_CONCAT( TT.id  SEPARATOR '/') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_id
+		       , (SELECT GROUP_CONCAT( TT.terminal_cd  SEPARATOR '/') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_cd
+		       , (SELECT GROUP_CONCAT( TT.mgmt_num  SEPARATOR '/')  FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS mgmt_num
+		       , (SELECT GROUP_CONCAT( TT.auth_id  SEPARATOR '/')  FROM T_AUTH_DOOR TT WHERE TT.door_id= TD.id ) AS auth_ids
+			   , (SELECT GROUP_CONCAT( (SELECT TA.auth_nm FROM T_AUTH TA WHERE TA.id = TT.auth_id)  SEPARATOR '/')  FROM T_AUTH_DOOR TT WHERE TT.door_id =TD.id ) AS auth_nms
 		    FROM T_DOOR TD
  LEFT OUTER JOIN T_DOORGRP_DOOR TDD ON TD.id = TDD.door_id
  LEFT OUTER JOIN T_DOORGRP TDG      ON TDD.doorgrp_id = TDG.id
  LEFT OUTER JOIN T_DOOR_SCH TDS     ON TDD.doorgrp_id = TDS.id
- LEFT OUTER JOIN T_AUTH_DOOR TAD    ON TD.id = TAD.door_id
 		   WHERE TD.id = #{id}
-		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-			 AND TD.id = #{id}
-		</if>
 	</select>
 
 	<select id="selectDoorList" parameterType="HashMap" resultType="HashMap">
@@ -116,11 +113,11 @@
 		  FROM T_FLOOR TF
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-			AND TF.id = #{id}
+		   AND TF.id = #{id}
 		</if>
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(areaId)'>
-		  AND TF.area_id = #{areaId}
-		  AND TF.building_id = #{buildingId}
+		   AND TF.area_id = #{areaId}
+		   AND TF.building_id = #{buildingId}
 		</if>
 	</select>
 
@@ -155,7 +152,6 @@
 	</select>
 
 
-
 	<select id="selectTerminalDetail" parameterType="HashMap" resultType="HashMap">
 		SELECT id,
 			   terminal_cd,
@@ -165,10 +161,13 @@
 			   ip_addr,
 			   complex_auth_typ,
 			   face_auth_typ,
+			   op_mode_typ,
+			   online_yn,
 			   created_at,
 			   updated_at
 		  FROM T_TERMINAL TT
 		 WHERE 1 = 1
+           AND use_yn = 'Y'
 	</select>
 
 
@@ -322,6 +321,71 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 		 WHERE auth_id = #{authId}
 		   AND building_id = #{buildingId}
 	</delete>
+
+	<delete id="deleteBuilding" parameterType="HashMap" >
+		DELETE
+		FROM T_BUILDING
+		WHERE id = #{id}
+
+	</delete>
+
+	<delete id="deleteArea" parameterType="HashMap" >
+		DELETE
+		FROM T_AREA
+		WHERE id = #{id}
+
+	</delete>
+
+	<delete id="deleteFloor" parameterType="HashMap" >
+		DELETE
+		FROM T_FLOOR
+		WHERE id = #{id}
+
+	</delete>
+
+
+	<select id="selectTerminalUseCnt" parameterType="HashMap" resultType="int">
+		SELECT COUNT(TT.door_id) AS useCnt
+		  FROM T_TERMINAL TT
+		 WHERE 1=1
+	       AND TT.id = #{id}
+           AND TT.use_yn = 'Y'
+	</select>
+
+	<select id="selectBuildingNameVerification" parameterType="HashMap" resultType="int">
+		SELECT COUNT(TB.id) AS vCnt
+		  FROM T_BUILDING TB
+		 WHERE 1 = 1
+		   AND replace(TB.building_nm, ' ', '') = replace(#{buildingNm}, ' ', '')
+	</select>
+
+	<select id="selectAreaNameVerification" parameterType="HashMap" resultType="int">
+		SELECT COUNT(TA.id) AS vCnt
+		FROM T_AREA TA
+		WHERE 1 = 1
+		  AND replace(TA.area_nm, ' ', '') = replace(#{areaNm}, ' ', '')
+	</select>
+
+	<select id="selectFloorNameVerification" parameterType="HashMap" resultType="int">
+		SELECT COUNT(TF.id) AS vCnt
+		FROM T_FLOOR TF
+		WHERE 1 = 1
+		  AND replace(TF.floor_nm, ' ', '') = replace(#{floorNm}, ' ', '')
+	</select>
+
+	<select id="selectDoorNameVerification" parameterType="HashMap" resultType="int">
+		SELECT COUNT(TD.id) AS vCnt
+		  FROM T_DOOR TD
+		 WHERE 1 = 1
+		   AND replace(TD.door_nm, ' ', '') = replace(#{doorNm}, ' ', '')
+	</select>
+
+	<select id="selectTerminalConnectedCount" parameterType="HashMap" resultType="int">
+		SELECT COUNT(TT.id) AS cCnt
+		  FROM T_TERMINAL TT
+		 WHERE 1 = 1
+		   AND TT.door_id = #{doorId}
+	</select>
 
 
 

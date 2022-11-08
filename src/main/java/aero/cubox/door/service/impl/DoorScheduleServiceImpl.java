@@ -1,7 +1,6 @@
 package aero.cubox.door.service.impl;
 
 import aero.cubox.door.service.DoorScheduleService;
-import aero.cubox.door.service.DoorService;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -22,28 +21,38 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
      * @return
      */
     @Override
-    public List<HashMap> getScheduleList(Map<String, Object> commandMap) {
+    public List<HashMap> getDoorScheduleList(Map<String, Object> commandMap) {
 
-        return doorScheduleDAO.getScheduleList(commandMap);
+        return doorScheduleDAO.getDoorScheduleList(commandMap);
+    }
+
+    @Override
+    public int getDoorScheduleListCount(Map<String, Object> commandMap) {
+        return doorScheduleDAO.getDoorScheduleListCount(commandMap);
     }
 
     /**
      * 출입문 스케줄 상세
-     * @param commandMap
+     * @param id
      * @return
      */
     @Override
-    public HashMap getScheduleDetail(Map<String, Object> commandMap) {
-        return  doorScheduleDAO.getScheduleDetail(commandMap);
+    public HashMap getDoorScheduleDetail(int id) {
+        return  doorScheduleDAO.getDoorScheduleDetail(id);
     }
 
     /**
      * 출입문 스케줄 등록
+     *
      * @param commandMap
+     * @return
      */
     @Override
-    public void addSchedule(Map<String, Object> commandMap) {
+    public String addSchedule(Map<String, Object> commandMap) {
+        String newScheduleId = "";
         doorScheduleDAO.addSchedule(commandMap);
+        newScheduleId = commandMap.get("scheduleId").toString();
+        return newScheduleId;
     }
 
     /**
@@ -61,7 +70,13 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
      */
     @Override
     public void deleteSchedule(Map<String, Object> commandMap) {
+        HashMap paramMap = new HashMap();
+
+        paramMap.put("doorSchId",  commandMap.get("id"));
+
+        doorScheduleDAO.deleteScheduleByDay(paramMap);
         doorScheduleDAO.deleteSchedule(commandMap);
+
     }
 
     /**
@@ -70,8 +85,8 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
      * @return
      */
     @Override
-    public HashMap getScheduleByDayDetail(Map<String, Object> commandMap) {
-        return  doorScheduleDAO.getScheduleByDayDetail(commandMap);
+    public List<HashMap> getScheduleByDayDetailList(Map<String, Object> commandMap) {
+        return  doorScheduleDAO.getScheduleByDayDetailList(commandMap);
     }
 
     /**
@@ -80,6 +95,7 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
      */
     @Override
     public void addScheduleByDay(Map<String, Object> commandMap) {
+
         doorScheduleDAO.addScheduleByDay(commandMap);
     }
 
@@ -89,7 +105,8 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
      */
     @Override
     public void updateScheduleByDay(Map<String, Object> commandMap) {
-        doorScheduleDAO.updateScheduleByDay(commandMap);
+        doorScheduleDAO.deleteScheduleByDay(commandMap);
+        doorScheduleDAO.addScheduleByDay(commandMap);
     }
 
     /**
@@ -99,5 +116,15 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
     @Override
     public void deleteScheduleByDay(Map<String, Object> commandMap) {
         doorScheduleDAO.deleteScheduleByDay(commandMap);
+    }
+
+    @Override
+    public int getDoorScheduleNameVerification(HashMap<String, Object> param) {
+        return doorScheduleDAO.getDoorScheduleNameVerification(param);
+    }
+
+    @Override
+    public int getDayScheduleExistsCount(Map<String, Object> commandMap) {
+        return doorScheduleDAO.getDayScheduleExistsCount(commandMap);
     }
 }

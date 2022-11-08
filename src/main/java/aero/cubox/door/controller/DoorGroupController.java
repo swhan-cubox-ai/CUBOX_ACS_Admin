@@ -2,7 +2,6 @@ package aero.cubox.door.controller;
 
 import aero.cubox.auth.service.AuthService;
 import aero.cubox.cmmn.service.CommonService;
-import aero.cubox.core.vo.CommonVO;
 import aero.cubox.core.vo.PaginationVO;
 import aero.cubox.door.service.DoorGroupService;
 import aero.cubox.door.service.DoorScheduleService;
@@ -49,10 +48,6 @@ public class DoorGroupController {
     @Resource(name = "authService")
     private AuthService authService;
 
-    private int srchPage   =  1; //조회할 페이지 번호 기본 1페이지
-    private int srchCnt	   = 10; //조회할 페이지 수
-    private int offset	   =  0;
-    private int curPage	   =  1; //조회할 페이지 번호 기본 1페이지
     private int curPageUnit= 10; //한번에 표시할 페이지 번호 개수
     private String initSrchRecPerPage = "10"; //한번에 표시할 페이지 번호 개수
 
@@ -113,14 +108,67 @@ public class DoorGroupController {
     }
 
 
+    /**
+     * 출입문 그룹 목록 조회 ajax
+     * @param model
+     * @param commandMap
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/listAjax.do", method = RequestMethod.POST)
+    public ModelAndView listAjax(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
+
+        //todo 세션
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+            int srchPage       = Integer.parseInt(StringUtil.nvl(commandMap.get("srchPage"), "1"));
+            int srchRecPerPage = Integer.parseInt(StringUtil.nvl(commandMap.get("srchRecPerPage"), initSrchRecPerPage));
+            String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+
+            HashMap<String, Object> paramMap = new HashMap();
+
+            paramMap.put("keyword", keyword);
+            paramMap.put("srchCnt", srchRecPerPage);
+            paramMap.put("offset", autoOffset(srchPage, srchRecPerPage));
+
+            List<HashMap> doorGroupList = doorGroupService.getDoorGroupList(paramMap);
+            int totalCnt = doorGroupService.getDoorGroupListCount(paramMap);
+
+            PaginationVO pageVO = new PaginationVO();
+            pageVO.setCurPage(srchPage);
+            pageVO.setRecPerPage(srchRecPerPage);
+            pageVO.setTotRecord(totalCnt);
+            pageVO.setUnitPage(curPageUnit);
+            pageVO.calcPageList();
+
+            model.addAttribute("doorGroupList", doorGroupList);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("pagination", pageVO);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
+
+        return modelAndView;
+    }
+
 
     // 출입문 그룹 관리 상세
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
     public String detail(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
 
-        HashMap DoorGroupDetail = doorGroupService.getDoorGroupDetail(id);
+        HashMap doorGroupDetail = doorGroupService.getDoorGroupDetail(id);
 
-        model.addAttribute("doorGroupDetail", DoorGroupDetail);
+        HashMap param = new HashMap();
+        List<HashMap> scheduleList = doorScheduleService.getDoorScheduleList(param);      // 스케쥴 목록
+
+        model.addAttribute("doorGroupDetail", doorGroupDetail);
+        model.addAttribute("scheduleList", scheduleList);
 
         return "cubox/door/group/detail";
     }
@@ -133,14 +181,14 @@ public class DoorGroupController {
         modelAndView.setViewName("jsonView");
 
         HashMap param = new HashMap();
-        List<HashMap> scheduleList = doorScheduleService.getScheduleList(param);      // 스케쥴 목록
+        List<HashMap> scheduleList = doorScheduleService.getDoorScheduleList(param);      // 스케쥴 목록
 
-        modelAndView.addObject("scheduleList", scheduleList);
+        model.addAttribute("scheduleList", scheduleList);
 
         return "cubox/door/group/add";
     }
 
-    // 출입문 그룹 관리 등록화면
+    // 출입문 그룹 관리 등록
     @ResponseBody
     @RequestMapping(value = "/save.do", method = RequestMethod.POST)
     public ModelAndView saveDoorGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
@@ -159,18 +207,21 @@ public class DoorGroupController {
         param.put("nm", nm);
         param.put("doorSchId", scheduleId);
         param.put("doorIds", doorIds);
-
+        String newDoorId = "";
         try {
-            doorGroupService.addDoorGroup(param);
+             newDoorId = doorGroupService.addDoorGroup(param);
         } catch (Exception e) {
             e.getStackTrace();
             resultCode = "N";
         }
 
         modelAndView.addObject("resultCode", resultCode);
+        modelAndView.addObject("newDoorId", newDoorId);
 
         return modelAndView;
     }
+
+
     @ResponseBody
     @RequestMapping(value="/modify/{id}", method= RequestMethod.POST)
     public ModelAndView modify(ModelMap model, @PathVariable String id, HttpServletRequest request,@RequestParam Map<String, Object> commandMap) throws Exception {
@@ -179,7 +230,6 @@ public class DoorGroupController {
         modelAndView.setViewName("jsonView");
 
         String resultCode = "Y";
-
 
         if( id == null){
              resultCode = "N";
@@ -225,6 +275,23 @@ public class DoorGroupController {
 
 
         model.addAttribute("resultCode", resultCode);
+
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/name/verification.do", method = RequestMethod.GET)
+    public ModelAndView getDoorGroupNameValidation(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        HashMap<String, Object> param = new HashMap<String, Object>();
+
+        param.put("doorGroupNm", commandMap.get("doorGroupNm"));
+
+        int doorGroupNameVerificationCnt = doorGroupService.getDoorGroupNameVerification(param);
+
+        modelAndView.addObject("doorGroupNameVerificationCnt", doorGroupNameVerificationCnt);
 
         return modelAndView;
     }

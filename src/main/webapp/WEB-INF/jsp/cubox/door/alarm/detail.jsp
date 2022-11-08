@@ -13,7 +13,6 @@
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorListPopup.jsp" flush="false"/>
 
-
 <style>
     .title_box {
         margin-top: 10px;
@@ -43,7 +42,7 @@
         modalPopup("doorListPopup", "출입문 목록", 450, 550);
         modalPopup("doorEditPopup", "출입문 수정", 900, 600);
 
-        chkAlType();
+        // chkAlType();
 
         // 출입문 알람그룹 명 유효성 체크
         $("#alNm").focusout(function() {
@@ -54,58 +53,48 @@
 
         // 유형 - 기본시간
         $("#alType").change(function() {
-            console.log("유형");
-            console.log(this);
+            console.log("alType 유형");
             console.log($(this).val());
 
-            chkAlType();
+            // chkAlType();
         });
 
     });
 
     // 유형:기본시간 --> 시간 고정
-    function chkAlType() {
-        if ($("#alType").val() == "default") {
-            $("#alTime").val(defaultTime).attr("disabled", true);
-        } else {
-            $("#alTime").val("").attr("disabled", false);
-        }
-    }
-
-    // 목록 버튼
-    function fnList() {
-        location.href = "/door/alarmGroup/listView.do";
-    }
+    // function chkAlType() {
+    //     if ($("#alType").val() == "default") {
+    //         $("#alTime").val(defaultTime).attr("disabled", true);
+    //     } else {
+    //         $("#alTime").val("").attr("disabled", false);
+    //     }
+    // }
 
     // 수정 확인
     function fnSave() {
-        let alNm = $("#alNm").val();
-        let alType = $("#alType").val();
-        let alTime = $("#alTime").val();
-        let alUseYn = $("#alUseYn").val();
-        let alDoorCnt = $("#alDoorCnt").val();
-        // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
-
         // 입력값 유효성 체크
-        if (alNm == "") {
+        if (fnIsEmpty($("#alNm").val())) {
             alert("출입문 알람 그룹 명을 입력해주세요.");
             $("#alNm").focus(); return;
-        } else if (alType == "") {
+        } else if (fnIsEmpty($("#alType").val())) {
             alert("유형을 선택해주세요.");
             $("#alType").focus(); return;
-        } else if (alTime == "") {
+        } else if (fnIsEmpty($("#alTime").val())) {
             alert("시간을 입력해주세요.");
             $("#alTime").focus(); return;
-        } else if (alUseYn == "") {
+        } else if (fnIsEmpty($("#alUseYn").val())) {
             alert("사용여부를 선택해주세요.");
             $("#alUseYn").focus(); return;
-        } else if (alDoorCnt == "" || alDoorCnt == 0) {
-            alert("출입문을 선택해주세요.");
-            return;
         }
-        fnCancel();
-        // TODO: 저장 ajax
+        // else if (fnIsEmpty($("#doorIds").val() || $("#alDoorCnt").val()) == 0) {
+        //     alert("출입문을 선택해주세요.");
+        //     return;
+        // }
+        fnUpdateAlarmGroupAjax();
     }
+
+
+
 
     // 수정 취소
     function fnCancel() {
@@ -114,10 +103,13 @@
         $("#btnboxDetail").css("display", "block");
         $("#btnboxEdit").css("display", "none");
         $("[name=detail]").attr("disabled", true);
+
+        // 전체페이지 리로드 대신 html만 리로드
+        $("#detailForm").load(location.href + ' #detailForm');
     }
 
     // 수정 버튼
-    function fnEdit() {
+    function fnEditMode() {
         $(".title_tx").html("출입문 알람 그룹 - 수정");
         $("#btnEdit").css("display", "inline-block");
         $("#btnboxDetail").css("display", "none");
@@ -125,17 +117,10 @@
         $("[name=detail]").attr("disabled", false);
     }
 
-    // 출입문 선택
-    // function selectDoor(self) {
-    //     let door = $(self);
-    //     console.log(door.html());
-    //     console.log(door.attr("value"));
-    // }
-
     // 삭제 버튼
     function fnDelete() {
         // 연결된 출입문 존재 시
-        if ($("#alDoorCnt").val() != "0" || $("#alDoorCnt").val() != "") {
+        if ($("#doorIds").val() !== "") {
             alert("연결된 출입문을 모두 해제한 후 삭제하세요.");
             return;
         }
@@ -143,27 +128,92 @@
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-        location.href = "/door/alarmGroup/listView.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
+
+        fnDeleteAlarmGroupAjax();
     }
 
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
-        if (popupNm === "doorEditPopup") {
-            fnGetDoorListAjax(); //출입문 목록
+        if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
+            fnGetDoorListAjax("AlarmGroup"); //출입문 목록
         }
     }
 
     // popup close (공통)
     function closePopup(popupNm) {
-        $("#" + popupNm).PopupWindow("close");
-
-        if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
+        if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
             // TODO : 출입문 저장 로직
-
-            $("#alDoorCnt").val($("input[name=chkDoorConf]").length);
+            setDoors("AlarmGroup");
         }
+        $("#" + popupNm).PopupWindow("close");
     }
+
+
+
+    /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
+
+    function fnUpdateAlarmGroupAjax() {
+        let alNm = $("#alNm").val();
+        let envYn = $("#alType").val();
+        let alTime = $("#alTime").val();
+        let deleteYn = $("#alUseYn").val();
+        let doorIds = $("#doorIds").val();
+        let url = "<c:url value='/door/alarm/modify/${doorGroupDetail.id}'/>"
+        // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
+
+        console.log(alNm);
+        console.log(envYn);
+        console.log(alTime);
+        console.log(deleteYn);
+        console.log(doorIds);
+        console.log(url);
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                nm: alNm,
+                envYn: envYn,
+                time: alTime,
+                deleteYn: deleteYn,
+                doorIds: doorIds
+            },
+            dataType: "json",
+            success: function(result) {
+                console.log("fnSave : " + result.resultCode);
+                if (result.resultCode === "Y") {
+                    alert("수정이 완료되었습니다.");
+                    window.location.href = '/door/alarm/detail/${doorGroupDetail.id}';
+                } else {
+                    alert("수정에 실패하였습니다.");
+                }
+            }
+        });
+    }
+
+    /////////////////  출입문 알람그룹 저장 ajax - end  /////////////////////
+
+
+    /////////////////  출입문 알람그룹 삭제 ajax - start  /////////////////////
+
+    function fnDeleteAlarmGroupAjax() {
+        $.ajax({
+            type: "post",
+            url: "/door/alarm/delete/${doorGroupDetail.id}',
+            dataType: 'json',
+            success: function(result, status) {
+                if (result.resultCode === "Y") {
+                    alert("삭제가 완료되었습니다.");
+                    location.href = "/door/alarm/list.do";
+                } else {
+                    alert("삭제 중 오류가 발생했습니다.");
+                }
+            }
+        });
+    }
+
+    /////////////////  출입문 알람그룹 삭제 ajax - end  /////////////////////
 
 </script>
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
@@ -174,10 +224,12 @@
                 <col style="width:90%">
             </colgroup>
             <tbody id="tdAlarmDetail">
+            <input type="hidden" id="alarmGroupId" value="${doorGroupDetail.id}">
+            <input type="hidden" id="doorIds" value="${doorGroupDetail.door_ids}">
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
-                    <input type="text" id="alNm" name="detail" maxlength="50" value="작업자 통로" class="input_com w_600px" disabled>
+                    <input type="text" id="alNm" name="detail" maxlength="50" value="${doorGroupDetail.nm}" class="input_com w_600px" disabled>
                 </td>
             </tr>
             <tr>
@@ -185,15 +237,23 @@
                 <td>
                     <select id="alType" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
                         <option value="">선택</option>
-                        <option value="default" selected>기본 시간</option>
-                        <option value="setTime">지정시간</option>
+                        <option value="Y" selected>Y</option>
+<%--                        <c:choose>--%>
+<%--                            <c:when test="${doorGroupDetail.env_yn eq 'Y'}">--%>
+<%--                                <option value="Y" selected>Y</option>--%>
+<%--                            </c:when>--%>
+<%--                            <c:otherwise>--%>
+<%--                                <option value="default" selected>기본 시간</option>--%>
+<%--                                <option value="setTime">지정 시간</option>--%>
+<%--                            </c:otherwise>--%>
+<%--                        </c:choose>--%>
                     </select>
                 </td>
             </tr>
             <tr>
                 <th>시간</th>
                 <td>
-                    <input type="number" id="alTime" name="detail" maxlength="10" min="1" value="30" class="input_com w_600px"
+                    <input type="number" id="alTime" name="detail" maxlength="10" min="1" value="${doorGroupDetail.time}" class="input_com w_600px"
                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" disabled>&ensp;초
                 </td>
             </tr>
@@ -202,15 +262,15 @@
                 <td>
                     <select id="alUseYn" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
                         <option value="">선택</option>
-                        <option value="yes" selected>Y</option>
-                        <option value="no">N</option>
+                        <option value="Y" <c:if test="${doorGroupDetail.delete_yn eq 'Y'}" >selected </c:if>>Y</option>
+                        <option value="N" <c:if test="${doorGroupDetail.delete_yn eq 'N'}" >selected </c:if>>N</option>
                     </select>
                 </td>
             </tr>
             <tr>
                 <th>출입문 수</th>
                 <td>
-                    <input type="text" id="alDoorCnt" name="detail" maxlength="50" value="2" class="input_com w_600px" disabled>
+                    <input type="text" id="alDoorCnt" name="alDoorCnt" maxlength="50" value="${doorGroupDetail.door_cnt}" class="input_com w_600px" disabled>
                     <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>
                     <button type="button" id="btnEdit" class="btn_small color_basic" onclick="openPopup('doorEditPopup')" style="display: none">출입문 수정</button>
                 </td>
@@ -221,8 +281,8 @@
 </form>
 
 <div class="right_btn mt_20" id="btnboxDetail">
-    <button class="btn_middle color_basic" onclick="fnList();">목록</button>
-    <button class="btn_middle ml_5 color_basic" onclick="fnEdit();">수정</button>
+    <button class="btn_middle color_basic" onclick="location='/door/alarm/list.do'">목록</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnEditMode();">수정</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
 </div>
 <div class="right_btn mt_20" id="btnboxEdit" style="display: none;">

@@ -121,4 +121,33 @@ public class DoorDAO extends EgovAbstractMapper {
 	public Map getAreaDetail(Map<String, Object> paramMap) {
 		return selectOne(sqlNameSpace+"selectAreaList", paramMap);
 	}
+
+	public void deleteBuilding(Map<String, Object> paramMap) {
+		delete(sqlNameSpace+"deleteBuilding", paramMap);
+	}
+
+	public void deleteArea(Map<String, Object> paramMap) {
+		delete(sqlNameSpace+"deleteArea", paramMap);
+	}
+
+	public void deleteFloor(Map<String, Object> paramMap) {
+		delete(sqlNameSpace+"deleteFloor", paramMap);
+	}
+
+	public int getTerminalUseCnt(HashMap<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectTerminalUseCnt", paramMap);
+	}
+
+	public int getBuildingNameVerification(HashMap<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectBuildingNameVerification", paramMap);
+	}
+	public int getAreaNameVerification(HashMap<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectAreaNameVerification", paramMap);
+	}
+	public int getFloorNameVerification(HashMap<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectFloorNameVerification", paramMap);
+	}
+	public int getDoorNameVerification(HashMap<String, Object> paramMap) {
+		return selectOne(sqlNameSpace+"selectDoorNameVerification", paramMap);
+	}
 }

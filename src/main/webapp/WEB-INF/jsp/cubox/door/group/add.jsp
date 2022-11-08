@@ -33,8 +33,6 @@
 
 <script type="text/javascript">
 
-    const defaultTime = 60; // 기본 시간 설정
-
     $(function () {
 
         $(".title_tx").html("출입문 그룹 관리 - 등록");
@@ -52,82 +50,75 @@
 
     });
 
+
     // 출입문 저장, 등록
     function fnSave() {
         console.log("fnSave");
-        let gpNm = $("#gpNm").val();
-        let gpSchedule = $("#gpSchedule").val();
-        let gpDoor = $("#gpDoor").val();
-
         // 입력값 유효성 체크
-        if (fnIsEmpty(gpNm)) {
+        if (fnIsEmpty($("#gpNm").val())) {
             alert("출입문 그룹 명을 입력해주세요.");
             $("#gpNm").focus();
             return;
-        } else if (fnIsEmpty(gpSchedule)) {
-            alert("출입문 스케쥴을 선택해주세요.");
-            $("#gpSchedule").focus();
-            return;
-        } else if (fnIsEmpty(gpDoor)) {
-            alert("출입문을 선택해주세요.");
-            return;
         }
-
-        //출입문 정보
-        $.ajax({
-            type: "POST",
-            url: "<c:url value='/door/group/save.do' />",
-            data:{ //example
-                   nm: "춥입문 테스트 그룹1",
-                   scheduleId: "1",
-                   doorIds: "1/2/3", // 1, 1/2  2개 이상일 경우 "/" 으로 구분자 추가
-            },
-            dataType: "json",
-            success: function (returnData) {
-                console.log("fnSave:" + returnData.result);
-
-                if( returnData.resultCode == "Y" ) {
-                    $('#gpNm').prop('disabled', true);
-                    $('#gpSchedule').prop('disabled', true);
-                    $('#gpDoor').prop('disabled', true);
-
-                    $('#btnSelDoor').hide();
-                    $('#saveBtn').hide();
-                    $('#cancelBtn').hide();
-                    $('#listBtn').show();
-
-                    alert("등록이 완료되었습니다.")
-
-                } else {
-                    //등록에 문제가 발생
-                }
-
-            }
-        });
-
-
+        fnSaveGroupAjax();
     }
 
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
-        if (popupNm === "doorEditPopup") {
-            fnGetDoorListAjax(); //출입문 목록
-        }
+        fnGetDoorListAjax("Group"); //출입문 목록
     }
 
     // popup close (공통)
     function closePopup(popupNm) {
-        let doorGroup = [];
-
-        $("input[name=chkDoorConf]").each(function (i) {
-            let chkDoor = $(this).closest("tr").children().eq(1).html();
-            doorGroup.push(chkDoor);
-        });
-        $("#gpDoor").val(doorGroup.join("\r\n"));
-
+        setDoors("Group");
         $("#" + popupNm).PopupWindow("close");
     }
+
+
+    /////////////////  출입문 그룹 저장 ajax - start  /////////////////////
+
+    function fnSaveGroupAjax() {
+        let gpNm = $("#gpNm").val();
+        let scheduleId = $("#gpSchedule").val();
+        let doorIds = $("#gpDoorIds").val();
+
+        console.log(gpNm);
+        console.log(scheduleId);
+        console.log(doorIds);
+
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='/door/group/save.do' />",
+            data:{
+                nm: gpNm,
+                scheduleId: scheduleId,
+                doorIds: doorIds // 1, 1/2  2개 이상일 경우 "/" 으로 구분자 추가
+            },
+            dataType: "json",
+            success: function (result) {
+                console.log("fnSave:" + result.resultCode);
+
+                if( result.resultCode === "Y" && result.newDoorId !== "") {
+                    alert("등록이 완료되었습니다.");
+                    window.location.href = '/door/group/detail/' + result.newDoorId;
+                    // $('#gpNm').prop('disabled', true);
+                    // $('#gpSchedule').prop('disabled', true);
+                    // $('#gpDoorNms').prop('disabled', true);
+                    // $('#btnSelDoor').hide();
+                    // $('#saveBtn').hide();
+                    // $('#cancelBtn').hide();
+                    // $('#listBtn').show();
+
+                } else {
+                    alert("등록에 실패하였습니다.");
+                }
+
+            }
+        });
+    }
+
+    /////////////////  출입문 그룹 저장 ajax - end  /////////////////////
 
 </script>
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
@@ -137,7 +128,9 @@
                 <col style="width:10%">
                 <col style="width:90%">
             </colgroup>
+
             <tbody id="tdGroupDetail">
+            <input type="hidden" id="gpDoorIds" value="">
             <tr>
                 <th>출입문 그룹 명</th>
                 <td>
@@ -149,15 +142,16 @@
                 <td>
                     <select id="gpSchedule" name="gpSchedule" class="form-control input_com w_600px" style="padding-left:10px;">
                         <option value="">선택</option>
-                        <option value="default" selected>3동 평일</option>
-                        <option value="setTime">3동 주말</option>
+                        <c:forEach items="${scheduleList}" var="schedule" varStatus="status">
+                            <option value='<c:out value="${schedule.id}"/>'><c:out value="${schedule.door_sch_nm}"/></option>
+                        </c:forEach>
                     </select>
                 </td>
             </tr>
             <tr>
                 <th>출입문</th>
                 <td style="display: flex;">
-                    <textarea id="gpDoor" name="gpDoor" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px; font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:if test="${editMode eq 'edit'}">16동 현관</c:if></textarea>
+                    <textarea id="gpDoorNms" name="gpDoorNms" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px; font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
                     <div class="ml_10" style="position: relative;">
                         <button type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">출입문 선택</button>
                     </div>

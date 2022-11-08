@@ -10,12 +10,18 @@ public interface DoorGroupService {
     //출입문 그룹
     List<HashMap> getDoorGroupList(Map<String, Object> commandMap);
 
-
     int getDoorGroupListCount(Map<String, Object> commandMap);
+
     HashMap getDoorGroupDetail(int id);
 
-    void addDoorGroup(Map<String, Object> commandMap);
+    String addDoorGroup(Map<String, Object> commandMap);
+    void addDoorInDoorGroup(Map<String, Object> commandMap);
+
     void updateDoorGroup(Map<String, Object> commandMap);
-    void deleteDoorGroup(int commandMap);
+
+    void deleteDoorGroup(int id);
+
+
+    int getDoorGroupNameVerification(HashMap<String, Object> param);
 
 }

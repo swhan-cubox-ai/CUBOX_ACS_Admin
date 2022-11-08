@@ -7,6 +7,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
 
@@ -46,55 +47,14 @@
     // 출입문 저장, 등록
     function fnSave() {
         console.log("fnSave");
-        let gpNm = $("#gpNm").val();
-        let gpSchedule = $("#gpSchedule").val();
-        let gpDoor = $("#gpDoor").val();
-
         // 입력값 유효성 체크
-        if (fnIsEmpty(gpNm)) {
+        if (fnIsEmpty($("#gpNm").val())) {
             alert("출입문 그룹 명을 입력해주세요.");
-            $("#gpNm").focus(); return;
-        } else if (fnIsEmpty(gpSchedule)) {
-            alert("출입문 스케쥴을 선택해주세요.");
-            $("#gpSchedule").focus(); return;
-        } else if (fnIsEmpty(gpDoor)) {
-            alert("출입문을 선택해주세요."); return;
+            $("#gpNm").focus();
+            return;
         }
 
-
-
-        let id = "1"; // example - doorgroup id
-
-        $.ajax({
-            type: "post",
-            url: "/door/group/modify/" + id,
-            data :{
-                nm: "춥입문 테스트 그룹1",
-                scheduleId: "1",
-                doorIds: "1/2/3"
-            },
-            dataType: 'json',
-            success: function (data, status) {
-                if (data.resultCode == "Y") {
-                    $('#gpNm').prop('disabled', true);
-                    $('#gpSchedule').prop('disabled', true);
-                    $('#gpDoor').prop('disabled', true);
-
-                    $('#btnSelDoor').hide();
-                    $('#saveBtn').hide();
-                    $('#cancelBtn').hide();
-                    $('#listBtn').show();
-
-                    alert("저장되었습니다.");
-                } else {
-                    alert("저장 중 오류가 발생하였습니다.");
-                }
-            }
-        });
-
-
-        // TODO : gpDoor 출입문 disabled 해제!
-        // location.href = "/door/group/detail.do";
+        fnUpdateGroupAjax();
     }
 
     // 수정 취소
@@ -104,6 +64,9 @@
         $("#btnboxEdit").css("display", "none");
         $("#btnEdit").css("display", "none");
         $("[name=detail]").attr("disabled", true);
+
+        $("#detailForm").load(location.href + ' #detailForm');
+        <%--window.location.href = '/door/group/detail/${doorGroupDetail.id}';--%>
     }
 
     // 수정 버튼
@@ -113,13 +76,12 @@
         $("#btnboxDetail").css("display", "none");
         $("#btnboxEdit").css("display", "block");
         $("[name=detail]").attr("disabled", false);
-
     }
 
     // 삭제 버튼
     function fnDelete() {
         // 연결된 출입문 존재 시
-        if ($("#alDoorCnt").val() != "0" || $("#alDoorCnt").val() != "") {
+        if ($("#gpDoorIds").val() != "") {
             alert("연결된 출입문을 모두 해제한 후 삭제하세요.");
             return;
         }
@@ -128,44 +90,87 @@
             return;
         }
 
-        let id="1"; // example - doorgroup id
+        // let id="1"; // example - doorgroup id
+        let id= $("#doorGroupId").val(); // example - doorgroup id
 
         $.ajax({
             type: "post",
-            url: "/door/group/delete/"+id,
+            url: "/door/group/delete/" + id,
             dataType: 'json',
             success: function (data, status) {
                 if (data.resultCode == "Y") {
-                    location.href = "/door/group/list.do";
                     alert("삭제가 완료되었습니다.");
+                    location.href = "/door/group/list.do";
                 } else {
                     alert("삭제 중 오류가 발생하였습니다.");
                 }
             }
         });
-        // location.href = "/door/group/listView.do"; // 임시 : 저장되었다고 생각하고 list로 돌아감
     }
 
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
         if (popupNm === "doorEditPopup") {
-            fnGetDoorListAjax(); //출입문 목록
+            fnGetDoorListAjax("Group"); //출입문 목록
         }
     }
 
     // popup close (공통)
     function closePopup(popupNm) {
-        let doorGroup = [];
-
-        $("input[name=chkDoorConf]").each(function (i) {
-            let chkDoor = $(this).closest("tr").children().eq(1).html();
-            doorGroup.push(chkDoor);
-        });
-        $("#gpDoor").val(doorGroup.join("\r\n"));
-
+        setDoors("Group");
         $("#" + popupNm).PopupWindow("close");
     }
+
+    /////////////////  출입문 그룹 수정 ajax - start  /////////////////////
+
+    function fnUpdateGroupAjax() {
+        let id = $("#doorGroupId").val();
+        let gpNm = $("#gpNm").val();
+        let scheduleId = $("#gpSchedule").val();
+        let doorIds = $("#gpDoorIds").val();
+        let url = "<c:url value='/door/group/modify/${doorGroupDetail.id}' />";
+
+        console.log(${doorGroupDetail.id});
+        console.log(gpNm);
+        console.log(scheduleId);
+        console.log(doorIds);
+        console.log(url);
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data:{
+                nm: gpNm,
+                scheduleId: scheduleId,
+                doorIds: doorIds // 1, 1/2  2개 이상일 경우 "/" 으로 구분자 추가
+            },
+            dataType: "json",
+            success: function (result) {
+                console.log("fnSave:" + result.resultCode);
+
+                if( result.resultCode == "Y" ) {
+                    // $('#gpNm').prop('disabled', true);
+                    // $('#gpSchedule').prop('disabled', true);
+                    // $('#gpDoorNms').prop('disabled', true);
+                    //
+                    // $('#btnSelDoor').hide();
+                    // $('#saveBtn').hide();
+                    // $('#cancelBtn').hide();
+                    // $('#listBtn').show();
+
+                    alert("수정이 완료되었습니다.");
+
+                    window.location.href = '/door/group/detail/' + id;
+                } else {
+                    alert("수정에 실패하였습니다.");
+                }
+            }
+        });
+    }
+
+    /////////////////  출입문 그룹 수정 ajax - end  /////////////////////
+
 
 </script>
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
@@ -176,24 +181,41 @@
                 <col style="width:90%">
             </colgroup>
             <tbody id="tdGroupDetail">
+            <input type="hidden" id="doorGroupId" value="${doorGroupDetail.id}">
+            <input type="hidden" id="gpDoorIds" value="${doorGroupDetail.door_ids}">
             <tr>
                 <th>출입문 그룹 명</th>
                 <td>
                     <input type="text" id="gpNm" name="detail" maxlength="50" value="${doorGroupDetail.nm}" class="input_com w_600px" disabled>
                 </td>
             </tr>
+<%--            <tr>--%>
+<%--                <th>출입문 스케쥴</th>--%>
+<%--                <td>--%>
+<%--                    <input type="text" id="gpSchedule" name="detail" maxlength="50" value="3${doorGroupDetail.nm}" class="input_com w_600px" disabled>--%>
+<%--                </td>--%>
+<%--            </tr>--%>
             <tr>
                 <th>출입문 스케쥴</th>
                 <td>
-                    <input type="text" id="gpSchedule" name="detail" maxlength="50" value="3${doorGroupDetail.nm}" class="input_com w_600px" disabled>
+                    <select id="gpSchedule" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
+                        <option value="" selected>선택</option>
+                        <c:forEach items="${scheduleList}" var="schedule" varStatus="status">
+<%--                            <option value='<c:out value="${schedule.id}"/>'<c:if test="${doorGroupDetail.door_sch_id} eq ${schedule.id}"> selected</c:if>>--%>
+                            <option value='<c:out value="${schedule.id}"/>'<c:if test="${schedule.id eq doorGroupDetail.door_sch_id}"> selected</c:if>>
+                                <c:out value="${schedule.door_sch_nm}"/>
+                            </option>
+                        </c:forEach>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <th>출입문</th>
                 <td style="display: flex;">
-                    <textarea id="gpDoor" name="detail" rows="10" cols="33" class="w_600px"
-                              style="border-color: #ccc; border-radius: 2px;
-                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>16동 현관</textarea>
+                    <%--  TODO: testarea에 공백 해결  --%>
+                    <textarea id="gpDoorNms" name="gpDoorNms" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
+                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:set var="nm" value="${fn:split(doorGroupDetail.door_nms,'/')}" /><c:forEach items="${nm}" var="dName" varStatus="varStatus">
+${dName}</c:forEach></textarea>
                     <div class="ml_10" style="position: relative;">
                         <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px; display: none;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">출입문 선택</button>
                     </div>

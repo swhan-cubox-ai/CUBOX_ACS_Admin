@@ -4,46 +4,70 @@
 <mapper namespace="door.schedule">
 
     <select id="selectDoorSchList"  parameterType="HashMap" resultType="HashMap">
-        SELECT id,
-        door_sch_nm,
-        created_at,
-        updated_at
-        FROM T_DOOR_SCH TDS
-        WHERE 1=1
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-            AND TDS.id = #{id}
-        </if>
+        SELECT A.id
+             , A.door_sch_nm
+             , DATE_FORMAT(A.created_at, '%Y-%m-%d') as created_at
+             , DATE_FORMAT(A.updated_at, '%Y-%m-%d') as updated_at
+        FROM(
+                SELECT TDS.id
+                     , TDS.door_sch_nm
+                     , TDS.created_at
+                     , TDS.updated_at
+                  FROM T_DOOR_SCH TDS
+                 WHERE 1=1
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+                   AND TDS.id = #{id}
+                </if>
 
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-            AND TDS.door_sch_nm like CONCAT('%',#{keyword},'%')
-        </if>
-    </select>
-
-
-    <select id="selectScheduleDetail"  parameterType="HashMap" resultType="HashMap">
-        SELECT id,
-        door_sch_nm,
-        created_at,
-        updated_at
-        FROM T_DOOR_SCH TDS
-        WHERE 1=1
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-            AND TDS.id = #{id}
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                   AND TDS.door_sch_nm like CONCAT('%',#{keyword},'%')
+                </if>
+               ) A
+        ORDER BY A.created_at DESC
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(offset)'>
+            LIMIT #{srchCnt} OFFSET #{offset}
         </if>
     </select>
 
+    <select id="selectDoorSchListCount"  parameterType="HashMap" resultType="int">
+        SELECT COUNT(A.id)
+          FROM (
+                SELECT TDS.id
+                     , TDS.door_sch_nm
+                     , TDS.created_at
+                     , TDS.updated_at
+                FROM T_DOOR_SCH TDS
+                 WHERE 1=1
+               <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+                   AND TDS.id = #{id}
+               </if>
+               <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                   AND TDS.door_sch_nm like CONCAT('%',#{keyword},'%')
+               </if>
+               ) A
+    </select>
 
-    <insert id="insertSchedule" parameterType="HashMap">
+
+    <select id="selectDoorScheduleDetail"  parameterType="int" resultType="HashMap">
+        SELECT TDS.id
+             , TDS.door_sch_nm
+             , DATE_FORMAT(TDS.created_at, '%Y-%m-%d') as created_at
+             , DATE_FORMAT(TDS.updated_at, '%Y-%m-%d') as updated_at
+          FROM T_DOOR_SCH TDS
+         WHERE 1=1
+           AND TDS.id = #{id}
+    </select>
+
+
+    <insert id="insertSchedule" parameterType="HashMap" useGeneratedKeys="true" keyProperty="scheduleId" keyColumn="id">
         INSERT
         INTO T_DOOR_SCH
-        ( id,
-          door_sch_nm,
+        ( door_sch_nm,
           created_at,
           updated_at
         )
         VALUES
-            ( #{id}
-            , #{doorSchNm}
+            ( #{doorSchNm}
             , NOW()
             , NOW()
             )
@@ -66,37 +90,53 @@
 
 
 
-    <select id="selectScheduleByDayDetail"  parameterType="HashMap" resultType="HashMap">
-        SELECT id,
-        door_sch_id,
-        weekday,
-        beg_tm,
-        end_tm,
-        created_at,
-        updated_at
-        FROM T_DOOR_SCH_WEEKDAY TDSW
-        WHERE 1=1
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-            AND TDSW.id = #{id}
-        </if>
+    <select id="selectScheduleByDayDetailList"  parameterType="HashMap" resultType="HashMap">
+        SELECT A.id
+             , A.door_sch_id
+             , A.weekday_order_no
+             , A.beg_tm
+             , A.end_tm
+         FROM (
+               SELECT id
+                    , door_sch_id
+                    , weekday
+                    ,(CASE weekday WHEN 'mon' THEN '1'
+                                   WHEN 'tue' THEN '2'
+                                   WHEN 'wed' THEN '3'
+                                   WHEN 'thu' THEN '4'
+                                   WHEN 'fri' THEN '5'
+                                   WHEN 'sat' THEN '6'
+                                   WHEN 'sun' THEN '7'
+                      END ) weekday_order
+                    ,  CONCAT(weekday,'_',order_no) weekday_order_no
+                    ,  order_no
+                    ,  beg_tm
+                    ,  end_tm
+                    ,  created_at
+                    ,  updated_at
+               FROM T_DOOR_SCH_WEEKDAY TDSW
+              WHERE TDSW.door_sch_id = #{doorSchId}
+           ORDER BY weekday_order, order_no
+        ) A
     </select>
 
 
     <insert id="insertScheduleByDay" parameterType="HashMap">
         INSERT
         INTO T_DOOR_SCH_WEEKDAY
-        ( id,
-          door_sch_id,
+        ( door_sch_id,
           weekday,
+          order_no,
           beg_tm,
           end_tm,
           created_at,
           updated_at
         )
         VALUES
-            ( #{id}
-            , #{doorSchId}
+            (
+             #{doorSchId}
             , #{weekday}
+            , #{orderNo}
             , #{begTm}
             , #{endTm}
             , NOW()
@@ -107,20 +147,38 @@
 
     <update id="updateScheduleByDay" parameterType="HashMap">
         UPDATE T_DOOR_SCH_WEEKDAY
-        SET door_sch_id = #{doorSchId}
-          , weekday= #{weekday}
-          , beg_tm= #{begTm}
-          , end_tm= #{endTm}
-          , updated_at= NOW()
-        WHERE id = #{id}
+           SET door_sch_id = #{doorSchId}
+             , weekday= #{weekday}
+             , order_no = #{orderNo}
+             , beg_tm= #{begTm}
+             , end_tm= #{endTm}
+             , updated_at= NOW()
+         WHERE id = #{id}
     </update>
 
 
     <delete id="deleteScheduleByDay" parameterType="HashMap" >
         DELETE
-        FROM T_DOOR_SCH_WEEKDAY
-        WHERE id = #{id}
+          FROM T_DOOR_SCH_WEEKDAY
+         WHERE door_sch_id = #{doorSchId}
     </delete>
 
+
+    <select id="selectDoorScheduleNameVerification" parameterType="HashMap" resultType="int">
+        SELECT COUNT(TDS.id) AS vCnt
+        FROM T_DOOR_SCH TDS
+        WHERE 1 = 1
+          AND replace(TDS.door_sch_nm, ' ', '') = replace(#{doorSchNm}, ' ', '')
+    </select>
+
+
+    <select id="selectDayScheduleExistsCount"  parameterType="HashMap" resultType="int">
+        SELECT COUNT(A.id) AS cnt
+        FROM (
+        SELECT TDSW.id
+        FROM T_DOOR_SCH_WEEKDAY TDSW
+        WHERE TDSW.door_sch_id = #{doorSchId}
+        ) A
+    </select>
 
 </mapper>
