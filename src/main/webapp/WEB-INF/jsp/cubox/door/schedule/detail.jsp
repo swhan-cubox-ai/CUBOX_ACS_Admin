@@ -73,6 +73,8 @@
 </style>
 
 <script type="text/javascript">
+
+
     let tmp = [
         {id: "mon_1", weekday: "mon", beg_tm: "13:00:27", end_tm: "13:40:30"},
         {id: "mon_2", weekday: "mon", beg_tm: "13:45:00", end_tm: "18:00:30"},
@@ -149,7 +151,23 @@
             }
         });
 
+        setDoorGroupInfo();
+
     });
+
+    // 출입문 그룹 정보 set
+    function setDoorGroupInfo() {
+        console.log("setDoorGroupInfo");
+        let doorGrList = [];
+        let doorGrHtml = [];
+        <c:forEach items="${doorGroupList}" var="dList">
+        doorGrList.push(${dList.id});
+        doorGrHtml.push('${dList.nm}');
+        </c:forEach>
+        $("#doorIds").val(doorGrList.join("/"));
+        $("#doorGroup").val(doorGrHtml.join("\r\n"));
+        console.log($("#doorGroup").val());
+    }
 
     // time선택 초기화
     function initTimepicker(start, end) {
@@ -389,7 +407,11 @@
 
     // 수정 취소
     function fnCancel() {
-        $("#detailForm").load(location.href + ' #detailForm');
+        console.log("fnCancel");
+        // $("#detailForm").load(location.href + ' #detailForm');
+        $("#schNm").val('${doorScheduleDetail.door_sch_nm}');
+        $("#schUseYn ").val("Y").prop("selected", true);
+        setDoorGroupInfo();
 
         $(".title_tx").html("출입문 스케쥴 - 상세");
         $("#btnboxDetail").css("display", "block");
@@ -538,8 +560,9 @@
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
-
-        if (popupNm === "addByDayPopup") {
+        if (popupNm === "doorGroupPickPopup") {
+            fnGetDoorGroupListAjax();
+        } else if (popupNm === "addByDayPopup") {
             fnGetScheduleByDayDetail();
             activeTimepicker();
         }
@@ -549,12 +572,12 @@
     function closePopup(popupNm) {
         console.log("close popup");
         $("#" + popupNm).PopupWindow("close");
-        if (popupNm === "doorGroupPickPopup") {
-            $("input[name='chkGroup']:checked").attr("checked", false);
-            $("input[name='chkGroupConf']:checked").attr("checked", false);
+        if (popupNm === "doorGroupPickPopup") { // 출입문 그룹 선택
+            $("input[name=chkGroup]:checked").attr("checked", false);
+            $("input[name=chkGroupConf]:checked").attr("checked", false);
             totalCheck();
             userCheck();
-        } else if (popupNm === "addByDayPopup") {
+        } else if (popupNm === "addByDayPopup") { // 요일별 스케쥴 등록
             clearPickers();
         }
     }
@@ -607,6 +630,7 @@
             dataType: 'json',
             success: function (result, status) {
                 if (result.resultCode === "Y") {
+                    alert("삭제되었습니다.");
                     location.href = "/door/schedule/list.do";
                 } else {
                     alert("삭제 중 오류가 발생하였습니다.");
@@ -693,6 +717,43 @@
     /////////////////  요일별 스케쥴 저장 ajax - end  /////////////////////
 
 
+    /////////////////  출입문 그룹 조회 ajax - start  /////////////////////
+
+    function fnGetDoorGroupListAjax() {
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='/door/schedule/group/listAjax.do' />",
+            data:  {
+                "doorSchId" : $("#scheduleId").val()
+            },
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                $("#tdGroupTotal").empty();
+                $("#tdGroupConf").empty();
+
+                if (result.doorGroupList.length > 0) {
+                    $.each(result.doorGroupList, function (l, dList) {
+                        let html = "<tr><td style='padding:0 14px;'><input type='checkbox' name='chkGroup' value='" + dList.id + "'></td>";
+                        html += "<td>" + dList.id + "</td>";
+                        html += "<td>" + dList.nm + "</td></tr>";
+                        $("#tdGroupTotal").append(html);
+                    });
+
+                    console.log($("#doorIds").val());
+                    if ($("#doorIds").val() !== "") {
+                        let doorIds = $("#doorIds").val().split("/");
+                        $.each(doorIds, function(i, doorId) {
+                            $('input[name=chkGroup]:input[value=' + doorId + ']').prop("checked", true);
+                            $("#add_group").click();
+                        })
+                    }
+                }
+            }
+        });
+    }
+
+    /////////////////  출입문 그룹 조회 ajax - end  /////////////////////
 
 </script>
 
@@ -705,7 +766,15 @@
             </colgroup>
             <tbody id="tdScheduleDetail">
             <input type="hidden" id="scheduleId" value="${doorScheduleDetail.id}">
-            <input type="hidden" id="doorIds" value="${doorGroupList}">
+            <input type="hidden" id="doorIds" value="">
+
+<%--            <c:forEach items="${doorGroupList}" var="dList" varStatus="status">--%>
+<%--                <c:if test="${dList.id}}}">--%>
+<%--                    <tr>--%>
+<%--                        <td class="h_35px" colspan="13">조회 목록이 없습니다.</td>--%>
+<%--                    </tr>--%>
+<%--                </c:if>--%>
+<%--            </c:forEach>--%>
             <tr>
                 <th>출입문 스케쥴 명</th>
                 <td>
@@ -717,16 +786,18 @@
                 <td>
                     <select id="schUseYn" name="detail" class="form-control w_600px" style="padding-left:10px;" disabled>
                         <option value="" name="selected">선택</option>
-                        <option value="Y" selected>Y</option>
-                        <option value="N">N</option>
+                        <option value="Y" <c:if test="${doorScheduleDetail.delete_yn eq 'Y'}" >selected </c:if>>Y</option>
+                        <option value="N" <c:if test="${doorScheduleDetail.delete_yn eq 'N'}" >selected </c:if>>N</option>
                     </select>
                 </td>
             </tr>
             <tr>
                 <th>출입문 그룹</th>
                 <td style="display: flex;">
+<%--                    <textarea id="doorGroup" name="detail" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;--%>
+<%--                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>${doorGroupList.size()}/${doorGroupList}</textarea>--%>
                     <textarea id="doorGroup" name="detail" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
-                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>${doorGroupList.size()}/${doorGroupList}</textarea>
+                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
                     <div class="ml_10" style="position:relative;">
                         <button id="btnEdit" type="button" class="btn_middle color_basic" onclick="openPopup('doorGroupPickPopup')" style="position:absolute; bottom:0; display:none;">선택</button>
                     </div>

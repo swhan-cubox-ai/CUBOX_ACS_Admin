@@ -8,7 +8,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-
+<style>
+    #tdGroupConf td, #tdGroupTotal td {
+        text-align:center;
+    }
+</style>
 <script type="text/javascript">
     $(function () {
 
@@ -66,15 +70,21 @@
 
     // 출입문그룹 선택 저장
     function fnGroupSave() {
-        let doorGroup = [];
+        let doorGroupIds = [];
+        let doorGroupHtml = [];
         $("input[name=chkGroupConf]").each(function (i) { // 체크된 것 말고 오른쪽 박스에 들어온 모든 항목
-            let auth = $(this).closest("tr").children().eq(1).html();
-            doorGroup.push(auth);
+            let id = $(this).val();
+            let html = $(this).closest("tr").children().eq(2).html();
+            doorGroupIds.push(id);
+            doorGroupHtml.push(html);
         });
-        console.log(doorGroup);
+
+        console.log(doorGroupIds);
+        console.log(doorGroupHtml);
 
         // 권한그룹 textarea에 뿌려주기
-        $("#doorGroup").val(doorGroup.join("\r\n"));
+        $("#doorGroup").val(doorGroupHtml.join("\r\n"));
+        $("#doorIds").val(doorGroupIds.join("/"));
         closePopup("doorGroupPickPopup");
     }
 
@@ -117,15 +127,8 @@
 <%--                    <c:forEach items="${doorGroupList}" var="doorGroup" varStatus="status">--%>
 <%--                        <tr>--%>
 <%--                            <td style="padding: 0 14px;"><input type="checkbox" name="chkGroup"/></td>--%>
-<%--                            <td>${doorGroupList.door_sch_id}</td>--%>
-<%--                            <td>${doorGroupList.door_sch_nm}</td>--%>
-<%--                        </tr>--%>
-<%--                    </c:forEach>--%>
-<%--                    <c:forEach var="i" begin="1" end="10" varStatus="status">--%>
-<%--                        <tr>--%>
-<%--                            <td style="padding: 0 14px;"><input type="checkbox" name="chkGroup"/></td>--%>
-<%--                            <td>CUBOX123</td>--%>
-<%--                            <td>출입문그룹 A</td>--%>
+<%--                            <td>${doorGroup.door_sch_id}</td>--%>
+<%--                            <td>${doorGroup.door_sch_nm}</td>--%>
 <%--                        </tr>--%>
 <%--                    </c:forEach>--%>
                     </tbody>
