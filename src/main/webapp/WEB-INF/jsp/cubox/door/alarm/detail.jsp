@@ -200,7 +200,7 @@
     function fnDeleteAlarmGroupAjax() {
         $.ajax({
             type: "post",
-            url: "/door/alarm/delete/${doorGroupDetail.id}',
+            url: "<c:url value='/door/alarm/delete/${doorGroupDetail.id}' />",
             dataType: 'json',
             success: function(result, status) {
                 if (result.resultCode === "Y") {
