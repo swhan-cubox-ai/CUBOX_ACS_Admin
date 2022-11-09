@@ -170,6 +170,10 @@ public class DoorScheduleController {
     @RequestMapping(value = "/add.do", method = RequestMethod.GET)
     public String showScheduleAddView(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
+        HashMap<String, Object> paramMap = new HashMap();
+        List<HashMap> doorGroupList = doorGroupService.getDoorGroupList(paramMap);
+
+        model.addAttribute("doorGroupList", doorGroupList);
         return "cubox/door/schedule/add";
     }
 
