@@ -493,7 +493,11 @@
 
     // 요일별 스케쥴 전체 삭제
     function fnDaySchDelete() {
-
+        if (confirm("전체 스케쥴을 삭제하시겠습니까?")) {
+            // TODO: 삭제 ajax
+        } else {
+            return;
+        }
     }
 
     // 요일별 스케쥴 수정 저장
@@ -556,10 +560,12 @@
 
         console.log(data);
         console.log(validCnt);
+        $("#daySchCnt").val(validCnt);
 
         if (validCnt == 0) { // 입력한 스케쥴 하나도 없을 경우
             return false;
         } else {
+            $("#daySchCnt").val(validCnt);
             return data;
         }
     }
@@ -757,6 +763,7 @@
                 if (result.resultCode === "Y") {
                     console.log(result.scheduleByDayDetailList.length);
                     console.log(result.scheduleByDayDetailList);
+                    let cnt = 0;
 
                     // 스케쥴 뿌려주기
                     $.each(result.scheduleByDayDetailList, function (i, sch) {
@@ -772,11 +779,15 @@
                         // timepicker 값 넣기
                         $("#" + sch.weekday_order_no + "_start").val(sch.beg_tm);
                         $("#" + sch.weekday_order_no + "_end").val(sch.end_tm);
+                        if (sch.end_tm !== "") cnt ++;
                         // $("#" + sch.id + "_start").val(sch.beg_tm);
                         // $("#" + sch.id + "_end").val(sch.end_tm);
-
                         colorSchedule(start, end, day, schNum);
                     });
+
+                    console.log(cnt);
+                    $("#daySchCnt").val(cnt);
+
                 } else {
                     console.log("스케쥴 불러오기 실패");
                 }
@@ -807,6 +818,8 @@
 
                 if (result.resultCode === "Y") {
                     alert("저장되었습니다.");
+                    $("#btnAddByDay").html("요일 별 스케쥴 보기");
+                    // $("#daySchCnt").val(schCnt);
                     fnDaySchDetailMode();
                 } else {
                     //등록에 문제가 발생
@@ -1050,7 +1063,7 @@
         <div class="c_btnbox center mt_20" id="btnDaySchDetail">
             <div style="display: inline-block;">
                 <button type="button" class="comm_btn mr_20" onclick="fnDaySchEditMode();">수정</button>
-                <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">확인</button>
+                <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">닫기</button>
             </div>
         </div>
         <div class="c_btnbox center mt_20" id="btnDaySchEdit" style="display: none;">
