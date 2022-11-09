@@ -599,7 +599,8 @@
         $.ajax({
             type : "POST",
             data : {
-                doorSchNm: doorSchNm
+                doorSchNm: doorSchNm,
+                doorGroupIds: doorIds
                 // ,useYn: useYn
                 // ,doorIds: doorIds
             },
@@ -612,6 +613,7 @@
                     window.location.href = '/door/schedule/detail/${doorScheduleDetail.id}';
                 } else {
                     console.log("스케쥴 수정 실패");
+                    console.log(result.resultMsg);
                 }
             }
         });

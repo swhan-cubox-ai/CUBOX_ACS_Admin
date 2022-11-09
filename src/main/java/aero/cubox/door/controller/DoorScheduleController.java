@@ -259,7 +259,8 @@ public class DoorScheduleController {
         modelAndView.setViewName("jsonView");
 
         String resultCode = "Y";
-
+        System.out.println("mmmmmmmmmmmmmmmmm");
+        System.out.println(id);
         if( id == null){
             resultCode = "N";
             model.addAttribute("resultCode", resultCode);
