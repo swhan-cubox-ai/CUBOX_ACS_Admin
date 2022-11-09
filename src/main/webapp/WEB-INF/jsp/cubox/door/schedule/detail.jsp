@@ -463,7 +463,7 @@
     // 삭제 버튼
     function fnDelete() {
         // 출입문 그룹에 그룹이 있으면,
-        if ($("#doorGroup").html() == "") {
+        if ($("#doorIds").val() !== "") {
             alert("연결된 출입문 그룹을 해제 후 삭제 하시기 바랍니다.");
             return;
         }
@@ -572,7 +572,10 @@
         if (!data) {
             alert("등록할 스케쥴이 없습니다.");
         } else {
-            fnAddScheduleByDayAjax(data);
+            if (confirm("저장하시겠습니까?")) {
+                fnAddScheduleByDayAjax(data);
+            }
+            return;
         }
     }
 
@@ -798,12 +801,13 @@
                 "day_schedule" : JSON.stringify(data)
             },
             dataType: "json",
-            success: function (returnData) {
+            success: function (result) {
                 console.log("schedule-day-add-ajax");
-                console.log(returnData);
+                console.log(result);
 
-                if (returnData.resultCode == "Y") {
+                if (result.resultCode === "Y") {
                     alert("저장되었습니다.");
+                    fnDaySchDetailMode();
                 } else {
                     //등록에 문제가 발생
                     alert("등록에 실패하였습니다.");
@@ -826,12 +830,13 @@
                 "day_schedule" : JSON.stringify(data)
             },
             dataType: "json",
-            success: function (returnData) {
-                console.log("schedule-day-add-ajax");
-                console.log(returnData);
+            success: function (result) {
+                console.log("schedule-day-modify-ajax");
+                console.log(result);
 
-                if (returnData.resultCode == "Y") {
+                if (result.resultCode == "Y") {
                     alert("저장되었습니다.");
+                    fnDaySchDetailMode();
                 } else {
                     //등록에 문제가 발생
                     alert("등록에 실패하였습니다.");
@@ -1058,7 +1063,7 @@
         <div class="c_btnbox center mt_20" id="btnDaySchAdd">
             <div style="display: inline-block;">
                 <button type="button" class="comm_btn mr_20" onclick="fnDaySchSave();">저장</button>
-                <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">취소</button>
+                <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">닫기</button>
             </div>
         </div>
     </div>
