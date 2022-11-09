@@ -100,6 +100,46 @@
         }
     }
 
+
+    /////////////////  출입문 그룹 조회 ajax - start  /////////////////////
+
+    function fnGetDoorGroupListAjax() {
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='/door/schedule/group/listAjax.do' />",
+            data:  {
+                "doorSchId" : $("#scheduleId").val()
+            },
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                $("#tdGroupTotal").empty();
+                $("#tdGroupConf").empty();
+
+                if (result.doorGroupList.length > 0) {
+                    $.each(result.doorGroupList, function (l, dList) {
+                        let html = "<tr><td style='padding:0 14px;'><input type='checkbox' name='chkGroup' value='" + dList.id + "'></td>";
+                        html += "<td>" + dList.id + "</td>";
+                        html += "<td>" + dList.nm + "</td></tr>";
+                        $("#tdGroupTotal").append(html);
+                    });
+
+                    console.log($("#doorIds").val());
+                    if ($("#doorIds").val() !== "") {
+                        let doorIds = $("#doorIds").val().split("/");
+                        $.each(doorIds, function(i, doorId) {
+                            $('input[name=chkGroup]:input[value=' + doorId + ']').prop("checked", true);
+                            $("#add_group").click();
+                        })
+                    }
+                }
+            }
+        });
+    }
+
+    /////////////////  출입문 그룹 조회 ajax - end  /////////////////////
+
+
 </script>
 
 <%--  출입문그룹 선택 modal  --%>
