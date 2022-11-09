@@ -133,8 +133,7 @@
           order_no,
           beg_tm,
           end_tm,
-          created_at,
-          updated_at
+          created_at
         )
         VALUES
             (
@@ -143,7 +142,6 @@
             , #{orderNo}
             , #{begTm}
             , #{endTm}
-            , NOW()
             , NOW()
             )
     </insert>
