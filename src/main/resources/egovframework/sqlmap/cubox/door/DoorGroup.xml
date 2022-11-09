@@ -75,38 +75,49 @@
         INSERT
         INTO T_DOORGRP
         ( nm
-        , door_sch_id)
+        , door_sch_id
+        , created_at
+           )
         VALUES
             ( #{nm}
             , #{doorSchId}
+            , NOW()
             )
     </insert>
 
 
     <update id="updateDoorGroup" parameterType="HashMap">
         UPDATE T_DOORGRP
-        SET
+           SET
         <if test="doorSchId != null and doorSchId != ''">
-             door_sch_id = #{doorSchId}
+               door_sch_id = #{doorSchId}
         </if>
         <if test="nm != null and nm != ''">
-             ,  nm = #{nm}
+             , nm = #{nm}
         </if>
-        WHERE id = #{id}
+             , updated_at= NOW()
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateDoorGroupBatchInit" parameterType="HashMap">
+        UPDATE T_DOORGRP
+           SET door_sch_id = null
+             , updated_at= NOW()
+         WHERE id = #{id}
     </update>
 
 
     <delete id="deleteDoorGroup" parameterType="int" >
         DELETE
-        FROM T_DOORGRP
-        WHERE id = #{id}
+          FROM T_DOORGRP
+         WHERE id = #{id}
     </delete>
 
     <insert id="insertDoorInDoorGroup" parameterType="HashMap">
         INSERT
-        INTO T_DOORGRP_DOOR
-        ( door_id
-        , doorgrp_id)
+          INTO T_DOORGRP_DOOR
+             ( door_id
+             , doorgrp_id)
         VALUES
             ( #{doorId}
             , #{doorgrpId}
@@ -116,8 +127,8 @@
 
     <update id="updateDoorInDoorGroup" parameterType="HashMap">
         UPDATE T_DOORGRP_DOOR
-        SET doorgrp_id = #{doorgrpId}
-        WHERE door_id = #{doorId}
+           SET doorgrp_id = #{doorgrpId}
+         WHERE door_id = #{doorId}
     </update>
 
 

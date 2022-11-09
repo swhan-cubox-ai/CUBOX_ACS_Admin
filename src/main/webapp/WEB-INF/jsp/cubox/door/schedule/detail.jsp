@@ -588,7 +588,7 @@
     function fnUpdateScheduleAjax() {
         let doorSchNm = $("#schNm").val();
         let useYn = $("#schUseYn").val();
-        let doorIds = $("#doorIds").val();
+        let doorGroupIds = $("#doorIds").val();
         let url = "<c:url value='/door/schedule/modify/${doorScheduleDetail.id}'/>";
 
         console.log(doorSchNm);
@@ -599,9 +599,9 @@
         $.ajax({
             type : "POST",
             data : {
-                doorSchNm: doorSchNm
-                // ,useYn: useYn
-                // ,doorIds: doorIds
+                  doorSchNm: doorSchNm
+                , useYn: useYn
+                , doorGroupIds: doorGroupIds
             },
             dataType : "json",
             url : url,

@@ -98,11 +98,24 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
             String doorGroupIds = commandMap.get("doorGroupIds").toString();
             String doorSchId = commandMap.get("id").toString();
 
+            paramMap.put("doorSchId", doorSchId);
+            List<HashMap> doorGroupList = doorGroupDAO.getDoorGroupList(paramMap);
+
+            if( doorGroupList.size() > 0 ){
+                for (int i = 0; i < doorGroupList.size(); i++) {
+                    paramMap.put("id", doorGroupList.get(i).get("id"));
+
+                    doorGroupDAO.updateDoorGroupBatchInit(paramMap);
+                }
+            }
+
+
+
+
             if( doorGroupIds.length() > 0 ){
                 String[] doorGroupIdArr = doorGroupIds.split("/");
                 for (int i = 0; i < doorGroupIdArr.length; i++) {
                     paramMap.put("id", doorGroupIdArr[i]);
-                    paramMap.put("doorSchId", doorSchId);
 
                     doorGroupDAO.updateDoorGroup(paramMap);
                 }

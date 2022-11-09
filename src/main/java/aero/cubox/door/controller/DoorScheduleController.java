@@ -260,14 +260,7 @@ public class DoorScheduleController {
 
         String resultCode = "Y";
 
-        if( id == null){
-            resultCode = "N";
-            model.addAttribute("resultCode", resultCode);
-
-            return modelAndView;
-        }
-
-        if( CommonUtils.notEmpty(id) ){
+        if( !CommonUtils.notEmpty(id) ){
             resultCode = "N";
             model.addAttribute("resultCode", resultCode);
             modelAndView.addObject("resultMsg", "no id");
@@ -276,6 +269,7 @@ public class DoorScheduleController {
 
         String scheduleId = StringUtil.nvl(id);
         String doorSchNm = StringUtil.nvl(commandMap.get("doorSchNm"), "");
+        String useYn = StringUtil.nvl(commandMap.get("useYn"), "");
         String doorGroupIds = StringUtil.nvl(commandMap.get("doorGroupIds"), "");
 
         HashMap param = new HashMap();
@@ -286,10 +280,10 @@ public class DoorScheduleController {
             param.put("doorSchNm", doorSchNm);
         }
 
-
-        if( CommonUtils.notEmpty(doorSchNm) ){
-            param.put("doorSchNm", doorSchNm);
+        if( CommonUtils.notEmpty(useYn) ){
+            param.put("useYn", useYn);
         }
+
         param.put("doorGroupIds", doorGroupIds);
 
         try {
