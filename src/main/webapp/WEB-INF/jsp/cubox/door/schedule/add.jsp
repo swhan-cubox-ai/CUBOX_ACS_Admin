@@ -78,7 +78,8 @@
         $.ajax({
             type : "POST",
             data : {
-                doorSchNm: doorSchNm
+                nm: doorSchNm,
+                doorGroupIds: doorIds
                 // ,useYn: useYn
                 // ,doorIds: doorIds
             },
@@ -86,9 +87,9 @@
             url : url,
             success : function(result) {
                 console.log(result);
-                if (result.resultCode === "Y" && result.newDoorId !== "") {
+                if (result.resultCode === "Y" && result.newScheduleId !== "") {
                     alert("등록이 완료되었습니다.");
-                    window.location.href = '/door/schedule/detail/' + result.newDoorId;
+                    window.location.href = '/door/schedule/detail/' + result.newScheduleId;
                 } else {
                     console.log("스케쥴 등록에 실패하였습니다.");
                 }
@@ -109,6 +110,7 @@
             </colgroup>
             <tbody id="tdScheduleAdd">
                 <input type="hidden" id="scheduleId" value="${doorScheduleDetail.id}">
+                <input type="hidden" id="doorIds" value="">
                 <tr>
                     <th>출입문 스케쥴 명</th>
                     <td>
