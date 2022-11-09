@@ -74,30 +74,29 @@
 
 <script type="text/javascript">
 
-
-    let tmp = [
-        {id: "mon_1", weekday: "mon", beg_tm: "13:00:27", end_tm: "13:40:30"},
-        {id: "mon_2", weekday: "mon", beg_tm: "13:45:00", end_tm: "18:00:30"},
-        {id: "mon_3", weekday: "mon", beg_tm: "", end_tm: ""},
-        {id: "tue_1", weekday: "tue", beg_tm: "13:00:00", end_tm: "15:00:00"},
-        {id: "tue_2", weekday: "tue", beg_tm: "19:40:27", end_tm: "22:00:20"},
-        {id: "tue_3", weekday: "tue", beg_tm: "", end_tm: ""},
-        {id: "wed_1", weekday: "wed", beg_tm: "01:50:00", end_tm: "08:20:30"},
-        {id: "wed_2", weekday: "wed", beg_tm: "08:40:00", end_tm: "12:00:00"},
-        {id: "wed_3", weekday: "wed", beg_tm: "13:40:50", end_tm: "23:59:59"},
-        {id: "thu_1", weekday: "thu", beg_tm: "", end_tm: ""},
-        {id: "thu_2", weekday: "thu", beg_tm: "", end_tm: ""},
-        {id: "thu_3", weekday: "thu", beg_tm: "", end_tm: ""},
-        {id: "fri_1", weekday: "fri", beg_tm: "10:30:00", end_tm: "19:30:00"},
-        {id: "fri_2", weekday: "fri", beg_tm: "", end_tm: ""},
-        {id: "fri_3", weekday: "fri", beg_tm: "", end_tm: ""},
-        {id: "sat_1", weekday: "sat", beg_tm: "07:00:00", end_tm: "16:30:30"},
-        {id: "sat_2", weekday: "sat", beg_tm: "17:40:20", end_tm: "20:20:00"},
-        {id: "sat_3", weekday: "sat", beg_tm: "", end_tm: ""},
-        {id: "sun_1", weekday: "sun", beg_tm: "01:00:00", end_tm: "23:59:59"},
-        {id: "sun_2", weekday: "sun", beg_tm: "", end_tm: ""},
-        {id: "sun_3", weekday: "sun", beg_tm: "", end_tm: ""}
-    ];
+    // let tmp = [
+    //     {id: "mon_1", weekday: "mon", beg_tm: "13:00:27", end_tm: "13:40:30"},
+    //     {id: "mon_2", weekday: "mon", beg_tm: "13:45:00", end_tm: "18:00:30"},
+    //     {id: "mon_3", weekday: "mon", beg_tm: "", end_tm: ""},
+    //     {id: "tue_1", weekday: "tue", beg_tm: "13:00:00", end_tm: "15:00:00"},
+    //     {id: "tue_2", weekday: "tue", beg_tm: "19:40:27", end_tm: "22:00:20"},
+    //     {id: "tue_3", weekday: "tue", beg_tm: "", end_tm: ""},
+    //     {id: "wed_1", weekday: "wed", beg_tm: "01:50:00", end_tm: "08:20:30"},
+    //     {id: "wed_2", weekday: "wed", beg_tm: "08:40:00", end_tm: "12:00:00"},
+    //     {id: "wed_3", weekday: "wed", beg_tm: "13:40:50", end_tm: "23:59:59"},
+    //     {id: "thu_1", weekday: "thu", beg_tm: "", end_tm: ""},
+    //     {id: "thu_2", weekday: "thu", beg_tm: "", end_tm: ""},
+    //     {id: "thu_3", weekday: "thu", beg_tm: "", end_tm: ""},
+    //     {id: "fri_1", weekday: "fri", beg_tm: "10:30:00", end_tm: "19:30:00"},
+    //     {id: "fri_2", weekday: "fri", beg_tm: "", end_tm: ""},
+    //     {id: "fri_3", weekday: "fri", beg_tm: "", end_tm: ""},
+    //     {id: "sat_1", weekday: "sat", beg_tm: "07:00:00", end_tm: "16:30:30"},
+    //     {id: "sat_2", weekday: "sat", beg_tm: "17:40:20", end_tm: "20:20:00"},
+    //     {id: "sat_3", weekday: "sat", beg_tm: "", end_tm: ""},
+    //     {id: "sun_1", weekday: "sun", beg_tm: "01:00:00", end_tm: "23:59:59"},
+    //     {id: "sun_2", weekday: "sun", beg_tm: "", end_tm: ""},
+    //     {id: "sun_3", weekday: "sun", beg_tm: "", end_tm: ""}
+    // ];
 
     $(function () {
         $(".title_tx").html("출입문 스케쥴 - 상세");
@@ -110,7 +109,7 @@
                 let el = $(this);
                 let day = this.id.split("_")[0];
                 let schNum = this.id.split("_")[1];
-                let ifEnd = this.id.split("_")[2] == "end";
+                let ifEnd = this.id.split("_")[2] === "end";
                 let startId = "";
                 let endId = "";
                 let start = {hour: "", min: "", sec: ""};
@@ -152,8 +151,40 @@
         });
 
         setDoorGroupInfo();
+        fnDayExistsCountAjax();
 
     });
+
+    // 요일 별 스케쥴 있는지 여부 확인
+    function fnDayExistsCountAjax() {
+        $.ajax({
+            type : "GET",
+            data : { doorSchId: ${doorScheduleDetail.id} },
+            dataType : "json",
+            url : "<c:url value='/door/schedule/day/existsCount.do'/>",
+            success : function(result) {
+                let schCnt = result.getDayScheduleExistsCount;
+                console.log(schCnt);
+
+                if (schCnt !== 0) {
+                    console.log("요일 별 스케쥴이 있음");
+                    // 요일 별 스케쥴 보기 버튼
+                    $("#btnAddByDay").html("요일 별 스케쥴 보기");
+                    $("#btnDaySchDetail").css("display", "block");
+                    $("#btnDaySchAdd").css("display", "none");
+                    $("#daySchCnt").val(schCnt);
+                } else {
+                    console.log("요일 별 스케쥴이 없음");
+                    // 요일 별 스케쥴 등록 버튼
+                    $("#btnAddByDay").html("요일 별 스케쥴 등록");
+                    $("#btnDaySchDetail").css("display", "none");
+                    $("#btnDaySchAdd").css("display", "block");
+                    $(".sch1_timepick").prop("disabled", false);
+                    $("#daySchCnt").val(0);
+                }
+            }
+        });
+    }
 
     // 출입문 그룹 정보 set
     function setDoorGroupInfo() {
@@ -444,17 +475,54 @@
         fnDeleteScheduleAjax();
     }
 
-    // 스케쥴 저장
-    function saveSchedule() {
-        console.log("saveSchedule");
+    // 요일별 스케쥴 수정 모드
+    function fnDaySchEditMode() {
+        $("#btnDaySchEdit").css("display", "block");
+        $("#btnDaySchDetail").css("display", "none");
+        $("#btnDaySchAdd").css("display", "none");
+        activeTimepicker();
+    }
+
+    // 요일별 스케쥴 보기 모드
+    function fnDaySchDetailMode() {
+        $("#btnDaySchDetail").css("display", "block");
+        $("#btnDaySchEdit").css("display", "none");
+        $("#btnDaySchAdd").css("display", "none");
+        inactiveTimepicker();
+    }
+
+    // 요일별 스케쥴 전체 삭제
+    function fnDaySchDelete() {
+
+    }
+
+    // 요일별 스케쥴 수정 저장
+    function fnDaySchModify() {
+        console.log("fnDaySchModify");
+        let data = fnDaySchValidation();
+
+        console.log(data);
+        console.log(data.length);
+
+        if (!data) {
+            alert("등록할 스케쥴이 없습니다.");
+        } else {
+            fnModifyScheduleByDayAjax(data);
+        }
+
+    }
+
+    // 요일별 스케쥴 데이터 validation
+    function fnDaySchValidation() {
         const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
         const schNums = ["1", "2", "3"];
-        let data = [];
+        let data = [];    // 최종 데이터
         let tmp = [];
         let schSet = {};
+        let validCnt = 0; // 시작,종료시간 있는 데이터 카운트, 최대 21
 
         clearPickers();
-        closePopup("addByDayPopup");
+        // closePopup("addByDayPopup");
 
         $.each($("input[name=timepicker]"), function (i, pick) {
             let pId = $(pick).attr("id");    // mon_1_start
@@ -469,6 +537,7 @@
                         if ($(pick).hasClass("start")) {
                             schSet.beg_tm = $(pick).val();
                         } else if ($(pick).hasClass("end")) {
+                            if ($(pick).val() != "") validCnt += 1;
                             schSet.end_tm = $(pick).val();
                             tmp.push(schSet);
                             if (schNum === "3") {
@@ -484,10 +553,27 @@
                 });
             });
         });
-        console.log(data);
 
-        // TODO: 저장 ajax
-        fnAddScheduleByDay(data);
+        console.log(data);
+        console.log(validCnt);
+
+        if (validCnt == 0) { // 입력한 스케쥴 하나도 없을 경우
+            return false;
+        } else {
+            return data;
+        }
+    }
+
+    // 요일별 스케쥴 등록
+    function fnDaySchSave() {
+        console.log("fnDaySchSave");
+        let data = fnDaySchValidation();
+
+        if (!data) {
+            alert("등록할 스케쥴이 없습니다.");
+        } else {
+            fnAddScheduleByDayAjax(data);
+        }
     }
 
     // 시간 순 정렬
@@ -557,14 +643,24 @@
         });
     }
 
+    function inactiveTimepicker() {
+        $("input[name=timepicker]").prop("disabled", true);
+    }
+
     // popup open (공통)
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
         if (popupNm === "doorGroupPickPopup") {
             fnGetDoorGroupListAjax();
         } else if (popupNm === "addByDayPopup") {
+            if ($("#daySchCnt").val() != 0) {
+                // 연결된 스케쥴 있음
+                //
+            } else {
+                // 연결된 스케쥴 없음, 등록 가능
+            }
             fnGetScheduleByDayDetail();
-            activeTimepicker();
+            // activeTimepicker();
         }
     }
 
@@ -656,6 +752,7 @@
             url : "<c:url value='/door/schedule/day/detail/${doorScheduleDetail.id}'/>",
             success : function(result) {
                 if (result.resultCode === "Y") {
+                    console.log(result.scheduleByDayDetailList.length);
                     console.log(result.scheduleByDayDetailList);
 
                     // 스케쥴 뿌려주기
@@ -692,7 +789,7 @@
 
     /////////////////  요일별 스케쥴 저장 ajax - start  /////////////////////
 
-    function fnAddScheduleByDay(data) {
+    function fnAddScheduleByDayAjax(data) {
         $.ajax({
             type: "POST",
             url: "<c:url value='/door/schedule/day/add.do' />",
@@ -716,6 +813,35 @@
     }
 
     /////////////////  요일별 스케쥴 저장 ajax - end  /////////////////////
+
+
+    /////////////////  요일별 스케쥴 수정 ajax - start  /////////////////////
+
+    function fnModifyScheduleByDayAjax(data) {
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='/door/schedule/day/modify/${doorScheduleDetail.id}' />",
+            data:  {
+                "doorSchId" : $("#scheduleId").val() ,
+                "day_schedule" : JSON.stringify(data)
+            },
+            dataType: "json",
+            success: function (returnData) {
+                console.log("schedule-day-add-ajax");
+                console.log(returnData);
+
+                if (returnData.resultCode == "Y") {
+                    alert("저장되었습니다.");
+                } else {
+                    //등록에 문제가 발생
+                    alert("등록에 실패하였습니다.");
+                }
+            }
+        });
+    }
+
+    /////////////////  요일별 스케쥴 수정 ajax - end  /////////////////////
+
 
 
     <%--/////////////////  출입문 그룹 조회 ajax - start  /////////////////////--%>
@@ -767,6 +893,7 @@
             </colgroup>
             <tbody id="tdScheduleDetail">
             <input type="hidden" id="scheduleId" value="${doorScheduleDetail.id}">
+            <input type="hidden" id="daySchCnt" value="0">
             <input type="hidden" id="doorIds" value="">
 
 <%--            <c:forEach items="${doorGroupList}" var="dList" varStatus="status">--%>
@@ -813,7 +940,7 @@
     <button class="btn_middle color_basic" onclick="location='/door/schedule/list.do'">목록</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnEditMode();">수정</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
-    <button class="btn_middle ml_5 color_basic" onclick="openPopup('addByDayPopup');">요일 별 스케쥴 등록</button>
+    <button class="btn_middle ml_5 color_basic" id="btnAddByDay" onclick="openPopup('addByDayPopup');">요일 별 스케쥴 등록</button>
 </div>
 <div class="right_btn mt_20" id="btnboxEdit" style="display:none;">
     <button class="btn_middle color_basic" onclick="fnSave();">확인</button>
@@ -915,9 +1042,22 @@
         </div>
         <%--  end of 오른쪽 box  --%>
 
-        <div class="c_btnbox center mt_20">
+        <div class="c_btnbox center mt_20" id="btnDaySchDetail">
             <div style="display: inline-block;">
-                <button type="button" class="comm_btn mr_20" onclick="saveSchedule();">확인</button>
+                <button type="button" class="comm_btn mr_20" onclick="fnDaySchEditMode();">수정</button>
+                <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">확인</button>
+            </div>
+        </div>
+        <div class="c_btnbox center mt_20" id="btnDaySchEdit" style="display: none;">
+            <div style="display: inline-block;">
+                <button type="button" class="comm_btn mr_20" onclick="fnDaySchModify();">저장</button>
+                <button type="button" class="comm_btn mr_20" onclick="fnDaySchDelete();">삭제</button>
+                <button type="button" class="comm_btn" onclick="fnDaySchDetailMode();">취소</button>
+            </div>
+        </div>
+        <div class="c_btnbox center mt_20" id="btnDaySchAdd">
+            <div style="display: inline-block;">
+                <button type="button" class="comm_btn mr_20" onclick="fnDaySchSave();">저장</button>
                 <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">취소</button>
             </div>
         </div>
