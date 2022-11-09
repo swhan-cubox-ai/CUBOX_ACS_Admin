@@ -593,7 +593,7 @@
 
         console.log(doorSchNm);
         console.log(useYn);
-        console.log(doorIds);
+        console.log(doorGroupIds);
         console.log(url);
 
         $.ajax({
@@ -787,8 +787,8 @@
                 <td>
                     <select id="schUseYn" name="detail" class="form-control w_600px" style="padding-left:10px;" disabled>
                         <option value="" name="selected">선택</option>
-                        <option value="Y" <c:if test="${doorScheduleDetail.delete_yn eq 'Y'}" >selected </c:if>>Y</option>
-                        <option value="N" <c:if test="${doorScheduleDetail.delete_yn eq 'N'}" >selected </c:if>>N</option>
+                        <option value="Y" <c:if test="${doorScheduleDetail.use_yn eq 'Y'}" >selected </c:if>>Y</option>
+                        <option value="N" <c:if test="${doorScheduleDetail.use_yn eq 'N'}" >selected </c:if>>N</option>
                     </select>
                 </td>
             </tr>
