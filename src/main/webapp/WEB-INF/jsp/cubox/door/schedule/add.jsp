@@ -47,6 +47,9 @@
     // popup open
     function openPopup(popupNm) {
         $("#" + popupNm).PopupWindow("open");
+        if (popupNm === "doorGroupPickPopup") {
+            fnGetDoorGroupListAjax();
+        }
     }
 
     // popup close
