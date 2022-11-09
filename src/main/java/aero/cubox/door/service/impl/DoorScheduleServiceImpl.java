@@ -9,11 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static aero.cubox.util.StringUtil.isEmpty;
+
 @Service("doorScheduleService")
 public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements DoorScheduleService {
 
     @Resource(name="doorScheduleDAO")
     private DoorScheduleDAO doorScheduleDAO;
+
+    @Resource(name="doorGroupDAO")
+    private DoorGroupDAO doorGroupDAO;
 
     /**
      * 출입문 스케줄 목록 조회
@@ -50,8 +55,30 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
     @Override
     public String addSchedule(Map<String, Object> commandMap) {
         String newScheduleId = "";
+
         doorScheduleDAO.addSchedule(commandMap);
+
         newScheduleId = commandMap.get("scheduleId").toString();
+
+        HashMap paramMap = new HashMap();
+
+        //출입권한-출입문 table에 door_id Insert
+        if( !isEmpty((String) commandMap.get("doorGroupIds"))){
+
+            String doorGroupIds = "";
+            doorGroupIds = commandMap.get("doorGroupIds").toString();
+
+            if( doorGroupIds.length() > 0 ){
+                String[] doorGroupIdArr = doorGroupIds.split("/");
+                for (int i = 0; i < doorGroupIdArr.length; i++) {
+                    paramMap.put("id", doorGroupIdArr[i]);
+                    paramMap.put("doorSchId", newScheduleId);
+
+                    doorGroupDAO.updateDoorGroup(paramMap);
+                }
+            }
+        }
+
         return newScheduleId;
     }
 
@@ -62,6 +89,25 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
     @Override
     public void updateSchedule(Map<String, Object> commandMap) {
         doorScheduleDAO.updateSchedule(commandMap);
+
+        HashMap paramMap = new HashMap();
+
+        //출입권한-출입문 table에 door_id Insert
+        if( !isEmpty((String) commandMap.get("doorGroupIds"))){
+
+            String doorGroupIds = commandMap.get("doorGroupIds").toString();
+            String doorSchId = commandMap.get("id").toString();
+
+            if( doorGroupIds.length() > 0 ){
+                String[] doorGroupIdArr = doorGroupIds.split("/");
+                for (int i = 0; i < doorGroupIdArr.length; i++) {
+                    paramMap.put("id", doorGroupIdArr[i]);
+                    paramMap.put("doorSchId", doorSchId);
+
+                    doorGroupDAO.updateDoorGroup(paramMap);
+                }
+            }
+        }
     }
 
     /**

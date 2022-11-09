@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import static aero.cubox.util.JsonUtil.getListMapFromJsonArray;
+import static org.springmodules.validation.util.condition.Conditions.notEmpty;
 
 @Controller
 @RequestMapping(value = "/door/schedule/")
@@ -216,16 +217,26 @@ public class DoorScheduleController {
         modelAndView.setViewName("jsonView");
 
         String resultCode = "Y";
-        String newDoorId = "";
+        String newScheduleId = "";
+
+        String nm = StringUtil.nvl(commandMap.get("nm"), "");
+        String doorGroupIds = StringUtil.nvl(commandMap.get("doorGroupIds"), "");
+
+
+        HashMap param = new HashMap();
+
+        param.put("doorSchNm", nm);
+        param.put("doorGroupIds", doorGroupIds);
+
         try {
-            newDoorId = doorScheduleService.addSchedule(commandMap);
+            newScheduleId = doorScheduleService.addSchedule(param);
         } catch (Exception e) {
             e.getStackTrace();
             resultCode = "N";
         }
 
         modelAndView.addObject("resultCode", resultCode);
-        modelAndView.addObject("newDoorId", newDoorId);
+        modelAndView.addObject("newScheduleId", newScheduleId);
 
         return modelAndView;
     }
@@ -255,13 +266,31 @@ public class DoorScheduleController {
 
             return modelAndView;
         }
+
+        if( CommonUtils.notEmpty(id) ){
+            resultCode = "N";
+            model.addAttribute("resultCode", resultCode);
+            modelAndView.addObject("resultMsg", "no id");
+            return modelAndView;
+        }
+
         String scheduleId = StringUtil.nvl(id);
         String doorSchNm = StringUtil.nvl(commandMap.get("doorSchNm"), "");
+        String doorGroupIds = StringUtil.nvl(commandMap.get("doorGroupIds"), "");
 
         HashMap param = new HashMap();
 
         param.put("id", scheduleId);
-        param.put("doorSchNm", doorSchNm);
+
+        if( CommonUtils.notEmpty(doorSchNm) ){
+            param.put("doorSchNm", doorSchNm);
+        }
+
+
+        if( CommonUtils.notEmpty(doorSchNm) ){
+            param.put("doorSchNm", doorSchNm);
+        }
+        param.put("doorGroupIds", doorGroupIds);
 
         try {
             doorScheduleService.updateSchedule(param);

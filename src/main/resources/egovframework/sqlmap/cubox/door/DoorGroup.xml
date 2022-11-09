@@ -85,8 +85,13 @@
 
     <update id="updateDoorGroup" parameterType="HashMap">
         UPDATE T_DOORGRP
-        SET nm = #{nm}
-          , door_sch_id = #{doorSchId}
+        SET
+        <if test="doorSchId != null and doorSchId != ''">
+             door_sch_id = #{doorSchId}
+        </if>
+        <if test="nm != null and nm != ''">
+             ,  nm = #{nm}
+        </if>
         WHERE id = #{id}
     </update>
 

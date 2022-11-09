@@ -208,6 +208,7 @@ public class DoorGroupController {
         param.put("doorSchId", scheduleId);
         param.put("doorIds", doorIds);
         String newDoorId = "";
+
         try {
              newDoorId = doorGroupService.addDoorGroup(param);
         } catch (Exception e) {
@@ -233,24 +234,25 @@ public class DoorGroupController {
 
         if( id == null){
              resultCode = "N";
-        }
-        String nm = StringUtil.nvl(commandMap.get("nm"), "");
-        String scheduleId = StringUtil.nvl(commandMap.get("scheduleId"), "");
-        String doorIds = StringUtil.nvl(commandMap.get("doorIds"), "");
+        } else {
+            String nm = StringUtil.nvl(commandMap.get("nm"), "");
+            String scheduleId = StringUtil.nvl(commandMap.get("scheduleId"), "");
+            String doorIds = StringUtil.nvl(commandMap.get("doorIds"), "");
 
-        HashMap param = new HashMap();
+            HashMap param = new HashMap();
 
-        param.put("id", Integer.parseInt(id));
-        param.put("nm", nm);
-        param.put("doorSchId", scheduleId);
-        param.put("doorIds", doorIds);
+            param.put("id", Integer.parseInt(id));
+            param.put("nm", nm);
+            param.put("doorSchId", scheduleId);
+            param.put("doorIds", doorIds);
 
-        try {
-            doorGroupService.updateDoorGroup(param);
+            try {
+                doorGroupService.updateDoorGroup(param);
 
-        } catch (Exception e) {
-            e.getStackTrace();
-            resultCode = "N";
+            } catch (Exception e) {
+                e.getStackTrace();
+                resultCode = "N";
+            }
         }
 
         model.addAttribute("resultCode", resultCode);
