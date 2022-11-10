@@ -444,6 +444,7 @@ public class DoorScheduleController {
         JSONParser parser = new JSONParser();
         Object obj = parser.parse((String) commandMap.get("day_schedule"));
 
+
         List<Map<String, Object>> dayScheduleList = getListMapFromJsonArray((JSONArray) obj);
 
         if( dayScheduleList.size() > 0 ){
@@ -451,6 +452,8 @@ public class DoorScheduleController {
             try {
                 Map<String, Object> dayScheduleParam;
 
+                doorScheduleService.deleteScheduleByDay(commandMap);
+                
                 for (int i = 0; i < dayScheduleList.size(); i++) {
                     dayScheduleParam = dayScheduleList.get(i);
                     dayScheduleParam.put("doorSchId", commandMap.get("doorSchId"));

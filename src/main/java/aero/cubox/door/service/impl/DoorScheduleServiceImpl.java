@@ -158,7 +158,7 @@ public class DoorScheduleServiceImpl extends EgovAbstractServiceImpl implements 
      */
     @Override
     public void updateScheduleByDay(Map<String, Object> commandMap) {
-        doorScheduleDAO.deleteScheduleByDay(commandMap);
+
         doorScheduleDAO.addScheduleByDay(commandMap);
     }
 
