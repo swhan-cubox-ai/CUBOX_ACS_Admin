@@ -70,6 +70,13 @@
     input[name=timepicker] {
         border: 1px solid gray;
     }
+    .btnInit {
+        border-radius: 2px;
+        float: left;
+        border: none;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
 </style>
 
 <script type="text/javascript">
@@ -164,7 +171,7 @@
             url : "<c:url value='/door/schedule/day/existsCount.do'/>",
             success : function(result) {
                 let schCnt = result.getDayScheduleExistsCount;
-                console.log(schCnt);
+                console.log("fnDayExistsCountAjax = " + schCnt);
 
                 if (schCnt !== 0) {
                     console.log("요일 별 스케쥴이 있음");
@@ -558,8 +565,9 @@
             });
         });
 
+        console.log("validation data");
         console.log(data);
-        console.log(validCnt);
+        console.log("validation count = " + validCnt);
         $("#daySchCnt").val(validCnt);
 
         if (validCnt == 0) { // 입력한 스케쥴 하나도 없을 경우
@@ -568,6 +576,19 @@
             $("#daySchCnt").val(validCnt);
             return data;
         }
+    }
+
+    // 요일별 스케쥴 전체 초기화
+    function fnDaySchInit() {
+        $("input[name=timepicker]").val("");
+        $(".sch2_timepick, .sch3_timepick").prop("disabled", true);
+
+        $(".colored").val("");
+        $(".colored").removeClass("sch1 sch2 sch3 " +
+            "mon_1 mon_2 mon_3 tue_1 tue_2 tue_3 wed_1 wed_2 wed_3 thu_1 thu_2 " +
+            "thu_3 fri_1 fri_2 fri_3 sat_1 sat_2 sat_3 sun_1 sun_2 sun_3 colored");
+
+        // $("div[class*=sch]")
     }
 
     // 요일별 스케쥴 등록
@@ -804,12 +825,18 @@
     /////////////////  요일별 스케쥴 저장 ajax - start  /////////////////////
 
     function fnAddScheduleByDayAjax(data) {
+        console.log("fnAddSchedule");
+        let jsonData = JSON.stringify(data);
+        let url = "<c:url value='/door/schedule/day/add.do' />";
+        console.log(jsonData);
+        console.log(url);
+
         $.ajax({
             type: "POST",
-            url: "<c:url value='/door/schedule/day/add.do' />",
+            url: url,
             data:  {
                 "doorSchId" : $("#scheduleId").val() ,
-                "day_schedule" : JSON.stringify(data)
+                "day_schedule" : jsonData
             },
             dataType: "json",
             success: function (result) {
@@ -835,19 +862,26 @@
     /////////////////  요일별 스케쥴 수정 ajax - start  /////////////////////
 
     function fnModifyScheduleByDayAjax(data) {
+        console.log("fnModifySchedule");
+        let jsonData = JSON.stringify(data);
+        let url = "<c:url value='/door/schedule/day/modify/${doorScheduleDetail.id}' />";
+
+        console.log(jsonData);
+        console.log(url);
+
         $.ajax({
             type: "POST",
-            url: "<c:url value='/door/schedule/day/modify/${doorScheduleDetail.id}' />",
+            url: url,
             data:  {
                 "doorSchId" : $("#scheduleId").val() ,
-                "day_schedule" : JSON.stringify(data)
+                "day_schedule" : jsonData
             },
             dataType: "json",
             success: function (result) {
                 console.log("schedule-day-modify-ajax");
                 console.log(result);
 
-                if (result.resultCode == "Y") {
+                if (result.resultCode === "Y") {
                     alert("저장되었습니다.");
                     fnDaySchDetailMode();
                 } else {
@@ -1028,6 +1062,7 @@
             <%--  테이블  --%>
             <div class="com_box">
                 <table id="tb_SchTimepick" class="tb_list" style="height:665px;">
+<%--                    <button type="button" class="comm_btn mr_20" onclick="fnDaySchDeleteOne()">개별삭제</button>--%>
                     <colgroup>
                         <c:forEach var="i" begin="0" end="2" varStatus="status">
                             <col style="width:33%">
@@ -1068,6 +1103,7 @@
         </div>
         <div class="c_btnbox center mt_20" id="btnDaySchEdit" style="display: none;">
             <div style="display: inline-block;">
+                <button type="button" class="btn_gray2 btn_middle mr_20 btnInit" onclick="fnDaySchInit();">초기화</button>
                 <button type="button" class="comm_btn mr_20" onclick="fnDaySchModify();">저장</button>
                 <button type="button" class="comm_btn mr_20" onclick="fnDaySchDelete();">삭제</button>
                 <button type="button" class="comm_btn" onclick="fnDaySchDetailMode();">취소</button>
@@ -1075,6 +1111,7 @@
         </div>
         <div class="c_btnbox center mt_20" id="btnDaySchAdd">
             <div style="display: inline-block;">
+                <button type="button" class="btn_gray2 btn_middle mr_20 btnInit" onclick="fnDaySchInit();">초기화</button>
                 <button type="button" class="comm_btn mr_20" onclick="fnDaySchSave();">저장</button>
                 <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">닫기</button>
             </div>
