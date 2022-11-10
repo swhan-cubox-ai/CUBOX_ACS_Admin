@@ -77,6 +77,10 @@
         padding-left: 15px;
         padding-right: 15px;
     }
+    .color_disabled {
+        background-color: #eee !important;
+        opacity: 1;
+    }
 </style>
 
 <script type="text/javascript">
@@ -446,8 +450,11 @@
             alert ("출입문 스케쥴 명을 입력하세요.");
             $("#schNm").focus(); return;
         }
-
-        fnUpdateScheduleAjax();
+        if (confirm("출입문 스케쥴을 저장하시겠습니까?")) {
+            fnUpdateScheduleAjax();
+        } else {
+            return;
+        }
     }
 
     // 수정 취소
@@ -462,16 +469,20 @@
         $("#btnboxDetail").css("display", "block");
         $("#btnboxEdit").css("display", "none");
         $("#btnEdit").css("display", "none");
-        $("[name=detail]").attr("disabled", true);
+        $("[name=detail]").attr("disabled", true).addClass("color_disabled");
     }
 
     // 수정 버튼
     function fnEditMode() {
-        $(".title_tx").html("출입문 스케쥴 - 수정");
-        $("#btnEdit").css("display", "block");
-        $("#btnboxDetail").css("display", "none");
-        $("#btnboxEdit").css("display", "block");
-        $("[name=detail]").attr("disabled", false);
+        if (confirm("해당 스케쥴을 수정하시겠습니까?")) {
+            $(".title_tx").html("출입문 스케쥴 - 수정");
+            $("#btnEdit").css("display", "block");
+            $("#btnboxDetail").css("display", "none");
+            $("#btnboxEdit").css("display", "block");
+            $("[name=detail]").attr("disabled", false).removeClass("color_disabled");
+        } else {
+            return;
+        }
     }
 
     // 삭제 버튼
@@ -508,44 +519,11 @@
     // 요일별 스케쥴 전체 삭제
     function fnDaySchDelete() {
         if (confirm("전체 스케쥴을 삭제하시겠습니까?")) {
-            // TODO: 삭제 ajax
-
+            fnDeleteScheduleByDayAjax();
         } else {
             return;
         }
     }
-
-    // 요일별 스케쥴 등록
-    // function fnDaySchSave() {
-    //     console.log("fnDaySchSave");
-    //     let data = fnDaySchValidation();
-    //
-    //     if (!data) {
-    //         alert("등록할 스케쥴이 없습니다.");
-    //     } else {
-    //         if (confirm("저장하시겠습니까?")) {
-    //             fnAddScheduleByDayAjax(data);
-    //         }
-    //         return;
-    //     }
-    // }
-
-    // 요일별 스케쥴 수정 저장
-    // function fnDaySchModify() {
-    //     console.log("fnDaySchModify");
-    //     let data = fnDaySchValidation();
-    //
-    //     console.log(data);
-    //     console.log(data.length);
-    //
-    //     if (!data) {
-    //         // alert("등록할 스케쥴이 없습니다.");
-    //
-    //     } else {
-    //         fnModifyScheduleByDayAjax(data);
-    //     }
-    //
-    // }
 
     // 요일별 스케쥴 데이터 validation
     function fnDaySchValidation(type) {
@@ -894,6 +872,31 @@
     /////////////////  요일별 스케쥴 수정 ajax - end  /////////////////////
 
 
+    /////////////////  요일별 스케쥴 전체 삭제 ajax - start  /////////////////////
+
+    function fnDeleteScheduleByDayAjax() {
+        let url = "<c:url value='/door/schedule/day/delete/${doorScheduleDetail.id}' />";
+        console.log(url);
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                if (result.resultCode === "Y") {
+                    alert("삭제되었습니다.");
+                    fnDaySchDetailMode();
+                } else {
+                    alert("삭제에 실패하였습니다.");
+                }
+            }
+        });
+    }
+
+    /////////////////  요일별 스케쥴 전체 삭제 ajax - end  /////////////////////
+
+
 </script>
 
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
@@ -910,28 +913,26 @@
             <tr>
                 <th>출입문 스케쥴 명</th>
                 <td>
-                    <input type="text" id="schNm" name="detail" maxlength="50" size="50" value="${doorScheduleDetail.door_sch_nm}" class="w_600px input_com" disabled>
+                    <input type="text" id="schNm" name="detail" maxlength="35" size="50" value="${doorScheduleDetail.door_sch_nm}" class="w_600px input_com color_disabled" disabled>
                 </td>
             </tr>
             <tr>
                 <th>사용</th>
                 <td>
-                    <select id="schUseYn" name="detail" class="form-control w_600px" style="padding-left:10px;" disabled>
+                    <select id="schUseYn" name="detail" class="form-control w_600px color_disabled" style="padding-left:10px;" disabled>
                         <option value="" name="selected">선택</option>
-                        <option value="Y" <c:if test="${doorScheduleDetail.use_yn eq 'Y'}" >selected </c:if>>Y</option>
-                        <option value="N" <c:if test="${doorScheduleDetail.use_yn eq 'N'}" >selected </c:if>>N</option>
+                        <option value="Y" <c:if test="${doorScheduleDetail.use_yn eq 'Y'}" >selected </c:if>>사용</option>
+                        <option value="N" <c:if test="${doorScheduleDetail.use_yn eq 'N'}" >selected </c:if>>미사용</option>
                     </select>
                 </td>
             </tr>
             <tr>
                 <th>출입문 그룹</th>
                 <td style="display: flex;">
-<%--                    <textarea id="doorGroup" name="detail" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;--%>
-<%--                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>${doorGroupList.size()}/${doorGroupList}</textarea>--%>
-                    <textarea id="doorGroup" name="detail" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
+                    <textarea id="doorGroup" name="doorGroup" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;
                               font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
                     <div class="ml_10" style="position:relative;">
-                        <button id="btnEdit" type="button" class="btn_middle color_basic" onclick="openPopup('doorGroupPickPopup')" style="position:absolute; bottom:0; display:none;">선택</button>
+                        <button id="btnEdit" type="button" class="btn_small color_basic" onclick="openPopup('doorGroupPickPopup')" style="width:60px; position:absolute; bottom:0; display:none;">선택</button>
                     </div>
                 </td>
             </tr>
@@ -944,10 +945,10 @@
     <button class="btn_middle color_basic" onclick="location='/door/schedule/list.do'">목록</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnEditMode();">수정</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnDelete();">삭제</button>
-    <button class="btn_middle ml_5 color_basic" id="btnAddByDay" onclick="openPopup('addByDayPopup');">요일 별 스케쥴 등록</button>
+    <button class="btn_middle ml_10 color_color1" id="btnAddByDay" onclick="openPopup('addByDayPopup');">요일 별 스케쥴 등록</button>
 </div>
 <div class="right_btn mt_20" id="btnboxEdit" style="display:none;">
-    <button class="btn_middle color_basic" onclick="fnSave();">확인</button>
+    <button class="btn_middle color_basic" onclick="fnSave();">저장</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnCancel();">취소</button>
 </div>
 
@@ -1049,13 +1050,13 @@
 
         <div class="c_btnbox center mt_20" id="btnDaySchDetail">
             <div style="display: inline-block;">
-                <button type="button" class="comm_btn mr_20" onclick="fnDaySchEditMode();">수정</button>
+                <button type="button" class="comm_btn mr_20" onclick="fnDaySchEditMode();">저장</button>
                 <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">닫기</button>
             </div>
         </div>
         <div class="c_btnbox center mt_20" id="btnDaySchEdit" style="display: none;">
             <div style="display: inline-block;">
-                <button type="button" class="btn_gray2 btn_middle mr_20 btnInit" onclick="fnDaySchInit();">초기화</button>
+                <button type="button" class="btn_gray3 btn_middle mr_20 btnInit" onclick="fnDaySchInit();">초기화</button>
                 <button type="button" class="comm_btn mr_20" onclick="fnDaySchValidation('Update');">저장</button>
                 <button type="button" class="comm_btn mr_20" onclick="fnDaySchDelete();">삭제</button>
                 <button type="button" class="comm_btn" onclick="fnDaySchDetailMode();">취소</button>
@@ -1063,7 +1064,7 @@
         </div>
         <div class="c_btnbox center mt_20" id="btnDaySchAdd">
             <div style="display: inline-block;">
-                <button type="button" class="btn_gray2 btn_middle mr_20 btnInit" onclick="fnDaySchInit();">초기화</button>
+                <button type="button" class="btn_gray3 btn_middle mr_20 btnInit" onclick="fnDaySchInit();">초기화</button>
                 <button type="button" class="comm_btn mr_20" onclick="fnDaySchValidation('Add');">저장</button>
                 <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">닫기</button>
             </div>

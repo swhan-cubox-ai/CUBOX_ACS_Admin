@@ -40,8 +40,11 @@
             alert ("출입문 스케쥴 명을 입력하세요.");
             $("#schNm").focus(); return;
         }
-
-        fnSaveScheduleAjax();
+        if (confirm("출입문 스케쥴을 저장하시겠습니까?")) {
+            fnSaveScheduleAjax();
+        } else {
+            return;
+        }
     }
 
     // popup open
@@ -114,7 +117,7 @@
                 <tr>
                     <th>출입문 스케쥴 명</th>
                     <td>
-                        <input type="text" id="schNm" name="schNm" maxlength="50" size="50" value='' class="w_600px input_com">
+                        <input type="text" id="schNm" name="schNm" maxlength="35" size="50" value='' class="w_600px input_com">
                     </td>
                 </tr>
                 <tr>
@@ -122,8 +125,8 @@
                     <td>
                         <select id="schUseYn" name="schUseYn" class="form-control w_600px" style="padding-left:10px;">
                             <option value="" name="selected">선택</option>
-                            <option value="Y">Y</option>
-                            <option value="N">N</option>
+                            <option value="Y">사용</option>
+                            <option value="N">미사용</option>
                         </select>
                     </td>
                 </tr>
@@ -143,7 +146,7 @@
 </form>
 
 <div class="right_btn mt_20">
-    <button class="btn_middle color_basic" onclick="fnAdd();">확인</button>
+    <button class="btn_middle color_basic" onclick="fnAdd();">저장</button>
     <button class="btn_middle ml_5 color_basic" onclick="location='/door/schedule/list.do'">취소</button>
 </div>
 
