@@ -479,6 +479,43 @@ public class DoorScheduleController {
     }
 
     /**
+     * 출입문 요일별 스케쥴 삭제
+     * @param model
+     * @param id
+     * @param request
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value="/day/delete/{id}", method= RequestMethod.POST)
+    public ModelAndView deleteScheduleByDay(ModelMap model, @PathVariable String id, HttpServletRequest request,@RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String resultCode = "Y";
+
+        if( id == null){
+            resultCode = "N";
+            model.addAttribute("resultCode", resultCode);
+
+            return modelAndView;
+        }
+
+        String doorSchId = commandMap.get("id").toString();
+        HashMap<String, Object> paramMap = new HashMap<>();
+
+        paramMap.put("doorSchId", doorSchId);
+
+        doorScheduleService.deleteScheduleByDay(paramMap);
+
+        model.addAttribute("resultCode", resultCode);
+
+        return modelAndView;
+    }
+
+    /**
      * 스케줄명 validation
      * @param model
      * @param commandMap

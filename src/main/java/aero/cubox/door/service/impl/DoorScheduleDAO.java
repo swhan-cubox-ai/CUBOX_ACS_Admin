@@ -55,7 +55,6 @@ public class DoorScheduleDAO extends EgovAbstractMapper {
     }
 
     public void deleteScheduleByDay(Map<String, Object> paramMap) {
-
         delete(sqlNameSpace+"deleteScheduleByDay", paramMap);
     }
 
