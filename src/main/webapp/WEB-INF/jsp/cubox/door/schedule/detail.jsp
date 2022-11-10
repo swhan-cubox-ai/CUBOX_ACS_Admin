@@ -70,6 +70,13 @@
     input[name=timepicker] {
         border: 1px solid gray;
     }
+    .btnInit {
+        border-radius: 2px;
+        float: left;
+        border: none;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
 </style>
 
 <script type="text/javascript">
@@ -1096,7 +1103,7 @@
         </div>
         <div class="c_btnbox center mt_20" id="btnDaySchEdit" style="display: none;">
             <div style="display: inline-block;">
-                <button type="button" class="comm_btn mr_20" onclick="fnDaySchInit();">초기화</button>
+                <button type="button" class="btn_gray2 btn_middle mr_20 btnInit" onclick="fnDaySchInit();">초기화</button>
                 <button type="button" class="comm_btn mr_20" onclick="fnDaySchModify();">저장</button>
                 <button type="button" class="comm_btn mr_20" onclick="fnDaySchDelete();">삭제</button>
                 <button type="button" class="comm_btn" onclick="fnDaySchDetailMode();">취소</button>
@@ -1104,7 +1111,7 @@
         </div>
         <div class="c_btnbox center mt_20" id="btnDaySchAdd">
             <div style="display: inline-block;">
-                <button type="button" class="comm_btn mr_20" onclick="fnDaySchInit();">초기화</button>
+                <button type="button" class="btn_gray2 btn_middle mr_20 btnInit" onclick="fnDaySchInit();">초기화</button>
                 <button type="button" class="comm_btn mr_20" onclick="fnDaySchSave();">저장</button>
                 <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">닫기</button>
             </div>
