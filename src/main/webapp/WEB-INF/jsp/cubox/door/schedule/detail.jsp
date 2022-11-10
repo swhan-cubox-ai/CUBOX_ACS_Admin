@@ -508,44 +508,11 @@
     // 요일별 스케쥴 전체 삭제
     function fnDaySchDelete() {
         if (confirm("전체 스케쥴을 삭제하시겠습니까?")) {
-            // TODO: 삭제 ajax
-
+            fnDeleteScheduleByDayAjax();
         } else {
             return;
         }
     }
-
-    // 요일별 스케쥴 등록
-    // function fnDaySchSave() {
-    //     console.log("fnDaySchSave");
-    //     let data = fnDaySchValidation();
-    //
-    //     if (!data) {
-    //         alert("등록할 스케쥴이 없습니다.");
-    //     } else {
-    //         if (confirm("저장하시겠습니까?")) {
-    //             fnAddScheduleByDayAjax(data);
-    //         }
-    //         return;
-    //     }
-    // }
-
-    // 요일별 스케쥴 수정 저장
-    // function fnDaySchModify() {
-    //     console.log("fnDaySchModify");
-    //     let data = fnDaySchValidation();
-    //
-    //     console.log(data);
-    //     console.log(data.length);
-    //
-    //     if (!data) {
-    //         // alert("등록할 스케쥴이 없습니다.");
-    //
-    //     } else {
-    //         fnModifyScheduleByDayAjax(data);
-    //     }
-    //
-    // }
 
     // 요일별 스케쥴 데이터 validation
     function fnDaySchValidation(type) {
@@ -894,6 +861,31 @@
     /////////////////  요일별 스케쥴 수정 ajax - end  /////////////////////
 
 
+    /////////////////  요일별 스케쥴 전체 삭제 ajax - start  /////////////////////
+
+    function fnDeleteScheduleByDayAjax() {
+        let url = "<c:url value='/door/schedule/day/delete/${doorScheduleDetail.id}' />";
+        console.log(url);
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                if (result.resultCode === "Y") {
+                    alert("삭제되었습니다.");
+                    fnDaySchDetailMode();
+                } else {
+                    alert("삭제에 실패하였습니다.");
+                }
+            }
+        });
+    }
+
+    /////////////////  요일별 스케쥴 전체 삭제 ajax - end  /////////////////////
+
+
 </script>
 
 <form id="detailForm" name="detailForm" method="post" enctype="multipart/form-data">
@@ -928,7 +920,7 @@
                 <td style="display: flex;">
 <%--                    <textarea id="doorGroup" name="detail" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;--%>
 <%--                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>${doorGroupList.size()}/${doorGroupList}</textarea>--%>
-                    <textarea id="doorGroup" name="detail" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
+                    <textarea id="doorGroup" name="doorGroup" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
                               font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
                     <div class="ml_10" style="position:relative;">
                         <button id="btnEdit" type="button" class="btn_middle color_basic" onclick="openPopup('doorGroupPickPopup')" style="position:absolute; bottom:0; display:none;">선택</button>
@@ -947,7 +939,7 @@
     <button class="btn_middle ml_5 color_basic" id="btnAddByDay" onclick="openPopup('addByDayPopup');">요일 별 스케쥴 등록</button>
 </div>
 <div class="right_btn mt_20" id="btnboxEdit" style="display:none;">
-    <button class="btn_middle color_basic" onclick="fnSave();">확인</button>
+    <button class="btn_middle color_basic" onclick="fnSave();">저장</button>
     <button class="btn_middle ml_5 color_basic" onclick="fnCancel();">취소</button>
 </div>
 
