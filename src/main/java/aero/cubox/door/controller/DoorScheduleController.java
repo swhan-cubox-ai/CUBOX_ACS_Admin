@@ -506,10 +506,9 @@ public class DoorScheduleController {
             return modelAndView;
         }
 
-        String doorSchId = commandMap.get("id").toString();
         HashMap<String, Object> paramMap = new HashMap<>();
 
-        paramMap.put("doorSchId", doorSchId);
+        paramMap.put("doorSchId", id);
 
         doorScheduleService.deleteScheduleByDay(paramMap);
 
