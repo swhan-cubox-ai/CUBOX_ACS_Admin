@@ -509,6 +509,7 @@
     function fnDaySchDelete() {
         if (confirm("전체 스케쥴을 삭제하시겠습니까?")) {
             // TODO: 삭제 ajax
+
         } else {
             return;
         }
@@ -693,14 +694,7 @@
         if (popupNm === "doorGroupPickPopup") {
             fnGetDoorGroupListAjax();
         } else if (popupNm === "addByDayPopup") {
-            if ($("#daySchCnt").val() != 0) {
-                // 연결된 스케쥴 있음
-                //
-            } else {
-                // 연결된 스케쥴 없음, 등록 가능
-            }
             fnGetScheduleByDayDetail();
-            // activeTimepicker();
         }
     }
 
@@ -757,7 +751,6 @@
 
     /////////////////  출입문 스케쥴 수정 ajax - end  /////////////////////
 
-
     /////////////////  출입문 스케쥴 삭제 ajax - start  /////////////////////
 
     function fnDeleteScheduleAjax() {
@@ -779,7 +772,6 @@
     /////////////////  출입문 스케쥴 삭제 ajax - end  /////////////////////
 
 
-
     /////////////////  요일별 스케쥴 뿌려주기 ajax - start  /////////////////////
 
     function fnGetScheduleByDayDetail() {
@@ -793,9 +785,12 @@
             success : function(result) {
                 if (result.resultCode === "Y") {
                     console.log(result.scheduleByDayDetailList);
-                    let cnt = 0; // 데이터가 들어있는 요일 별 스케쥴 갯수
 
-                    // 스케쥴 뿌려주기
+                    // 1. 초기화
+                    fnDaySchInit();
+
+                    // 2. 스케쥴 뿌려주기
+                    let cnt = 0; // 데이터가 들어있는 요일 별 스케쥴 갯수
                     $.each(result.scheduleByDayDetailList, function (i, sch) {
 
                         let beg_tm = sch.beg_tm.split(":");
@@ -960,7 +955,7 @@
 <div id="addByDayPopup" class="example_content" style="display: none;">
     <c:set var="days" value="${fn:split('월,화,수,목,금,토,일',',')}"/>
     <c:set var="days_eng" value="${fn:split('mon,tue,wed,thu,fri,sat,sun',',')}"/>
-    <div class="popup_box box_w3" style="margin-top:0px; padding:20px;">
+    <div id="popupContent" class="popup_box box_w3" style="margin-top:0px; padding:20px;">
         <%--  검색 박스 --%>
         <div class="search_box">
             <div class="search_in">
