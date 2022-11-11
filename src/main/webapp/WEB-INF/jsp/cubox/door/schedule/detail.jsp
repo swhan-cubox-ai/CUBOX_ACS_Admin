@@ -886,7 +886,13 @@
                 console.log(result);
                 if (result.resultCode === "Y") {
                     alert("삭제되었습니다.");
-                    fnDaySchDetailMode();
+                    fnDaySchInit();
+                    $("#btnAddByDay").html("요일 별 스케쥴 등록");
+                    $("#btnDaySchAdd").css("display", "block");
+                    $("#btnDaySchDetail").css("display", "none");
+                    $("#btnDaySchEdit").css("display", "none");
+                    $(".sch1_timepick").prop("disabled", false);
+                    $("#daySchCnt").val(0);
                 } else {
                     alert("삭제에 실패하였습니다.");
                 }
@@ -1050,7 +1056,7 @@
 
         <div class="c_btnbox center mt_20" id="btnDaySchDetail">
             <div style="display: inline-block;">
-                <button type="button" class="comm_btn mr_20" onclick="fnDaySchEditMode();">저장</button>
+                <button type="button" class="comm_btn mr_20" onclick="fnDaySchEditMode();">수정</button>
                 <button type="button" class="comm_btn" onclick="closePopup('addByDayPopup');">닫기</button>
             </div>
         </div>
