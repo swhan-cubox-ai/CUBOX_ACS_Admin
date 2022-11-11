@@ -90,7 +90,13 @@
         //     alert("출입문을 선택해주세요.");
         //     return;
         // }
-        fnUpdateAlarmGroupAjax();
+
+        if (confirm("출입문 알람그룹을 저장하시겠습니까?")) {
+            fnUpdateAlarmGroupAjax();
+        } else {
+            return;
+        }
+
     }
 
 
@@ -110,11 +116,15 @@
 
     // 수정 버튼
     function fnEditMode() {
-        $(".title_tx").html("출입문 알람 그룹 - 수정");
-        $("#btnEdit").css("display", "inline-block");
-        $("#btnboxDetail").css("display", "none");
-        $("#btnboxEdit").css("display", "block");
-        $("[name=detail]").attr("disabled", false);
+        if (confirm("해당 스케쥴을 수정하시겠습니까?")) {
+            $(".title_tx").html("출입문 알람 그룹 - 수정");
+            $("#btnEdit").css("display", "inline-block");
+            $("#btnboxDetail").css("display", "none");
+            $("#btnboxEdit").css("display", "block");
+            $("[name=detail]").attr("disabled", false);
+        } else {
+            return;
+        }
     }
 
     // 삭제 버튼
@@ -229,7 +239,7 @@
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
-                    <input type="text" id="alNm" name="detail" maxlength="50" value="${doorGroupDetail.nm}" class="input_com w_600px" disabled>
+                    <input type="text" id="alNm" name="detail" maxlength="35" value="${doorGroupDetail.nm}" class="input_com w_600px" disabled>
                 </td>
             </tr>
             <tr>
@@ -237,7 +247,8 @@
                 <td>
                     <select id="alType" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
                         <option value="">선택</option>
-                        <option value="Y" selected>Y</option>
+                        <option value="Y" <c:if test="${doorGroupDetail.env_yn eq 'Y'}" >selected </c:if>>기본시간</option>
+                        <option value="N" <c:if test="${doorGroupDetail.env_yn eq 'N'}" >selected </c:if>>지정시간</option>
 <%--                        <c:choose>--%>
 <%--                            <c:when test="${doorGroupDetail.env_yn eq 'Y'}">--%>
 <%--                                <option value="Y" selected>Y</option>--%>
@@ -253,8 +264,8 @@
             <tr>
                 <th>시간</th>
                 <td>
-                    <input type="number" id="alTime" name="detail" maxlength="10" min="1" value="${doorGroupDetail.time}" class="input_com w_600px"
-                           oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" disabled>&ensp;초
+                    <input type="number" id="alTime" name="detail" min="1" max="9999" maxlength="4" value="${doorGroupDetail.time}" class="input_com w_600px"
+                           oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');this.value = this.value.slice(0,this.maxLength);" disabled>&ensp;초
                 </td>
             </tr>
             <tr>
@@ -262,8 +273,8 @@
                 <td>
                     <select id="alUseYn" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
                         <option value="">선택</option>
-                        <option value="Y" <c:if test="${doorGroupDetail.delete_yn eq 'Y'}" >selected </c:if>>Y</option>
-                        <option value="N" <c:if test="${doorGroupDetail.delete_yn eq 'N'}" >selected </c:if>>N</option>
+                        <option value="Y" <c:if test="${doorGroupDetail.delete_yn eq 'Y'}" >selected </c:if>>사용</option>
+                        <option value="N" <c:if test="${doorGroupDetail.delete_yn eq 'N'}" >selected </c:if>>미사용</option>
                     </select>
                 </td>
             </tr>

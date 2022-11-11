@@ -27,6 +27,10 @@
         position: sticky;
         top: 0;
     }
+    .color_disabled {
+        background-color: #eee !important;
+        opacity: 1;
+    }
 
 </style>
 
@@ -66,16 +70,21 @@
         $("[name=detail]").attr("disabled", true);
 
         $("#detailForm").load(location.href + ' #detailForm');
-        <%--window.location.href = '/door/group/detail/${doorGroupDetail.id}';--%>
+        $("[name=detail]").attr("disabled", true).addClass("color_disabled");
     }
 
     // 수정 버튼
     function fnEditMode() {
-        $(".title_tx").html("출입문 그룹 관리 - 수정");
-        $("#btnEdit").css("display", "block");
-        $("#btnboxDetail").css("display", "none");
-        $("#btnboxEdit").css("display", "block");
-        $("[name=detail]").attr("disabled", false);
+        if (confirm("해당 출입문 그룹을 수정하시겠습니까?")) {
+            $(".title_tx").html("출입문 그룹 관리 - 수정");
+            $("#btnEdit").css("display", "block");
+            $("#btnboxDetail").css("display", "none");
+            $("#btnboxEdit").css("display", "block");
+            $("[name=detail]").attr("disabled", false);
+            $("[name=detail]").attr("disabled", false).removeClass("color_disabled");
+        } else {
+            return;
+        }
     }
 
     // 삭제 버튼
@@ -186,7 +195,7 @@
             <tr>
                 <th>출입문 그룹 명</th>
                 <td>
-                    <input type="text" id="gpNm" name="detail" maxlength="50" value="${doorGroupDetail.nm}" class="input_com w_600px" disabled>
+                    <input type="text" id="gpNm" name="detail" maxlength="35" value="${doorGroupDetail.nm}" class="input_com w_600px color_disabled" disabled>
                 </td>
             </tr>
 <%--            <tr>--%>
@@ -198,7 +207,7 @@
             <tr>
                 <th>출입문 스케쥴</th>
                 <td>
-                    <select id="gpSchedule" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
+                    <select id="gpSchedule" name="detail" class="form-control input_com w_600px color_disabled" style="padding-left:10px;" disabled>
                         <option value="" selected>선택</option>
                         <c:forEach items="${scheduleList}" var="schedule" varStatus="status">
 <%--                            <option value='<c:out value="${schedule.id}"/>'<c:if test="${doorGroupDetail.door_sch_id} eq ${schedule.id}"> selected</c:if>>--%>
@@ -213,7 +222,7 @@
                 <th>출입문</th>
                 <td style="display: flex;">
                     <%--  TODO: testarea에 공백 해결  --%>
-                    <textarea id="gpDoorNms" name="gpDoorNms" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
+                    <textarea id="gpDoorNms" name="gpDoorNms" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;
                               font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:set var="nm" value="${fn:split(doorGroupDetail.door_nms,'/')}" /><c:forEach items="${nm}" var="dName" varStatus="varStatus">
 ${dName}</c:forEach></textarea>
                     <div class="ml_10" style="position: relative;">
