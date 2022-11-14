@@ -319,6 +319,8 @@ public class DoorGroupController {
         Cell cell = null;
         int rowNum = 0;
 
+        //// Header ////
+        final String[] colNames = {"번호", "출입문 그룹명", "출입문 스케쥴명", "출입문 수", "등록일자", "수정일자"};
         // Header size
         final int[] colWidths = {1500, 6000, 5000, 2500, 3500, 3500};
         // Header font
@@ -339,30 +341,13 @@ public class DoorGroupController {
 
         row = sheet.createRow(rowNum++);
         row.setHeight((short)500);
-        cell = row.createCell(0);
-        cell.setCellValue("번호");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(0, colWidths[0]);
-        cell = row.createCell(1);
-        cell.setCellValue("출입문 그룹명");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(1, colWidths[1]);
-        cell = row.createCell(2);
-        cell.setCellValue("출입문 스케쥴명");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(2, colWidths[2]);
-        cell = row.createCell(3);
-        cell.setCellValue("출입문 수");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(3, colWidths[3]);
-        cell = row.createCell(4);
-        cell.setCellValue("등록일자");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(4, colWidths[4]);
-        cell = row.createCell(5);
-        cell.setCellValue("수정일자");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(5, colWidths[5]);
+
+        for (int i = 0; i < colNames.length; i++) {
+            cell = row.createCell(i);
+            cell.setCellValue(colNames[i]);
+            cell.setCellStyle(styleHeader);
+            sheet.setColumnWidth(i, colWidths[i]);
+        }
 
         // Body
         for (int i = 0; i < doorGroupList.size(); i++) {

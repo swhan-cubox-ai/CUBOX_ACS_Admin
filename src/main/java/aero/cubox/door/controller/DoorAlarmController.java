@@ -288,6 +288,7 @@ public class DoorAlarmController {
         int rowNum = 0;
 
         //// Header ////
+        final String[] colNames = {"번호", "출입문 알람 그룹명", "유형", "시간", "출입문 수", "사용", "등록일자", "수정일자"};
         // Header size
         final int[] colWidths = {1500, 5000, 2000, 2000, 3000, 2000, 3500, 3500};
         // Header font
@@ -308,38 +309,13 @@ public class DoorAlarmController {
 
         row = sheet.createRow(rowNum++);
         row.setHeight((short)500);  // 행 높이
-        cell = row.createCell(0);
-        cell.setCellValue("번호");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(0, colWidths[0]);
-        cell = row.createCell(1);
-        cell.setCellValue("출입문 알람 그룹명");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(1, colWidths[1]);
-        cell = row.createCell(2);
-        cell.setCellValue("유형");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(2, colWidths[2]);
-        cell = row.createCell(3);
-        cell.setCellValue("시간");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(3, colWidths[3]);
-        cell = row.createCell(4);
-        cell.setCellValue("출입문 수");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(4, colWidths[4]);
-        cell = row.createCell(5);
-        cell.setCellValue("사용");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(5, colWidths[5]);
-        cell = row.createCell(6);
-        cell.setCellValue("등록일자");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(6, colWidths[6]);
-        cell = row.createCell(7);
-        cell.setCellValue("수정일자");
-        cell.setCellStyle(styleHeader);
-        sheet.setColumnWidth(7, colWidths[7]);
+
+        for (int i = 0; i < colNames.length; i++) {
+            cell = row.createCell(i);
+            cell.setCellValue(colNames[i]);
+            cell.setCellStyle(styleHeader);
+            sheet.setColumnWidth(i, colWidths[i]);
+        }
 
         //// Body ////
         for (int i = 0; i < doorAlarmGroupList.size(); i++) {
