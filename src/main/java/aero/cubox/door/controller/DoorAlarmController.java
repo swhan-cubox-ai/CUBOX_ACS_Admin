@@ -9,6 +9,10 @@ import aero.cubox.door.service.DoorService;
 import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -19,6 +23,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -263,6 +271,111 @@ public class DoorAlarmController {
         modelAndView.addObject("doorAlarmGroupNameVerificationCnt", doorAlarmGroupNameVerificationCnt);
 
         return modelAndView;
+    }
+
+
+    @RequestMapping(value="/excel/download.do", method = RequestMethod.GET)
+    public void excelDownloadAlarmGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
+
+        HashMap<String, Object> paramMap = new HashMap();
+        List<HashMap> doorAlarmGroupList = doorAlarmService.getDoorAlarmGrpList(paramMap);
+
+        ///// Create Excel /////
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet();
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+
+        //// Header ////
+        // Header size
+        final int[] colWidths = {1500, 5000, 2000, 2000, 3000, 2000, 3500, 3500};
+        // Header font
+        Font fontHeader = wb.createFont();
+        fontHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
+
+        // Header style
+        CellStyle styleHeader = wb.createCellStyle();
+        styleHeader.setAlignment(CellStyle.ALIGN_CENTER);
+        styleHeader.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        styleHeader.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+        styleHeader.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        styleHeader.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+        styleHeader.setBorderTop(HSSFCellStyle.BORDER_THIN);
+        styleHeader.setBorderRight(HSSFCellStyle.BORDER_THIN);
+        styleHeader.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        styleHeader.setFont(fontHeader);
+
+        row = sheet.createRow(rowNum++);
+        row.setHeight((short)500);  // 행 높이
+        cell = row.createCell(0);
+        cell.setCellValue("번호");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(0, colWidths[0]);
+        cell = row.createCell(1);
+        cell.setCellValue("출입문 알람 그룹명");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(1, colWidths[1]);
+        cell = row.createCell(2);
+        cell.setCellValue("유형");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(2, colWidths[2]);
+        cell = row.createCell(3);
+        cell.setCellValue("시간");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(3, colWidths[3]);
+        cell = row.createCell(4);
+        cell.setCellValue("출입문 수");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(4, colWidths[4]);
+        cell = row.createCell(5);
+        cell.setCellValue("사용");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(5, colWidths[5]);
+        cell = row.createCell(6);
+        cell.setCellValue("등록일자");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(6, colWidths[6]);
+        cell = row.createCell(7);
+        cell.setCellValue("수정일자");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(7, colWidths[7]);
+
+        //// Body ////
+        for (int i = 0; i < doorAlarmGroupList.size(); i++) {
+            row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(i + 1);
+            row.createCell(1).setCellValue(doorAlarmGroupList.get(i).get("nm").toString());
+            if (doorAlarmGroupList.get(i).get("env_yn").toString().equals("Y")) {
+                row.createCell(2).setCellValue("사용");
+            } else {
+                row.createCell(2).setCellValue("미사용");
+            }
+            row.createCell(3).setCellValue(Integer.parseInt(doorAlarmGroupList.get(i).get("time").toString()));
+            row.createCell(4).setCellValue(Integer.parseInt(doorAlarmGroupList.get(i).get("door_cnt").toString()));
+            if (doorAlarmGroupList.get(i).get("delete_yn").toString().equals("Y")) {
+                row.createCell(5).setCellValue("사용");
+            } else {
+                row.createCell(5).setCellValue("미사용");
+            }
+            if (doorAlarmGroupList.get(i).containsKey("created_at")) {
+                row.createCell(6).setCellValue(doorAlarmGroupList.get(i).get("created_at").toString());
+            }
+            if (doorAlarmGroupList.get(i).containsKey("updated_at")) {
+                row.createCell(7).setCellValue(doorAlarmGroupList.get(i).get("updated_at").toString());
+            }
+        }
+
+        // Date
+        SimpleDateFormat fmt = new SimpleDateFormat("yyMMdd-HH_mm_ss");
+        Date date = new Date();
+
+        // File name
+        String fileNm = "출입문알람그룹목록_" + fmt.format(date) + ".xlsx";
+        response.setContentType("ms-vnd/excel");
+        response.setHeader("Content-Disposition", "attatchment;filename=" + URLEncoder.encode(fileNm, "UTF-8"));
+        wb.write(response.getOutputStream());
+
     }
 
 
