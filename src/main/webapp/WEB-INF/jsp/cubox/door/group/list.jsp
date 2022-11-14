@@ -21,6 +21,11 @@
     function fnAddDoorGroup() {
         window.location.href = '/door/group/add.do';
     }
+
+    // 엑셀 다운로드
+    function fnExcelDownLoad() {
+        window.location.href = '/door/group/excel/download.do';
+    }
 </script>
 
 <form id="frmSearch" name="frmSearch" method="post">
@@ -48,7 +53,7 @@
         </div>
         <!--버튼 -->
         <div class="r_btnbox mb_10">
-            <button type="button" class="btn_excel" id="excelDown">엑셀다운로드</button>
+            <button type="button" class="btn_excel" id="excelDown" onclick="fnExcelDownLoad();">엑셀다운로드</button>
             <button type="button" class="btn_middle color_basic" id="addDoorGroup" onclick="fnAddDoorGroup()">신규등록
             </button>
         </div>

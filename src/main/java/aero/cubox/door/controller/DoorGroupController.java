@@ -9,6 +9,11 @@ import aero.cubox.door.service.DoorService;
 import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -19,6 +24,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -298,5 +307,68 @@ public class DoorGroupController {
         return modelAndView;
     }
 
+    @RequestMapping(value="/excel/download.do", method = RequestMethod.GET)
+    public void excelDownloadDoorGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
+
+        String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+
+        HashMap<String, Object> paramMap = new HashMap();
+        paramMap.put("keyword", keyword);
+
+        List<HashMap> doorGroupList = doorGroupService.getDoorGroupList(paramMap);
+
+        System.out.println("excel download");
+        System.out.println(doorGroupList);
+
+        ///// Create Excel /////
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet("sample sheet");
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+
+        // Header
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(0);
+        cell.setCellValue("번호");
+        cell = row.createCell(1);
+        cell.setCellValue("출입문 그룹명");
+        cell = row.createCell(2);
+        cell.setCellValue("출입문 스케쥴명");
+        cell = row.createCell(3);
+        cell.setCellValue("출입문 수");
+        cell = row.createCell(4);
+        cell.setCellValue("등록일자");
+        cell = row.createCell(5);
+        cell.setCellValue("수정일자");
+
+        // Body
+        for (int i = 0; i < doorGroupList.size(); i++) {
+            System.out.println(doorGroupList.get(i).toString());
+            row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(i + 1);
+            row.createCell(1).setCellValue(doorGroupList.get(i).get("nm").toString());
+            if (doorGroupList.get(i).containsKey("door_sch_nm")) {
+                row.createCell(2).setCellValue(doorGroupList.get(i).get("door_sch_nm").toString());
+            }
+            row.createCell(3).setCellValue(Integer.parseInt(doorGroupList.get(i).get("door_cnt").toString()));
+            row.createCell(4).setCellValue(doorGroupList.get(i).get("created_at").toString());
+            row.createCell(5).setCellValue(doorGroupList.get(i).get("updated_at").toString());
+
+        }
+
+        // Date
+        SimpleDateFormat fmt = new SimpleDateFormat("yyMMdd-HH_mm_ss");
+        Date date = new Date();
+        System.out.println(fmt.format(date));
+
+        // File name
+        String fileNm = "출입문그룹관리목록_" + fmt.format(date) + ".xlsx";
+        System.out.println(URLEncoder.encode(fileNm, "UTF-8"));
+        response.setContentType("ms-vnd/excel");
+        response.setHeader("Content-Disposition", "attatchment;filename=" + URLEncoder.encode(fileNm, "UTF-8"));
+        wb.write(response.getOutputStream());
+
+    }
 
 }
