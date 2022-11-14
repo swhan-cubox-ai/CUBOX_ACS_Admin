@@ -94,10 +94,10 @@
                 <tr>
                     <td>${(pagination.totRecord - (pagination.totRecord-status.index)+1)  + ( (pagination.curPage - 1)  *  pagination.recPerPage ) }</td>
                     <td><a href='/door/alarm/detail/<c:out value="${sList.id}"/>'><c:out value="${sList.nm}"/></a></td>
-                    <td><c:out value="${sList.env_yn}"/></td>
+                    <td><c:choose><c:when test="${sList.env_yn eq 'Y'}">사용</c:when><c:otherwise>미사용</c:otherwise></c:choose></td>
                     <td><c:out value="${sList.time}"/></td>
                     <td><c:out value="${sList.door_cnt}"/></td>
-                    <td><c:out value="${sList.delete_yn}"/></td>
+                    <td><c:choose><c:when test="${sList.delete_yn eq 'Y'}">사용</c:when><c:otherwise>미사용</c:otherwise></c:choose></td>
                     <td><c:out value="${sList.created_at}"/></td>
                     <td><c:out value="${sList.updated_at}"/></td>
                 </tr>

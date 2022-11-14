@@ -9,10 +9,9 @@ import aero.cubox.door.service.DoorService;
 import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -281,9 +280,6 @@ public class DoorAlarmController {
         HashMap<String, Object> paramMap = new HashMap();
         List<HashMap> doorAlarmGroupList = doorAlarmService.getDoorAlarmGrpList(paramMap);
 
-        System.out.println("excel download alarmGroup");
-        System.out.println(doorAlarmGroupList);
-
         ///// Create Excel /////
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet();
@@ -291,28 +287,62 @@ public class DoorAlarmController {
         Cell cell = null;
         int rowNum = 0;
 
-        // Header
+        //// Header ////
+        // Header size
+        final int[] colWidths = {1500, 5000, 2000, 2000, 3000, 2000, 3500, 3500};
+        // Header font
+        Font fontHeader = wb.createFont();
+        fontHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
+
+        // Header style
+        CellStyle styleHeader = wb.createCellStyle();
+        styleHeader.setAlignment(CellStyle.ALIGN_CENTER);
+        styleHeader.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        styleHeader.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+        styleHeader.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        styleHeader.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+        styleHeader.setBorderTop(HSSFCellStyle.BORDER_THIN);
+        styleHeader.setBorderRight(HSSFCellStyle.BORDER_THIN);
+        styleHeader.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        styleHeader.setFont(fontHeader);
+
         row = sheet.createRow(rowNum++);
+        row.setHeight((short)500);  // 행 높이
         cell = row.createCell(0);
         cell.setCellValue("번호");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(0, colWidths[0]);
         cell = row.createCell(1);
         cell.setCellValue("출입문 알람 그룹명");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(1, colWidths[1]);
         cell = row.createCell(2);
         cell.setCellValue("유형");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(2, colWidths[2]);
         cell = row.createCell(3);
         cell.setCellValue("시간");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(3, colWidths[3]);
         cell = row.createCell(4);
         cell.setCellValue("출입문 수");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(4, colWidths[4]);
         cell = row.createCell(5);
         cell.setCellValue("사용");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(5, colWidths[5]);
         cell = row.createCell(6);
         cell.setCellValue("등록일자");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(6, colWidths[6]);
         cell = row.createCell(7);
         cell.setCellValue("수정일자");
+        cell.setCellStyle(styleHeader);
+        sheet.setColumnWidth(7, colWidths[7]);
 
-        // Body
+        //// Body ////
         for (int i = 0; i < doorAlarmGroupList.size(); i++) {
-            System.out.println(doorAlarmGroupList.get(i).toString());
             row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(i + 1);
             row.createCell(1).setCellValue(doorAlarmGroupList.get(i).get("nm").toString());
@@ -339,11 +369,9 @@ public class DoorAlarmController {
         // Date
         SimpleDateFormat fmt = new SimpleDateFormat("yyMMdd-HH_mm_ss");
         Date date = new Date();
-        System.out.println(fmt.format(date));
 
         // File name
         String fileNm = "출입문알람그룹목록_" + fmt.format(date) + ".xlsx";
-        System.out.println(URLEncoder.encode(fileNm, "UTF-8"));
         response.setContentType("ms-vnd/excel");
         response.setHeader("Content-Disposition", "attatchment;filename=" + URLEncoder.encode(fileNm, "UTF-8"));
         wb.write(response.getOutputStream());
