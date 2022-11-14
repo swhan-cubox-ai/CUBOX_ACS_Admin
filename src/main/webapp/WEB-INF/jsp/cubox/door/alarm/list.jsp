@@ -24,7 +24,7 @@
 
     // 엑셀 다운로드
     function fnExcelDownLoad() {
-
+        window.location.href = '/door/alarm/excel/download.do';
     }
 </script>
 
@@ -53,7 +53,7 @@
         </div>
         <!--버튼 -->
         <div class="r_btnbox mb_10">
-            <button type="button" class="btn_excel" id="excelDown" onclick="fnExcelDownload();">엑셀다운로드</button>
+            <button type="button" class="btn_excel" id="excelDown" onclick="fnExcelDownLoad();">엑셀다운로드</button>
             <button type="button" class="btn_middle color_basic" id="addDoorAlarm" onclick="fnAddDoorAlarm()">신규등록
             </button>
         </div>

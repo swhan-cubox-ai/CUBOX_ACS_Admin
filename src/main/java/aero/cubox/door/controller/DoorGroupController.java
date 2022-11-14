@@ -310,11 +310,7 @@ public class DoorGroupController {
     @RequestMapping(value="/excel/download.do", method = RequestMethod.GET)
     public void excelDownloadDoorGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
 
-        String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
-
         HashMap<String, Object> paramMap = new HashMap();
-        paramMap.put("keyword", keyword);
-
         List<HashMap> doorGroupList = doorGroupService.getDoorGroupList(paramMap);
 
         System.out.println("excel download");
@@ -322,7 +318,7 @@ public class DoorGroupController {
 
         ///// Create Excel /////
         Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("sample sheet");
+        Sheet sheet = wb.createSheet();
         Row row = null;
         Cell cell = null;
         int rowNum = 0;

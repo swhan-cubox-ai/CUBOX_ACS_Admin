@@ -24,7 +24,7 @@
 
     // 엑셀 다운로드
     function fnExcelDownLoad() {
-
+        window.location.href = '/door/schedule/excel/download.do';
     }
 </script>
 

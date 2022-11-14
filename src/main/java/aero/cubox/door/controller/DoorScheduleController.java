@@ -7,6 +7,11 @@ import aero.cubox.door.service.DoorScheduleService;
 import aero.cubox.door.service.DoorService;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -20,9 +25,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -608,5 +617,63 @@ public class DoorScheduleController {
             builder.append(buffer);
         }
         return builder.toString();
+    }
+
+    @RequestMapping(value="/excel/download.do", method = RequestMethod.GET)
+    public void excelDownloadSchedule(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
+
+        HashMap<String, Object> paramMap = new HashMap();
+        List<HashMap> doorScheduleList = doorScheduleService.getDoorScheduleList(paramMap);
+
+        System.out.println("excel download schedule");
+        System.out.println(doorScheduleList);
+
+        ///// Create Excel /////
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet();
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+
+        // Header
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(0);
+        cell.setCellValue("번호");
+        cell = row.createCell(1);
+        cell.setCellValue("출입문 스케쥴명");
+        cell = row.createCell(2);
+        cell.setCellValue("사용");
+        cell = row.createCell(3);
+        cell.setCellValue("등록일자");
+        cell = row.createCell(4);
+        cell.setCellValue("수정일자");
+
+        // Body
+        for (int i = 0; i < doorScheduleList.size(); i++) {
+            System.out.println(doorScheduleList.get(i).toString());
+            row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(i + 1);
+            row.createCell(1).setCellValue(doorScheduleList.get(i).get("door_sch_nm").toString());
+            row.createCell(2).setCellValue(doorScheduleList.get(i).get("use_yn").toString());
+            if (doorScheduleList.get(i).containsKey("created_at")) {
+                row.createCell(3).setCellValue(doorScheduleList.get(i).get("created_at").toString());
+            }
+            if (doorScheduleList.get(i).containsKey("updated_at")) {
+                row.createCell(4).setCellValue(doorScheduleList.get(i).get("updated_at").toString());
+            }
+        }
+
+        // Date
+        SimpleDateFormat fmt = new SimpleDateFormat("yyMMdd-HH_mm_ss");
+        Date date = new Date();
+        System.out.println(fmt.format(date));
+
+        // File name
+        String fileNm = "출입문스케쥴목록_" + fmt.format(date) + ".xlsx";
+        System.out.println(URLEncoder.encode(fileNm, "UTF-8"));
+        response.setContentType("ms-vnd/excel");
+        response.setHeader("Content-Disposition", "attatchment;filename=" + URLEncoder.encode(fileNm, "UTF-8"));
+        wb.write(response.getOutputStream());
+
     }
 }

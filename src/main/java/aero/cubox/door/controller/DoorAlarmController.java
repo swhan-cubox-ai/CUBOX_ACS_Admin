@@ -9,6 +9,11 @@ import aero.cubox.door.service.DoorService;
 import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -19,6 +24,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -263,6 +272,82 @@ public class DoorAlarmController {
         modelAndView.addObject("doorAlarmGroupNameVerificationCnt", doorAlarmGroupNameVerificationCnt);
 
         return modelAndView;
+    }
+
+
+    @RequestMapping(value="/excel/download.do", method = RequestMethod.GET)
+    public void excelDownloadAlarmGroup(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
+
+        HashMap<String, Object> paramMap = new HashMap();
+        List<HashMap> doorAlarmGroupList = doorAlarmService.getDoorAlarmGrpList(paramMap);
+
+        System.out.println("excel download alarmGroup");
+        System.out.println(doorAlarmGroupList);
+
+        ///// Create Excel /////
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet();
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+
+        // Header
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(0);
+        cell.setCellValue("번호");
+        cell = row.createCell(1);
+        cell.setCellValue("출입문 알람 그룹명");
+        cell = row.createCell(2);
+        cell.setCellValue("유형");
+        cell = row.createCell(3);
+        cell.setCellValue("시간");
+        cell = row.createCell(4);
+        cell.setCellValue("출입문 수");
+        cell = row.createCell(5);
+        cell.setCellValue("사용");
+        cell = row.createCell(6);
+        cell.setCellValue("등록일자");
+        cell = row.createCell(7);
+        cell.setCellValue("수정일자");
+
+        // Body
+        for (int i = 0; i < doorAlarmGroupList.size(); i++) {
+            System.out.println(doorAlarmGroupList.get(i).toString());
+            row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(i + 1);
+            row.createCell(1).setCellValue(doorAlarmGroupList.get(i).get("nm").toString());
+            if (doorAlarmGroupList.get(i).get("env_yn").toString().equals("Y")) {
+                row.createCell(2).setCellValue("사용");
+            } else {
+                row.createCell(2).setCellValue("미사용");
+            }
+            row.createCell(3).setCellValue(Integer.parseInt(doorAlarmGroupList.get(i).get("time").toString()));
+            row.createCell(4).setCellValue(Integer.parseInt(doorAlarmGroupList.get(i).get("door_cnt").toString()));
+            if (doorAlarmGroupList.get(i).get("delete_yn").toString().equals("Y")) {
+                row.createCell(5).setCellValue("사용");
+            } else {
+                row.createCell(5).setCellValue("미사용");
+            }
+            if (doorAlarmGroupList.get(i).containsKey("created_at")) {
+                row.createCell(6).setCellValue(doorAlarmGroupList.get(i).get("created_at").toString());
+            }
+            if (doorAlarmGroupList.get(i).containsKey("updated_at")) {
+                row.createCell(7).setCellValue(doorAlarmGroupList.get(i).get("updated_at").toString());
+            }
+        }
+
+        // Date
+        SimpleDateFormat fmt = new SimpleDateFormat("yyMMdd-HH_mm_ss");
+        Date date = new Date();
+        System.out.println(fmt.format(date));
+
+        // File name
+        String fileNm = "출입문알람그룹목록_" + fmt.format(date) + ".xlsx";
+        System.out.println(URLEncoder.encode(fileNm, "UTF-8"));
+        response.setContentType("ms-vnd/excel");
+        response.setHeader("Content-Disposition", "attatchment;filename=" + URLEncoder.encode(fileNm, "UTF-8"));
+        wb.write(response.getOutputStream());
+
     }
 
 
