@@ -950,7 +950,7 @@ public class DoorController {
                         LOGGER.debug("엑셀정보 map : {}", param);
 
                         String newDoorId = "";
-                        newDoorId = doorService.addDoor(param);
+//                        newDoorId = doorService.addDoor(param);
                         System.out.println("=====newDoorId = " + newDoorId);
                         if (newDoorId != "") cnt++;
 
