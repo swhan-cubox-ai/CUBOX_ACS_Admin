@@ -10,6 +10,7 @@ import aero.cubox.door.service.DoorService;
 import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
+import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,10 +19,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -882,6 +888,147 @@ public class DoorController {
         int doorNameVerificationCnt = doorService.getDoorNameVerification(param);
 
         modelAndView.addObject("doorNameVerificationCnt", doorNameVerificationCnt);
+
+        return modelAndView;
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "/excel/upload.do", method = RequestMethod.POST)
+    public ModelAndView excelUpload(MultipartHttpServletRequest request) throws Exception {
+
+        System.out.println("excel file upload controller");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        MultipartFile file = null;
+
+        Iterator<String> iterator = request.getFileNames();
+        if (iterator.hasNext()) {
+            file = request.getFile(iterator.next());
+        }
+        System.out.println(file);
+
+        try {
+            Workbook wb = WorkbookFactory.create(file.getInputStream());
+            Sheet sheet = wb.getSheetAt(0);
+
+            int cnt = 0;
+
+            System.out.println(sheet.getLastRowNum());
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+
+                // 행이 없으면 패스
+                if (row == null) {
+                    continue;
+                }
+
+                if (row.getCell(0) != null) {
+                    String idx = getValue(row.getCell(0)).replaceAll("\n", "<br>");         // 순번
+                    String doorNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");      // 출입문명
+                    String bId = getValue(row.getCell(2)).replaceAll("\n", "<br>");         // 빌딩id
+                    String aId = getValue(row.getCell(3)).replaceAll("\n", "<br>");         // 구역id
+                    String fId = getValue(row.getCell(4)).replaceAll("\n", "<br>");         // 층id
+                    String schId = getValue(row.getCell(5)).replaceAll("\n", "<br>");       // 스케쥴id
+                    String alarmGrpId = getValue(row.getCell(6)).replaceAll("\n", "<br>");  // 알람그룹id
+                    String terminalId = getValue(row.getCell(7)).replaceAll("\n", "<br>");  // 단말기id
+                    String authGrpIds = getValue(row.getCell(8)).replaceAll("\n", "<br>");  // 권한그룹id
+
+                    if (doorNm.length() > 0) {
+                        HashMap param = new HashMap();
+                        param.put("doorNm", doorNm);
+                        param.put("buildingId", bId);
+                        param.put("areaId", aId);
+                        param.put("floorId", fId);
+                        param.put("doorScheduleId", schId);
+                        param.put("alarmGroupId", alarmGrpId);
+                        param.put("terminalIds", terminalId);
+                        param.put("authGrIds", authGrpIds);
+
+                        LOGGER.debug("엑셀정보 map : {}", param);
+
+                        String newDoorId = "";
+//                        newDoorId = doorService.addDoor(param);
+                        System.out.println("=====newDoorId = " + newDoorId);
+                        if (newDoorId != "") cnt++;
+
+                    }
+                }
+            }
+
+            if (cnt > 0) {
+                if (cnt == sheet.getLastRowNum()) {
+                    modelAndView.addObject("resultCode", "Y");
+                    modelAndView.addObject("message", "Success");
+                } else {
+                    modelAndView.addObject("resultCode", "N");
+                    modelAndView.addObject("message", cnt + "행까지 등록됨");
+                }
+            } else {
+                modelAndView.addObject("resultCode", "N");
+                modelAndView.addObject("message", "Fail");
+            }
+
+        } catch (Exception e) {
+            modelAndView.addObject("resultCode", "N");
+            modelAndView.addObject("message", e);
+            e.printStackTrace();
+        }
+
+        return modelAndView;
+    }
+
+
+    public static String getValue(Cell cell) {
+        String value = "";
+
+        if (cell == null) {
+            value = "";
+        } else {
+            switch (cell.getCellType()) {
+                case Cell.CELL_TYPE_FORMULA:
+                    value = cell.getCellFormula();
+                    break;
+                case Cell.CELL_TYPE_NUMERIC:
+                    value = String.valueOf((long)cell.getNumericCellValue());
+                    // TODO: Date타입 format처리
+                    break;
+                case Cell.CELL_TYPE_STRING:
+                    value = cell.getStringCellValue();
+                    break;
+                case Cell.CELL_TYPE_BOOLEAN:
+                    value = cell.getBooleanCellValue() + "";
+                    break;
+                case Cell.CELL_TYPE_ERROR:
+                    value = cell.getErrorCellValue() + "";
+                    break;
+                case Cell.CELL_TYPE_BLANK:
+                    value = "";
+                    break;
+                default:
+                    value = cell.getStringCellValue();
+            }
+        }
+        System.out.println(value);
+        return value;
+    }
+
+
+
+    @RequestMapping(value = "/excel/download.do", method = RequestMethod.GET)
+    public ModelAndView excelFormDownload(@RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
+
+        String filePath = request.getSession().getServletContext().getRealPath("/");
+        // C:\Dev\IdeaProjects\CUBOX_ACS_Admin\target\CUBOX_ACS_Admin\
+
+        System.out.println("filePath ====== " + filePath);
+        // TODO: 서버에서 파일 다운로드
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("fileDownloadView");
+        modelAndView.addObject("filePath", filePath);
 
         return modelAndView;
     }
