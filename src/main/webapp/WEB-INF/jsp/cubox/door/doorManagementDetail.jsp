@@ -95,6 +95,7 @@
 
         modalPopup("termPickPopup", "단말기 선택", 910, 520);
         modalPopup("authPickPopup", "권한그룹 선택", 910, 550);
+        modalPopup("excelUploadPopup", "엑셀 업로드", 450, 290);
 
         fnAdd(); // 최초 등록 상태
 
@@ -883,17 +884,15 @@
     }
 
     // popup open (공통)
-    function openPopup(popupNm, id) {
-
-        console.log(id);
+    function openPopup(popupNm) {
 
         //EAT001 - 건물 ( 빌딩, 구역, 층)
         //EAT002 - 출입문 그룹
         //EAT003 - 출입문
-        if (id === "btnTerminalPick") {
+        if (popupNm === "termPickPopup") {
             fnGetTerminalListAjax() // 단말기 목록
 
-        } else if (id === "btnDoorAuthPick") {
+        } else if (popupNm === "authPickPopup") {
             fnGetAuthGroupListAjax("", "EAT003"); // 출입문 권한그룹 목록
             // setType("door");
         }
@@ -1045,7 +1044,6 @@
                         $("#tdAuthTotal").append(tag);
                     });
 
-                    console.log("authgroupId");
                     console.log($("#authGroupId").val());
                     if ($("#authGroupId").val() !== "") {
                         let authGroupId = $("#authGroupId").val().split("/ ");
@@ -1483,7 +1481,7 @@
         return rtnData;
     }
 
-    /////////////////  빌딩 명 중복 확인 ajax - start  /////////////////////
+    /////////////////  빌딩 명 중복 확인 ajax - end  /////////////////////
 
 
     /////////////////  구역 명 중복 확인 ajax - start  /////////////////////
@@ -1518,7 +1516,7 @@
         return rtnData;
     }
 
-    /////////////////  구역 명 중복 확인 ajax - start  /////////////////////
+    /////////////////  구역 명 중복 확인 ajax - end  /////////////////////
 
     /////////////////  층 명 중복 확인 ajax - start  /////////////////////
 
@@ -1552,7 +1550,7 @@
         return rtnData;
     }
 
-    /////////////////  층 명 중복 확인 ajax - start  /////////////////////
+    /////////////////  층 명 중복 확인 ajax - end  /////////////////////
 
 
     /////////////////  출입문 명 중복 확인 ajax - start  /////////////////////
@@ -1587,7 +1585,76 @@
         return rtnData;
     }
 
-    /////////////////  출입문 명 중복 확인 ajax - start  /////////////////////
+    /////////////////  출입문 명 중복 확인 ajax - end  /////////////////////
+
+
+    /////////////////   엑셀 일괄등록 ajax - start  /////////////////////
+
+    function fnExcelUploadAjax() {
+        console.log("fnExcelUploadAjax");
+
+        let form = $("#excelForm")[0];
+        let formData = new FormData(form);
+        formData.append("file", $("#excelFile")[0].files[0]);
+
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='/door/excel/upload.do' />",
+            enctype: "multipart/form-data",
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function (result) {
+                console.log("excelUpload result : ");
+                console.log(result.resultCode);
+                console.log(result.message);
+
+                if (result.resultCode === "Y") {
+                    alert("출입문 일괄등록이 완료되었습니다.");
+                    closePopup("excelUploadPopup");
+                    $("#excelFile").val("");
+                } else {
+                    alert("출입문 일괄등록에 실패하였습니다.");
+                }
+
+            }
+        });
+    }
+
+    /////////////////  엑셀 일괄등록 ajax - end  /////////////////////
+
+
+    // 엑셀 파일 업로드
+    function fnExcelUpload() {
+        let filePath = $("#excelFile").val();
+        console.log(filePath);
+
+        if (filePath == "" || filePath == null) {
+            alert("엑셀 파일을 선택해주세요.");
+            $("#excelFile").focus();
+            return false;
+        } else if (!checkFileType(filePath)) {
+            alert("엑셀 파일만 업로드 가능합니다.");
+            $("#excelFile").val("");
+            return false;
+        }
+
+        if (confirm("파일을 업로드 하시겠습니까?")) {
+            fnExcelUploadAjax();
+        } else {
+            return;
+        }
+    }
+
+    // 엑셀파일 여부 체크
+    function checkFileType(filePath) {
+        let fileFmt = filePath.split(".");
+        if (fileFmt.indexOf("xlsx") > -1 || fileFmt.indexOf("xls") > -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 
 </script>
@@ -1595,8 +1662,8 @@
 <div class="com_box">
     <div class="totalbox" style="justify-content: end">
         <div class="r_btnbox mb_10">
-            <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="openExcelDownload();">일괄등록 양식 다운로드</button>
-            <button type="button" class="btn_excel" data-toggle="modal">일괄등록</button>
+            <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="">일괄등록 양식 다운로드</button>
+            <button type="button" class="btn_excel" data-toggle="modal" onclick="openPopup('excelUploadPopup');">출입문 일괄등록</button>
         </div>
     </div>
 </div>
@@ -1762,7 +1829,7 @@
                             <input type="text" id="terminalCd" name="doorEditDisabled" maxlength="30" class="input_com" value="" disabled/>
                         </td>
                         <td>
-                            <button type="button" id="btnTerminalPick" class="btn_gray3 btn_small disabled" onclick="openPopup('termPickPopup', this.id);">선택</button>
+                            <button type="button" id="btnTerminalPick" class="btn_gray3 btn_small disabled" onclick="openPopup('termPickPopup');">선택</button>
                         </td>
                     </tr>
                     <tr>
@@ -1777,7 +1844,7 @@
                             <textarea id="authGroupNm" name="doorEditDisabled" rows="4" cols="33" class="mt_5 mb_5" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled></textarea>
                         </td>
                         <td>
-                            <button type="button" id="btnDoorAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup', this.id);">선택</button>
+                            <button type="button" id="btnDoorAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup');">선택</button>
                         </td>
                     </tr>
                     </tbody>
@@ -2008,3 +2075,33 @@
     </div>
 </div>
 <%--  end of 권한그룹 선택 modal  --%>
+
+<%--  출입문 일괄등록 엑셀 업로드 modal  --%>
+<div id="excelUploadPopup" class="example_content" style="display: none;">
+    <form id="excelForm" name="excelForm" method="post" encType="multipart/form-data" onsubmit="return false;">
+
+        <div class="popup_box">
+            <div class="search_box_popup" style="border-bottom: 0px">
+                <div class="search_in">
+                    <label style="font-size: 14px;">➠ 파일을 선택하세요.</label>
+                </div>
+            </div>
+            <div class="search_box_popup mb_20">
+                <div class="search_in">
+                    <div class="custom-file comm_search">
+                        <input type="file" id="excelFile" name="excelFile" accept=".xls, .xlsx" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="c_btnbox">
+                <div style="display: inline-block;">
+                    <button type="button" class="comm_btn mr_20" onclick="fnExcelUpload();">업로드</button>
+                    <button type="button" class="comm_btn" onclick="closePopup('excelUploadPopup');">취소</button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<%--  end of 출입문 일괄등록 엑셀 업로드 modal  --%>
