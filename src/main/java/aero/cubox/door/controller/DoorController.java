@@ -8,7 +8,6 @@ import aero.cubox.door.service.DoorGroupService;
 import aero.cubox.door.service.DoorScheduleService;
 import aero.cubox.door.service.DoorService;
 import aero.cubox.terminal.service.TerminalService;
-import aero.cubox.util.AES256Util;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
 import org.apache.poi.ss.usermodel.*;
@@ -25,6 +24,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -949,7 +950,7 @@ public class DoorController {
                         LOGGER.debug("엑셀정보 map : {}", param);
 
                         String newDoorId = "";
-//                      newDoorId = doorService.addDoor(param);
+                        newDoorId = doorService.addDoor(param);
                         System.out.println("=====newDoorId = " + newDoorId);
                         if (newDoorId != "") cnt++;
 
@@ -972,12 +973,12 @@ public class DoorController {
 
         } catch (Exception e) {
             modelAndView.addObject("resultCode", "N");
+            modelAndView.addObject("message", e);
             e.printStackTrace();
         }
 
         return modelAndView;
     }
-
 
 
     public static String getValue(Cell cell) {
@@ -1013,5 +1014,25 @@ public class DoorController {
         System.out.println(value);
         return value;
     }
+
+
+
+    @RequestMapping(value = "/excel/download.do", method = RequestMethod.GET)
+    public ModelAndView excelFormDownload(@RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
+
+        String filePath = request.getSession().getServletContext().getRealPath("/");
+        // C:\Dev\IdeaProjects\CUBOX_ACS_Admin\target\CUBOX_ACS_Admin\
+
+        System.out.println("filePath ====== " + filePath);
+        // TODO: 서버에서 파일 다운로드
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("fileDownloadView");
+        modelAndView.addObject("filePath", filePath);
+
+        return modelAndView;
+    }
+
+
 
 }

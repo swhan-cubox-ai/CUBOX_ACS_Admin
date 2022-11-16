@@ -1656,13 +1656,17 @@
         }
     }
 
+    // 일괄등록 양식 다운로드
+    function fnExcelFormDownload() {
+        window.location.href = '/door/excel/download.do';
+    }
 
 </script>
 
 <div class="com_box">
     <div class="totalbox" style="justify-content: end">
         <div class="r_btnbox mb_10">
-            <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="">일괄등록 양식 다운로드</button>
+            <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="fnExcelFormDownload();">일괄등록 양식 다운로드</button>
             <button type="button" class="btn_excel" data-toggle="modal" onclick="openPopup('excelUploadPopup');">출입문 일괄등록</button>
         </div>
     </div>
