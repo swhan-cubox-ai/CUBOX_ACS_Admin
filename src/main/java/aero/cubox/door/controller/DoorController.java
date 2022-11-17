@@ -916,7 +916,7 @@ public class DoorController {
 
             int cnt = 0;
 
-            System.out.println(sheet.getLastRowNum());
+            LOGGER.debug("Last row num : {}", sheet.getLastRowNum());
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
 
@@ -951,8 +951,9 @@ public class DoorController {
 
                         String newDoorId = "";
 //                        newDoorId = doorService.addDoor(param);
-                        System.out.println("=====newDoorId = " + newDoorId);
-                        if (newDoorId != "") cnt++;
+                        LOGGER.debug("newDoorId : {}", newDoorId);
+//                        if (newDoorId != "") cnt++;
+                        cnt++; // 데이터 변경 완료 후 윗줄로 대체
 
                     }
                 }
@@ -1011,7 +1012,6 @@ public class DoorController {
                     value = cell.getStringCellValue();
             }
         }
-        System.out.println(value);
         return value;
     }
 
@@ -1020,15 +1020,16 @@ public class DoorController {
     @RequestMapping(value = "/excel/download.do", method = RequestMethod.GET)
     public ModelAndView excelFormDownload(@RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
 
-        String filePath = request.getSession().getServletContext().getRealPath("/");
-        // C:\Dev\IdeaProjects\CUBOX_ACS_Admin\target\CUBOX_ACS_Admin\
+        String filePath = request.getSession().getServletContext().getRealPath("/excel/");
+        // C:\Dev\IdeaProjects\CUBOX_ACS_Admin\target\CUBOX_ACS_Admin\excel\
 
-        System.out.println("filePath ====== " + filePath);
-        // TODO: 서버에서 파일 다운로드
+        File downloadFile = new File(filePath + "excelupload_door_sample.xlsx");
+        String fileOrigin = "엑셀업로드_출입문_양식샘플.xlsx";
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("fileDownloadView");
-        modelAndView.addObject("filePath", filePath);
+        modelAndView.addObject("downloadFile", downloadFile);
+        modelAndView.addObject("fileOrigin", fileOrigin);
 
         return modelAndView;
     }
