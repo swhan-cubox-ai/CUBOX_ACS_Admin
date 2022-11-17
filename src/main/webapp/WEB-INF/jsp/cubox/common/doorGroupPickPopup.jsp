@@ -79,9 +79,6 @@
             doorGroupHtml.push(html);
         });
 
-        console.log(doorGroupIds);
-        console.log(doorGroupHtml);
-
         // 권한그룹 textarea에 뿌려주기
         $("#doorGroup").val(doorGroupHtml.join("\r\n"));
         $("#doorIds").val(doorGroupIds.join("/"));
@@ -124,7 +121,6 @@
                         $("#tdGroupTotal").append(html);
                     });
 
-                    console.log($("#doorIds").val());
                     if ($("#doorIds").val() !== "") {
                         let doorIds = $("#doorIds").val().split("/");
                         $.each(doorIds, function(i, doorId) {
@@ -206,18 +202,7 @@
                         <th>출입문그룹</th>
                     </tr>
                     </thead>
-                    <tbody id="tdGroupConf">
-<%--                    <tr>--%>
-<%--                        <td style="padding: 0 14px;"><input type="checkbox" name="chkGroupConf"/></td>--%>
-<%--                        <td>CUBOX123</td>--%>
-<%--                        <td>출입문그룹 A</td>--%>
-<%--                    </tr>--%>
-<%--                    <tr>--%>
-<%--                        <td style="padding: 0 14px;"><input type="checkbox" name="chkGroupConf"/></td>--%>
-<%--                        <td>CUBOX123</td>--%>
-<%--                        <td>출입문그룹 B</td>--%>
-<%--                    </tr>--%>
-                    </tbody>
+                    <tbody id="tdGroupConf"></tbody>
                 </table>
             </div>
         </div>

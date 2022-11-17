@@ -31,7 +31,6 @@
         background-color: #eee !important;
         opacity: 1;
     }
-
 </style>
 
 <script type="text/javascript">
@@ -42,22 +41,18 @@
 
         // 출입문 그룹 명 유효성 체크
         $("#gpNm").focusout(function() {
-            console.log("이름 input을 벗어남");
-
             // TODO : 출입문 그룹 명 유효성 체크 (ajax)
         });
     });
 
     // 출입문 저장, 등록
     function fnSave() {
-        console.log("fnSave");
         // 입력값 유효성 체크
         if (fnIsEmpty($("#gpNm").val())) {
             alert("출입문 그룹 명을 입력해주세요.");
             $("#gpNm").focus();
             return;
         }
-
         fnUpdateGroupAjax();
     }
 
@@ -99,7 +94,6 @@
             return;
         }
 
-        // let id="1"; // example - doorgroup id
         let id= $("#doorGroupId").val(); // example - doorgroup id
 
         $.ajax({
@@ -131,20 +125,16 @@
         $("#" + popupNm).PopupWindow("close");
     }
 
+
     /////////////////  출입문 그룹 수정 ajax - start  /////////////////////
 
     function fnUpdateGroupAjax() {
+
         let id = $("#doorGroupId").val();
         let gpNm = $("#gpNm").val();
         let scheduleId = $("#gpSchedule").val();
         let doorIds = $("#gpDoorIds").val();
         let url = "<c:url value='/door/group/modify/${doorGroupDetail.id}' />";
-
-        console.log(${doorGroupDetail.id});
-        console.log(gpNm);
-        console.log(scheduleId);
-        console.log(doorIds);
-        console.log(url);
 
         $.ajax({
             type: "POST",
@@ -156,20 +146,10 @@
             },
             dataType: "json",
             success: function (result) {
-                console.log("fnSave:" + result.resultCode);
+                console.log(result.resultCode);
 
                 if( result.resultCode == "Y" ) {
-                    // $('#gpNm').prop('disabled', true);
-                    // $('#gpSchedule').prop('disabled', true);
-                    // $('#gpDoorNms').prop('disabled', true);
-                    //
-                    // $('#btnSelDoor').hide();
-                    // $('#saveBtn').hide();
-                    // $('#cancelBtn').hide();
-                    // $('#listBtn').show();
-
                     alert("수정이 완료되었습니다.");
-
                     window.location.href = '/door/group/detail/' + id;
                 } else {
                     alert("수정에 실패하였습니다.");
@@ -198,19 +178,12 @@
                     <input type="text" id="gpNm" name="detail" maxlength="35" value="${doorGroupDetail.nm}" class="input_com w_600px color_disabled" disabled>
                 </td>
             </tr>
-<%--            <tr>--%>
-<%--                <th>출입문 스케쥴</th>--%>
-<%--                <td>--%>
-<%--                    <input type="text" id="gpSchedule" name="detail" maxlength="50" value="3${doorGroupDetail.nm}" class="input_com w_600px" disabled>--%>
-<%--                </td>--%>
-<%--            </tr>--%>
             <tr>
                 <th>출입문 스케쥴</th>
                 <td>
                     <select id="gpSchedule" name="detail" class="form-control input_com w_600px color_disabled" style="padding-left:10px;" disabled>
                         <option value="" selected>선택</option>
                         <c:forEach items="${scheduleList}" var="schedule" varStatus="status">
-<%--                            <option value='<c:out value="${schedule.id}"/>'<c:if test="${doorGroupDetail.door_sch_id} eq ${schedule.id}"> selected</c:if>>--%>
                             <option value='<c:out value="${schedule.id}"/>'<c:if test="${schedule.id eq doorGroupDetail.door_sch_id}"> selected</c:if>>
                                 <c:out value="${schedule.door_sch_nm}"/>
                             </option>
@@ -234,7 +207,6 @@ ${dName}</c:forEach></textarea>
         </table>
     </div>
 </form>
-
 
 <div class="right_btn mt_20" id="btnboxDetail">
     <button class="btn_middle color_basic" onclick="location='/door/group/list.do'">목록</button>

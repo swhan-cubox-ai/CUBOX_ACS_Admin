@@ -46,16 +46,12 @@
 
         // 출입문 알람그룹 명 유효성 체크
         $("#alNm").focusout(function() {
-            console.log("이름 input을 벗어남");
-
             // TODO : 출입문스케쥴명 유효성 체크 (ajax)
         });
 
         // 유형 - 기본시간
         $("#alType").change(function() {
-            console.log("alType 유형");
             console.log($(this).val());
-
             // chkAlType();
         });
 
@@ -98,9 +94,6 @@
         }
 
     }
-
-
-
 
     // 수정 취소
     function fnCancel() {
@@ -160,7 +153,6 @@
     }
 
 
-
     /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
 
     function fnUpdateAlarmGroupAjax() {
@@ -171,13 +163,6 @@
         let doorIds = $("#doorIds").val();
         let url = "<c:url value='/door/alarm/modify/${doorGroupDetail.id}'/>"
         // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
-
-        console.log(alNm);
-        console.log(envYn);
-        console.log(alTime);
-        console.log(deleteYn);
-        console.log(doorIds);
-        console.log(url);
 
         $.ajax({
             type: "POST",
@@ -191,7 +176,7 @@
             },
             dataType: "json",
             success: function(result) {
-                console.log("fnSave : " + result.resultCode);
+                console.log(result.resultCode);
                 if (result.resultCode === "Y") {
                     alert("수정이 완료되었습니다.");
                     window.location.href = '/door/alarm/detail/${doorGroupDetail.id}';
@@ -249,15 +234,6 @@
                         <option value="">선택</option>
                         <option value="Y" <c:if test="${doorGroupDetail.env_yn eq 'Y'}" >selected </c:if>>기본시간</option>
                         <option value="N" <c:if test="${doorGroupDetail.env_yn eq 'N'}" >selected </c:if>>지정시간</option>
-<%--                        <c:choose>--%>
-<%--                            <c:when test="${doorGroupDetail.env_yn eq 'Y'}">--%>
-<%--                                <option value="Y" selected>Y</option>--%>
-<%--                            </c:when>--%>
-<%--                            <c:otherwise>--%>
-<%--                                <option value="default" selected>기본 시간</option>--%>
-<%--                                <option value="setTime">지정 시간</option>--%>
-<%--                            </c:otherwise>--%>
-<%--                        </c:choose>--%>
                     </select>
                 </td>
             </tr>

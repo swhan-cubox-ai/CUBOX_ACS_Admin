@@ -161,16 +161,10 @@
                         validCheck(startId, endId, start, end, day, schNum);
                     }
                 }
-
-                // if (timeValid(startId, endId, start, end, day, schNum)) {
-                //     validCheck(startId, endId, start, end, day, schNum);
-                // }
             }
         });
-
         setDoorGroupInfo();
         fnDayExistsCountAjax();
-
     });
 
     // 요일 별 스케쥴 있는지 여부 확인
@@ -185,14 +179,12 @@
                 console.log("fnDayExistsCountAjax = " + schCnt);
 
                 if (schCnt !== 0) {
-                    console.log("요일 별 스케쥴이 있음");
                     // 요일 별 스케쥴 보기 버튼
                     $("#btnAddByDay").html("요일 별 스케쥴 보기");
                     $("#btnDaySchDetail").css("display", "block");
                     $("#btnDaySchAdd").css("display", "none");
                     $("#daySchCnt").val(schCnt); // 0 or 21
                 } else {
-                    console.log("요일 별 스케쥴이 없음");
                     // 요일 별 스케쥴 등록 버튼
                     $("#btnAddByDay").html("요일 별 스케쥴 등록");
                     $("#btnDaySchDetail").css("display", "none");
@@ -206,7 +198,6 @@
 
     // 출입문 그룹 정보 set
     function setDoorGroupInfo() {
-        console.log("setDoorGroupInfo");
         let doorGrList = [];
         let doorGrHtml = [];
         <c:forEach items="${doorGroupList}" var="dList">
@@ -215,7 +206,6 @@
         </c:forEach>
         $("#doorIds").val(doorGrList.join("/"));
         $("#doorGroup").val(doorGrHtml.join("\r\n"));
-        console.log($("#doorGroup").val());
     }
 
     // time선택 초기화
@@ -242,18 +232,15 @@
 
     function validCheck(startId, endId, start, end, day, schNum) {
         if (ifValid(startId, endId, start, end, day, schNum)) {
-            console.log("색칠하기");
             colorSchedule(start, end, day, schNum);
 
         } else {
-            console.log("색칠안하기");
             alert("중복된 스케쥴이 존재합니다. 다시 선택해주세요.");
         }
     }
 
     // 이미 색칠되어 있는지 여부확인
     function ifValid(startId, endId, start, end, day, schNum) {
-        console.log("ifValid");
         let result = true; // 다른 스케쥴과 겹치는지 여부
 
         if (start.hour != end.hour) { // 시작시간과 종료시간이 다른 hour 칸에 있을 때
@@ -304,8 +291,6 @@
         }
 
         if (!result) isFirstReg(day, schNum, startId, endId);
-
-        console.log("ifValid 결과: " + result);
         return result;
     }
 
@@ -459,8 +444,6 @@
 
     // 수정 취소
     function fnCancel() {
-        console.log("fnCancel");
-        // $("#detailForm").load(location.href + ' #detailForm');
         $("#schNm").val('${doorScheduleDetail.door_sch_nm}');
         $("#schUseYn ").val("Y").prop("selected", true);
         setDoorGroupInfo();
@@ -492,11 +475,9 @@
             alert("연결된 출입문 그룹을 해제 후 삭제 하시기 바랍니다.");
             return;
         }
-
         if (!confirm("삭제하시겠습니까?")) {
             return;
         }
-
         fnDeleteScheduleAjax();
     }
 
@@ -566,17 +547,9 @@
             });
         });
 
-        console.log(type);
-        console.log("validation data");
-        console.log(data);
-        console.log("validation count = " + validCnt);
-
-        // $("#daySchCnt").val(validCnt);
-
         if (validCnt == 0) { // 입력한 스케쥴 하나도 없을 경우
             if (type === "Add") alert("등록한 스케쥴이 없습니다.");
             else if (type === "Update") alert("최소 한 개의 스케쥴이 필요합니다.");
-            // else if (type === "Update") fnModifyScheduleByDayAjax(data);
         } else {
             if (type === "Add") fnAddScheduleByDayAjax(data);
             else if (type === "Update") fnModifyScheduleByDayAjax(data);
@@ -635,11 +608,9 @@
     // endPicker 클릭 시 다음 timepicker disable 해제
     function activeNextTimepicker(day, schNum) {
         if (schNum === "1" && $("#" + day + "_2_end").val() === "") {  // 2 스케쥴에 값 없을 때
-            console.log("1클릭");
             $("." + day + "_timepick.sch2_timepick").prop("disabled", false);
         }
         if (schNum === "2" && $("#" + day + "_3_end").val() === "") {  // 3 스케쥴에 값 없을 때
-            console.log("2클릭");
             $("." + day + "_timepick.sch3_timepick").prop("disabled", false);
         }
     }
@@ -652,8 +623,6 @@
             if ($(sch2).val() !== "") {  // 2번 스케쥴에 값이 있을 경우
                 $(sch2).prop("disabled", false);
                 $("." + weekday + "_timepick.sch3_timepick").prop("disabled", false);
-                // $("#" + weekday + "_3_start").prop("disabled", false);
-                // $("#" + weekday + "_3_end").prop("disabled", false);
             } else {  // 2번 스케쥴에 값이 없을 경우
                 if ($("#" + weekday + "_1_start").val() !== "") {   // 1번 스케줄에 값이 있을 경우
                     $(sch2).prop("disabled", false);
@@ -678,7 +647,6 @@
 
     // popup close (공통)
     function closePopup(popupNm) {
-        console.log("close popup");
         $("#" + popupNm).PopupWindow("close");
         if (popupNm === "doorGroupPickPopup") { // 출입문 그룹 선택
             $("input[name=chkGroup]:checked").attr("checked", false);
@@ -699,11 +667,6 @@
         let doorGroupIds = $("#doorIds").val();
         let url = "<c:url value='/door/schedule/modify/${doorScheduleDetail.id}'/>";
 
-        console.log(doorSchNm);
-        console.log(useYn);
-        console.log(doorGroupIds);
-        console.log(url);
-
         $.ajax({
             type : "POST",
             data : {
@@ -719,15 +682,14 @@
                     alert("수정이 완료되었습니다.");
                     window.location.href = '/door/schedule/detail/${doorScheduleDetail.id}';
                 } else {
-                    console.log("스케쥴 수정 실패");
                     console.log(result.resultMsg);
                 }
             }
         });
-
     }
 
     /////////////////  출입문 스케쥴 수정 ajax - end  /////////////////////
+
 
     /////////////////  출입문 스케쥴 삭제 ajax - start  /////////////////////
 
@@ -736,7 +698,7 @@
             type: "post",
             url: "/door/schedule/delete/${doorScheduleDetail.id}",
             dataType: 'json',
-            success: function (result, status) {
+            success: function (result) {
                 if (result.resultCode === "Y") {
                     alert("삭제되었습니다.");
                     location.href = "/door/schedule/list.do";
@@ -786,17 +748,11 @@
                         colorSchedule(start, end, day, schNum);
                     });
 
-                    console.log(cnt);
                     $("#daySchCnt").val(cnt);
 
-                } else {
-                    console.log("스케쥴 불러오기 실패");
                 }
             }
         });
-
-
-
     }
 
     /////////////////  요일별 스케쥴 뿌려주기 ajax - end  /////////////////////
@@ -805,11 +761,9 @@
     /////////////////  요일별 스케쥴 저장 ajax - start  /////////////////////
 
     function fnAddScheduleByDayAjax(data) {
-        console.log("fnAddSchedule");
+
         let jsonData = JSON.stringify(data);
         let url = "<c:url value='/door/schedule/day/add.do' />";
-        console.log(jsonData);
-        console.log(url);
 
         $.ajax({
             type: "POST",
@@ -827,7 +781,6 @@
                     $("#btnAddByDay").html("요일 별 스케쥴 보기");
                     fnDaySchDetailMode();
                 } else {
-                    //등록에 문제가 발생
                     alert("등록에 실패하였습니다.");
                 }
             }
@@ -840,12 +793,9 @@
     /////////////////  요일별 스케쥴 수정 ajax - start  /////////////////////
 
     function fnModifyScheduleByDayAjax(data) {
-        console.log("fnModifySchedule");
+
         let jsonData = JSON.stringify(data);
         let url = "<c:url value='/door/schedule/day/modify/${doorScheduleDetail.id}' />";
-
-        console.log(jsonData);
-        console.log(url);
 
         $.ajax({
             type: "POST",
@@ -862,7 +812,6 @@
                     alert("저장되었습니다.");
                     fnDaySchDetailMode();
                 } else {
-                    //등록에 문제가 발생
                     alert("등록에 실패하였습니다.");
                 }
             }
@@ -875,8 +824,8 @@
     /////////////////  요일별 스케쥴 전체 삭제 ajax - start  /////////////////////
 
     function fnDeleteScheduleByDayAjax() {
+
         let url = "<c:url value='/door/schedule/day/delete/${doorScheduleDetail.id}' />";
-        console.log(url);
 
         $.ajax({
             type: "POST",
@@ -1021,7 +970,6 @@
             <%--  테이블  --%>
             <div class="com_box">
                 <table id="tb_SchTimepick" class="tb_list" style="height:665px;">
-<%--                    <button type="button" class="comm_btn mr_20" onclick="fnDaySchDeleteOne()">개별삭제</button>--%>
                     <colgroup>
                         <c:forEach var="i" begin="0" end="2" varStatus="status">
                             <col style="width:33%">
