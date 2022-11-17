@@ -13,7 +13,6 @@
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorListPopup.jsp" flush="false"/>
 
-
 <style>
     .title_box {
         margin-top: 10px;
@@ -30,7 +29,6 @@
         position: sticky;
         top: 0;
     }
-
 </style>
 
 <script type="text/javascript">
@@ -47,17 +45,12 @@
 
         // 출입문 알람그룹 명 유효성 체크
         $("#alNm").focusout(function() {
-            console.log("이름 input을 벗어남");
-
             // TODO : 출입문스케쥴명 유효성 체크 (ajax)
         });
 
         // 유형 - 기본시간
         $("#alType").change(function() {
-            console.log("유형");
-            console.log(this);
             console.log($(this).val());
-
             chkAlType();
         });
 
@@ -74,7 +67,6 @@
 
     // 출입문 저장, 등록
     function fnSave() {
-        console.log("fnSave");
         // 입력값 유효성 체크
         if (fnIsEmpty($("#alNm").val())) {
             alert("출입문 알람 그룹 명을 입력해주세요.");
@@ -116,12 +108,6 @@
         let deleteYn = $("#alUseYn").val();
         let doorIds = $("#doorIds").val();
         // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
-
-        console.log(alNm);
-        console.log(alType);
-        console.log(alTime);
-        console.log(alUseYn);
-        console.log(doorIds);
 
         $.ajax({
             type: "POST",

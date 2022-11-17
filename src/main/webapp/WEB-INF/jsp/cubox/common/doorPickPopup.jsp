@@ -22,7 +22,6 @@ $(function () {
         let nodeSel = $(".nodeSel").html();
         let nodeSelId = $(".nodeSel").find("span").attr("id");
         let doorSelected = $("#doorSelected").children();
-        console.log(nodeSelId);
         // 이미 같은 출입문 있을 경우 return
         for (let i = 0; i < doorSelected.length; i++) {
             let doorPath = doorSelected.eq(i).children().last().html();
@@ -56,6 +55,7 @@ $(function () {
             $("input[name=chkDoorConf]").prop("checked", false);
         }
     });
+
 });
 
 
@@ -74,8 +74,6 @@ function setDoors(type) {
         }
         doorGpHtml.push(html);
     });
-    console.log(doorGpIds);
-    console.log(doorGpHtml);
 
     if (type === "Group") {                 // 그룹관리
         $("#gpDoorIds").val(doorGpIds);
@@ -91,11 +89,10 @@ function setDoors(type) {
     }
 }
 
+
     /////////////////  출입문 목록 ajax - start  /////////////////////
 
-
     function fnGetDoorListAjax(type) {
-        console.log( "fnGetDoorListAjax2");
 
         $.ajax({
             type : "GET",
@@ -104,8 +101,8 @@ function setDoors(type) {
             url : "<c:url value='/door/list.do' />",
             success : function(result) {
                 console.log(result);
-                createTree(false, result, $("#treeDiv"));
 
+                createTree(false, result, $("#treeDiv"));
                 $("#doorSelected").empty();
                 let doorList;
                 if (type === "Group" && $("#gpDoorIds").val() != "") { // 수정일 떄

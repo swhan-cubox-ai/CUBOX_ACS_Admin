@@ -16,14 +16,7 @@
     <div style="width:100%;">
       <div class="com_box" style="border: 1px solid black; background-color: white; overflow: auto; height: 330px;">
         <table class="tb_list tb_write_02 tb_write_p1">
-          <tbody id="tdGroupTotal">
-<%--          <tr>--%>
-<%--            <td>12동 > C구역 > 1층 > 현관 출입문</td>--%>
-<%--          </tr>--%>
-<%--          <tr>--%>
-<%--            <td>12동 > D구역 > 2층 > 계단</td>--%>
-<%--          </tr>--%>
-          </tbody>
+          <tbody id="tdGroupTotal"></tbody>
         </table>
       </div>
     </div>
@@ -36,5 +29,4 @@
     </div>
   </div>
 </div>
-
 <%--  end of 출입문 목록 modal  --%>

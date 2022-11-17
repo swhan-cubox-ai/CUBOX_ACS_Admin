@@ -43,8 +43,6 @@
 
         // 출입문 그룹 명 유효성 체크
         $("#gpNm").focusout(function () {
-            console.log("이름 input을 벗어남");
-
             // TODO : 출입문 그룹 명 유효성 체크 (ajax)
         });
 
@@ -53,7 +51,6 @@
 
     // 출입문 저장, 등록
     function fnSave() {
-        console.log("fnSave");
         // 입력값 유효성 체크
         if (fnIsEmpty($("#gpNm").val())) {
             alert("출입문 그룹 명을 입력해주세요.");
@@ -87,10 +84,6 @@
         let scheduleId = $("#gpSchedule").val();
         let doorIds = $("#gpDoorIds").val();
 
-        console.log(gpNm);
-        console.log(scheduleId);
-        console.log(doorIds);
-
         $.ajax({
             type: "POST",
             url: "<c:url value='/door/group/save.do' />",
@@ -101,12 +94,11 @@
             },
             dataType: "json",
             success: function (result) {
-                console.log("fnSave:" + result.resultCode);
+                console.log(result.resultCode);
 
-                if( result.resultCode === "Y" && result.newDoorId !== "") {
+                if (result.resultCode === "Y" && result.newDoorId !== "") {
                     alert("저장되었습니다.");
                     window.location.href = '/door/group/detail/' + result.newDoorId;
-
                 } else {
                     alert("등록에 실패하였습니다.");
                 }
