@@ -6,11 +6,13 @@
     <select id="selectDoorSchList"  parameterType="HashMap" resultType="HashMap">
         SELECT A.id
              , A.door_sch_nm
+             , A.use_yn
              , DATE_FORMAT(A.created_at, '%Y-%m-%d') as created_at
              , DATE_FORMAT(A.updated_at, '%Y-%m-%d') as updated_at
         FROM(
                 SELECT TDS.id
                      , TDS.door_sch_nm
+                     , TDS.use_yn
                      , TDS.created_at
                      , TDS.updated_at
                   FROM T_DOOR_SCH TDS
@@ -51,6 +53,7 @@
     <select id="selectDoorScheduleDetail"  parameterType="int" resultType="HashMap">
         SELECT TDS.id
              , TDS.door_sch_nm
+             , TDS.use_yn
              , DATE_FORMAT(TDS.created_at, '%Y-%m-%d') as created_at
              , DATE_FORMAT(TDS.updated_at, '%Y-%m-%d') as updated_at
           FROM T_DOOR_SCH TDS
@@ -63,12 +66,10 @@
         INSERT
         INTO T_DOOR_SCH
         ( door_sch_nm,
-          created_at,
-          updated_at
+          created_at
         )
         VALUES
             ( #{doorSchNm}
-            , NOW()
             , NOW()
             )
     </insert>
@@ -76,9 +77,12 @@
 
     <update id="updateSchedule" parameterType="HashMap">
         UPDATE T_DOOR_SCH
-        SET door_sch_nm = #{doorSchNm}
-          , updated_at= NOW()
-        WHERE id = #{id}
+           SET door_sch_nm = #{doorSchNm}
+        <if test="useYn != null and useYn != ''">
+             , use_yn = #{useYn}
+        </if>
+             , updated_at= NOW()
+         WHERE id = #{id}
     </update>
 
 
@@ -129,8 +133,7 @@
           order_no,
           beg_tm,
           end_tm,
-          created_at,
-          updated_at
+          created_at
         )
         VALUES
             (
@@ -139,7 +142,6 @@
             , #{orderNo}
             , #{begTm}
             , #{endTm}
-            , NOW()
             , NOW()
             )
     </insert>

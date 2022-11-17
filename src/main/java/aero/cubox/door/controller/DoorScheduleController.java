@@ -7,6 +7,10 @@ import aero.cubox.door.service.DoorScheduleService;
 import aero.cubox.door.service.DoorService;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -20,14 +24,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static aero.cubox.util.JsonUtil.getListMapFromJsonArray;
+import static org.springmodules.validation.util.condition.Conditions.notEmpty;
 
 @Controller
 @RequestMapping(value = "/door/schedule/")
@@ -170,6 +179,10 @@ public class DoorScheduleController {
     @RequestMapping(value = "/add.do", method = RequestMethod.GET)
     public String showScheduleAddView(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
+        HashMap<String, Object> paramMap = new HashMap();
+        List<HashMap> doorGroupList = doorGroupService.getDoorGroupList(paramMap);
+
+        model.addAttribute("doorGroupList", doorGroupList);
         return "cubox/door/schedule/add";
     }
 
@@ -212,16 +225,26 @@ public class DoorScheduleController {
         modelAndView.setViewName("jsonView");
 
         String resultCode = "Y";
-        String newDoorId = "";
+        String newScheduleId = "";
+
+        String nm = StringUtil.nvl(commandMap.get("nm"), "");
+        String doorGroupIds = StringUtil.nvl(commandMap.get("doorGroupIds"), "");
+
+
+        HashMap param = new HashMap();
+
+        param.put("doorSchNm", nm);
+        param.put("doorGroupIds", doorGroupIds);
+
         try {
-            newDoorId = doorScheduleService.addSchedule(commandMap);
+            newScheduleId = doorScheduleService.addSchedule(param);
         } catch (Exception e) {
             e.getStackTrace();
             resultCode = "N";
         }
 
         modelAndView.addObject("resultCode", resultCode);
-        modelAndView.addObject("newDoorId", newDoorId);
+        modelAndView.addObject("newScheduleId", newScheduleId);
 
         return modelAndView;
     }
@@ -245,19 +268,31 @@ public class DoorScheduleController {
 
         String resultCode = "Y";
 
-        if( id == null){
+        if( !CommonUtils.notEmpty(id) ){
             resultCode = "N";
             model.addAttribute("resultCode", resultCode);
-
+            modelAndView.addObject("resultMsg", "no id");
             return modelAndView;
         }
+
         String scheduleId = StringUtil.nvl(id);
         String doorSchNm = StringUtil.nvl(commandMap.get("doorSchNm"), "");
+        String useYn = StringUtil.nvl(commandMap.get("useYn"), "");
+        String doorGroupIds = StringUtil.nvl(commandMap.get("doorGroupIds"), "");
 
         HashMap param = new HashMap();
 
         param.put("id", scheduleId);
-        param.put("doorSchNm", doorSchNm);
+
+        if( CommonUtils.notEmpty(doorSchNm) ){
+            param.put("doorSchNm", doorSchNm);
+        }
+
+        if( CommonUtils.notEmpty(useYn) ){
+            param.put("useYn", useYn);
+        }
+
+        param.put("doorGroupIds", doorGroupIds);
 
         try {
             doorScheduleService.updateSchedule(param);
@@ -417,6 +452,7 @@ public class DoorScheduleController {
         JSONParser parser = new JSONParser();
         Object obj = parser.parse((String) commandMap.get("day_schedule"));
 
+
         List<Map<String, Object>> dayScheduleList = getListMapFromJsonArray((JSONArray) obj);
 
         if( dayScheduleList.size() > 0 ){
@@ -424,12 +460,14 @@ public class DoorScheduleController {
             try {
                 Map<String, Object> dayScheduleParam;
 
+                doorScheduleService.deleteScheduleByDay(commandMap);
+                
                 for (int i = 0; i < dayScheduleList.size(); i++) {
                     dayScheduleParam = dayScheduleList.get(i);
                     dayScheduleParam.put("doorSchId", commandMap.get("doorSchId"));
 
-                    if( commandMap.get("id") != null && (commandMap.get("id").toString().length() > 0) ){
-                        String[] dayScheduleOrder = commandMap.get("id").toString().split("_");
+                    if( dayScheduleList.size() > 0 ){
+                        String[] dayScheduleOrder = dayScheduleList.get(i).get("id").toString().split("_");
                         dayScheduleParam.put("orderNo", dayScheduleOrder[1]);
                     }
                     dayScheduleParam.put("begTm", dayScheduleParam.get("beg_tm"));
@@ -445,6 +483,42 @@ public class DoorScheduleController {
         } else {
             resultCode = "N";
         }
+
+        model.addAttribute("resultCode", resultCode);
+
+        return modelAndView;
+    }
+
+    /**
+     * 출입문 요일별 스케쥴 삭제
+     * @param model
+     * @param id
+     * @param request
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value="/day/delete/{id}", method= RequestMethod.POST)
+    public ModelAndView deleteScheduleByDay(ModelMap model, @PathVariable String id, HttpServletRequest request,@RequestParam Map<String, Object> commandMap) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        String resultCode = "Y";
+
+        if( id == null){
+            resultCode = "N";
+            model.addAttribute("resultCode", resultCode);
+
+            return modelAndView;
+        }
+
+        HashMap<String, Object> paramMap = new HashMap<>();
+
+        paramMap.put("doorSchId", id);
+
+        doorScheduleService.deleteScheduleByDay(paramMap);
 
         model.addAttribute("resultCode", resultCode);
 
@@ -542,5 +616,78 @@ public class DoorScheduleController {
             builder.append(buffer);
         }
         return builder.toString();
+    }
+
+    @RequestMapping(value="/excel/download.do", method = RequestMethod.GET)
+    public void excelDownloadSchedule(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
+
+        HashMap<String, Object> paramMap = new HashMap();
+        List<HashMap> doorScheduleList = doorScheduleService.getDoorScheduleList(paramMap);
+
+        ///// Create Excel /////
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet();
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+
+        //// Header ////
+        final String[] colNames = {"번호", "출입문 스케쥴명", "사용", "등록일자", "수정일자"};
+        // Header size
+        final int[] colWidths = {1500, 6000, 3000, 3500, 3500};
+        // Header font
+        Font fontHeader = wb.createFont();
+        fontHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
+
+        // Header style
+        CellStyle styleHeader = wb.createCellStyle();
+        styleHeader.setAlignment(CellStyle.ALIGN_CENTER);
+        styleHeader.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        styleHeader.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+        styleHeader.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        styleHeader.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+        styleHeader.setBorderTop(HSSFCellStyle.BORDER_THIN);
+        styleHeader.setBorderRight(HSSFCellStyle.BORDER_THIN);
+        styleHeader.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        styleHeader.setFont(fontHeader);
+
+        row = sheet.createRow(rowNum++);
+        row.setHeight((short)500);
+
+        for (int i = 0; i < colNames.length; i++) {
+            cell = row.createCell(i);
+            cell.setCellValue(colNames[i]);
+            cell.setCellStyle(styleHeader);
+            sheet.setColumnWidth(i, colWidths[i]);
+        }
+
+        // Body
+        for (int i = 0; i < doorScheduleList.size(); i++) {
+            row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(i + 1);
+            row.createCell(1).setCellValue(doorScheduleList.get(i).get("door_sch_nm").toString());
+            if (doorScheduleList.get(i).get("use_yn").toString().equals("Y")) {
+                row.createCell(2).setCellValue("사용");
+            } else {
+                row.createCell(2).setCellValue("미사용");
+            }
+            if (doorScheduleList.get(i).containsKey("created_at")) {
+                row.createCell(3).setCellValue(doorScheduleList.get(i).get("created_at").toString());
+            }
+            if (doorScheduleList.get(i).containsKey("updated_at")) {
+                row.createCell(4).setCellValue(doorScheduleList.get(i).get("updated_at").toString());
+            }
+        }
+
+        // Date
+        SimpleDateFormat fmt = new SimpleDateFormat("yyMMdd-HH_mm_ss");
+        Date date = new Date();
+
+        // File name
+        String fileNm = "출입문스케쥴목록_" + fmt.format(date) + ".xlsx";
+        response.setContentType("ms-vnd/excel");
+        response.setHeader("Content-Disposition", "attatchment;filename=" + URLEncoder.encode(fileNm, "UTF-8"));
+        wb.write(response.getOutputStream());
+
     }
 }

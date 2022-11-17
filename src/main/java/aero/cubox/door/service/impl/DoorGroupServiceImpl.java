@@ -54,9 +54,10 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
      */
     @Override
     public String addDoorGroup(Map<String, Object> commandMap) {
+        String newDoorGroupId = "";
+
         doorGroupDAO.addDoorGroup(commandMap);
 
-        String newDoorGroupId = "";
         newDoorGroupId = commandMap.get("doorgrpId").toString();
 
         HashMap paramMap = new HashMap();

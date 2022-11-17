@@ -27,7 +27,10 @@
         position: sticky;
         top: 0;
     }
-
+    .color_disabled {
+        background-color: #eee !important;
+        opacity: 1;
+    }
 </style>
 
 <script type="text/javascript">
@@ -38,22 +41,18 @@
 
         // 출입문 그룹 명 유효성 체크
         $("#gpNm").focusout(function() {
-            console.log("이름 input을 벗어남");
-
             // TODO : 출입문 그룹 명 유효성 체크 (ajax)
         });
     });
 
     // 출입문 저장, 등록
     function fnSave() {
-        console.log("fnSave");
         // 입력값 유효성 체크
         if (fnIsEmpty($("#gpNm").val())) {
             alert("출입문 그룹 명을 입력해주세요.");
             $("#gpNm").focus();
             return;
         }
-
         fnUpdateGroupAjax();
     }
 
@@ -66,16 +65,21 @@
         $("[name=detail]").attr("disabled", true);
 
         $("#detailForm").load(location.href + ' #detailForm');
-        <%--window.location.href = '/door/group/detail/${doorGroupDetail.id}';--%>
+        $("[name=detail]").attr("disabled", true).addClass("color_disabled");
     }
 
     // 수정 버튼
     function fnEditMode() {
-        $(".title_tx").html("출입문 그룹 관리 - 수정");
-        $("#btnEdit").css("display", "block");
-        $("#btnboxDetail").css("display", "none");
-        $("#btnboxEdit").css("display", "block");
-        $("[name=detail]").attr("disabled", false);
+        if (confirm("해당 출입문 그룹을 수정하시겠습니까?")) {
+            $(".title_tx").html("출입문 그룹 관리 - 수정");
+            $("#btnEdit").css("display", "block");
+            $("#btnboxDetail").css("display", "none");
+            $("#btnboxEdit").css("display", "block");
+            $("[name=detail]").attr("disabled", false);
+            $("[name=detail]").attr("disabled", false).removeClass("color_disabled");
+        } else {
+            return;
+        }
     }
 
     // 삭제 버튼
@@ -90,7 +94,6 @@
             return;
         }
 
-        // let id="1"; // example - doorgroup id
         let id= $("#doorGroupId").val(); // example - doorgroup id
 
         $.ajax({
@@ -122,20 +125,16 @@
         $("#" + popupNm).PopupWindow("close");
     }
 
+
     /////////////////  출입문 그룹 수정 ajax - start  /////////////////////
 
     function fnUpdateGroupAjax() {
+
         let id = $("#doorGroupId").val();
         let gpNm = $("#gpNm").val();
         let scheduleId = $("#gpSchedule").val();
         let doorIds = $("#gpDoorIds").val();
         let url = "<c:url value='/door/group/modify/${doorGroupDetail.id}' />";
-
-        console.log(${doorGroupDetail.id});
-        console.log(gpNm);
-        console.log(scheduleId);
-        console.log(doorIds);
-        console.log(url);
 
         $.ajax({
             type: "POST",
@@ -147,20 +146,10 @@
             },
             dataType: "json",
             success: function (result) {
-                console.log("fnSave:" + result.resultCode);
+                console.log(result.resultCode);
 
                 if( result.resultCode == "Y" ) {
-                    // $('#gpNm').prop('disabled', true);
-                    // $('#gpSchedule').prop('disabled', true);
-                    // $('#gpDoorNms').prop('disabled', true);
-                    //
-                    // $('#btnSelDoor').hide();
-                    // $('#saveBtn').hide();
-                    // $('#cancelBtn').hide();
-                    // $('#listBtn').show();
-
                     alert("수정이 완료되었습니다.");
-
                     window.location.href = '/door/group/detail/' + id;
                 } else {
                     alert("수정에 실패하였습니다.");
@@ -186,7 +175,7 @@
             <tr>
                 <th>출입문 그룹 명</th>
                 <td>
-                    <input type="text" id="gpNm" name="detail" maxlength="50" value="${doorGroupDetail.nm}" class="input_com w_600px" disabled>
+                    <input type="text" id="gpNm" name="detail" maxlength="35" value="${doorGroupDetail.nm}" class="input_com w_600px color_disabled" disabled>
                 </td>
             </tr>
 <%--            <tr>--%>
@@ -198,10 +187,9 @@
             <tr>
                 <th>출입문 스케쥴</th>
                 <td>
-                    <select id="gpSchedule" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
+                    <select id="gpSchedule" name="detail" class="form-control input_com w_600px color_disabled" style="padding-left:10px;" disabled>
                         <option value="" selected>선택</option>
                         <c:forEach items="${scheduleList}" var="schedule" varStatus="status">
-<%--                            <option value='<c:out value="${schedule.id}"/>'<c:if test="${doorGroupDetail.door_sch_id} eq ${schedule.id}"> selected</c:if>>--%>
                             <option value='<c:out value="${schedule.id}"/>'<c:if test="${schedule.id eq doorGroupDetail.door_sch_id}"> selected</c:if>>
                                 <c:out value="${schedule.door_sch_nm}"/>
                             </option>
@@ -213,7 +201,7 @@
                 <th>출입문</th>
                 <td style="display: flex;">
                     <%--  TODO: testarea에 공백 해결  --%>
-                    <textarea id="gpDoorNms" name="gpDoorNms" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
+                    <textarea id="gpDoorNms" name="gpDoorNms" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;
                               font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:set var="nm" value="${fn:split(doorGroupDetail.door_nms,'/')}" /><c:forEach items="${nm}" var="dName" varStatus="varStatus">
 ${dName}</c:forEach></textarea>
                     <div class="ml_10" style="position: relative;">
@@ -225,7 +213,6 @@ ${dName}</c:forEach></textarea>
         </table>
     </div>
 </form>
-
 
 <div class="right_btn mt_20" id="btnboxDetail">
     <button class="btn_middle color_basic" onclick="location='/door/group/list.do'">목록</button>
