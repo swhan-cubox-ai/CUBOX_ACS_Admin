@@ -921,6 +921,8 @@
             // $("input[name='chkAuthConf']:checked").attr("checked", false);
             totalCheck();
             userCheck();
+        } else if (popupNm === "excelUploadPopup") {  // 출입문 일괄등록 popup
+            $("#excelFile").val("");
         }
         $("#" + popupNm).PopupWindow("close");
     }
