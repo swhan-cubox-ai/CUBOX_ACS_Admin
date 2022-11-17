@@ -73,11 +73,6 @@
         let doorIds = $("#doorIds").val();
         let url = "<c:url value='/door/schedule/save.do'/>";
 
-        console.log(doorSchNm);
-        console.log(useYn);
-        console.log(doorIds);
-        console.log(url);
-
         $.ajax({
             type : "POST",
             data : {
@@ -94,11 +89,10 @@
                     alert("등록이 완료되었습니다.");
                     window.location.href = '/door/schedule/detail/' + result.newScheduleId;
                 } else {
-                    console.log("스케쥴 등록에 실패하였습니다.");
+                    alert("등록에 실패하였습니다.");
                 }
             }
         });
-
     }
     /////////////////  출입문 스케쥴 저장 ajax - end  /////////////////////
 
