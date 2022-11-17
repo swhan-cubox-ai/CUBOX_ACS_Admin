@@ -47,7 +47,6 @@
 
     // 출입문 저장, 등록
     function fnSave() {
-        console.log("fnSave");
         // 입력값 유효성 체크
         if (fnIsEmpty($("#gpNm").val())) {
             alert("출입문 그룹 명을 입력해주세요.");

@@ -272,14 +272,11 @@
         let authType = $("#authType").val();
 
         if (authType === "building") {
-            console.log("initDetail building");
             $("#buildingPath").text("");
             $("#buildingNm").val("");
             $("#buildingId").val("");
 
         } else if (authType === "area") {
-            console.log("initDetail area");
-
             $("#areaPath").text("");
             $("#areaNm").val("");
             $("#areaId").val("");
@@ -287,8 +284,6 @@
             $(".areaDetailList #dBuilding").val("");
 
         } else if (authType === "floor") {
-            console.log("initDetail floor");
-
             $("#floorPath").text("");
             $("#floorNm").val("");
             $("#floorId").val("");
@@ -299,8 +294,6 @@
             $(".floorDetailList [name=doorEditSelect]").prop("disabled", true);
 
         } else if (authType === "door") {
-            console.log("initDetail door");
-
             $("#doorPath").text("");
             $("#doorId").val("");
             $("#doorNm").val("");
@@ -411,8 +404,6 @@
 
     // 빌딩 속성 뿌려주기
     function getBuildingDetail(id) {
-        console.log("getBuildingDetail buildingId => " + id);
-
         setType("building");
         initDetail();
         fnCancelEditMode();
@@ -421,7 +412,6 @@
 
         $("#buildingId").val(id);
         let buildingId = $("#buildingId").val();
-        console.log(buildingId);
 
         // 빌딩 정보
         $.ajax({
@@ -437,13 +427,10 @@
                 $("#buildingNm").val(dInfo.building_nm);        // 빌딩 명
             }
         });
-
     }
 
     // 구역 속성 뿌려주기
     function getAreaDetail(id) {
-        console.log("getAreaDetail areaId => " + id);
-
         setType("area");
         initDetail();
         fnCancelEditMode();
@@ -452,7 +439,6 @@
 
         $("#areaId").val(id);
         let areaId = $("#areaId").val();
-        console.log(areaId);
 
         // 구역 정보
         $.ajax({
@@ -474,15 +460,13 @@
 
     // 층 속성 뿌려주기
     function getFloorDetail(id) {
-        console.log("getFloorDetail floorId => " + id);
-
         setType("floor");
         initDetail();
         fnCancelEditMode();
         viewFloorDetail();
         setTitle("detail", "층");
-        $("#floorId").val(id);
 
+        $("#floorId").val(id);
         let floorId = $("#floorId").val();
 
         // 층 정보
@@ -507,8 +491,6 @@
 
     // 출입문 속성 뿌려주기
     function getDoorDetail(id) {
-        console.log("getDoorDetail doorId => " + id);
-
         setType("door");
         initDetail();
         fnCancelEditMode();
@@ -551,7 +533,6 @@
     // 출입문 관리 - 수정 취소
     function fnCancelEditMode() {
         let authType = $("#authType").val();
-        console.log("fnCancelEditMode : " + authType);
 
         // [확인, 취소] --> [수정, 삭제] 버튼으로 변환
         $("#btnEdit").css("display", "inline-block");
@@ -575,10 +556,8 @@
 
     // 출입문 관리 - 수정
     function fnEditMode() {
-
         let authType = $("#authType").val();
         let doorId = $("#doorId").val();
-        console.log("fnEditMode : " + authType);
 
         // [수정, 삭제] --> [확인, 취소] 버튼으로 변환
         $("#btnEdit").css("display", "none");
@@ -596,17 +575,14 @@
         }
 
         if (doorId === "") {
-            console.log("doorId 없음");
             $(".doorDetailList #dArea").prop("disabled", true);
         } else {
-            console.log("doorId 있음");
             $(".doorDetailList #dArea").prop("disabled", false); // 구역 disable 해제
         }
     }
 
     // 출입문 관리 - 추가
     function fnAdd() {
-        console.log("fnAdd");
         let val = $("input[name=createNode]:checked").val();
 
         if ($("input[name=createNode]:checked").length > 0) {
@@ -642,7 +618,6 @@
     // 출입문 관리 - 취소
     function fnCancel() {
         let authType = $("#authType").val();
-        console.log("fnCancel " + authType);
 
         if (authType === "building") {
             let buildingId = $("#buildingId").val();
@@ -837,8 +812,6 @@
             }
             authGroupHtml.push(html);
         });
-        console.log(authGroupIds);
-        console.log(authGroupHtml);
 
         // let authType = $("#authType").val();
         $("#authGroupId").val(authGroupIds);
@@ -848,8 +821,6 @@
 
     // 권한그룹 선택 저장
     function authConf() {
-        console.log("authConf");
-
         authSave();
         closePopup("authPickPopup");
     }
@@ -869,7 +840,6 @@
     // 엑셀 파일 업로드
     function fnExcelUpload() {
         let filePath = $("#excelFile").val();
-        console.log(filePath);
 
         if (filePath == "" || filePath == null) {
             alert("엑셀 파일을 선택해주세요.");
@@ -1368,8 +1338,6 @@
     /////////////////  층 삭제 ajax - start  /////////////////////
 
     function fnDeleteFloorAjax() {
-        console.log("fnDeleteFloorAjax");
-        console.log($("#floorId").val());
 
         if (confirm("삭제 하시겠습니까?")) {
             $.ajax({
@@ -1378,7 +1346,6 @@
                 data: { id: $("#floorId").val() },
                 dataType: "json",
                 success: function (returnData) {
-                    console.log("fnDelete floor: ");
                     console.log(returnData);
 
                     if (returnData.resultCode == "Y") {
@@ -1402,8 +1369,8 @@
     /////////////////  빌딩 명 중복 확인 ajax - start  /////////////////////
 
     function fnBuildingNameValidAjax() {
-        let rtnData;
 
+        let rtnData;
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/building/name/verification.do' />",
@@ -1423,7 +1390,6 @@
                 }
             }
         });
-        console.log("rtnData =  " + rtnData);
         return rtnData;
     }
 
@@ -1454,7 +1420,6 @@
                 }
             }
         });
-        console.log("rtnData =  " + rtnData);
         return rtnData;
     }
 
@@ -1464,9 +1429,8 @@
     /////////////////  층 명 중복 확인 ajax - start  /////////////////////
 
     function fnFloorNameValidAjax() {
-        console.log($(".floorDetailList #floorNm").val());
-        let rtnData;
 
+        let rtnData;
         $.ajax({
             type: "GET",
             url: "<c:url value='/door/floor/name/verification.do' />",
@@ -1486,7 +1450,6 @@
                 }
             }
         });
-        console.log("rtnData =  " + rtnData);
         return rtnData;
     }
 
@@ -1517,7 +1480,6 @@
                 }
             }
         });
-        console.log("rtnData =  " + rtnData);
         return rtnData;
     }
 

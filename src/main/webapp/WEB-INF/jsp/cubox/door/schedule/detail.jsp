@@ -647,7 +647,6 @@
 
     // popup close (공통)
     function closePopup(popupNm) {
-        console.log("close popup");
         $("#" + popupNm).PopupWindow("close");
         if (popupNm === "doorGroupPickPopup") { // 출입문 그룹 선택
             $("input[name=chkGroup]:checked").attr("checked", false);
