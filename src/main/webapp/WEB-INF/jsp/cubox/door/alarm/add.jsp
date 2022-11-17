@@ -13,7 +13,6 @@
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorListPopup.jsp" flush="false"/>
 
-
 <style>
     .title_box {
         margin-top: 10px;
@@ -30,7 +29,6 @@
         position: sticky;
         top: 0;
     }
-
 </style>
 
 <script type="text/javascript">
@@ -47,17 +45,12 @@
 
         // 출입문 알람그룹 명 유효성 체크
         $("#alNm").focusout(function() {
-            console.log("이름 input을 벗어남");
-
             // TODO : 출입문스케쥴명 유효성 체크 (ajax)
         });
 
         // 유형 - 기본시간
         $("#alType").change(function() {
-            console.log("유형");
-            console.log(this);
             console.log($(this).val());
-
             chkAlType();
         });
 
@@ -74,7 +67,6 @@
 
     // 출입문 저장, 등록
     function fnSave() {
-        console.log("fnSave");
         // 입력값 유효성 체크
         if (fnIsEmpty($("#alNm").val())) {
             alert("출입문 알람 그룹 명을 입력해주세요.");
@@ -97,8 +89,14 @@
         //     alert("출입문을 선택해주세요.");
         //     return;
         // }
-        fnSaveAlarmGroupAjax();
-    }
+
+        if (confirm("저장하시겠습니까?")) {
+            fnSaveAlarmGroupAjax();
+        } else {
+            return;
+        }
+
+    /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
 
 
     /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
@@ -110,12 +108,6 @@
         let deleteYn = $("#alUseYn").val();
         let doorIds = $("#doorIds").val();
         // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
-
-        console.log(alNm);
-        console.log(alType);
-        console.log(alTime);
-        console.log(alUseYn);
-        console.log(doorIds);
 
         $.ajax({
             type: "POST",
@@ -131,7 +123,7 @@
             success: function(result) {
                 console.log("fnSave : " + result.resultCode);
                 if (result.resultCode === "Y" && result.newDoorId !== "") {
-                    alert("등록이 완료되었습니다.");
+                    alert("저장되었습니다.");
                     window.location.href = '/door/alarm/detail/' + result.newDoorId;
                 } else {
                     alert("등록에 실패하였습니다.");
@@ -172,7 +164,7 @@
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
-                    <input type="text" id="alNm" name="alNm" maxlength="50" value="" class="input_com w_600px">
+                    <input type="text" id="alNm" name="alNm" maxlength="35" value="" class="input_com w_600px">
                 </td>
             </tr>
             <tr>
@@ -188,8 +180,8 @@
             <tr>
                 <th>시간</th>
                 <td>
-                    <input type="number" id="alTime" name="alTime" maxlength="10" min="1" value="" class="input_com w_600px"
-                           oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">&ensp;초
+                    <input type="number" id="alTime" name="detail" min="1" max="9999" maxlength="4" value="" class="input_com w_600px"
+                           oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');this.value = this.value.slice(0,this.maxLength);" disabled>&ensp;초
                 </td>
             </tr>
             <tr>
@@ -197,8 +189,8 @@
                 <td>
                     <select id="alUseYn" name="alUseYn" class="form-control input_com w_600px" style="padding-left:10px;">
                         <option value="" selected>선택</option>
-                        <option value="Y">Y</option>
-                        <option value="N">N</option>
+                        <option value="Y">사용</option>
+                        <option value="N">미사용</option>
                     </select>
                 </td>
             </tr>
@@ -216,7 +208,7 @@
 </form>
 
 <div class="right_btn mt_20">
-    <button class="btn_middle ml_5 color_basic" onclick="fnSave();">등록</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnSave();">저장</button>
     <button class="btn_middle ml_5 color_basic" onclick="location='/door/alarm/list.do'">취소</button>
 </div>
 

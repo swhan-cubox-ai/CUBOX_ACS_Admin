@@ -43,8 +43,6 @@
 
         // 출입문 그룹 명 유효성 체크
         $("#gpNm").focusout(function () {
-            console.log("이름 input을 벗어남");
-
             // TODO : 출입문 그룹 명 유효성 체크 (ajax)
         });
 
@@ -53,14 +51,17 @@
 
     // 출입문 저장, 등록
     function fnSave() {
-        console.log("fnSave");
         // 입력값 유효성 체크
         if (fnIsEmpty($("#gpNm").val())) {
             alert("출입문 그룹 명을 입력해주세요.");
             $("#gpNm").focus();
             return;
         }
-        fnSaveGroupAjax();
+        if (confirm("저장하시겠습니까?")) {
+            fnSaveGroupAjax();
+        } else {
+            return;
+        }
     }
 
     // popup open (공통)
@@ -83,10 +84,6 @@
         let scheduleId = $("#gpSchedule").val();
         let doorIds = $("#gpDoorIds").val();
 
-        console.log(gpNm);
-        console.log(scheduleId);
-        console.log(doorIds);
-
         $.ajax({
             type: "POST",
             url: "<c:url value='/door/group/save.do' />",
@@ -97,19 +94,11 @@
             },
             dataType: "json",
             success: function (result) {
-                console.log("fnSave:" + result.resultCode);
+                console.log(result.resultCode);
 
-                if( result.resultCode === "Y" && result.newDoorId !== "") {
-                    alert("등록이 완료되었습니다.");
+                if (result.resultCode === "Y" && result.newDoorId !== "") {
+                    alert("저장되었습니다.");
                     window.location.href = '/door/group/detail/' + result.newDoorId;
-                    // $('#gpNm').prop('disabled', true);
-                    // $('#gpSchedule').prop('disabled', true);
-                    // $('#gpDoorNms').prop('disabled', true);
-                    // $('#btnSelDoor').hide();
-                    // $('#saveBtn').hide();
-                    // $('#cancelBtn').hide();
-                    // $('#listBtn').show();
-
                 } else {
                     alert("등록에 실패하였습니다.");
                 }
@@ -134,7 +123,7 @@
             <tr>
                 <th>출입문 그룹 명</th>
                 <td>
-                    <input type="text" id="gpNm" name="gpNm" maxlength="50" value="" class="input_com w_600px">
+                    <input type="text" id="gpNm" name="gpNm" maxlength="35" value="" class="input_com w_600px">
                 </td>
             </tr>
             <tr>
@@ -164,7 +153,7 @@
 
 <div class="right_btn mt_20">
     <button class="btn_middle ml_5 color_basic" onclick="location='/door/group/list.do'" id="listBtn">목록</button>
-    <button class="btn_middle ml_5 color_basic" onclick="fnSave();" id="saveBtn">등록</button>
+    <button class="btn_middle ml_5 color_basic" onclick="fnSave();" id="saveBtn">저장</button>
     <button class="btn_middle ml_5 color_basic" onclick="location='/door/group/list.do'" id="cancelBtn" >취소</button>
 </div>
 

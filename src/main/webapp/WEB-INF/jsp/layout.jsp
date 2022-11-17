@@ -9,6 +9,9 @@
 <html>
 	<head>
 		<jsp:include page="cubox/frame/sub/head.jsp" />
+		<script type="text/javascript">
+			document.oncontextmenu = function(){return false;}
+		</script>
 	</head>
 	<body id="test">
 		<!--상단영역 공통  -->
