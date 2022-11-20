@@ -26,8 +26,9 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(startDt) and @aero.cubox.util.CommonUtils@notEmpty(endDt)'>
             and holiday between #{startDt} and #{endDt}
         </if>
-
-        limit	#{srchCnt} offset #{offset}
+        <if test='@aero.cubox.util.CommonUtils@empty(isExcel)'>
+            limit	#{srchCnt} offset #{offset}
+        </if>
     </select>
 
     <select id="getHolidayListCount" parameterType="aero.cubox.core.vo.HolidayVO" resultType="int">

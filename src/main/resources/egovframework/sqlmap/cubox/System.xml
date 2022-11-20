@@ -30,8 +30,9 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword2)'>
             AND (emp_cd = #{keyword2} OR emp_nm LIKE CONCAT('%',#{keyword2},'%'))
         </if>
-
-        limit	#{srchCnt} offset #{offset}
+        <if test='@aero.cubox.util.CommonUtils@empty(isExcel)'>
+            limit	#{srchCnt} offset #{offset}
+        </if>
     </select>
 
     <select id="getPrivacyListCount" parameterType="aero.cubox.core.vo.PrivacyVO" resultType="int">

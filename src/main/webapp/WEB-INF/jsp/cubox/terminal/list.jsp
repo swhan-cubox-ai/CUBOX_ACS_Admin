@@ -15,16 +15,19 @@
   });
 
   function pageSearch(page){
-    f = document.frmSearch;
-
+    const f = document.frmSearch;
     $("#srchPage").val(page);
-
     f.action = "/terminal/list.do";
     f.submit();
   }
 
   function fnAddTerminal(){
     window.location.href='/terminal/add.do';
+  }
+
+  function fnExcelDownLoad() {
+    let url = '/terminal/excelDownload.do';
+    $("#frmSearch").attr('action', url).submit();
   }
 
 </script>
@@ -74,8 +77,8 @@
       </select>--%>
     </div>	<!--버튼 -->
     <div class="r_btnbox  mb_10">
-      <button type="button" class="btn_excel color_basic" id="excelFormDown">일괄등록 양식다운로드</button>
-      <button type="button" class="btn_excel color_basic" id="excelDown">엑셀다운로드</button>
+      <button type="button" class="btn_excel" id="excelFormDown">일괄등록 양식다운로드</button>
+      <button type="button" class="btn_excel" id="excelDown" onclick="fnExcelDownLoad()">엑셀다운로드</button>
       <button type="button" class="btn_middle color_basic" id="addTerminal" onclick="fnAddTerminal()">신규등록</button>
       <button type="button" class="btn_middle color_basic" id="addAllTerminal">일괄등록</button>
     </div>

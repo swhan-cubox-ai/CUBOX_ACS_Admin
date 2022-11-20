@@ -117,8 +117,9 @@
                 </if>
             </when>
         </choose>
-
-        limit	#{srchCnt} offset #{offset}
+        <if test='@aero.cubox.util.CommonUtils@empty(isExcel)'>
+            limit	#{srchCnt} offset #{offset}
+        </if>
     </select>
 
     <select id="getUserDetail" parameterType="int" resultType="aero.cubox.core.vo.UserVO">

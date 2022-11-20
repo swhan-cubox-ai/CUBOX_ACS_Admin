@@ -66,9 +66,6 @@
             dateFormat: 'yy-mm-dd'
         });
 
-        $("#fromDt, #toDt").datepicker("setDate", new Date());
-
-
         $("#checkAll").click(function() {
             if ($("#checkAll").prop("checked")) {
                 $("input[name=checkEmp]").prop("checked", true);
@@ -79,10 +76,8 @@
     });
 
     function pageSearch(page){
-        f = document.frmSearch;
-
+        const f = document.frmSearch;
         $("#srchPage").val(page);
-
         f.action = "/system/privacy/list.do";
         f.submit();
     }
@@ -115,21 +110,28 @@
     }
 
     function fnDelAll(){
-        Swal.fire({
-            text: '조회된 ' + $("#totalCnt").val() + '건의 정보를 일괄삭제 하시겠습니까?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'OK',
-            cancelButtonText: 'CANCEL',
-            reverseButtons: true,
+        if($("#totalCnt").val() == "0"){
+            Swal.fire({
+                icon: 'info',
+                text: '조회후 삭제를 진행하여 주십시요.'
+            });
+        }else{
+            Swal.fire({
+                text: '조회된 ' + $("#totalCnt").val() + '건의 정보를 일괄삭제 하시겠습니까?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'OK',
+                cancelButtonText: 'CANCEL',
+                reverseButtons: true,
 
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fnDelAllProc();
-            }
-        });
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fnDelAllProc();
+                }
+            });
+        }
     }
 
     function fnDelAllProc(){
@@ -178,8 +180,7 @@
             });
         }else{
             Swal.fire({
-                icon: 'warning',
-                title: '',
+                icon: 'info',
                 text: '선택된 정보가 없습니다',
             });
         }
@@ -221,10 +222,15 @@
         $("#empDetailLayerPop").PopupWindow("close");
     }
 
+    function fnExcelDownLoad() {
+        let url = '/system/privacy/excelDownload.do';
+        $("#frmSearch").attr('action', url).submit();
+    }
+
 </script>
 <form id="frmSearch" name="frmSearch" method="post">
     <input type="hidden" id="srchPage" name="srchPage" value="${pagination.curPage}"/>
-    <input type="hidden" id="totalCnt" name="totalCnt" value="${pagination.totRecord}"/>
+    <input type="hidden" id="totalCnt"  value="${pagination.totRecord}"/>
     <input type="hidden" id="checkedEmpArray" name="checkedEmpArray"/>
 
     <!--//검색박스 -->
@@ -259,7 +265,7 @@
         <div class="r_btnbox  mb_10">
             <button type="button" class="btn_middle color_basic" onclick="fnDelAll()">일괄삭제</button>
             <button type="button" class="btn_middle color_basic" onclick="fnDelSelect()">선택삭제</button>
-            <button type="button" class="btn_excel color_basic" id="excelDown">엑셀다운로드</button>
+            <button type="button" class="btn_excel" onclick="fnExcelDownLoad()">엑셀다운로드</button>
         </div>
         <!--//버튼  -->
     </div>
