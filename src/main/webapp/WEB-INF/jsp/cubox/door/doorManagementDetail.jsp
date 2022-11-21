@@ -5,10 +5,17 @@
   Time: 오후 1:12
   To change this template use File | Settings | File Templates.
 --%>
+<%@ page import="java.util.ResourceBundle" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
+
+<%
+    ResourceBundle resource = ResourceBundle.getBundle("egovframework.property.globals");
+
+    String CRUD_TYPE  = resource.getString("Globals.door.crud.type");
+%>
 
 <style>
     .tb_write_p1 tbody th {
@@ -82,8 +89,11 @@
 </style>
 
 <script type="text/javascript">
-
+    let crudType ="<%=CRUD_TYPE%>";
+    console.log("#crudType" +crudType);
     $(function () {
+
+        var HwpCtrl
         $(".title_tx").html("출입문 관리");
 
         fnGetDoorListAjax();    //출입문 목록
@@ -1529,6 +1539,9 @@
 
 </script>
 
+<div>
+    <input type="text" value= "<%=CRUD_TYPE %>">
+</div>
 <div class="com_box">
     <div class="totalbox" style="justify-content: end">
         <div class="r_btnbox mb_10">
