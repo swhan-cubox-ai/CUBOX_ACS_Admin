@@ -9,16 +9,19 @@
     });
 
     function pageSearch(page){
-        f = document.frmSearch;
-
+        const f = document.frmSearch;
         $("#srchPage").val(page);
-
         f.action = "/user/list.do";
         f.submit();
     }
 
     function fnAddUser(){
         window.location.href='/user/add.do';
+    }
+
+    function fnExcelDownLoad() {
+        let url = '/user/excelDownload.do';
+        $("#frmSearch").attr('action', url).submit();
     }
 
 </script>
@@ -51,7 +54,7 @@
             <b class="fl mr_10">전체 : <c:out value="${pagination.totRecord}"/>건</b>
         </div>	<!--버튼 -->
         <div class="r_btnbox  mb_10">
-            <button type="button" class="btn_middle color_basic" id="excelDown">엑셀다운로드</button>
+            <button type="button" class="btn_excel" id="excelDown" onclick="fnExcelDownLoad()">엑셀다운로드</button>
             <button type="button" class="btn_middle color_basic" id="addSiteUser" onclick="fnAddUser();">신규등록</button>
         </div>
         <!--//버튼  -->

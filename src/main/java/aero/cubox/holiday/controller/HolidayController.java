@@ -6,6 +6,11 @@ import aero.cubox.core.vo.*;
 import aero.cubox.holiday.service.HolidayService;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +18,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -50,7 +58,7 @@ public class HolidayController {
 			String startDt = StringUtil.nvl(commandMap.get("startDt"), "");
 			String endDt = StringUtil.nvl(commandMap.get("endDt"), "");
 
-			if( StringUtil.isEmpty(startDt)){
+			if(startDt.equals("")){
 				Date now = new Date();
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(now);
@@ -199,4 +207,71 @@ public class HolidayController {
 		return modelAndView;
 	}
 
+	@RequestMapping(value="/holiday/excelDownload.do", method = RequestMethod.POST)
+	public void excelDownload(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		HolidayVO vo = objectMapper.convertValue(commandMap, HolidayVO.class);
+
+		vo.setIsExcel("Y");
+
+		List<HolidayVO> holidayList = holidayService.getHolidayList(vo);
+
+		///// Create Excel /////
+		Workbook wb = new XSSFWorkbook();
+		Sheet sheet = wb.createSheet();
+		Row row = null;
+		Cell cell = null;
+		int rowNum = 0;
+
+		//// Header ////
+		final String[] colNames = {"No", "유형", "공휴일 명", "일자", "사용", "등록일자"};
+		// Header size
+		final int[] colWidths = {1500, 3000, 5000, 4000, 3000, 4000};
+		// Header font
+		Font fontHeader = wb.createFont();
+		fontHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
+
+		// Header style
+		CellStyle styleHeader = wb.createCellStyle();
+		styleHeader.setAlignment(CellStyle.ALIGN_CENTER);
+		styleHeader.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		styleHeader.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+		styleHeader.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+		styleHeader.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		styleHeader.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		styleHeader.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		styleHeader.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		styleHeader.setFont(fontHeader);
+
+		row = sheet.createRow(rowNum++);
+		row.setHeight((short) 500);  // 행 높이
+
+		for (int i = 0; i < colNames.length; i++) {
+			cell = row.createCell(i);
+			cell.setCellValue(colNames[i]);
+			cell.setCellStyle(styleHeader);
+			sheet.setColumnWidth(i, colWidths[i]);
+		}
+
+		//// Body ////
+		for (int i = 0; i < holidayList.size(); i++) {
+			row = sheet.createRow(rowNum++);
+			row.createCell(0).setCellValue(i + 1);
+			row.createCell(1).setCellValue(holidayList.get(i).getHolidayTypNm());
+			row.createCell(2).setCellValue(holidayList.get(i).getHolidayNm());
+			row.createCell(3).setCellValue(holidayList.get(i).getHoliday());
+			row.createCell(4).setCellValue(holidayList.get(i).getUseYn());
+			row.createCell(5).setCellValue(holidayList.get(i).getCreatedAt());
+		}
+
+		// Date
+		SimpleDateFormat fmt = new SimpleDateFormat("yyMMdd-HH_mm_ss");
+		Date date = new Date();
+
+		// File name
+		String fileNm = "공휴일관리목록_" + fmt.format(date) + ".xlsx";
+		response.setContentType("ms-vnd/excel");
+		response.setHeader("Content-Disposition", "attatchment;filename=" + URLEncoder.encode(fileNm, "UTF-8"));
+		wb.write(response.getOutputStream());
+	}
 }

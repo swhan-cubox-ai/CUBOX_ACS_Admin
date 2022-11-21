@@ -20,6 +20,9 @@ public class PrivacyVO {
     private String keyword1;
     private String keyword2;
 
+    private String checkedEmpArray;
+    private String isExcel;
+
     private int srchPage			= 1;	//조회할 페이지 번호 기본 1페이지
     private int srchCnt				= 10;	//조회할 페이지 수
     private int offset				= 0;
@@ -153,6 +156,22 @@ public class PrivacyVO {
 
     public void setKeyword2(String keyword2) {
         this.keyword2 = keyword2;
+    }
+
+    public String getCheckedEmpArray() {
+        return checkedEmpArray;
+    }
+
+    public void setCheckedEmpArray(String checkedEmpArray) {
+        this.checkedEmpArray = checkedEmpArray;
+    }
+
+    public String getIsExcel() {
+        return isExcel;
+    }
+
+    public void setIsExcel(String isExcel) {
+        this.isExcel = isExcel;
     }
 
     public int getSrchPage() {

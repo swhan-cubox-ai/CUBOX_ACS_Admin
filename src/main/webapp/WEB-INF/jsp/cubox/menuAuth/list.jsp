@@ -103,18 +103,20 @@
     });
   }
 
-
   function pageSearch(page){
-    f = document.frmSearch;
-
+    const f = document.frmSearch;
     $("#srchPage").val(page);
-
     f.action = "/menuAuth/list.do";
     f.submit();
   }
 
   function fnAddMenuAuth(){
     window.location.href='/menuAuth/add.do';
+  }
+
+  function fnExcelDownLoad() {
+    let url = '/menuAuth/excelDownload.do';
+    $("#frmSearch").attr('action', url).submit();
   }
 
 </script>
@@ -129,7 +131,7 @@
         </select>
       </div>
       <div class="comm_search  mr_10">
-        <input type="text" class="w_150px input_com" id="keyword" name="keyword" value="${data.roleNm}">
+        <input type="text" class="w_150px input_com" id="keyword" name="keyword" value="<c:out value="${data.keyword}"/>" >
       </div>
       <div class="comm_search ml_40">
         <div class="search_btn2" onclick="pageSearch('1')"></div>
@@ -153,7 +155,7 @@
       </select>--%>
     </div>	<!--버튼 -->
     <div class="r_btnbox  mb_10">
-      <button type="button" class="btn_middle color_basic" id="excelDown">엑셀다운로드</button>
+      <button type="button" class="btn_excel" id="excelDown" onclick="fnExcelDownLoad()">엑셀다운로드</button>
       <button type="button" class="btn_middle color_basic" id="addSiteHoliday" onclick="fnAddMenuAuth();">신규등록</button>
     </div>
     <!--//버튼  -->

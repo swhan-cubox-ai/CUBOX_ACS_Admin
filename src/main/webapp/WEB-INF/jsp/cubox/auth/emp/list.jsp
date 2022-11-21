@@ -8,19 +8,17 @@
         $(".title_tx").html("인사정보관리 - 목록");
     });
 
-    $(function() {
-
-    });
-
     function pageSearch(page){
-        f = document.frmSearch;
-
+        const f = document.frmSearch;
         $("#srchPage").val(page);
-
         f.action = "/auth/emp/list.do";
         f.submit();
     }
 
+    function fnExcelDownLoad() {
+        let url = '/auth/emp/excelDownload.do';
+        $("#frmSearch").attr('action', url).submit();
+    }
 
 </script>
 <form id="frmSearch" name="frmSearch" method="post">
@@ -48,7 +46,7 @@
             <b class="fl mr_10">전체 : <c:out value="${pagination.totRecord}"/>건</b>
         </div>	<!--버튼 -->
         <div class="r_btnbox  mb_10">
-            <button type="button" class="btn_excel color_basic" id="excelDown">엑셀다운로드</button>
+            <button type="button" class="btn_excel" id="excelDown" onclick="fnExcelDownLoad()">엑셀다운로드</button>
         </div>
         <!--//버튼  -->
     </div>

@@ -15,16 +15,19 @@
   });
 
   function pageSearch(page){
-    f = document.frmSearch;
-
+    const f = document.frmSearch;
     $("#srchPage").val(page);
-
     f.action = "/holiday/list.do";
     f.submit();
   }
 
   function fnAddHoliday(){
     window.location.href='/holiday/add.do';
+  }
+
+  function fnExcelDownLoad() {
+    let url = '/holiday/excelDownload.do';
+    $("#frmSearch").attr('action', url).submit();
   }
 
 </script>
@@ -62,17 +65,9 @@
   <div class="totalbox">
     <div class="txbox">
       <b class="fl mr_10">전체 : <c:out value="${pagination.totRecord}"/>건</b>
-      <!-- 건수 -->
-     <%-- <select name="srchRecPerPage" id="srchRecPerPage" class="input_com w_80px">
-        <c:if test="${cntPerPage == null || fn:length(cntPerPage) == 0}">
-          <c:forEach items="${cntPerPage}" var="cntPerPage" varStatus="status">
-            <option value='<c:out value="${cntPerPage.fvalue}"/>' <c:if test="${cntPerPage.fvalue eq pagination.recPerPage}">selected</c:if>><c:out value="${cntPerPage.fkind3}"/></option>
-          </c:forEach>
-        </c:if>
-      </select>--%>
     </div>	<!--버튼 -->
     <div class="r_btnbox  mb_10">
-      <button type="button" class="btn_middle color_basic" id="excelDown">엑셀다운로드</button>
+      <button type="button" class="btn_excel" id="excelDown" onclick="fnExcelDownLoad()">엑셀다운로드</button>
       <button type="button" class="btn_middle color_basic" id="addSiteHoliday" onclick="fnAddHoliday()">신규등록</button>
     </div>
     <!--//버튼  -->

@@ -73,8 +73,9 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
             AND (TM.terminal_cd like CONCAT('%',#{keyword},'%') OR TM.mgmt_num like CONCAT('%',#{keyword},'%'))
         </if>
-
-        limit	#{srchCnt} offset #{offset}
+        <if test='@aero.cubox.util.CommonUtils@empty(isExcel)'>
+            limit	#{srchCnt} offset #{offset}
+        </if>
     </select>
 
     <select id="getTerminalListCount" parameterType="aero.cubox.core.vo.TerminalVO" resultType="int">

@@ -4,41 +4,55 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <style>
-    .layer {
-        position: fixed;
-        width: 40%;
-        left: 50%;
-        margin-left: -20%; /* half of width */
-        height: 400px;
-        top: 50%;
-        margin-top: -150px; /* half of height */
+    .tb_write_p1 tbody th {
+        text-align: center;
+    }
+    .tb_write_02 tbody tr {
+        height: 70px;
+    }
+    .gateDetailList tr td {
+        text-align: center;
+    }
+    .gateDetailList tr td select {
+        float: none;
+    }
+    .gateDetailList tr td input,
+    .gateDetailList tr td select,
+    .gateDetailList tr td textarea {
+        width: 95%;
+    }
+    .title_s {
+        font-size: 20px;
+    }
+    #gateInfo {
+        width: 100%;
+        height: 690px;
+        border: 1px solid black;
+    }
+    #treeDiv {
+        width: 100%;
+        height: 611px;
+        border-bottom: 1px solid #ccc;
+        padding: 10px 45px;
+        padding: 10px 45px;
         overflow: auto;
-
-        /* decoration */
-        border: 1px solid #000;
-        background-color: #eee;
-        padding: 1em;
-        box-sizing: border-box;
-        z-index: 2;
     }
 
-    #userRoleDiv {
-        white-space: pre;
-        overflow-y: auto;
-        height: 250px;
+    .tb_list tr td {
+        text-align: center;
     }
-
-    @media (max-width: 600px) {
-        .layer {
-            width: 80%;
-            margin-left: -40%;
-        }
+    thead {
+        position: sticky;
+        top: 0;
     }
-    .hidden {
-        display: none;
+    #tdAuthConf tr, #tdAuthTotal tr {
+        height: 40px;
+        text-align: center;
+    }
+    .title_box {
+        margin-top: 10px;
     }
 </style>
-
 
 <script type="text/javascript">
 
@@ -50,6 +64,8 @@
         }else{
             $(".title_tx").html("사용자 관리 - 상세");
         }
+
+        modalPopup("roleListLayerPop", "권한목록 선택", 910, 520);
 
         fnGetUserAuthList();
     });
@@ -74,7 +90,7 @@
     }
 
     function fnClosePop(){
-        $("#roleListLayerPop").addClass("hidden");
+        $("#roleListLayerPop").PopupWindow("close");
     }
 
     function fnGetUserAuthList() {
@@ -143,7 +159,7 @@
 
                     $("#roleListDiv").append(str);
 
-                    $("#roleListLayerPop").removeClass("hidden");
+                    $("#roleListLayerPop").PopupWindow("open");
 
                 }else{ alert("ERROR!");return;}
             }
@@ -291,31 +307,33 @@
 
 
 <!-- 사용자 권한 목록 레이어 팝업 -->
-<div id="roleListLayerPop" class="js-layer  layer  hidden">
-    <div class="com_box ">
-        <div class="txbox">
-            <b class="fl mr_10">권한목록 선택</b>
+<div id="roleListLayerPop" class="example_content">
+    <div class="popup_box box_w3">
+        <div class="com_box ">
+            <div class="txbox">
+                <b class="fl mr_10">권한목록 선택</b>
+            </div>
+            <!--테이블 시작 -->
+            <div class="tb_outbox" id="roleDiv">
+                <table class="tb_list" >
+                    <colgroup>
+                        <col width="3%" />
+                        <col width="15%" />
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>선택</th>
+                        <th>권한명</th>
+                    </tr>
+                    </thead>
+                    <tbody id="roleListDiv"></tbody>
+                </table>
+            </div>
         </div>
-        <!--테이블 시작 -->
-        <div class="tb_outbox" id="roleDiv">
-            <table class="tb_list" >
-                <colgroup>
-                    <col width="3%" />
-                    <col width="15%" />
-                </colgroup>
-                <thead>
-                <tr>
-                    <th>선택</th>
-                    <th>권한명</th>
-                </tr>
-                </thead>
-                <tbody id="roleListDiv"></tbody>
-            </table>
-        </div>
-        <div style="margin-top:300px;text-align: center;">
-            <button type="button" class="btn_middle color_basic ml_5" onclick="fnSavePop()">확인</button>
-            <button type="button" class="btn_middle color_basic ml_5" onclick="fnClosePop()">취소</button>
-        </div>
+    </div>
+    <div style="margin-top:20px;text-align: center;">
+        <button type="button" class="btn_middle color_basic ml_5" onclick="fnSavePop()">확인</button>
+        <button type="button" class="btn_middle color_basic ml_5" onclick="fnClosePop()">취소</button>
     </div>
 </div>
 <!-- /사용자 목록 레이어 팝업 -->
