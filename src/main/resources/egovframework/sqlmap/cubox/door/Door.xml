@@ -26,6 +26,9 @@
 
 	<select id="selectDoorList" parameterType="HashMap" resultType="HashMap">
 		SELECT id,
+		       building_cd,
+		       floor_cd,
+		       door_cd,
 			   building_id,
 			   area_id,
 			   floor_id,
@@ -89,6 +92,7 @@
 
 	<select id="selectBuildingList" parameterType="HashMap" resultType="HashMap">
 		SELECT id,
+		       building_cd,
 		       workplace_id,
 		       building_nm,
 		       created_at,
@@ -107,6 +111,7 @@
 		SELECT id,
 		       building_id,
 		       area_id,
+		       floor_cd,
 		       floor_nm,
 		       created_at,
 		       updated_at
