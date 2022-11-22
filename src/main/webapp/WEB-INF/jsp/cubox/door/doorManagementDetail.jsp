@@ -22,7 +22,8 @@
         text-align: center;
     }
     .tb_write_02 tbody tr {
-        height: 57.5px;
+        /*height: 57.5px;*/
+        height: 52px;
     }
     .detailList tr td {
         text-align: center;
@@ -290,6 +291,7 @@
         if (authType === "building") {
             $("#buildingPath").text("");
             $("#buildingNm").val("");
+            $("#buildingCd").val("");
             $("#buildingId").val("");
 
         } else if (authType === "area") {
@@ -302,6 +304,7 @@
         } else if (authType === "floor") {
             $("#floorPath").text("");
             $("#floorNm").val("");
+            $("#floorCd").val("");
             $("#floorId").val("");
             $("#floorGroup").val("");
             // $("#authGroupId").val("");
@@ -310,11 +313,10 @@
             $(".floorDetailList [name=doorEditSelect]").prop("disabled", true);
 
         } else if (authType === "door") {
-            console.log("initDetail door");
-
             $("#doorPath").text("");
             $("#doorId").val("");
             $("#doorNm").val("");
+            $("#doorCd").val("");
             $("#terminalCd").val("");
             $("#mgmtNum").val("");
             $("#authGroupNm").val("");
@@ -447,6 +449,7 @@
                 $("#buildingPath").text(dInfo.building_nm);     // 경로
                 $("#buildingId").val(dInfo.id);                 // 빌딩 id
                 $("#buildingNm").val(dInfo.building_nm);        // 빌딩 명
+                $("#buildingCd").val(dInfo.building_cd);        // 빌딩 코드
             }
         });
     }
@@ -489,7 +492,6 @@
         setTitle("detail", "층");
         $("#floorId").val(id);
 
-        $("#floorId").val(id);
         let floorId = $("#floorId").val();
 
         // 층 정보
@@ -505,6 +507,7 @@
                 $("#floorPath").text(dInfo.floor_nm.replaceAll(" ", " > "));   // 경로
                 $("#floorId").val(dInfo.id);                                   // 층 id
                 $("#floorNm").val(dInfo.floor_nm);                             // 층 명
+                $("#floorCd").val(dInfo.floor_cd);                             // 층 코드
                 $(".floorDetailList #dBuilding").val(dInfo.building_id);       // 빌딩
                 $(".floorDetailList #dArea").val(dInfo.area_id);               // 구역
             }
@@ -537,6 +540,7 @@
                 $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));              // 경로
                 $("#doorId").val(dInfo.id);                                             // doorId
                 $("#doorNm").val(dInfo.door_nm);                                        // 출입문 명
+                $("#doorCd").val(dInfo.door_cd);                                        // 출입문 코드
                 $(".doorDetailList #dBuilding").val(dInfo.building_id);                 // 빌딩
                 $(".doorDetailList #dArea").val(dInfo.area_id);                         // 구역
                 $(".doorDetailList #dFloor").val(dInfo.floor_id);                       // 층
@@ -1649,6 +1653,12 @@
                             <input type="text" id="doorNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
                         </td>
                     </tr>
+                    <tr>
+                        <th>출입문 코드</th>
+                        <td colspan="2">
+                            <input type="text" id=doorCd name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                        </td>
+                    </tr>
                     <jsp:include page="/WEB-INF/jsp/cubox/common/buildingSelect.jsp" flush="false" />
 <%--                    <tr>--%>
 <%--                        <th>빌딩(동)</th>--%>
@@ -1762,6 +1772,12 @@
                                 <input type="text" id="buildingNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
                             </td>
                         </tr>
+                        <tr>
+                            <th>빌딩 코드</th>
+                            <td colspan="2">
+                                <input type="text" id="buildingCd" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                            </td>
+                        </tr>
                     </tbody>
                     <%-- // 빌딩 추가 --%>
 
@@ -1806,6 +1822,12 @@
                             <th>층 명</th>
                             <td colspan="2">
                                 <input type="text" id="floorNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>층 코드</th>
+                            <td colspan="2">
+                                <input type="text" id="floorCd" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
                             </td>
                         </tr>
                         <%-- 빌딩 선택 --%>
