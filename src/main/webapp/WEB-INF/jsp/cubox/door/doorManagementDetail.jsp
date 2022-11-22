@@ -90,19 +90,25 @@
 
 <script type="text/javascript">
     let crudType ="<%=CRUD_TYPE%>";
-    console.log("#crudType" +crudType);
+    console.log("#crudType" + crudType);
+
     $(function () {
-
-        var HwpCtrl
         $(".title_tx").html("출입문 관리");
-
-        fnGetDoorListAjax();    //출입문 목록
 
         modalPopup("termPickPopup", "단말기 선택", 910, 520);
         modalPopup("authPickPopup", "권한그룹 선택", 910, 550);
         modalPopup("excelUploadPopup", "엑셀 업로드", 450, 290);
 
+        fnGetDoorListAjax();    //출입문 목록
         fnAdd(); // 최초 등록 상태
+
+        // 읽기 모드일 때
+        if (crudType === "R") {
+            fnCancelEditMode();
+            $("#btnAddType").css("display", "none"); // 추가 버튼
+            $("#btn_wrapper").css("display", "none"); // 속성쪽 버튼
+            $("#btnExcelDownload, #btnExcelUpload").css("display", "none"); // 엑셀 다운로드, 업로드 버튼
+        }
 
         let pathArr = [];
 
@@ -397,7 +403,9 @@
 
     // 버튼 보여주기
     function viewButtons() {
-        $("#btn_wrapper").css("display", "block");
+        if (crudType !== "R") {
+            $("#btn_wrapper").css("display", "block");
+        }
     }
 
     // 버튼 숨기기
@@ -408,7 +416,9 @@
     // title 설정
     function setTitle(type, txt) {
         if (type === "add") {
-            $("#titleProp").text(txt + " 추가");
+            if (crudType !== "R") {
+                $("#titleProp").text(txt + " 추가");
+            }
         } else if (type === "detail") {
             $("#titleProp").text(txt + " 속성");
         }
@@ -545,6 +555,7 @@
 
     // 출입문 관리 - 수정 취소
     function fnCancelEditMode() {
+        console.log("fnCancelEditMode");
         let authType = $("#authType").val();
 
         // [확인, 취소] --> [수정, 삭제] 버튼으로 변환
@@ -596,7 +607,10 @@
 
     // 출입문 관리 - 추가
     function fnAdd() {
+        console.log("fnAdd");
         let val = $("input[name=createNode]:checked").val();
+
+        console.log(val);
 
         if ($("input[name=createNode]:checked").length > 0) {
             setType(val);
@@ -1540,13 +1554,13 @@
 </script>
 
 <div>
-    <input type="text" value= "<%=CRUD_TYPE %>">
+    <input type="hidden" value= "<%=CRUD_TYPE %>">
 </div>
 <div class="com_box">
     <div class="totalbox" style="justify-content: end">
         <div class="r_btnbox mb_10">
-            <button type="button" class="btn_excel" data-toggle="modal" id="excelDownload" onclick="fnExcelFormDownload();">일괄등록 양식 다운로드</button>
-            <button type="button" class="btn_excel" data-toggle="modal" onclick="openPopup('excelUploadPopup');">출입문 일괄등록</button>
+            <button type="button" class="btn_excel" data-toggle="modal" id="btnExcelDownload" onclick="fnExcelFormDownload();">일괄등록 양식 다운로드</button>
+            <button type="button" class="btn_excel" data-toggle="modal" id="btnExcelUpload" onclick="openPopup('excelUploadPopup');">출입문 일괄등록</button>
         </div>
     </div>
 </div>
@@ -1564,7 +1578,7 @@
         <div class="com_box" style="border: 1px solid black; background-color: white;">
             <div id="treeDiv"></div>
             <div class="c_btnbox center mt_10 mb_10" style="height: 35px;">
-                <div style="display: inline-block;">
+                <div id="btnAddType" style="display: inline-block;">
                     <div class="divAddNode mr_10">
                         <label for="addBuilding">
                             <input type="radio" id="addBuilding" name="createNode" class="mr_5" value="building">빌딩(동)
