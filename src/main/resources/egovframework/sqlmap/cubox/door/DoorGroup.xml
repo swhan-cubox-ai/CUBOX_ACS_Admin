@@ -77,10 +77,12 @@
         ( nm
         , door_sch_id
         , created_at
+        , updated_at
            )
         VALUES
             ( #{nm}
             , #{doorSchId}
+            , NOW()
             , NOW()
             )
     </insert>

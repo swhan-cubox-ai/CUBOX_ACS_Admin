@@ -64,14 +64,16 @@
 
     <insert id="insertSchedule" parameterType="HashMap" useGeneratedKeys="true" keyProperty="scheduleId" keyColumn="id">
         INSERT
-        INTO T_DOOR_SCH
-        ( door_sch_nm,
-          created_at
-        )
+          INTO T_DOOR_SCH
+             ( door_sch_nm
+             , created_at
+             , updated_at
+             )
         VALUES
-            ( #{doorSchNm}
-            , NOW()
-            )
+             ( #{doorSchNm}
+             , NOW()
+             , NOW()
+             )
     </insert>
 
 
@@ -88,8 +90,8 @@
 
     <delete id="deleteSchedule" parameterType="HashMap" >
         DELETE
-        FROM T_DOOR_SCH
-        WHERE id = #{id}
+          FROM T_DOOR_SCH
+         WHERE id = #{id}
     </delete>
 
 
@@ -127,23 +129,24 @@
 
     <insert id="insertScheduleByDay" parameterType="HashMap">
         INSERT
-        INTO T_DOOR_SCH_WEEKDAY
-        ( door_sch_id,
-          weekday,
-          order_no,
-          beg_tm,
-          end_tm,
-          created_at
-        )
+          INTO T_DOOR_SCH_WEEKDAY
+             ( door_sch_id
+              , weekday
+              , order_no
+              , beg_tm
+              , end_tm
+              , created_at
+              , updated_at
+              )
         VALUES
-            (
-             #{doorSchId}
-            , #{weekday}
-            , #{orderNo}
-            , #{begTm}
-            , #{endTm}
-            , NOW()
-            )
+             ( #{doorSchId}
+             , #{weekday}
+             , #{orderNo}
+             , #{begTm}
+             , #{endTm}
+             , NOW()
+             , NOW()
+             )
     </insert>
 
 
@@ -168,19 +171,19 @@
 
     <select id="selectDoorScheduleNameVerification" parameterType="HashMap" resultType="int">
         SELECT COUNT(TDS.id) AS vCnt
-        FROM T_DOOR_SCH TDS
-        WHERE 1 = 1
-          AND replace(TDS.door_sch_nm, ' ', '') = replace(#{doorSchNm}, ' ', '')
+          FROM T_DOOR_SCH TDS
+         WHERE 1 = 1
+           AND replace(TDS.door_sch_nm, ' ', '') = replace(#{doorSchNm}, ' ', '')
     </select>
 
 
     <select id="selectDayScheduleExistsCount"  parameterType="HashMap" resultType="int">
         SELECT COUNT(A.id) AS cnt
-        FROM (
-        SELECT TDSW.id
-        FROM T_DOOR_SCH_WEEKDAY TDSW
-        WHERE TDSW.door_sch_id = #{doorSchId}
-        ) A
+          FROM (
+                SELECT TDSW.id
+                  FROM T_DOOR_SCH_WEEKDAY TDSW
+                 WHERE TDSW.door_sch_id = #{doorSchId}
+               ) A
     </select>
 
 </mapper>
