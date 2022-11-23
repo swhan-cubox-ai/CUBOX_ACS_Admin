@@ -5,6 +5,7 @@
 	<select id="selectDoorDetail"  parameterType="HashMap" resultType="HashMap">
 		  SELECT TD.id
 		       , TD.door_nm
+               , TD.door_cd
 		       , TD.building_id
 		       , TD.area_id
 		       , TD.floor_id
