@@ -1,4 +1,4 @@
-<%--
+<%@ page import="java.util.ResourceBundle" %><%--
   Created by IntelliJ IDEA.
   User: USER
   Date: 2022-10-07
@@ -8,6 +8,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%
+    ResourceBundle resource = ResourceBundle.getBundle("egovframework.property.globals");
+
+    String CRUD_TYPE  = resource.getString("Globals.door.crud.type");
+%>
+
 <style>
     #doorSelected tr th {
         text-align: center;
@@ -15,8 +21,9 @@
 </style>
 
 <script type="text/javascript">
-$(function () {
+let crudType ="<%=CRUD_TYPE%>";
 
+$(function () {
     // 출입문 추가
     $(".add_door").click(function () {
         let nodeSel = $(".nodeSel").html();
@@ -102,7 +109,7 @@ function setDoors(type) {
             success : function(result) {
                 console.log(result);
 
-                createTree(false, result, $("#treeDiv"));
+                createTree(crudType, false, result, $("#treeDiv"));
                 $("#doorSelected").empty();
                 let doorList;
                 if (type === "Group" && $("#gpDoorIds").val() != "") { // 수정일 떄
