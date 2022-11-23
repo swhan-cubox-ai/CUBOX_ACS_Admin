@@ -115,6 +115,8 @@
 
         // 빌딩 선택 시,
         $(".selectBuilding").change(function() {
+            console.log("bselectBuilding");
+
             let val = $(this).val();
             let authType = $("#authType").val();
             let area;
@@ -188,6 +190,7 @@
 
         // 층 선택 시,
         $("#dFloor").change(function() {
+            console.log("dFloor change");
             $("#pathFloor").text($("dFloor option:checked").text());
             pathArr[2] = $("#dFloor option:checked").text();
             $("#doorPath").text(pathArr.join(" > "));
@@ -503,13 +506,20 @@
             success: function (result) {
                 console.log(result);
                 // TODO: 권한그룹 ID
+                let path = [];
                 let dInfo = result.doorInfo;
-                $("#floorPath").text(dInfo.floor_nm.replaceAll(" ", " > "));   // 경로
                 $("#floorId").val(dInfo.id);                                   // 층 id
                 $("#floorNm").val(dInfo.floor_nm);                             // 층 명
                 $("#floorCd").val(dInfo.floor_cd);                             // 층 코드
                 $(".floorDetailList #dBuilding").val(dInfo.building_id);       // 빌딩
                 $(".floorDetailList #dArea").val(dInfo.area_id);               // 구역
+                if (crudType === "R") {
+                    path = [$(".floorDetailList #dBuilding option:checked").text(), dInfo.floor_nm];
+                } else {
+                    path = [$(".floorDetailList #dBuilding option:checked").text(),
+                            $(".floorDetailList #dArea option:checked").text(), dInfo.floor_nm];
+                }
+                $("#floorPath").text(path.join(" > "));                        // 경로
             }
         });
 
@@ -536,8 +546,8 @@
                 // TODO : 알람그룹 가져오기, 스케쥴id
                 console.log(result);
 
+                let path = [];
                 let dInfo = result.doorInfo;
-                $("#doorPath").text(dInfo.door_nm.replaceAll(" ", " > "));              // 경로
                 $("#doorId").val(dInfo.id);                                             // doorId
                 $("#doorNm").val(dInfo.door_nm);                                        // 출입문 명
                 $("#doorCd").val(dInfo.door_cd);                                        // 출입문 코드
@@ -553,6 +563,14 @@
                 if (dInfo.auth_nms != undefined || dInfo.auth_nms != null) {            // 권한그룹 이름
                     $("#authGroupNm").val(dInfo.auth_nms.split("/ ").join("\r\n"));
                 }
+                if (crudType === "R") {
+                    path = [$(".doorDetailList #dBuilding option:checked").text(),
+                            $(".doorDetailList #dFloor option:checked").text(), dInfo.door_nm];
+                } else {
+                    path = [$(".doorDetailList #dBuilding option:checked").text(), $(".doorDetailList #dArea option:checked").text(),
+                            $(".doorDetailList #dFloor option:checked").text(), dInfo.door_nm];
+                }
+                $("#doorPath").text(path.join(" > "));                                   // 경로
             }
         });
     }
@@ -942,7 +960,7 @@
                 console.log(result);
 
                 // tree 생성
-                createTree(true, result, $("#treeDiv"));
+                createTree(crudType, true, result, $("#treeDiv"));
 
                 // 빌딩 list update
                 $("option[name=buildingData]").remove();
@@ -1656,7 +1674,7 @@
                     <tr>
                         <th>출입문 코드</th>
                         <td colspan="2">
-                            <input type="text" id=doorCd name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                            <input type="text" id="doorCd" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
                         </td>
                     </tr>
                     <jsp:include page="/WEB-INF/jsp/cubox/common/buildingSelect.jsp" flush="false" />
