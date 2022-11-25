@@ -84,6 +84,11 @@
         -webkit-user-select: none;
         user-select: none;
     }
+    .paddingForBtn {
+        border-right:none;
+        padding-right:0;
+        padding-left:12px;
+    }
     .title_box {
         margin-top: 10px;
     }
@@ -109,6 +114,12 @@
             $("#btnAddType").css("display", "none"); // 추가 버튼
             $("#btn_wrapper").css("display", "none"); // 속성쪽 버튼
             $("#btnExcelDownload, #btnExcelUpload").css("display", "none"); // 엑셀 다운로드, 업로드 버튼
+            $(".hideSelectBtn").remove(); // 단말기코드, 권한그룹 선택 버튼
+            $(".paddingForBtn").attr("colspan", "2").removeClass("paddingForBtn"); // 단말기코드, 권한그룹 길이 조정
+            let schVal = ($("#selDoorGroup option:selected").val() === "") ? "없음" : $("#selDoorGroup option:selected").text();
+            $("#selDoorGroup option:selected").text(schVal); // 스케쥴
+            let alGrpVal = ($("#doorAlarmGroup option:selected").val() === "") ? "없음" : $("#doorAlarmGroup option:selected").text();
+            $("#doorAlarmGroup option:selected").text(alGrpVal); // 알람그룹
         }
 
         // 빌딩 선택 시,
@@ -1437,10 +1448,10 @@
                     </tr>
                     <tr>
                         <th>단말기 코드</th>
-                        <td style="border-right:none; padding-right:0; padding-left:12px;">
+                        <td class="paddingForBtn">
                             <input type="text" id="terminalCd" name="doorEditDisabled" maxlength="30" class="input_com" value="" disabled/>
                         </td>
-                        <td>
+                        <td class="hideSelectBtn">
                             <button type="button" id="btnTerminalPick" class="btn_gray3 btn_small disabled" onclick="openPopup('termPickPopup');">선택</button>
                         </td>
                     </tr>
@@ -1452,12 +1463,12 @@
                     </tr>
                     <tr>
                         <th>권한 그룹</th>
-                        <td style="border-right:none; padding-right:0; padding-left:12px;">
+                        <td class="paddingForBtn">
                             <textarea id="authGroupNm" name="doorEditDisabled" rows="4" cols="33" class="mt_5 mb_5" style="font-size: 14px; line-height: 1.5; padding: 1px 10px;" disabled></textarea>
                         </td>
-                        <td>
+                        <td class="hideSelectBtn">
                             <button type="button" id="btnDoorAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup');">선택</button>
-                        </td>
+                        </tdhideSelectBtn>
                     </tr>
                     </tbody>
                     <%-- // 출입문 추가 --%>
