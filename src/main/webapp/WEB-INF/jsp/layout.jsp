@@ -10,7 +10,9 @@
 	<head>
 		<jsp:include page="cubox/frame/sub/head.jsp" />
 		<script type="text/javascript">
-			document.oncontextmenu = function(){return false;}
+			document.oncontextmenu = function(){
+				alert("마우스 우클릭 버튼은 사용할 수 없습니다.")
+				return false;}
 		</script>
 	</head>
 	<body id="test">
