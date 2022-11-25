@@ -8,6 +8,11 @@ import aero.cubox.menuAuth.service.MenuAuthService;
 import aero.cubox.user.service.UserService;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -17,6 +22,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -400,5 +409,75 @@ public class UserController {
 
 		return modelAndView;
 	}
+
+	@RequestMapping(value="/user/excelDownload.do", method = RequestMethod.POST)
+	public void excelDownload(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		UserVO vo = objectMapper.convertValue(commandMap, UserVO.class);
+
+		vo.setIsExcel("Y");
+
+		List<UserVO> userList = userService.getUserList(vo);
+
+		///// Create Excel /////
+		Workbook wb = new XSSFWorkbook();
+		Sheet sheet = wb.createSheet();
+		Row row = null;
+		Cell cell = null;
+		int rowNum = 0;
+
+		//// Header ////
+		final String[] colNames = {"No", "아이디", "사용자명", "소속", "연락처", "등록일자", "상태"};
+		// Header size
+		final int[] colWidths = {1500, 5000, 5000, 5000, 5000, 3000, 1500};
+		// Header font
+		Font fontHeader = wb.createFont();
+		fontHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
+
+		// Header style
+		CellStyle styleHeader = wb.createCellStyle();
+		styleHeader.setAlignment(CellStyle.ALIGN_CENTER);
+		styleHeader.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		styleHeader.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+		styleHeader.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+		styleHeader.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		styleHeader.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		styleHeader.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		styleHeader.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		styleHeader.setFont(fontHeader);
+
+		row = sheet.createRow(rowNum++);
+		row.setHeight((short) 500);  // 행 높이
+
+		for (int i = 0; i < colNames.length; i++) {
+			cell = row.createCell(i);
+			cell.setCellValue(colNames[i]);
+			cell.setCellStyle(styleHeader);
+			sheet.setColumnWidth(i, colWidths[i]);
+		}
+
+		//// Body ////
+		for (int i = 0; i < userList.size(); i++) {
+			row = sheet.createRow(rowNum++);
+			row.createCell(0).setCellValue(i + 1);
+			row.createCell(1).setCellValue(userList.get(i).getLoginId());
+			row.createCell(2).setCellValue(userList.get(i).getUserNm());
+			row.createCell(3).setCellValue(userList.get(i).getDeptNm());
+			row.createCell(4).setCellValue(userList.get(i).getContactNo());
+			row.createCell(5).setCellValue(userList.get(i).getCreatedAt());
+			row.createCell(6).setCellValue(userList.get(i).getActiveYn());
+		}
+
+		// Date
+		SimpleDateFormat fmt = new SimpleDateFormat("yyMMdd-HH_mm_ss");
+		Date date = new Date();
+
+		// File name
+		String fileNm = "사용자관리목록_" + fmt.format(date) + ".xlsx";
+		response.setContentType("ms-vnd/excel");
+		response.setHeader("Content-Disposition", "attatchment;filename=" + URLEncoder.encode(fileNm, "UTF-8"));
+		wb.write(response.getOutputStream());
+	}
+
 
 }

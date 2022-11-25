@@ -23,6 +23,7 @@ public class UserVO {
     private String updatedAt;
     private String activeYn;
 
+    private String isExcel;
 
     private String srchCond;
     private String keyword;
@@ -179,6 +180,14 @@ public class UserVO {
 
     public void setActiveYn(String activeYn) {
         this.activeYn = activeYn;
+    }
+
+    public String getIsExcel() {
+        return isExcel;
+    }
+
+    public void setIsExcel(String isExcel) {
+        this.isExcel = isExcel;
     }
 
     public int getSrchCnt() {

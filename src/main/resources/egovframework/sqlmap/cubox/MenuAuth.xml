@@ -13,11 +13,12 @@
             T_ROLE
         WHERE
             1=1
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(roleNm)'>
-            and role_nm like CONCAT('%',#{roleNm},'%')
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            and role_nm like CONCAT('%',#{keyword},'%')
         </if>
-
-        limit	#{srchCnt} offset #{offset}
+        <if test='@aero.cubox.util.CommonUtils@empty(isExcel)'>
+            limit	#{srchCnt} offset #{offset}
+        </if>
     </select>
 
     <select id="getMenuAuthListCount" parameterType="aero.cubox.core.vo.MenuAuthVO" resultType="int">
@@ -26,8 +27,8 @@
         from	T_ROLE
         WHERE
             1=1
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(roleNm)'>
-            and role_nm like CONCAT('%',#{roleNm},'%')
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+            and role_nm like CONCAT('%',#{keyword},'%')
         </if>
     </select>
 

@@ -13,6 +13,7 @@ public class AuthVO {
     private String createdAt;
     private String updatedAt;
 
+    private String isExcel;
     private String keyword;
     private String srchCond;
 
@@ -101,6 +102,14 @@ public class AuthVO {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getIsExcel() {
+        return isExcel;
+    }
+
+    public void setIsExcel(String isExcel) {
+        this.isExcel = isExcel;
     }
 
     public String getKeyword() {

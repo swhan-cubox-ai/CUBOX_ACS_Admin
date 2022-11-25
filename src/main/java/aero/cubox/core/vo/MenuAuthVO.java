@@ -10,6 +10,11 @@ public class MenuAuthVO {
     private String userNm;
     private String deptNm;
 
+    private String isExcel;
+
+    private String keyword;
+
+    private String srchCond;
 
     private int srchPage			= 1;	//조회할 페이지 번호 기본 1페이지
     private int srchCnt				= 10;	//조회할 페이지 수
@@ -75,6 +80,30 @@ public class MenuAuthVO {
 
     public void setDeptNm(String deptNm) {
         this.deptNm = deptNm;
+    }
+
+    public String getIsExcel() {
+        return isExcel;
+    }
+
+    public void setIsExcel(String isExcel) {
+        this.isExcel = isExcel;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getSrchCond() {
+        return srchCond;
+    }
+
+    public void setSrchCond(String srchCond) {
+        this.srchCond = srchCond;
     }
 
     public int getSrchPage() {

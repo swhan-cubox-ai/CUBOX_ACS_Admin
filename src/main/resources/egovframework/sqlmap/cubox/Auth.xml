@@ -25,8 +25,9 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword2)'>
             AND (emp_cd = #{keyword2} OR emp_nm like CONCAT('%',#{keyword2},'%'))
         </if>
-
-        limit	#{srchCnt} offset #{offset}
+        <if test='@aero.cubox.util.CommonUtils@empty(isExcel)'>
+            limit	#{srchCnt} offset #{offset}
+        </if>
     </select>
 
     <select id="getEmpListCount" parameterType="aero.cubox.core.vo.EmpVO" resultType="int">
@@ -58,8 +59,9 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
             AND (instt_nm like CONCAT('%',#{keyword},'%') OR dept_nm like CONCAT('%',#{keyword},'%'))
         </if>
-
-        limit	#{srchCnt} offset #{offset}
+        <if test='@aero.cubox.util.CommonUtils@empty(isExcel)'>
+            limit	#{srchCnt} offset #{offset}
+        </if>
     </select>
 
     <select id="getDeptListCount" parameterType="aero.cubox.core.vo.DeptVO" resultType="int">
@@ -94,8 +96,9 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
             AND auth_nm like CONCAT('%',#{keyword},'%')
         </if>
-
-        limit	#{srchCnt} offset #{offset}
+        <if test='@aero.cubox.util.CommonUtils@empty(isExcel)'>
+            limit	#{srchCnt} offset #{offset}
+        </if>
     </select>
 
     <select id="getAuthListCount" parameterType="aero.cubox.core.vo.AuthVO" resultType="int">

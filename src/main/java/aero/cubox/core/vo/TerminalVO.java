@@ -22,7 +22,7 @@ public class TerminalVO {
     private String createdAt;
     private String useYn;
 
-
+    private String isExcel;
 
     private String srchCond1;
     private String srchCond2;
@@ -231,6 +231,14 @@ public class TerminalVO {
 
     public void setUseYn(String useYn) {
         this.useYn = useYn;
+    }
+
+    public String getIsExcel() {
+        return isExcel;
+    }
+
+    public void setIsExcel(String isExcel) {
+        this.isExcel = isExcel;
     }
 
     public void autoOffset(){

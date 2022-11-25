@@ -5,6 +5,7 @@
 	<select id="selectDoorDetail"  parameterType="HashMap" resultType="HashMap">
 		  SELECT TD.id
 		       , TD.door_nm
+               , TD.door_cd
 		       , TD.building_id
 		       , TD.area_id
 		       , TD.floor_id
@@ -26,6 +27,9 @@
 
 	<select id="selectDoorList" parameterType="HashMap" resultType="HashMap">
 		SELECT id,
+		       building_cd,
+		       floor_cd,
+		       door_cd,
 			   building_id,
 			   area_id,
 			   floor_id,
@@ -56,12 +60,14 @@
 				   , door_nm
 				   , alarm_typ
 				   , created_at
+				   , updated_at
 		)
 		values  ( #{buildingId}
 				, #{areaId}
 				, #{floorId}
 				, #{doorNm}
 				, #{alarmGroupId}
+				, NOW()
 				, NOW()
 				)
 
@@ -88,11 +94,12 @@
 
 
 	<select id="selectBuildingList" parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-		       workplace_id,
-		       building_nm,
-		       created_at,
-		       updated_at
+		SELECT TB.id,
+		       TB.building_cd,
+		       TB.workplace_id,
+		       TB.building_nm,
+		       TB.created_at,
+		       TB.updated_at
 		  FROM T_BUILDING TB
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -107,6 +114,7 @@
 		SELECT id,
 		       building_id,
 		       area_id,
+		       floor_cd,
 		       floor_nm,
 		       created_at,
 		       updated_at
@@ -220,7 +228,8 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 		  INTO T_AUTH_DOOR
 		     ( auth_id
 		     , door_id
-		     , created_at)
+		     , created_at
+		     )
 		VALUES
 		     ( #{authId}
 			 , #{doorId}
@@ -241,10 +250,13 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 		  INTO T_BUILDING
 		     ( workplace_id
 		     , building_nm
-		     , created_at)
+		     , created_at
+			 , updated_at
+			 )
 		VALUES
 			 ( #{workplaceId}
 			 , #{buildingNm}
+			 , NOW()
 			 , NOW()
 			 )
 	</insert>
@@ -262,10 +274,12 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 		  INTO T_AREA
 		     ( building_id
 		     , area_nm
-		     , created_at)
+		     , created_at
+			 , updated_at)
 		VALUES
 			 ( #{buildingId}
 			 , #{areaNm}
+			 , NOW()
 			 , NOW()
 			 )
 	</insert>
@@ -284,11 +298,13 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 		     ( building_id
 		     , area_id
 		     , floor_nm
-		     , created_at)
+		     , created_at
+			 , updated_at)
 		VALUES
 			 ( #{buildingId}
 			 , #{areaId}
 			 , #{floorNm}
+			 , NOW()
 			 , NOW()
 			 )
 	</insert>
@@ -307,7 +323,8 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 		  INTO T_AUTH_BUILDING
 		     ( auth_id
 		     , building_id
-		     , created_at)
+		     , created_at
+		     )
 		VALUES
 			 ( #{authId}
 			 , #{buildingId}
