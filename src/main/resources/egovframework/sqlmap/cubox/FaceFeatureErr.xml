@@ -22,8 +22,9 @@
             AND e.face_feature_typ = #{face_feature_typ}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(emp_nm)'>
-            AND emp.emp_nm = #{emp_nm}
+            AND emp.emp_nm LIKE CONCAT('%',#{emp_nm},'%')
         </if>
+        order by e.created_at desc
         limit	#{srchCnt} offset #{offset}
     </select>
 
@@ -38,6 +39,9 @@
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(face_feature_typ)'>
             AND e.face_feature_typ = #{face_feature_typ}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(emp_nm)'>
+            AND emp.emp_nm LIKE CONCAT('%',#{emp_nm},'%')
         </if>
     </select>
 

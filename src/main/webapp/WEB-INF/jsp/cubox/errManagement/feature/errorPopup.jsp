@@ -9,9 +9,10 @@
         text-align: left; !important;
     }
     #imagePreview{
-        margin: auto;
+        margin: 0 250px;
         width:500px;
         height: 500px;
+        display: block;
     }
 
 

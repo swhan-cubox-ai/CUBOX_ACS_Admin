@@ -1,6 +1,7 @@
 package aero.cubox.report.service.impl;
 
 import aero.cubox.core.vo.AlarmHistVO;
+import aero.cubox.core.vo.EntHistBioVO;
 import aero.cubox.core.vo.EntHistVO;
 import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
 import org.slf4j.Logger;
@@ -23,6 +24,10 @@ public class ReportDAO extends EgovAbstractMapper {
 
     public int getEntHistListCount(EntHistVO vo) throws Exception {
         return selectOne ("report.getEntHistListCount", vo);
+    }
+
+    public EntHistBioVO selectEntFaceOne(EntHistBioVO vo) throws Exception {
+        return selectOne ("report.selectEntFaceOne", vo);
     }
 
     public List<AlarmHistVO> getAlarmHistList(AlarmHistVO vo) throws Exception {

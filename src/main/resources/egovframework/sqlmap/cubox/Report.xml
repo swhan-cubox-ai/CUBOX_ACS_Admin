@@ -4,48 +4,64 @@
 <mapper namespace="report">
 
     <select id="getEntHistList" parameterType="aero.cubox.core.vo.EntHistVO" resultType="aero.cubox.core.vo.EntHistVO">
-        SELECT
-            id,
-            evt_dt AS evtDt,
-            ent_evt_typ AS entEvtTyp,
-            (
-                SELECT
-                    cd_nm
-                FROM
-                    T_CMMN_CD
-                WHERE
-                    cd_typ = 'EntEvtTyp'
-                    AND cd = ent_evt_typ
-            ) AS entEvtTypNm,
-            terminal_cd AS terminalCd,
-            model_nm AS modelNm,
-            mgmt_num AS mgmtNum,
-            ip_addr AS ipAddr,
-            complex_auth_typ AS complexAuthTyp,
-            door_nm AS doorNm,
-            building_nm AS buildingNm,
-            emp_nm AS empNm,
-            emp_no AS empNo,
-            dept_cd AS deptCd,
-            dept_nm AS deptNm,
-            belong_nm AS belongNm
-        FROM
-            T_ENT_HIST
-        WHERE
-            1=1
+        select
+        eh.id,
+        eh.evt_dt as evtDt,
+        eh.ent_evt_typ as entEvtTyp,
+        c1.cd_nm as  entEvtTypNm,
+        eh.terminal_cd as terminalCd,
+        eh.emp_cd as empCd,
+        emp_nm as empNm,
+        eh.face_id as faceId,
+        card_no as cardNo,
+        card_class_typ as cardClassTyp,
+        c2.cd_nm as  cardClassTypNm,
+        card_state_typ as cardStateTyp,
+        c3.cd_nm as  cardStateTypNm,
+        card_tag_typ as cardTagTyp,
+        c4.cd_nm as  cardTagTypNm,
+        beg_dt as begDt,
+        end_dt as endDt,
+        auth_way_typ as authWayTyp,
+        c5.cd_nm as  authWayTypNm,
+        match_score as matchScore,
+        face_threshold as faceThreshold,
+        capture_at as captureAt,
+        tag_at as tagAt,
+        tag_card_no as tagCardNo,
+        tag_emp_cd as tagEmpCd,
+        temper as temper,
+        mask_confidence as maskConfidence,
+        tm.terminal_typ as terminalTyp,
+        tm.door_cd as doorCd,
+        door_nm as doorNm,
+        building_cd as buildingCd,
+        building_nm as buildingNm,
+        dept_cd as deptCd,
+        dept_nm as deptNm,
+        eh.created_at as createdAt,
+        eh.updated_at as updatedAt
+        from T_ENT_HIST eh
+        left outer join T_TERMINAL tm on eh.terminal_cd = tm.terminal_cd
+        LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = eh.ent_evt_typ and c1.cd_typ = 'EntEvtTyp'
+        LEFT OUTER JOIN T_CMMN_CD c2 on c2.cd = eh.card_class_typ and c2.cd_typ = 'CardClassTyp'
+        LEFT OUTER JOIN T_CMMN_CD c3 on c3.cd = eh.card_state_typ and c3.cd_typ = 'CardStateTyp'
+        LEFT OUTER JOIN T_CMMN_CD c4 on c4.cd = eh.card_tag_typ and c4.cd_typ = 'CardTagTyp'
+        LEFT OUTER JOIN T_CMMN_CD c5 on c5.cd = eh.auth_way_typ and c5.cd_typ = 'AuthWayTyp'
+        where 1=1
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond1)'>
-            AND ent_evt_typ = #{srchCond1}
+            AND eh.ent_evt_typ = #{srchCond1}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(fromDt) and @aero.cubox.util.CommonUtils@notEmpty(toDt)'>
-            AND evt_dt BETWEEN #{fromDt} AND #{toDt}
+            AND eh.evt_dt BETWEEN #{fromDt} AND #{toDt}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
-            AND building_id = #{srchCond2}
+            AND eh.building_id = #{srchCond2}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-            AND emp_nm LIKE CONCAT('%',#{keyword},'%')
+            AND eh.emp_nm LIKE CONCAT('%',#{keyword},'%')
         </if>
-
+        ORDER BY evtDt DESC
         limit	#{srchCnt} offset #{offset}
     </select>
 
@@ -67,6 +83,13 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
             and emp_nm like CONCAT('%',#{keyword},'%')
         </if>
+    </select>
+
+    <select id="selectEntFaceOne" parameterType="aero.cubox.core.vo.EntHistBioVO" resultType="aero.cubox.core.vo.EntHistBioVO">
+        SELECT
+            ent_face_img
+        FROM T_ENT_HIST_BIO
+        WHERE ent_hist_id = #{ent_hist_id}
     </select>
 
     <select id="getAlarmHistList" parameterType="aero.cubox.core.vo.AlarmHistVO" resultType="aero.cubox.core.vo.AlarmHistVO">
