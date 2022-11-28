@@ -68,4 +68,29 @@
 
 
 
+	<!-- CUBOX AWS - 개발계 -->
+	<beans profile="dev-cubox">
+		<!-- maria DB -->
+		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="validationQuery" value="select 1"/>
+			<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
+			<property name="url" value="jdbc:log4jdbc:mysql://218.236.12.70:3660/iacs?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnection=true&amp;allowMultiQueries=true&amp;noAccessToProcedureBodies=true" />
+			<property name="username" value="cubox_dba"/>
+			<property name="password" value="cubox_dba"/>
+		</bean>
+
+		<!-- cubrid mdm -->
+		<bean id="dataSource_mdm" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="driverClassName" value="cubrid.jdbc.driver.CUBRIDDriver"/>
+			<property name="url" value="jdbc:CUBRID:13.209.174.31:30000:GACS_MDM:::?charset=UTF-8" />
+			<property name="username" value="dba"/>
+			<property name="password" value="cuboxdba"/>
+
+		</bean>
+	</beans>
+
+
+
+
+
 </beans>
