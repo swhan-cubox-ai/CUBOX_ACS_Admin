@@ -262,69 +262,68 @@ function createTree(crudType, isMngmt, result, treeDiv) {
 					}
 					d.add("b_" + building.id, "w_" + workplace.id, bTag, '#','','','/img/folder.gif');
 
-					if (crudType === "R") { // "R" 타입
-						$.each(result.floorList, function(l, floor) { // floor
-							if (floor.building_id === building.id) {
-								let fTag;
-								if (isMngmt) {
-									fTag = '<span id="' + floor.id + '" onclick="' + fnFloor + '">' + floor.floor_nm + '</span>';
-								} else {
-									fTag = floor.floor_nm;
-								}
-								d.add("f_" + floor.id, "b_" + building.id, fTag, '#','','','/img/folder.gif');
-
-								$.each(result.doorList, function(m, door) { // door
-									if (door.floor_id === floor.id) {
-										let tag = "";
-										if (isMngmt) { 	// 출입문관리일 경우
-											tag = '<span id="' + door.id + '" onclick="' + fnDoor + '">' + door.door_nm + '</span>';
-										} else {  // 그 외(그룹관리, 알람그룹)
-											tag = '<span id="' + door.id + '">' + door.door_nm + '</span>';
-										}
-										d.add("d_" + door.id, "f_" + floor.id, tag, "#", '','','/img/page.gif');
-									}
-								});
+				// if (crudType === "R") { // "R" 타입
+					$.each(result.floorList, function(l, floor) { // floor
+						if (floor.building_id === building.id) {
+							let fTag;
+							if (isMngmt) {
+								fTag = '<span id="' + floor.id + '" onclick="' + fnFloor + '">' + floor.floor_nm + '</span>';
+							} else {
+								fTag = floor.floor_nm;
 							}
-						});
+							d.add("f_" + floor.id, "b_" + building.id, fTag, '#','','','/img/folder.gif');
 
-					} else {
-						$.each(result.areaList, function(k, area) {
-							if (area.building_id === building.id) {
-								let aTag;
-								if (isMngmt) {
-									aTag = '<span id="' + area.id + '" onclick="' + fnArea + '">' + area.area_nm + '</span>';
-								} else {
-									aTag = area.area_nm;
-								}
-								d.add("a_" + area.id, "b_" + building.id, aTag, '#','','','/img/folder.gif');
-
-								$.each(result.floorList, function(l, floor) { // floor
-									if (floor.area_id === area.id) {
-										let fTag;
-										if (isMngmt) {
-											fTag = '<span id="' + floor.id + '" onclick="' + fnFloor + '">' + floor.floor_nm + '</span>';
-										} else {
-											fTag = floor.floor_nm;
-										}
-										d.add("f_" + floor.id, "a_" + area.id, fTag, '#','','','/img/folder.gif');
-
-										$.each(result.doorList, function(m, door) { // door
-											if (door.floor_id === floor.id) {
-												let tag = "";
-												if (isMngmt) { 	// 출입문관리일 경우
-													tag = '<span id="' + door.id + '" onclick="' + fnDoor + '">' + door.door_nm + '</span>';
-												} else {  // 그 외(그룹관리, 알람그룹)
-													tag = '<span id="' + door.id + '">' + door.door_nm + '</span>';
-												}
-												d.add("d_" + door.id, "f_" + floor.id, tag, "#", '','','/img/page.gif');
-											}
-										});
+							$.each(result.doorList, function(m, door) { // door
+								if (door.floor_id === floor.id) {
+									let tag = "";
+									if (isMngmt) { 	// 출입문관리일 경우
+										tag = '<span id="' + door.id + '" onclick="' + fnDoor + '">' + door.door_nm + '</span>';
+									} else {  // 그 외(그룹관리, 알람그룹)
+										tag = '<span id="' + door.id + '">' + door.door_nm + '</span>';
 									}
-								});
-							}
-						});
-					}
+									d.add("d_" + door.id, "f_" + floor.id, tag, "#", '','','/img/page.gif');
+								}
+							});
+						}
+					});
 
+				// } else {
+				// 	$.each(result.areaList, function(k, area) {
+				// 		if (area.building_id === building.id) {
+				// 			let aTag;
+				// 			if (isMngmt) {
+				// 				aTag = '<span id="' + area.id + '" onclick="' + fnArea + '">' + area.area_nm + '</span>';
+				// 			} else {
+				// 				aTag = area.area_nm;
+				// 			}
+				// 			d.add("a_" + area.id, "b_" + building.id, aTag, '#','','','/img/folder.gif');
+				//
+				// 			$.each(result.floorList, function(l, floor) { // floor
+				// 				if (floor.area_id === area.id) {
+				// 					let fTag;
+				// 					if (isMngmt) {
+				// 						fTag = '<span id="' + floor.id + '" onclick="' + fnFloor + '">' + floor.floor_nm + '</span>';
+				// 					} else {
+				// 						fTag = floor.floor_nm;
+				// 					}
+				// 					d.add("f_" + floor.id, "a_" + area.id, fTag, '#','','','/img/folder.gif');
+				//
+				// 					$.each(result.doorList, function(m, door) { // door
+				// 						if (door.floor_id === floor.id) {
+				// 							let tag = "";
+				// 							if (isMngmt) { 	// 출입문관리일 경우
+				// 								tag = '<span id="' + door.id + '" onclick="' + fnDoor + '">' + door.door_nm + '</span>';
+				// 							} else {  // 그 외(그룹관리, 알람그룹)
+				// 								tag = '<span id="' + door.id + '">' + door.door_nm + '</span>';
+				// 							}
+				// 							d.add("d_" + door.id, "f_" + floor.id, tag, "#", '','','/img/page.gif');
+				// 						}
+				// 					});
+				// 				}
+				// 			});
+				// 		}
+				// 	});
+				// }
 				}
 			});
 		});
