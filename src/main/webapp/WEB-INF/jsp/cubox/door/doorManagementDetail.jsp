@@ -123,7 +123,8 @@
         }
 
         // 빌딩 선택 시,
-        $(".selectBuilding").change(function() {
+        $(".selectBuilding").on('click change', function(e) {
+
             let val = $(this).val();
             let authType = $("#authType").val();
             let floor;
@@ -200,13 +201,13 @@
         // 권한그룹 추가
         $("#add_auth").click(function () {
             $("input[name=chkAuth]:checked").each(function (i) {
-                var tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
+                let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
                 tag = tag.replace("chkAuth", "chkAuthConf");
                 $("#tdAuthConf").append(tag);
             });
 
-            var ckd = $("input[name=chkAuth]:checked").length;
-            for (var i = ckd - 1; i > -1; i--) {
+            let ckd = $("input[name=chkAuth]:checked").length;
+            for (let i = ckd - 1; i > -1; i--) {
                 $("input[name=chkAuth]:checked").eq(i).closest("tr").remove();
             }
             totalCheck();
@@ -215,13 +216,13 @@
         // 권한그룹 삭제
         $("#delete_auth").click(function () {
             $("input[name=chkAuthConf]:checked").each(function (i) {
-                var tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
+                let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
                 tag = tag.replace("chkAuthConf", "chkAuth");
                 $("#tdAuthTotal").append(tag);
             });
 
-            var ckd = $("input[name=chkAuthConf]:checked").length;
-            for (var i = ckd - 1; i > -1; i--) {
+            let ckd = $("input[name=chkAuthConf]:checked").length;
+            for (let i = ckd - 1; i > -1; i--) {
                 $("input[name=chkAuthConf]:checked").eq(i).closest("tr").remove();
             }
             userCheck();
