@@ -450,8 +450,8 @@ public class DoorController {
 
         HashMap param = new HashMap();
 
-        param.put( "buildingNm", buildingNm );        //출입문 명
-        param.put("workplaceId", workplaceId );//빌딩 ID
+        param.put("buildingNm", buildingNm);          //출입문 명
+        param.put("workplaceId", workplaceId);         //Workplace ID
 
         String newBuildingId = "";
         try {
@@ -915,8 +915,16 @@ public class DoorController {
             Sheet sheet = wb.getSheetAt(0);
 
             int cnt = 0;
+            String bNm = "";
+            String newBuildingId = "";
+
+            // door 삭제
+            // floor 삭제
+            // building 삭제
 
             LOGGER.debug("Last row num : {}", sheet.getLastRowNum());
+
+            // building
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
 
@@ -926,38 +934,132 @@ public class DoorController {
                 }
 
                 if (row.getCell(0) != null) {
-                    String idx = getValue(row.getCell(0)).replaceAll("\n", "<br>");         // 순번
-                    String doorNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");      // 출입문명
-                    String bId = getValue(row.getCell(2)).replaceAll("\n", "<br>");         // 빌딩id
-                    String aId = getValue(row.getCell(3)).replaceAll("\n", "<br>");         // 구역id
-                    String fId = getValue(row.getCell(4)).replaceAll("\n", "<br>");         // 층id
-                    String schId = getValue(row.getCell(5)).replaceAll("\n", "<br>");       // 스케쥴id
-                    String alarmGrpId = getValue(row.getCell(6)).replaceAll("\n", "<br>");  // 알람그룹id
-                    String terminalId = getValue(row.getCell(7)).replaceAll("\n", "<br>");  // 단말기id
-                    String authGrpIds = getValue(row.getCell(8)).replaceAll("\n", "<br>");  // 권한그룹id
+                    String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");      // 빌딩 명
+                    String buildingCd = getValue(row.getCell(5)).replaceAll("\n", "<br>");      // 빌딩 코드
 
-                    if (doorNm.length() > 0) {
+                    if (bNm.equals("") || !bNm.equals(buildingNm)) {
+                        bNm = buildingNm;
+
                         HashMap param = new HashMap();
-                        param.put("doorNm", doorNm);
-                        param.put("buildingId", bId);
-                        param.put("areaId", aId);
-                        param.put("floorId", fId);
-                        param.put("doorScheduleId", schId);
-                        param.put("alarmGroupId", alarmGrpId);
-                        param.put("terminalIds", terminalId);
-                        param.put("authGrIds", authGrpIds);
+                        param.put("buildingNm", buildingNm);
+                        param.put("buildingCd", buildingCd);
+                        param.put("workplaceId", 1);
 
-                        LOGGER.debug("엑셀정보 map : {}", param);
-
-                        String newDoorId = "";
-//                        newDoorId = doorService.addDoor(param);
-                        LOGGER.debug("newDoorId : {}", newDoorId);
-//                        if (newDoorId != "") cnt++;
-                        cnt++; // 데이터 변경 완료 후 윗줄로 대체
-
+                        try {
+                            newBuildingId = doorService.addBuilding(param);
+                            System.out.println("newBuildingId === " + newBuildingId);
+                        } catch (Exception e) {
+                            e.getStackTrace();
+                        }
                     }
                 }
             }
+
+            // 빌딩 리스트 가져오기
+            HashMap paramMap = new HashMap();
+            List<Map> buildingList = doorService.getBuildingList(paramMap);   //빌딩 목록
+            System.out.println(buildingList);
+
+            // floor
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+
+                // 행이 없으면 패스
+                if (row == null) {
+                    continue;
+                }
+
+                if (row.getCell(0) != null) {
+                    String floorNm = getValue(row.getCell(2)).replaceAll("\n", "<br>");      // 층 명
+                    String floorCd = getValue(row.getCell(6)).replaceAll("\n", "<br>");      // 층 코드
+                    // building Id
+                    // building Cd
+
+
+                    if (bNm.equals("") || !bNm.equals(buildingNm)) {
+                        bNm = buildingNm;
+
+                        HashMap param = new HashMap();
+                        param.put("buildingNm", buildingNm);
+                        param.put("buildingCd", buildingCd);
+                        param.put("workplaceId", 1);
+
+                        try {
+                            newBuildingId = doorService.addBuilding(param);
+                            System.out.println("newBuildingId === " + newBuildingId);
+                        } catch (Exception e) {
+                            e.getStackTrace();
+                        }
+                    }
+                }
+            }
+
+
+
+            // door
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+
+                // 행이 없으면 패스
+                if (row == null) {
+                    continue;
+                }
+
+                if (row.getCell(0) != null) {
+//                    String idx = getValue(row.getCell(0)).replaceAll("\n", "<br>");         // 순번
+//                    String doorNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");      // 출입문명
+//                    String bId = getValue(row.getCell(2)).replaceAll("\n", "<br>");         // 빌딩id
+//                    String aId = getValue(row.getCell(3)).replaceAll("\n", "<br>");         // 구역id
+//                    String fId = getValue(row.getCell(4)).replaceAll("\n", "<br>");         // 층id
+//                    String schId = getValue(row.getCell(5)).replaceAll("\n", "<br>");       // 스케쥴id
+//                    String alarmGrpId = getValue(row.getCell(6)).replaceAll("\n", "<br>");  // 알람그룹id
+//                    String terminalId = getValue(row.getCell(7)).replaceAll("\n", "<br>");  // 단말기id
+//                    String authGrpIds = getValue(row.getCell(8)).replaceAll("\n", "<br>");  // 권한그룹id
+
+                    String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");      // 빌딩 명
+                    String buildingCd = getValue(row.getCell(5)).replaceAll("\n", "<br>");      // 빌딩 코드
+
+                    if (bNm.equals("") || !bNm.equals(buildingNm)) {
+                        bNm = buildingNm;
+
+                        HashMap param = new HashMap();
+                        param.put("buildingNm", buildingNm);
+                        param.put("buildingCd", buildingCd);
+                        param.put("workplaceId", 1);
+
+                        try {
+                            newBuildingId = doorService.addBuilding(param);
+                            System.out.println("newBuildingId === " + newBuildingId);
+                        } catch (Exception e) {
+                            e.getStackTrace();
+                        }
+                    }
+
+
+
+//                    if (doorNm.length() > 0) {
+//                        HashMap param = new HashMap();
+////                        param.put("doorNm", doorNm);
+////                        param.put("buildingId", bId);
+////                        param.put("areaId", aId);
+////                        param.put("floorId", fId);
+////                        param.put("doorScheduleId", schId);
+////                        param.put("alarmGroupId", alarmGrpId);
+////                        param.put("terminalIds", terminalId);
+////                        param.put("authGrIds", authGrpIds);
+//
+//                        LOGGER.debug("엑셀정보 map : {}", param);
+//
+//                        String newDoorId = "";
+////                        newDoorId = doorService.addDoor(param);
+//                        LOGGER.debug("newDoorId : {}", newDoorId);
+////                        if (newDoorId != "") cnt++;
+//                        cnt++; // 데이터 변경 완료 후 윗줄로 대체
+//
+//                    }
+                }
+            }
+
 
             if (cnt > 0) {
                 if (cnt == sheet.getLastRowNum()) {
