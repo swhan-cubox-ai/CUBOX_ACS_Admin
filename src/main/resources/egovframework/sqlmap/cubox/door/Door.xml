@@ -23,6 +23,7 @@
  LEFT OUTER JOIN T_DOORGRP TDG      ON TDD.doorgrp_id = TDG.id
  LEFT OUTER JOIN T_DOOR_SCH TDS     ON TDD.doorgrp_id = TDS.id
 		   WHERE TD.id = #{id}
+		GROUP BY TD.id
 	</select>
 
 	<select id="selectDoorList" parameterType="HashMap" resultType="HashMap">
