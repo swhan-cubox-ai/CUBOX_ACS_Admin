@@ -6,6 +6,8 @@
 		  SELECT TD.id
 		       , TD.door_nm
                , TD.door_cd
+			   , TD.floor_cd
+			   , TD.building_cd
 		       , TD.building_id
 		       , TD.area_id
 		       , TD.floor_id
@@ -55,7 +57,10 @@
 	<insert id="insertDoor" parameterType="HashMap" useGeneratedKeys="true" keyProperty="doorId" keyColumn="id">
 		insert
 		into
-			T_DOOR ( building_id
+			T_DOOR ( building_cd
+			       , floor_cd
+			       , door_cd
+			       , building_id
 				   , area_id
 				   , floor_id
 				   , door_nm
@@ -63,7 +68,10 @@
 				   , created_at
 				   , updated_at
 		)
-		values  ( #{buildingId}
+		values  ( #{buildingCd}
+				, #{floorCd}
+				, #{doorCd}
+				, #{buildingId}
 				, #{areaId}
 				, #{floorId}
 				, #{doorNm}
@@ -76,7 +84,10 @@
 
 	<update id="updateDoor" parameterType="HashMap">
 		UPDATE T_DOOR
-		   SET building_id = #{buildingId}
+		   SET building_cd = #{buildingCd}
+		     , floor_cd = #{floorCd}
+		     , door_cd = #{doorCd}
+		     , building_id = #{buildingId}
 		     , area_id = #{areaId}
 		     , floor_id = #{floorId}
 		     , door_nm = #{doorNm}
