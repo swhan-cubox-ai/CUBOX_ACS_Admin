@@ -249,13 +249,15 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 	<insert id="insertBuilding" parameterType="HashMap" useGeneratedKeys="true" keyProperty="buildingId" keyColumn="id">
 		INSERT
 		  INTO T_BUILDING
-		     ( workplace_id
+		     ( building_cd
+		     , workplace_id
 		     , building_nm
 		     , created_at
 			 , updated_at
 			 )
 		VALUES
-			 ( #{workplaceId}
+			 ( #{buildingCd}
+			 , #{workplaceId}
 			 , #{buildingNm}
 			 , NOW()
 			 , NOW()
@@ -264,7 +266,8 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 
 	<update id="updateBuilding" parameterType="HashMap">
 		UPDATE T_BUILDING
-		   SET workplace_id = #{workplaceId}
+		   SET building_cd = #{buildingCd}
+		     , workplace_id = #{workplaceId}
 		     , building_nm = #{buildingNm}
 		     , updated_at = NOW()
 		 WHERE id = #{id}
@@ -296,13 +299,17 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 	<insert id="insertFloor" parameterType="HashMap" useGeneratedKeys="true" keyProperty="floorId" keyColumn="id">
 		INSERT
 		  INTO T_FLOOR
-		     ( building_id
+		     ( building_cd
+		     , floor_cd
+		     , building_id
 		     , area_id
 		     , floor_nm
 		     , created_at
 			 , updated_at)
 		VALUES
-			 ( #{buildingId}
+			 ( #{buildingCd}
+			 , #{floorCd}
+			 , #{buildingId}
 			 , #{areaId}
 			 , #{floorNm}
 			 , NOW()
@@ -312,9 +319,11 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 
 	<update id="updateFloor" parameterType="HashMap">
 		UPDATE T_FLOOR
-		   SET building_id = #{buildingId}
+		   SET building_cd = #{buildingCd}
+			 , floor_cd = #{floorCd}
+		     , building_id = #{buildingId}
 		     , area_id = #{areaId}
-		     , floor_nm=#{floorNm}
+		     , floor_nm= #{floorNm}
 			 , updated_at = NOW()
 		 WHERE id = #{id}
 	</update>
@@ -340,25 +349,44 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 		   AND building_id = #{buildingId}
 	</delete>
 
+	<delete id="deleteDoorAll" parameterType="HashMap" >
+		DELETE
+		FROM T_DOOR
+	</delete>
+
 	<delete id="deleteBuilding" parameterType="HashMap" >
 		DELETE
-		FROM T_BUILDING
-		WHERE id = #{id}
+		  FROM T_BUILDING
+		 WHERE id = #{id}
+	</delete>
 
+	<delete id="deleteBuildingAll" parameterType="HashMap" >
+		DELETE
+		  FROM T_BUILDING
 	</delete>
 
 	<delete id="deleteArea" parameterType="HashMap" >
 		DELETE
 		FROM T_AREA
 		WHERE id = #{id}
-
 	</delete>
+
+	<delete id="deleteAreaAll" parameterType="HashMap" >
+		DELETE
+		FROM T_AREA
+	</delete>
+
 
 	<delete id="deleteFloor" parameterType="HashMap" >
 		DELETE
 		FROM T_FLOOR
 		WHERE id = #{id}
 
+	</delete>
+
+	<delete id="deleteFloorAll" parameterType="HashMap" >
+		DELETE
+		FROM T_FLOOR
 	</delete>
 
 

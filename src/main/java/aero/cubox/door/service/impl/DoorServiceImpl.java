@@ -173,7 +173,12 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         doorDAO.deleteDoor(commandMap);
     }
 
-   //Workplace
+    @Override
+    public void deleteDoorAll() {
+        doorDAO.deleteDoorAll();
+    }
+
+    //Workplace
     /**
      * 사업장 목록 조회
      * @param paramMap
@@ -260,6 +265,11 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         doorDAO.deleteBuilding(commandMap);
     }
 
+    @Override
+    public void deleteBuildingAll() {
+        doorDAO.deleteBuildingAll();
+    }
+
 
     //Area
 
@@ -300,6 +310,10 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         doorDAO.deleteArea(commandMap);
     }
 
+    @Override
+    public void deleteAreaAll() {
+        doorDAO.deleteAreaAll();
+    }
 
 
     //Floor
@@ -336,6 +350,11 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     @Override
     public void deleteFloor(Map<String, Object> commandMap) {
         doorDAO.deleteFloor(commandMap);
+    }
+
+    @Override
+    public void deleteFloorAll() {
+        doorDAO.deleteFloorAll();
     }
 
     @Override
