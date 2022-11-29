@@ -46,8 +46,8 @@ public class CommonController {
 	@RequestMapping(value="/login.do")
 	public String login(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
-		String mdmTest = mdmService.getTmMdmCpgnList();
-		model.addAttribute("mdmTest", mdmTest);
+//		String mdmTest = mdmService.getTmMdmCpgnList();
+//		model.addAttribute("mdmTest", mdmTest);
 
 		return "cubox/common/login";
 	}

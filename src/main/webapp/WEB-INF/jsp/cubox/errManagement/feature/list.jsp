@@ -102,8 +102,8 @@
       <thead>
         <tr>
           <th>일시</th>
-          <th>이벤트유형</th>
-          <th>단말기</th>
+          <th>특징점추출상태</th>
+          <th>추출타입</th>
           <th>사원번호</th>
           <th>사원명</th>
           <th>부서명</th>
@@ -118,8 +118,8 @@
       <c:forEach items="${errList}" var="item" varStatus="status">
         <tr>
           <td onclick="detail(<c:out value='${item.id}'/>)"><c:out value="${item.created_at}"/></td>
-          <td><c:out value="${item.event_typ_nm}"/></td>
-          <td><c:out value="${item.terminal_cd}"/></td>
+          <td><c:out value="${item.face_state_typ_nm}"/></td>
+          <td><c:out value="${item.face_feature_typ_nm}"/></td>
           <td><c:out value="${item.emp_cd}"/></td>
           <td><c:out value="${item.emp_nm}"/></td>
           <td><c:out value="${item.dept_nm}"/></td>

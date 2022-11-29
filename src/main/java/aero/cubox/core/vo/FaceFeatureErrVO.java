@@ -7,7 +7,7 @@ public class FaceFeatureErrVO {
 
 	private Integer id;
 	private String emp_cd;
-	private String face_img;
+	private byte[] face_img;
 	private String face_state_typ;
 
 	private String face_state_typ_nm;
@@ -119,11 +119,11 @@ public class FaceFeatureErrVO {
 		this.curPageUnit = curPageUnit;
 	}
 
-	public String getFace_img() {
+	public byte[] getFace_img() {
 		return face_img;
 	}
 
-	public void setFace_img(String face_img) {
+	public void setFace_img(byte[] face_img) {
 		this.face_img = face_img;
 	}
 

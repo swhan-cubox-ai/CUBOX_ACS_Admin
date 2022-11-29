@@ -2,12 +2,10 @@ package aero.cubox.report.controller;
 
 
 import aero.cubox.cmmn.service.CommonService;
-import aero.cubox.core.vo.AlarmHistVO;
-import aero.cubox.core.vo.CommonVO;
-import aero.cubox.core.vo.EntHistVO;
-import aero.cubox.core.vo.PaginationVO;
+import aero.cubox.core.vo.*;
 import aero.cubox.report.service.ReportService;
 import aero.cubox.terminal.service.TerminalService;
+import aero.cubox.util.AES256Util;
 import aero.cubox.util.StringUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -18,6 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +90,33 @@ public class ReportController {
         }
 
         return "cubox/report/entHist/list";
+    }
+
+    @RequestMapping(value="/entHist/detail")
+    public ModelAndView detail(ModelMap model, @RequestParam Map<String, Object> param) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        Integer id =  Integer.parseInt(param.get("id").toString());
+        EntHistBioVO vo = new EntHistBioVO();
+        vo.setEnt_hist_id(id);
+        EntHistBioVO data = reportService.selectEntFaceOne(vo);
+
+        byte[] img = byteArrDecode(data.getEnt_face_img());
+
+
+        //String img = byteArrEncode((byte[]) data.getFace_img());
+        String bioFace = new String(Base64.getEncoder().encode(img));
+        //String errorFace = img;
+
+        modelAndView.addObject("bioFace", bioFace);
+
+        return modelAndView;
+    }
+
+    public static byte[] byteArrDecode(String encoded) throws Exception {
+        AES256Util aes256Util = new AES256Util();
+        byte[] result =  aes256Util.byteArrDecode(encoded, "s8LiEwT3if89Yq3i90hIo3HepqPfOhVd");
+        return result;
     }
 
     @RequestMapping(value = "/alarmHist/list.do")
