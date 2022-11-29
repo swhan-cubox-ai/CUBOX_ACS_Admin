@@ -1,26 +1,48 @@
 package aero.cubox.core.vo;
 
 import java.sql.Blob;
+import java.sql.Timestamp;
 
 public class EntHistVO {
 
     private int id;
-    private String evtDt;
+    private Timestamp evtDt;
     private String entEvtTyp;
     private String entEvtTypNm;
     private String terminalCd;
-    private String modelNm;
-    private String mgmtNum;
-    private String ipAddr;
-    private String complexAuthTyp;
-    private String complexAuthTypNm;
-    private String doorNm;
-    private String buildingNm;
+    private String empCd;
     private String empNm;
-    private String empNo;
+    private Integer faceId;
+    private String cardNo;
+    private String cardClassTyp;
+    private String cardClassTypNm;
+    private String cardStateTyp;
+    private String cardStateTypNm;
+    private String cardTagTyp;
+    private String cardTagTypNm;
+
+    private Timestamp begDt;
+    private Timestamp endDt;
+    private String authWayTyp;
+    private String authWayTypNm;
+    private Float matchScore;
+    private Float faceThreshold;
+    private Timestamp captureAt;
+    private Timestamp tagAt;
+    private String tagCardNo;
+    private String tagEmpCd;
+    private Double temper;
+    private Float maskConfidence;
+    private String terminalTyp;
+    private String doorCd;
+    private String doorNm;
+    private String buildingCd;
+    private String buildingNm;
     private String deptCd;
     private String deptNm;
-    private String belongNm;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
+    private String entFaceImg;
 
 
     private String srchCond1;
@@ -45,16 +67,52 @@ public class EntHistVO {
         this.id = id;
     }
 
-    public String getEvtDt() {
+    public Timestamp getEvtDt() {
         return evtDt;
     }
 
-    public void setEvtDt(String evtDt) {
+    public void setEvtDt(Timestamp evtDt) {
         this.evtDt = evtDt;
+    }
+
+    public String getCardClassTypNm() {
+        return cardClassTypNm;
+    }
+
+    public void setCardClassTypNm(String cardClassTypNm) {
+        this.cardClassTypNm = cardClassTypNm;
+    }
+
+    public String getCardStateTypNm() {
+        return cardStateTypNm;
+    }
+
+    public void setCardStateTypNm(String cardStateTypNm) {
+        this.cardStateTypNm = cardStateTypNm;
+    }
+
+    public String getCardTagTypNm() {
+        return cardTagTypNm;
+    }
+
+    public void setCardTagTypNm(String cardTagTypNm) {
+        this.cardTagTypNm = cardTagTypNm;
+    }
+
+    public String getAuthWayTypNm() {
+        return authWayTypNm;
+    }
+
+    public void setAuthWayTypNm(String authWayTypNm) {
+        this.authWayTypNm = authWayTypNm;
     }
 
     public String getEntEvtTyp() {
         return entEvtTyp;
+    }
+
+    public void setEntEvtTyp(String entEvtTyp) {
+        this.entEvtTyp = entEvtTyp;
     }
 
     public String getEntEvtTypNm() {
@@ -65,10 +123,6 @@ public class EntHistVO {
         this.entEvtTypNm = entEvtTypNm;
     }
 
-    public void setEntEvtTyp(String entEvtTyp) {
-        this.entEvtTyp = entEvtTyp;
-    }
-
     public String getTerminalCd() {
         return terminalCd;
     }
@@ -77,60 +131,12 @@ public class EntHistVO {
         this.terminalCd = terminalCd;
     }
 
-    public String getModelNm() {
-        return modelNm;
+    public String getEmpCd() {
+        return empCd;
     }
 
-    public void setModelNm(String modelNm) {
-        this.modelNm = modelNm;
-    }
-
-    public String getMgmtNum() {
-        return mgmtNum;
-    }
-
-    public void setMgmtNum(String mgmtNum) {
-        this.mgmtNum = mgmtNum;
-    }
-
-    public String getIpAddr() {
-        return ipAddr;
-    }
-
-    public void setIpAddr(String ipAddr) {
-        this.ipAddr = ipAddr;
-    }
-
-    public String getComplexAuthTyp() {
-        return complexAuthTyp;
-    }
-
-    public void setComplexAuthTyp(String complexAuthTyp) {
-        this.complexAuthTyp = complexAuthTyp;
-    }
-
-    public String getComplexAuthTypNm() {
-        return complexAuthTypNm;
-    }
-
-    public void setComplexAuthTypNm(String complexAuthTypNm) {
-        this.complexAuthTypNm = complexAuthTypNm;
-    }
-
-    public String getDoorNm() {
-        return doorNm;
-    }
-
-    public void setDoorNm(String doorNm) {
-        this.doorNm = doorNm;
-    }
-
-    public String getBuildingNm() {
-        return buildingNm;
-    }
-
-    public void setBuildingNm(String buildingNm) {
-        this.buildingNm = buildingNm;
+    public void setEmpCd(String empCd) {
+        this.empCd = empCd;
     }
 
     public String getEmpNm() {
@@ -141,12 +147,172 @@ public class EntHistVO {
         this.empNm = empNm;
     }
 
-    public String getEmpNo() {
-        return empNo;
+    public Integer getFaceId() {
+        return faceId;
     }
 
-    public void setEmpNo(String empNo) {
-        this.empNo = empNo;
+    public void setFaceId(Integer faceId) {
+        this.faceId = faceId;
+    }
+
+    public String getCardNo() {
+        return cardNo;
+    }
+
+    public void setCardNo(String cardNo) {
+        this.cardNo = cardNo;
+    }
+
+    public String getCardClassTyp() {
+        return cardClassTyp;
+    }
+
+    public void setCardClassTyp(String cardClassTyp) {
+        this.cardClassTyp = cardClassTyp;
+    }
+
+    public String getCardStateTyp() {
+        return cardStateTyp;
+    }
+
+    public void setCardStateTyp(String cardStateTyp) {
+        this.cardStateTyp = cardStateTyp;
+    }
+
+    public String getCardTagTyp() {
+        return cardTagTyp;
+    }
+
+    public void setCardTagTyp(String cardTagTyp) {
+        this.cardTagTyp = cardTagTyp;
+    }
+
+    public Timestamp getBegDt() {
+        return begDt;
+    }
+
+    public void setBegDt(Timestamp begDt) {
+        this.begDt = begDt;
+    }
+
+    public Timestamp getEndDt() {
+        return endDt;
+    }
+
+    public void setEndDt(Timestamp endDt) {
+        this.endDt = endDt;
+    }
+
+    public String getAuthWayTyp() {
+        return authWayTyp;
+    }
+
+    public void setAuthWayTyp(String authWayTyp) {
+        this.authWayTyp = authWayTyp;
+    }
+
+    public Float getMatchScore() {
+        return matchScore;
+    }
+
+    public void setMatchScore(Float matchScore) {
+        this.matchScore = matchScore;
+    }
+
+    public Float getFaceThreshold() {
+        return faceThreshold;
+    }
+
+    public void setFaceThreshold(Float faceThreshold) {
+        this.faceThreshold = faceThreshold;
+    }
+
+    public Timestamp getCaptureAt() {
+        return captureAt;
+    }
+
+    public void setCaptureAt(Timestamp captureAt) {
+        this.captureAt = captureAt;
+    }
+
+    public Timestamp getTagAt() {
+        return tagAt;
+    }
+
+    public void setTagAt(Timestamp tagAt) {
+        this.tagAt = tagAt;
+    }
+
+    public String getTagCardNo() {
+        return tagCardNo;
+    }
+
+    public void setTagCardNo(String tagCardNo) {
+        this.tagCardNo = tagCardNo;
+    }
+
+    public String getTagEmpCd() {
+        return tagEmpCd;
+    }
+
+    public void setTagEmpCd(String tagEmpCd) {
+        this.tagEmpCd = tagEmpCd;
+    }
+
+    public Double getTemper() {
+        return temper;
+    }
+
+    public void setTemper(Double temper) {
+        this.temper = temper;
+    }
+
+    public Float getMaskConfidence() {
+        return maskConfidence;
+    }
+
+    public void setMaskConfidence(Float maskConfidence) {
+        this.maskConfidence = maskConfidence;
+    }
+
+    public String getTerminalTyp() {
+        return terminalTyp;
+    }
+
+    public void setTerminalTyp(String terminalTyp) {
+        this.terminalTyp = terminalTyp;
+    }
+
+    public String getDoorCd() {
+        return doorCd;
+    }
+
+    public void setDoorCd(String doorCd) {
+        this.doorCd = doorCd;
+    }
+
+    public String getDoorNm() {
+        return doorNm;
+    }
+
+    public void setDoorNm(String doorNm) {
+        this.doorNm = doorNm;
+    }
+
+    public String getBuildingCd() {
+        return buildingCd;
+    }
+
+    public void setBuildingCd(String buildingCd) {
+        this.buildingCd = buildingCd;
+    }
+
+    public String getBuildingNm() {
+        return buildingNm;
+    }
+
+    public void setBuildingNm(String buildingNm) {
+        this.buildingNm = buildingNm;
     }
 
     public String getDeptCd() {
@@ -165,14 +331,29 @@ public class EntHistVO {
         this.deptNm = deptNm;
     }
 
-    public String getBelongNm() {
-        return belongNm;
+    public Timestamp getCreatedAt() {
+        return createdAt;
     }
 
-    public void setBelongNm(String belongNm) {
-        this.belongNm = belongNm;
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getEntFaceImg() {
+        return entFaceImg;
+    }
+
+    public void setEntFaceImg(String entFaceImg) {
+        this.entFaceImg = entFaceImg;
+    }
 
     public String getSrchCond1() {
         return srchCond1;
@@ -265,21 +446,38 @@ public class EntHistVO {
     public String toString() {
         return "EntHistVO{" +
                 "id=" + id +
-                ", evtDt='" + evtDt + '\'' +
+                ", evtDt=" + evtDt +
                 ", entEvtTyp='" + entEvtTyp + '\'' +
                 ", entEvtTypNm='" + entEvtTypNm + '\'' +
                 ", terminalCd='" + terminalCd + '\'' +
-                ", modelNm='" + modelNm + '\'' +
-                ", mgmtNum='" + mgmtNum + '\'' +
-                ", ipAddr='" + ipAddr + '\'' +
-                ", complexAuthTyp='" + complexAuthTyp + '\'' +
-                ", doorNm='" + doorNm + '\'' +
-                ", buildingNm='" + buildingNm + '\'' +
+                ", empCd='" + empCd + '\'' +
                 ", empNm='" + empNm + '\'' +
-                ", empNo='" + empNo + '\'' +
+                ", faceId=" + faceId +
+                ", cardNo='" + cardNo + '\'' +
+                ", cardClassTyp='" + cardClassTyp + '\'' +
+                ", cardStateTyp='" + cardStateTyp + '\'' +
+                ", cardTagTyp='" + cardTagTyp + '\'' +
+                ", begDt=" + begDt +
+                ", endDt=" + endDt +
+                ", authWayTyp='" + authWayTyp + '\'' +
+                ", matchScore=" + matchScore +
+                ", faceThreshold=" + faceThreshold +
+                ", captureAt=" + captureAt +
+                ", tagAt=" + tagAt +
+                ", tagCardNo='" + tagCardNo + '\'' +
+                ", tagEmpCd='" + tagEmpCd + '\'' +
+                ", temper=" + temper +
+                ", maskConfidence=" + maskConfidence +
+                ", terminalTyp='" + terminalTyp + '\'' +
+                ", doorCd='" + doorCd + '\'' +
+                ", doorNm='" + doorNm + '\'' +
+                ", buildingCd='" + buildingCd + '\'' +
+                ", buildingNm='" + buildingNm + '\'' +
                 ", deptCd='" + deptCd + '\'' +
                 ", deptNm='" + deptNm + '\'' +
-                ", belongNm='" + belongNm + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", entFaceImg='" + entFaceImg + '\'' +
                 ", srchCond1='" + srchCond1 + '\'' +
                 ", srchCond2='" + srchCond2 + '\'' +
                 ", keyword='" + keyword + '\'' +

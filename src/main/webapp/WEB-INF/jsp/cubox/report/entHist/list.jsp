@@ -2,11 +2,14 @@
          pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-
+<jsp:include page="/WEB-INF/jsp/cubox/report/entHist/detail.jsp" flush="false"/>
 
 <script type="text/javascript">
   $(function() {
     $(".title_tx").html("출입이력");
+
+
+    modalPopup("entHistDetail", "출입이력상세", 1100, 1000);
   });
 
   $(function() {
@@ -20,8 +23,84 @@
 
     $("#srchPage").val(page);
 
+    var fromDt = $("#fromDt").val();
+    var toDt =$("#toDt").val();
+
+    if(fromDt == "" || toDt ){
+      alert("조회 일자는 필수입니다.")
+      return
+    }
+
+
     f.action = "/report/entHist/list.do";
     f.submit();
+  }
+
+  function detail(id) {
+    $("#id").val(id);
+    <c:forEach items="${entHistList}" var="item" varStatus="status">
+    if(id == ${item.id}) {
+      openPopup("entHistDetail");
+      $("#id").text("${item.id}");
+      $("#evtDt").text("${item.evtDt}");
+      $("#entEvtTyp").text("${item.entEvtTyp}");
+      $("#entEvtTypNm").text("${item.entEvtTypNm}");
+      $("#empCd").text("${item.empCd}");
+      $("#empNm").text("${item.empNm}");
+      $("#faceId").text("${item.faceId}");
+      $("#cardNo").text("${item.cardNo}");
+      $("#cardClassTyp").text("${item.cardClassTyp}");
+      $("#cardClassTypNm").text("${item.cardClassTypNm}");
+      $("#cardStateTyp").text("${item.cardStateTyp}");
+      $("#cardStateTypNm").text("${item.cardStateTypNm}");
+      $("#cardTagTyp").text("${item.cardTagTyp}");
+      $("#cardTagTypNm").text("${item.cardTagTypNm}");
+      $("#begDt").text("${item.begDt}");
+      $("#endDt").text("${item.endDt}");
+      $("#authWayTyp").text("${item.authWayTyp}");
+      $("#authWayTypNm").text("${item.authWayTypNm}");
+      $("#matchScore").text("${item.matchScore}");
+      $("#faceThreshold").text("${item.faceThreshold}");
+      $("#captureAt").text("${item.captureAt}");
+      $("#tagAt").text("${item.tagAt}");
+      $("#tagCardNo").text("${item.tagCardNo}");
+      $("#tagEmpCd").text("${item.tagEmpCd}");
+      $("#temper").text("${item.temper}");
+      $("#maskConfidence").text("${item.maskConfidence}");
+      $("#terminalTyp").text("${item.terminalTyp}");
+      $("#buildingCd").text("${item.buildingCd}");
+      $("#buildingNm").text("${item.buildingNm}");
+      $("#doorCd").text("${item.doorCd}");
+      $("#doorNm").text("${item.doorNm}");
+      $("#deptCd").text("${item.deptCd}");
+      $("#deptNm").text("${item.deptNm}");
+      $("#createdAt").text("${item.createdAt}");
+      $("#updatedAt").text("${item.updatedAt}");
+
+      var img = fnGetFaceImage(id);
+    }
+    </c:forEach>
+  }
+
+  function openPopup(popupNm) {
+    $("#" + popupNm).PopupWindow("open");
+  }
+  function closePopup(popupNm) {
+    $("#" + popupNm).PopupWindow("close");
+  }
+
+  function fnGetFaceImage(id) {
+    $.ajax({
+      type: "POST",
+      url: "<c:url value='detail'/>",
+      data: {
+        id: id,
+      },
+      dataType: "json",
+      success: function(result) {
+        document.getElementById("imagePreview").src = "data:image/png;base64," + result.bioFace;
+      }
+    });
   }
 
 </script>
@@ -86,25 +165,26 @@
         <col width="6%" />
         <col width="6%" />
         <col width="6%" />
-        <col width="30%" />
+        <col width="6%" />
       </colgroup>
       <thead>
         <tr>
           <th>No.</th>
-          <th>출입일자</th>
+          <th>출입일시</th>
           <th>출입유형</th>
           <th>단말기코드</th>
-          <th>모델명</th>
-          <th>관리번호</th>
-          <th>IP</th>
-          <th>출입인증방식</th>
-          <th>출입문 명</th>
-          <th>건물</th>
-          <th>성명</th>
-          <th>사원번호</th>
+          <th>이름</th>
           <th>부서</th>
-          <th>소속</th>
-          <th>출입사진</th>
+          <th>카드번호</th>
+          <th>카드유형</th>
+          <th>카드상태</th>
+          <th>태그유형</th>
+          <th>시작일시</th>
+          <th>종료일시</th>
+          <th>인증유형</th>
+          <th>건물</th>
+          <th>출입문</th>
+          <th>상세</th>
         </tr>
       </thead>
       <tbody id="entHistListBody">
@@ -119,17 +199,18 @@
           <td><c:out value="${sList.evtDt}"/></td>
           <td><c:out value="${sList.entEvtTypNm}"/></td>
           <td><c:out value="${sList.terminalCd}"/></td>
-          <td><c:out value="${sList.modelNm}"/></td>
-          <td><c:out value="${sList.mgmtNum}"/></td>
-          <td><c:out value="${sList.ipAddr}"/></td>
-          <td><c:out value="${sList.complexAuthTypNm}"/></td>
-          <td><c:out value="${sList.doorNm}"/></td>
-          <td><c:out value="${sList.buildingNm}"/></td>
           <td><c:out value="${sList.empNm}"/></td>
-          <td><c:out value="${sList.empNo}"/></td>
           <td><c:out value="${sList.deptNm}"/></td>
-          <td><c:out value="${sList.belongNm}"/></td>
-          <td><img src="/report/imagView/<c:out value="${sList.id}"/>" width="50px"></td>
+          <td><c:out value="${sList.cardNo}"/></td>
+          <td><c:out value="${sList.cardClassTypNm}"/></td>
+          <td><c:out value="${sList.cardStateTypNm}"/></td>
+          <td><c:out value="${sList.cardTagTypNm}"/></td>
+          <td><c:out value="${sList.begDt}"/></td>
+          <td><c:out value="${sList.endDt}"/></td>
+          <td><c:out value="${sList.authWayTypNm}"/></td>
+          <td><c:out value="${sList.buildingNm}"/></td>
+          <td><c:out value="${sList.doorNm}"/></td>
+          <td onclick="detail(<c:out value='${sList.id}'/>)">상세보기</td>
         </tr>
       </c:forEach>
       </tbody>

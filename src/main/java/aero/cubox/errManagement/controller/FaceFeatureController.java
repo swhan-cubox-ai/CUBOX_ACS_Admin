@@ -94,8 +94,12 @@ public class FaceFeatureController {
         vo.setId(id);
         FaceFeatureErrVO data = errService.selectFaceFeatureErrOne(vo);
 
-        byte[] img = byteArrDecode(data.getFace_img());
-        String errorFace = new String(Base64.getEncoder().encode(img));
+        //byte[] img = byteArrDecode(data.getFace_img());
+        String img = byteArrEncode((byte[]) data.getFace_img());
+
+        //String img = byteArrEncode((byte[]) data.getFace_img());
+        String errorFace = new String(Base64.getEncoder().encode(data.getFace_img()));
+        //String errorFace = img;
 
         modelAndView.addObject("errorFace", errorFace);
 
@@ -105,6 +109,11 @@ public class FaceFeatureController {
     public static byte[] byteArrDecode(String encoded) throws Exception {
         AES256Util aes256Util = new AES256Util();
         byte[] result =  aes256Util.byteArrDecode(encoded, "s8LiEwT3if89Yq3i90hIo3HepqPfOhVd");
+        return result;
+    }
+    public static String byteArrEncode(byte[] bytes) throws Exception {
+        AES256Util aes256Util = new AES256Util();
+        String result =  aes256Util.byteArrEncode(bytes, "s8LiEwT3if89Yq3i90hIo3HepqPfOhVd");
         return result;
     }
 

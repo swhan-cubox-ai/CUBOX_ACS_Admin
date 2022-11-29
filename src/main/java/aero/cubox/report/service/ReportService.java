@@ -1,6 +1,7 @@
 package aero.cubox.report.service;
 
 import aero.cubox.core.vo.AlarmHistVO;
+import aero.cubox.core.vo.EntHistBioVO;
 import aero.cubox.core.vo.EntHistVO;
 
 import java.util.HashMap;
@@ -11,6 +12,8 @@ public interface ReportService {
     public List<EntHistVO> getEntHistList(EntHistVO vo) throws Exception;
 
     public int getEntHistListCount(EntHistVO vo) throws Exception;
+
+    public EntHistBioVO selectEntFaceOne(EntHistBioVO vo) throws Exception;
 
     public List<AlarmHistVO> getAlarmHistList(AlarmHistVO vo) throws Exception;
 
