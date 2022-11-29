@@ -123,11 +123,9 @@
         }
 
         // 빌딩 선택 시,
-        $(".selectBuilding").on('click change', function(e) {
-
+        $(".selectBuilding").on('click', function() {
             let val = $(this).val();
             let authType = $("#authType").val();
-            let floor;
             let options;
             let pathArr = [];
 
@@ -137,10 +135,8 @@
                 return;
 
             } else if (authType === "door") {
-                floor = $(".doorDetailList #dFloor");
                 options = $(".doorDetailList #dFloor option");
                 $(".doorDetailList .dFloor").css("display", "block");
-                $(".doorDetailList #dFloor option[name=selected]").prop("selected", true);
                 pathArr = [$(".doorDetailList #dBuilding option:checked").text(), $("#doorNm").val()];
                 $("#doorPath").text(pathArr.join(" > "));
             }
@@ -150,9 +146,25 @@
                     $(option).css("display", "none");
                 }
             });
+        });
+
+        // 빌딩 선택 시,
+        $(".selectBuilding").on('change', function() {
+            let authType = $("#authType").val();
+            let options = $(".doorDetailList #dFloor option");
+
+            if (authType === "door") {
+                $(".doorDetailList #dFloor option[name=selected]").prop("selected", true); // 수정일 때만 선택 초기화
+            }
 
             // 층 disabled 해제
-            floor.prop("disabled", false);
+            $(".doorDetailList #dFloor").prop("disabled", false);
+
+            options.each(function (i, option) {
+                if ($(this).val() != $(option).attr("bId")) {
+                    $(option).css("display", "none");
+                }
+            })
         });
 
         // 층 선택 시,
@@ -503,7 +515,8 @@
     }
 
     // 출입문 관리 - 수정
-    function fnEditMode() {
+    function fnEditMode(type) {
+        // type - "C" : 추가모드 / "U" : 수정모드
         let authType = $("#authType").val();
 
         // [수정, 삭제] --> [확인, 취소] 버튼으로 변환
@@ -516,7 +529,10 @@
        if (authType === "floor") {
             // $("#btnFloorAuthPick").removeClass("disabled");
         } else if (authType === "door") {
-            $("#btnTerminalPick, #btnDoorAuthPick").removeClass("disabled");
+           $("#btnTerminalPick, #btnDoorAuthPick").removeClass("disabled");
+        }
+        if (type === "U") {
+            $(".doorDetailList [name=doorEditSelect]").prop("disabled", false);
         }
     }
 
@@ -530,7 +546,7 @@
         if ($("input[name=createNode]:checked").length > 0) {
             setType(val);
             initDetail();
-            fnEditMode();
+            fnEditMode("C");
 
             if (val === "building") {
                 setTitle("add", "빌딩(동)");
@@ -1004,6 +1020,8 @@
 
                     if ("C" === mode ) {
                         if (returnData.newBuildingId !== "" ) {
+                            console.log(returnData.newBuildingId);
+
                             getBuildingDetail(returnData.newBuildingId); //
                         }
                     } else if ("U" === mode) {
@@ -1536,7 +1554,7 @@
 
                 <div class="c_btnbox center mt_10 mb_10" id="btn_wrapper" style="position: absolute; bottom: 0; display: none;">
                     <div style="display: inline-block;">
-                        <button type="button" id="btnEdit" class="comm_btn mr_20" onclick="fnEditMode();">수정</button>
+                        <button type="button" id="btnEdit" class="comm_btn mr_20" onclick="fnEditMode('U');">수정</button>
                         <button type="button" id="btnDelete" class="comm_btn" onclick="fnDelete();">삭제</button>
                         <button type="button" id="btnSave" class="comm_btn mr_20" onclick="fnSave();" style="display:none">확인</button>
                         <button type="button" id="btnCancel" class="comm_btn" onclick="fnCancel();" style="display:none">취소</button>
