@@ -1301,6 +1301,7 @@
                     alert("출입문 일괄등록이 완료되었습니다.");
                     closePopup("excelUploadPopup");
                     $("#excelFile").val("");
+                    fnGetDoorListAjax();
                 } else {
                     alert("출입문 일괄등록에 실패하였습니다.");
                 }
