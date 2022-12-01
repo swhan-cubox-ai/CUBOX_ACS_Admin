@@ -445,13 +445,15 @@ public class DoorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
+        String  buildingCd = StringUtil.nvl(commandMap.get("buildingCd"), "");;
         String  buildingNm = StringUtil.nvl(commandMap.get("buildingNm"), "");;
         String workplaceId = StringUtil.nvl(commandMap.get("workplaceId"), "");
 
         HashMap param = new HashMap();
 
-        param.put("buildingNm", buildingNm);          //출입문 명
-        param.put("workplaceId", workplaceId);         //Workplace ID
+        param.put( "buildingCd", buildingCd );        //빌딩 코드
+        param.put( "buildingNm", buildingNm );        //빌딩 명
+        param.put("workplaceId", workplaceId );//빌딩 ID
 
         String newBuildingId = "";
         try {
@@ -516,13 +518,17 @@ public class DoorController {
         modelAndView.setViewName("jsonView");
 
         String floorNm = StringUtil.nvl(commandMap.get("floorNm"), "");;
+        String buildingCd = StringUtil.nvl(commandMap.get("buildingCd"), "");
+        String floorCd = StringUtil.nvl(commandMap.get("floorCd"), "");
         String buildingId = StringUtil.nvl(commandMap.get("buildingId"), "");
         //String areaId = StringUtil.nvl(commandMap.get("areaId"), "");
 
         HashMap param = new HashMap();
 
         param.put("floorNm", floorNm);        //출입문 명
-        param.put("buildingId", buildingId);//빌딩 ID
+        param.put("buildingId", buildingId);  //빌딩 ID
+        param.put("buildingCd", buildingCd);  //빌딩 코드
+        param.put("floorCd", floorCd);        //층 코드
         //param.put("areaId", areaId);        //지역 ID
 
         String newfloorId = "";

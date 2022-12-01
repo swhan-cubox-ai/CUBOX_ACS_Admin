@@ -90,14 +90,13 @@
 
     <update id="updateDoorGroup" parameterType="HashMap">
         UPDATE T_DOORGRP
-           SET
+           SET updated_at= NOW()
         <if test="doorSchId != null and doorSchId != ''">
-               door_sch_id = #{doorSchId}
+             , door_sch_id = #{doorSchId}
         </if>
         <if test="nm != null and nm != ''">
              , nm = #{nm}
         </if>
-             , updated_at= NOW()
          WHERE id = #{id}
     </update>
 
