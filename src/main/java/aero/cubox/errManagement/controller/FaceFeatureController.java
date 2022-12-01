@@ -3,6 +3,7 @@ package aero.cubox.errManagement.controller;
 import aero.cubox.cmmn.service.CommonService;
 import aero.cubox.core.vo.CommonVO;
 import aero.cubox.core.vo.FaceFeatureErrVO;
+import aero.cubox.core.vo.FaceVO;
 import aero.cubox.core.vo.PaginationVO;
 import aero.cubox.errManagement.service.ErrManagementService;
 import aero.cubox.util.AES256Util;

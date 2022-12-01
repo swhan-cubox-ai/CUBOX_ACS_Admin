@@ -316,36 +316,49 @@
             console.log("최초 등록");
             let sameDaySch = $("." + day + "_timepick");
             let schTime = [];
-            let startVal = $("#" + startId).val();
-            let endVal = $("#" + endId).val();
+            let startVal = $("#" + startId).val().split(":").slice(0, -1).join(":");
+            let endVal = $("#" + endId).val().split(":").slice(0, -1).join(":");
+            let schTime0, schTime1, schTime2, schTime3;
 
             // 다른 스케쥴들 schTime에 담기
             for (let i = 0; i < sameDaySch.length; i++) {
                 let thisId = sameDaySch.eq(i).attr("id");
                 if (thisId.split("_")[1] != schNum) {
-                    console.log("=다른 스케쥴=");
-                    console.log($("#" + thisId).val());
-
                     let isStart = sameDaySch.eq(i).hasClass("start");
                     if ((isStart && $("#" + thisId.replace("start", "end")).val() != "") || (!isStart && $("#" + thisId.replace("end", "start")).val())) {
+                        console.log("=다른 스케쥴=");
+                        console.log($("#" + thisId).val());
                         schTime.push($("#" + thisId).val());
                     }
                 }
             }
             console.log(schTime);
+            // 있는지 없는지 먼저 확인
+            if (!fnIsEmpty(schTime[0])) {
+                schTime0 = schTime[0].split(":").slice(0, -1).join(":");
+            }
+            if (!fnIsEmpty(schTime[1])) {
+                schTime1 = schTime[1].split(":").slice(0, -1).join(":");
+            }
+            if (!fnIsEmpty(schTime[2])) {
+                schTime2 = schTime[2].split(":").slice(0, -1).join(":");
+            }
+            if (!fnIsEmpty(schTime[3])) {
+                schTime3 = schTime[3].split(":").slice(0, -1).join(":");
+            }
 
-            if ((startVal <= schTime[0] && endVal >= schTime[1]) || (startVal <= schTime[2] && endVal >= schTime[3])) {
-                console.log("둘다 오버된 시간");
+            if ((startVal <= schTime0 && endVal >= schTime1) || (startVal <= schTime2 && endVal >= schTime3)) {
+                console.log("시작시간, 종료시간 둘다 오버된 시간");
                 initTimepicker(startId, endId);
             }
 
-            if ((startVal >= schTime[0] && startVal <= schTime[1]) || (startVal >= schTime[2] && startVal <= schTime[3])) {
-                console.log("시작시간 겹침");
+            if ((startVal >= schTime0 && startVal <= schTime1) || (startVal >= schTime2 && startVal <= schTime3)) {
+                console.log("시작시간이 기존의 스케쥴과 겹침");
                 $("#" + startId).val("");
             }
 
-            if ((endVal >= schTime[0] && endVal <= schTime[1]) || (endVal >= schTime[2] && endVal <= schTime[3])) {
-                console.log("종료시간 겹침");
+            if ((endVal >= schTime0 && endVal <= schTime1) || (endVal >= schTime2 && endVal <= schTime3)) {
+                console.log("종료시간이 기존의 스케쥴과 겹침");
                 $("#" + endId).val("");
             }
 
@@ -509,6 +522,7 @@
         $("#btnDaySchEdit").css("display", "none");
         $("#btnDaySchAdd").css("display", "none");
         inactiveTimepicker();
+        fnGetScheduleByDayDetail();
     }
 
     // 요일별 스케쥴 전체 삭제
@@ -560,6 +574,8 @@
                 });
             });
         });
+        console.log("fnDaySchValidation type : " + type);
+        console.log(data);
 
         if (validCnt == 0) { // 입력한 스케쥴 하나도 없을 경우
             if (type === "Add") alert("등록한 스케쥴이 없습니다.");
@@ -729,6 +745,7 @@
     /////////////////  요일별 스케쥴 뿌려주기 ajax - start  /////////////////////
 
     function fnGetScheduleByDayDetail() {
+        console.log("fnGetScheduleByDayDetail");
 
         $.ajax({
             type : "POST",

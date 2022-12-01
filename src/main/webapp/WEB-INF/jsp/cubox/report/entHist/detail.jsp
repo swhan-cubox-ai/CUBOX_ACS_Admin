@@ -4,15 +4,22 @@
     #imgBox {
         text-align: center;
         padding-top: 10px;
+        width: 100%;
+
     }
     .eTd {
         text-align: left; !important;
     }
-    #imagePreview{
-        margin: 0 250px;
+    .imgT{
+        margin: auto;
         width:500px;
         height: 500px;
         display: block;
+    }
+    .imageDiv{
+        width: 50%;
+        display: inline;
+        float: left;
     }
 </style>
 <%--  출입이력 상세 modal  --%>
@@ -141,7 +148,12 @@
             </div>
         </div>
         <div id="imgBox">
-            <img id="imagePreview"/>
+            <div class="imageDiv">
+                <img id="imageReg" class="imgT"/>
+            </div>
+            <div class="imageDiv">
+                <img id="imagePreview"  class="imgT"/>
+            </div>
         </div>
 
         <div class="c_btnbox center mt_30">

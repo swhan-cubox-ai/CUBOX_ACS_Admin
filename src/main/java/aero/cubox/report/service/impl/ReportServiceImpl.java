@@ -3,6 +3,7 @@ package aero.cubox.report.service.impl;
 import aero.cubox.core.vo.AlarmHistVO;
 import aero.cubox.core.vo.EntHistBioVO;
 import aero.cubox.core.vo.EntHistVO;
+import aero.cubox.core.vo.FaceVO;
 import aero.cubox.report.service.ReportService;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,11 @@ public class ReportServiceImpl extends EgovAbstractServiceImpl implements Report
     @Override
     public HashMap getEntHistBioImg(int id) throws Exception {
         return reportDAO.getEntHistBioImg(id);
+    }
+
+    @Override
+    public FaceVO selectFaceOne(String empCd) throws Exception {
+        return reportDAO.selectFaceOne(empCd);
     }
 
 }
