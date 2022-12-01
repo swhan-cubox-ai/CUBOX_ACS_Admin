@@ -38,7 +38,7 @@
         building_cd as buildingCd,
         building_nm as buildingNm,
         dept_cd as deptCd,
-        dept_nm as deptNm,
+        IFNULL(dept_nm,'') as deptNm ,
         eh.created_at as createdAt,
         eh.updated_at as updatedAt
         from T_ENT_HIST eh
@@ -59,7 +59,7 @@
             AND eh.building_id = #{srchCond2}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-            AND eh.emp_nm LIKE CONCAT('%',#{keyword},'%')
+            and (eh.emp_nm LIKE CONCAT('%',#{keyword},'%') or eh.emp_cd like CONCAT('%',#{keyword},'%') )
         </if>
         ORDER BY evtDt DESC
         limit	#{srchCnt} offset #{offset}
@@ -81,7 +81,7 @@
             and building_id = #{srchCond2}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-            and emp_nm like CONCAT('%',#{keyword},'%')
+            and (emp_nm LIKE CONCAT('%',#{keyword},'%') or emp_cd like CONCAT('%',#{keyword},'%') )
         </if>
     </select>
 
@@ -170,5 +170,13 @@
         WHERE
             end_hist_id = #{id}
     </select>
+
+
+    <select id="selectFaceOne" parameterType="string" resultType="aero.cubox.core.vo.FaceVO">
+        select f.face_img from T_EMP e
+        join T_FACE f on f.id = e.face_id
+        where e.emp_cd = #{empCd}
+    </select>
+
 
 </mapper>

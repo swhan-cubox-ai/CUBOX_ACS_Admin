@@ -16,10 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Controller
@@ -97,12 +94,18 @@ public class ReportController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
         Integer id =  Integer.parseInt(param.get("id").toString());
+        String empCd =  (String) param.get("empCd").toString();
         EntHistBioVO vo = new EntHistBioVO();
         vo.setEnt_hist_id(id);
         EntHistBioVO data = reportService.selectEntFaceOne(vo);
-
         byte[] img = byteArrDecode(data.getEnt_face_img());
 
+        FaceVO faceVO = reportService.selectFaceOne(empCd);
+        if(faceVO != null) {
+            byte[] regImg = faceVO.getFace_img();
+            String regFace = new String(Base64.getEncoder().encode(regImg));
+            modelAndView.addObject("regFace", regFace);
+        }
 
         //String img = byteArrEncode((byte[]) data.getFace_img());
         String bioFace = new String(Base64.getEncoder().encode(img));
