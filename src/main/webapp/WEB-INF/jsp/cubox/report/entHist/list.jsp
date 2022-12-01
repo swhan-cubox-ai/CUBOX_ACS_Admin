@@ -26,10 +26,10 @@
     var fromDt = $("#fromDt").val();
     var toDt =$("#toDt").val();
 
-    if(fromDt == "" || toDt ){
-      alert("조회 일자는 필수입니다.")
-      return
-    }
+    // if(fromDt == "" || toDt ){
+    //   alert("조회 일자는 필수입니다.")
+    //   return
+    // }
 
 
     f.action = "/report/entHist/list.do";
@@ -76,29 +76,36 @@
       $("#deptNm").text("${item.deptNm}");
       $("#createdAt").text("${item.createdAt}");
       $("#updatedAt").text("${item.updatedAt}");
-
-      var img = fnGetFaceImage(id);
+      var empCd = $("#empCd").text();
+      var img = fnGetFaceImage(id, empCd);
     }
     </c:forEach>
   }
 
   function openPopup(popupNm) {
     $("#" + popupNm).PopupWindow("open");
+    document.getElementById("imagePreview").src = '/images/loading.gif'
+    document.getElementById("imageReg").src = '/images/loading.gif'
   }
   function closePopup(popupNm) {
     $("#" + popupNm).PopupWindow("close");
+    document.getElementById("imagePreview").src = '/images/loading.gif'
+    document.getElementById("imageReg").src = '/images/loading.gif'
+
   }
 
-  function fnGetFaceImage(id) {
+  function fnGetFaceImage(id, empCd) {
     $.ajax({
       type: "POST",
       url: "<c:url value='detail'/>",
       data: {
         id: id,
+        empCd : empCd
       },
       dataType: "json",
       success: function(result) {
         document.getElementById("imagePreview").src = "data:image/png;base64," + result.bioFace;
+        document.getElementById("imageReg").src = "data:image/png;base64," + result.regFace;
       }
     });
   }
@@ -132,7 +139,7 @@
         </select>
       </div>
       <div class="comm_search  mr_10">
-        <input type="text" class="w_150px input_com" id="keyword" name="keyword" value="<c:out value="${data.keyword}"/>" placeholder="사원명">
+        <input type="text" class="w_150px input_com" id="keyword" name="keyword" value="<c:out value="${data.keyword}"/>" placeholder="사원명/사원코드">
       </div>
       <div class="comm_search ml_40">
         <div class="search_btn2" onclick="pageSearch('1')"></div>
