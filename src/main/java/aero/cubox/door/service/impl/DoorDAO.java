@@ -33,6 +33,9 @@ public class DoorDAO extends EgovAbstractMapper {
 	public void deleteDoor(Map<String, Object> paramMap) {
 		delete(sqlNameSpace+"deleteDoor", paramMap);
 	}
+	public void deleteDoorAll() {
+		delete(sqlNameSpace+"deleteDoorAll");
+	}
 
 
 	public List<HashMap> getAreaList(Map<String, Object> paramMap) {
@@ -126,12 +129,21 @@ public class DoorDAO extends EgovAbstractMapper {
 		delete(sqlNameSpace+"deleteBuilding", paramMap);
 	}
 
+	public void deleteBuildingAll() {
+		delete(sqlNameSpace+"deleteBuildingAll");
+	}
 	public void deleteArea(Map<String, Object> paramMap) {
 		delete(sqlNameSpace+"deleteArea", paramMap);
+	}
+	public void deleteAreaAll() {
+		delete(sqlNameSpace+"deleteAreaAll");
 	}
 
 	public void deleteFloor(Map<String, Object> paramMap) {
 		delete(sqlNameSpace+"deleteFloor", paramMap);
+	}
+	public void deleteFloorAll() {
+		delete(sqlNameSpace+"deleteFloorAll");
 	}
 
 	public int getTerminalUseCnt(HashMap<String, Object> paramMap) {
