@@ -1286,10 +1286,14 @@
         let formData = new FormData(form);
         formData.append("file", $("#excelFile")[0].files[0]);
 
+        closePopup("excelUploadPopup");
+        showLoading();
+
         $.ajax({
             type: "POST",
             url: "<c:url value='/door/excel/upload.do' />",
             enctype: "multipart/form-data",
+            async: true,
             processData: false,
             contentType: false,
             data: formData,
@@ -1299,14 +1303,14 @@
 
                 if (result.resultCode === "Y") {
                     alert("출입문 일괄등록이 완료되었습니다.");
-                    closePopup("excelUploadPopup");
-                    $("#excelFile").val("");
                     fnGetDoorListAjax();
                 } else {
                     alert("출입문 일괄등록에 실패하였습니다.");
                 }
+                hideLoading();
             }
         });
+
     }
 
     /////////////////  엑셀 일괄등록 ajax - end  /////////////////////
