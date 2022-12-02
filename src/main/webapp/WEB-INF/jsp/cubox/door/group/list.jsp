@@ -90,7 +90,7 @@
                 <tr>
                     <td>${(pagination.totRecord - (pagination.totRecord-status.index)+1)  + ( (pagination.curPage - 1)  *  pagination.recPerPage ) }</td>
                     <td><a href='/door/group/detail/<c:out value="${sList.id}"/>'><c:out value="${sList.nm}"/></a></td>
-                    <td><a href='/door/group/detail/<c:out value="${sList.id}"/>'><c:out value="${sList.door_sch_nm}"/></a></td>
+                    <td><c:out value="${sList.door_sch_nm}"/></td>
                     <td><c:out value="${sList.door_cnt}"/></td>
                     <td><c:out value="${sList.created_at}"/></td>
                     <td><c:out value="${sList.updated_at}"/></td>
