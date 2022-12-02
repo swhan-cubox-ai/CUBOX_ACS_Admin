@@ -213,7 +213,11 @@ public class DoorGroupController {
         HashMap param = new HashMap();
 
         param.put("nm", nm);
-        param.put("doorSchId", scheduleId);
+        if(scheduleId.length() ==0){
+            param.put("doorSchId", null);
+        }else{
+            param.put("doorSchId", scheduleId);
+        }
         param.put("doorIds", doorIds);
         String newDoorId = "";
 
