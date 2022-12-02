@@ -136,7 +136,7 @@
     <delete id="deleteDoorInDoorGroup" parameterType="HashMap" >
         DELETE
         FROM T_DOORGRP_DOOR
-        WHERE door_id = #{doorId}
+        WHERE doorgrp_id = #{doorgrpId}
     </delete>
 
 
