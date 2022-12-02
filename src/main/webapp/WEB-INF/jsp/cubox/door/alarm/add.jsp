@@ -95,8 +95,7 @@
         } else {
             return;
         }
-
-    /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
+    }
 
 
     /////////////////  출입문 알람그룹 저장 ajax - start  /////////////////////
@@ -117,7 +116,7 @@
                 time: alTime,
                 envYn: envYn,
                 deleteYn: deleteYn,
-                // doorAlarmGrpId: doorIds
+                doorIds: doorIds
             },
             dataType: "json",
             success: function(result) {
