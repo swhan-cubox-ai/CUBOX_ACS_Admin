@@ -172,11 +172,29 @@ public class AuthController {
         List<Map> authEntMyList = authService.getAuthEntMyList(id);
         HashMap data = authService.getEmpDetail(id);
 
+
+
         model.addAttribute("isModify", false);
         model.addAttribute("authEntMyList", authEntMyList);
         model.addAttribute("data", data);
 
         return "cubox/auth/emp/detail";
+    }
+
+    @RequestMapping(value="/emp/detail/img")
+    public ModelAndView getImg(ModelMap model, @RequestParam Map<String, Object> param) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        String empCd =  (String) param.get("empCd").toString();
+
+        FaceVO faceVO = authService.selectFaceOne(empCd);
+        if(faceVO != null) {
+            byte[] regImg = faceVO.getFace_img();
+            String regFace = new String(Base64.getEncoder().encode(regImg));
+            modelAndView.addObject("regFace", regFace);
+        }
+
+        return modelAndView;
     }
 
     @RequestMapping(value="/door/detail/{id}", method= RequestMethod.GET)

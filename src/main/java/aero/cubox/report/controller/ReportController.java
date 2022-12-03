@@ -116,7 +116,7 @@ public class ReportController {
         return modelAndView;
     }
 
-    public static byte[] byteArrDecode(String encoded) throws Exception {
+    private static byte[] byteArrDecode(String encoded) throws Exception {
         AES256Util aes256Util = new AES256Util();
         byte[] result =  aes256Util.byteArrDecode(encoded, "s8LiEwT3if89Yq3i90hIo3HepqPfOhVd");
         return result;

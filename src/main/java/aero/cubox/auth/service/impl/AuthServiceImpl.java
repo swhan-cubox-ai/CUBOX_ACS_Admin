@@ -5,6 +5,7 @@ import aero.cubox.auth.service.AuthService;
 import aero.cubox.core.vo.AuthVO;
 import aero.cubox.core.vo.DeptVO;
 import aero.cubox.core.vo.EmpVO;
+import aero.cubox.core.vo.FaceVO;
 import aero.cubox.util.StringUtil;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
@@ -180,6 +181,11 @@ public class AuthServiceImpl extends EgovAbstractServiceImpl implements AuthServ
                 }
             }
         }
+    }
+
+    @Override
+    public FaceVO selectFaceOne(String empCd) throws Exception {
+        return authDAO.selectFaceOne(empCd);
     }
 
 }

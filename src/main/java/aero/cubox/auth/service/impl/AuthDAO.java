@@ -3,6 +3,7 @@ package aero.cubox.auth.service.impl;
 import aero.cubox.core.vo.AuthVO;
 import aero.cubox.core.vo.DeptVO;
 import aero.cubox.core.vo.EmpVO;
+import aero.cubox.core.vo.FaceVO;
 import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,5 +114,9 @@ public class AuthDAO extends EgovAbstractMapper {
 
     public List<Map> getDoorList(int id) throws Exception {
         return selectList ("auth.getDoorList", id);
+    }
+
+    public FaceVO selectFaceOne(String empCd) throws Exception {
+        return  selectOne ( "auth.selectFaceOne", empCd);
     }
 }

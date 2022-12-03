@@ -3,6 +3,7 @@ package aero.cubox.auth.service;
 import aero.cubox.core.vo.AuthVO;
 import aero.cubox.core.vo.DeptVO;
 import aero.cubox.core.vo.EmpVO;
+import aero.cubox.core.vo.FaceVO;
 
 import java.util.HashMap;
 import java.util.List;
@@ -58,4 +59,6 @@ public interface AuthService {
     public List<Map> getDoorGrpList(Map map) throws Exception;
 
     public void registAuthDoor(Map<String, Object> map) throws Exception;
+
+    public FaceVO selectFaceOne(String empCd) throws Exception;
 }
