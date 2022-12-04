@@ -55,8 +55,8 @@ public class ReportServiceImpl extends EgovAbstractServiceImpl implements Report
     }
 
     @Override
-    public FaceVO selectFaceOne(String empCd) throws Exception {
-        return reportDAO.selectFaceOne(empCd);
+    public FaceVO selectFaceOne(int faceId) throws Exception {
+        return reportDAO.selectFaceOne(faceId);
     }
 
 }

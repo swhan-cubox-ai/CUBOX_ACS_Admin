@@ -47,7 +47,7 @@ public class ReportDAO extends EgovAbstractMapper {
         return  selectOne ( "report.getEntHistBioImg", id);
     }
 
-    public FaceVO selectFaceOne(String empCd) throws Exception {
-        return  selectOne ( "report.selectFaceOne", empCd);
+    public FaceVO selectFaceOne(int faceId) throws Exception {
+        return  selectOne ( "report.selectFaceOne", faceId);
     }
 }

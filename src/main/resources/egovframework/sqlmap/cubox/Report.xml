@@ -56,7 +56,7 @@
             AND eh.evt_dt BETWEEN #{fromDt} AND #{toDt}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
-            AND eh.building_id = #{srchCond2}
+            AND eh.building_cd = #{srchCond2}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
             and (eh.emp_nm LIKE CONCAT('%',#{keyword},'%') or eh.emp_cd like CONCAT('%',#{keyword},'%') )
@@ -78,7 +78,7 @@
             and evt_dt between #{fromDt} and #{toDt}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
-            and building_id = #{srchCond2}
+            and building_cd = #{srchCond2}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
             and (emp_nm LIKE CONCAT('%',#{keyword},'%') or emp_cd like CONCAT('%',#{keyword},'%') )
@@ -172,9 +172,9 @@
     </select>
 
 
-    <select id="selectFaceOne" parameterType="string" resultType="aero.cubox.core.vo.FaceVO">
+    <select id="selectFaceOne" parameterType="int" resultType="aero.cubox.core.vo.FaceVO">
         select face_img from T_FACE
-        where emp_cd = #{empCd}
+        where id = #{faceId}
     </select>
 
 

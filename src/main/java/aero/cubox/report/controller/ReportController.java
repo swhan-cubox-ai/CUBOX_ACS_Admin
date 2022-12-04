@@ -6,6 +6,7 @@ import aero.cubox.core.vo.*;
 import aero.cubox.report.service.ReportService;
 import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.AES256Util;
+import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -32,6 +33,9 @@ public class ReportController {
     @Resource(name = "commonService")
     private CommonService commonService;
 
+    @Resource(name = "commonUtils")
+    private CommonUtils commonUtils;
+
 
     @RequestMapping(value = "/entHist/list.do")
     public String entHistlist(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
@@ -50,6 +54,19 @@ public class ReportController {
 
             String fromDt = StringUtil.nvl(commandMap.get("fromDt"), "");
             String toDt = StringUtil.nvl(commandMap.get("toDt"), "");
+
+            if(toDt.equals("")){
+                Date now = new Date();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(now);
+                cal.add(Calendar.DATE, -7);
+
+                Calendar cal2 = Calendar.getInstance();
+                cal2.setTime(now);
+                cal2.add(Calendar.DATE, 1);
+                toDt = commonUtils.getStringDate(cal2.getTime(), "yyyy-MM-dd");
+                fromDt = commonUtils.getStringDate(cal.getTime(), "yyyy-MM-dd");
+            }
 
             vo.setSrchPage(Integer.parseInt(srchPage));
             vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
@@ -94,13 +111,15 @@ public class ReportController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
         Integer id =  Integer.parseInt(param.get("id").toString());
+        Integer faceId =  Integer.parseInt(param.get("faceId").toString());
         String empCd =  (String) param.get("empCd").toString();
         EntHistBioVO vo = new EntHistBioVO();
         vo.setEnt_hist_id(id);
         EntHistBioVO data = reportService.selectEntFaceOne(vo);
         byte[] img = byteArrDecode(data.getEnt_face_img());
 
-        FaceVO faceVO = reportService.selectFaceOne(empCd);
+        //FaceVO faceVO = reportService.selectFaceOne(empCd);
+        FaceVO faceVO = reportService.selectFaceOne(faceId);
         if(faceVO != null) {
             byte[] regImg = faceVO.getFace_img();
             String regFace = new String(Base64.getEncoder().encode(regImg));

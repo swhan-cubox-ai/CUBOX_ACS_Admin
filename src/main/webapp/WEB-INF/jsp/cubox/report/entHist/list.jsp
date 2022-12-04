@@ -77,7 +77,8 @@
       $("#createdAt").text("${item.createdAt}");
       $("#updatedAt").text("${item.updatedAt}");
       var empCd = $("#empCd").text();
-      var img = fnGetFaceImage(id, empCd);
+      var faceId = $("#faceId").text();
+      var img = fnGetFaceImage(id, empCd, faceId);
     }
     </c:forEach>
   }
@@ -94,13 +95,14 @@
 
   }
 
-  function fnGetFaceImage(id, empCd) {
+  function fnGetFaceImage(id, empCd, faceId) {
     $.ajax({
       type: "POST",
       url: "<c:url value='detail'/>",
       data: {
         id: id,
-        empCd : empCd
+        empCd : empCd,
+        faceId : faceId
       },
       dataType: "json",
       success: function(result) {
@@ -126,8 +128,8 @@
       </div>
       <div class="comm_search mr_10">
         <p>
-          <input class="w_150px input_com" type="text" readonly="readonly" id="fromDt" name="fromDt" placeholder="조회 시작일자" value="${data.fromDt}"> ~
-          <input class="w_150px input_com" type="text" readonly="readonly" id="toDt" name="toDt" placeholder="조회 종료일자" value="${data.toDt}">
+          <input class="w_150px input_datepicker" type="text" readonly="readonly" id="fromDt" name="fromDt" placeholder="조회 시작일자" value="${data.fromDt}"> ~
+          <input class="w_150px input_datepicker" type="text" readonly="readonly" id="toDt" name="toDt" placeholder="조회 종료일자" value="${data.toDt}">
         </p>
       </div>
       <div class="comm_search mr_10">

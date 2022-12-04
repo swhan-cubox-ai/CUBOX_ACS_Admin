@@ -24,7 +24,7 @@ public interface ReportService {
 
     public HashMap getEntHistBioImg(int id) throws Exception;
 
-    public FaceVO selectFaceOne(String empCd) throws Exception;
+    public FaceVO selectFaceOne(int faceId) throws Exception;
 
 
 }
