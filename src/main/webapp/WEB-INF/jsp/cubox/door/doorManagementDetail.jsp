@@ -94,7 +94,6 @@
     }
 </style>
 
-<script type="text/javascript" src="/js/blockUI/blockUI.js"></script>
 <script type="text/javascript">
     let crudType ="<%=CRUD_TYPE%>";
     console.log("#crudType" + crudType);
@@ -1288,20 +1287,7 @@
         formData.append("file", $("#excelFile")[0].files[0]);
 
         closePopup("excelUploadPopup");
-        // showLoading();
-        $.blockUI({
-            overlayCSS:{
-                backgroundColor:'#ffe',
-                opacity: .5
-            },
-            css:{
-                border:'none',
-                opacity: .5,
-                width:'80px',
-                left:'45%'
-            },
-            message:"<img src='/images/loading.gif' width='80px'>"
-        });
+        showLoading();
 
         $.ajax({
             type: "POST",
@@ -1321,8 +1307,7 @@
                 } else {
                     alert("출입문 일괄등록에 실패하였습니다.");
                 }
-                // hideLoading();
-                $.unblockUI();
+                hideLoading();
             }
         });
 
