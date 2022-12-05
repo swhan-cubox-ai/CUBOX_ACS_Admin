@@ -1,9 +1,6 @@
 package aero.cubox.report.service;
 
-import aero.cubox.core.vo.AlarmHistVO;
-import aero.cubox.core.vo.EntHistBioVO;
-import aero.cubox.core.vo.EntHistVO;
-import aero.cubox.core.vo.FaceVO;
+import aero.cubox.core.vo.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +22,12 @@ public interface ReportService {
     public HashMap getEntHistBioImg(int id) throws Exception;
 
     public FaceVO selectFaceOne(int faceId) throws Exception;
+
+    List<FaceFeatureErrVO> selectFaceFeatureErrList(FaceFeatureErrVO vo) throws Exception;
+
+    int getFaceFeatureErrCount(FaceFeatureErrVO vo) throws Exception;
+
+    FaceFeatureErrVO selectFaceFeatureErrOne(FaceFeatureErrVO vo) throws Exception;
 
 
 }

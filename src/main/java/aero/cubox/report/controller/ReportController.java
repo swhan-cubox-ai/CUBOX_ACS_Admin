@@ -135,11 +135,6 @@ public class ReportController {
         return modelAndView;
     }
 
-    private static byte[] byteArrDecode(String encoded) throws Exception {
-        AES256Util aes256Util = new AES256Util();
-        byte[] result =  aes256Util.byteArrDecode(encoded, "s8LiEwT3if89Yq3i90hIo3HepqPfOhVd");
-        return result;
-    }
 
     @RequestMapping(value = "/alarmHist/list.do")
     public String alarmHistList(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
@@ -231,5 +226,93 @@ public class ReportController {
            e.printStackTrace();
         }
     }
+
+    @RequestMapping(value="/err/faceFeatureList.do")
+    public String list(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
+        System.out.println("test");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+            FaceFeatureErrVO vo = new FaceFeatureErrVO();
+            String srchPage       = StringUtil.nvl(commandMap.get("srchPage"), "1");
+            String srchRecPerPage = StringUtil.nvl(commandMap.get("srchRecPerPage"), "10");
+
+            String empCd = StringUtil.nvl(commandMap.get("emp_cd"), null);
+            String featureTyp = StringUtil.nvl(commandMap.get("feature_typ"), null);
+            String empNm = StringUtil.nvl(commandMap.get("emp_nm"), null);
+
+
+            vo.setFace_feature_typ(featureTyp);
+            vo.setEmp_cd(empCd);
+            vo.setEmp_nm(empNm);
+
+            vo.setSrchPage(Integer.parseInt(srchPage));
+            vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
+            vo.autoOffset();
+
+
+            List<FaceFeatureErrVO> list = reportService.selectFaceFeatureErrList(vo);
+            int totalCnt = reportService.getFaceFeatureErrCount(vo);
+
+            PaginationVO pageVO = new PaginationVO();
+            pageVO.setCurPage(vo.getSrchPage());
+            pageVO.setRecPerPage(vo.getSrchCnt());
+            pageVO.setTotRecord(totalCnt);
+            pageVO.setUnitPage(vo.getCurPageUnit());
+            pageVO.calcPageList();
+
+
+            List<CommonVO> featureTypList = commonService.getCommonCodeList("FaceFeatureTyp");
+
+            model.addAttribute("featureTypList", featureTypList);
+            model.addAttribute("errList", list);
+            model.addAttribute("cntPerPage", "10");
+            model.addAttribute("data", vo);
+            model.addAttribute("pagination", pageVO);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
+
+        return "cubox/report/featureErr/list";
+    }
+
+    @RequestMapping(value="/err/faceFeature/detail")
+    public ModelAndView detailErr(ModelMap model, @RequestParam Map<String, Object> param) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+        Integer id =  Integer.parseInt(param.get("id").toString());
+        FaceFeatureErrVO vo = new FaceFeatureErrVO();
+        vo.setId(id);
+        FaceFeatureErrVO data = reportService.selectFaceFeatureErrOne(vo);
+
+        //byte[] img = byteArrDecode(data.getFace_img());
+        String img = byteArrEncode((byte[]) data.getFace_img());
+
+        //String img = byteArrEncode((byte[]) data.getFace_img());
+        String errorFace = new String(Base64.getEncoder().encode(data.getFace_img()));
+        //String errorFace = img;
+
+        modelAndView.addObject("errorFace", errorFace);
+
+        return modelAndView;
+    }
+
+
+    public static String byteArrEncode(byte[] bytes) throws Exception {
+        AES256Util aes256Util = new AES256Util();
+        String result =  aes256Util.byteArrEncode(bytes, "s8LiEwT3if89Yq3i90hIo3HepqPfOhVd");
+        return result;
+    }
+
+    private static byte[] byteArrDecode(String encoded) throws Exception {
+        AES256Util aes256Util = new AES256Util();
+        byte[] result =  aes256Util.byteArrDecode(encoded, "s8LiEwT3if89Yq3i90hIo3HepqPfOhVd");
+        return result;
+    }
+
+
 
 }

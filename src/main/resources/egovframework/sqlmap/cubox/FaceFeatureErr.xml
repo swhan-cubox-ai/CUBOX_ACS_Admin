@@ -33,6 +33,7 @@
         SELECT count(1)
         FROM T_FACE_FEATURE_ERR e
         JOIN T_FACE f on f.id = e.face_id
+        LEFT OUTER JOIN T_EMP emp on f.emp_cd = emp.emp_cd
         WHERE 1=1
         <if test='@aero.cubox.util.CommonUtils@notEmpty(emp_cd)'>
             AND f.emp_cd = #{emp_cd}

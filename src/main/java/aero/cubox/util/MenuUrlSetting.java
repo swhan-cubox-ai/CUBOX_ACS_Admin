@@ -38,7 +38,7 @@ public class MenuUrlSetting {
         else if ("0403".equals(menu_cd)) return "";           // 시간대별 출입이력
         else if ("0404".equals(menu_cd)) return "";           // 장시간개방 알람이력
         else if ("0405".equals(menu_cd)) return "";           // 대량조회신청결과
-        else if ("0406".equals(menu_cd)) return "/err/faceFeatureList.do";           // 특징점추출 실패 조회
+        else if ("0406".equals(menu_cd)) return "/report/err/faceFeatureList.do";           // 특징점추출 실패 조회
 
 
         return  menuUrl;
