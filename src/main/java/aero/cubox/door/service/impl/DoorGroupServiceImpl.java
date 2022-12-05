@@ -94,6 +94,9 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
     public void updateDoorGroup(Map<String, Object> commandMap) {
         doorGroupDAO.updateDoorGroup(commandMap);
 
+        commandMap.put("doorgrpId", commandMap.get("id").toString());
+        doorGroupDAO.deleteDoorInDoorGroup(commandMap);
+
         //출입권한-출입문 table에 door_id Insert
         if( !isEmpty((String) commandMap.get("doorIds"))){
 
@@ -101,10 +104,10 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
             doorIds = commandMap.get("doorIds").toString();
 
             if( doorIds.length() > 0 ){
+
                 String[] doorIdArr = doorIds.split("/");
                 for (int i = 0; i < doorIdArr.length; i++) {
                     commandMap.put("doorId", doorIdArr[i]);
-                    doorGroupDAO.deleteDoorInDoorGroup(commandMap);
                     doorGroupDAO.addDoorInDoorGroup(commandMap);
                 }
             }

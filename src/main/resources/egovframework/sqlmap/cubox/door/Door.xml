@@ -29,17 +29,17 @@
 	</select>
 
 	<select id="selectDoorList" parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-		       building_cd,
-		       floor_cd,
-		       door_cd,
-			   building_id,
-			   area_id,
-			   floor_id,
-			   door_nm,
-			   alarm_typ,
-			   created_at,
-			   updated_at
+		SELECT id
+		     , building_cd
+		     , floor_cd
+		     , door_cd
+			 , building_id
+			 , area_id
+			 , floor_id
+			 , door_nm
+			 , alarm_typ
+			 , created_at
+			 , updated_at
 		FROM T_DOOR TD
 		WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(building_id)'>
@@ -51,6 +51,7 @@
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(floor_id)'>
 		  AND TD.floor_id = #{floor_id}
 		</if>
+	 ORDER BY TD.door_cd DESC
 	</select>
 
 
@@ -106,12 +107,12 @@
 
 
 	<select id="selectBuildingList" parameterType="HashMap" resultType="HashMap">
-		SELECT TB.id,
-		       TB.building_cd,
-		       TB.workplace_id,
-		       TB.building_nm,
-		       TB.created_at,
-		       TB.updated_at
+		SELECT TB.id
+		     , TB.building_cd
+		     , TB.workplace_id
+		     , TB.building_nm
+		     , TB.created_at
+		     , TB.updated_at
 		  FROM T_BUILDING TB
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -119,17 +120,20 @@
 		</if><if test='@aero.cubox.util.CommonUtils@notEmpty(workplace_id)'>
 		  AND TB.workplace_id = #{workplace_id}
 		</if>
+     ORDER BY TB.building_cd ASC
+
 	</select>
 
 
 	<select id="selectFloorList" parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-		       building_id,
-		       area_id,
-		       floor_cd,
-		       floor_nm,
-		       created_at,
-		       updated_at
+		SELECT id
+		     , building_id
+		     , building_cd
+		     , area_id
+		     , floor_cd
+		     , floor_nm
+		     , created_at
+		     , updated_at
 		  FROM T_FLOOR TF
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -139,15 +143,18 @@
 		   AND TF.area_id = #{areaId}
 		   AND TF.building_id = #{buildingId}
 		</if>
+	  ORDER BY building_cd ASC
+		     , FIELD(floor_cd,'B1','B2','B3','B4','B5') DESC
+		     , floor_cd ASC
 	</select>
 
 
 	<select id="selectAreaList" parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-		       building_id,
-		       area_nm,
-		       created_at,
-		       updated_at
+		SELECT id
+		     , building_id
+		     , area_nm
+		     , created_at
+		     , updated_at
 		  FROM T_AREA TA
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -160,10 +167,10 @@
 
 
 	<select id="selectWorkplaceList" parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-               workplace_nm,
-		       created_at,
-		       updated_at
+		SELECT id
+             , workplace_nm
+		     , created_at
+		     , updated_at
 		  FROM T_WORKPLACE TW
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -173,18 +180,18 @@
 
 
 	<select id="selectTerminalDetail" parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-			   terminal_cd,
-			   terminal_typ,
-			   door_id,
-			   mgmt_num,
-			   ip_addr,
-			   complex_auth_typ,
-			   face_auth_typ,
-			   op_mode_typ,
-			   online_yn,
-			   created_at,
-			   updated_at
+		SELECT id
+			 , terminal_cd
+			 , terminal_typ
+			 , door_id
+			 , mgmt_num
+			 , ip_addr
+			 , complex_auth_typ
+			 , face_auth_typ
+			 , op_mode_typ
+			 , online_yn
+			 , created_at
+			 , updated_at
 		  FROM T_TERMINAL TT
 		 WHERE 1 = 1
            AND use_yn = 'Y'
@@ -443,7 +450,5 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 		 WHERE 1 = 1
 		   AND TT.door_id = #{doorId}
 	</select>
-
-
 
 </mapper>
