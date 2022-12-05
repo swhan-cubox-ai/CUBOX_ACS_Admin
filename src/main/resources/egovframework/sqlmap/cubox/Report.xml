@@ -56,7 +56,7 @@
             AND eh.evt_dt BETWEEN #{fromDt} AND #{toDt}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
-            AND eh.building_id = #{srchCond2}
+            AND eh.building_cd = #{srchCond2}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
             and (eh.emp_nm LIKE CONCAT('%',#{keyword},'%') or eh.emp_cd like CONCAT('%',#{keyword},'%') )
@@ -78,7 +78,7 @@
             and evt_dt between #{fromDt} and #{toDt}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
-            and building_id = #{srchCond2}
+            and building_cd = #{srchCond2}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
             and (emp_nm LIKE CONCAT('%',#{keyword},'%') or emp_cd like CONCAT('%',#{keyword},'%') )
@@ -172,10 +172,61 @@
     </select>
 
 
-    <select id="selectFaceOne" parameterType="string" resultType="aero.cubox.core.vo.FaceVO">
-        select f.face_img from T_EMP e
-        join T_FACE f on f.id = e.face_id
-        where e.emp_cd = #{empCd}
+    <select id="selectFaceOne" parameterType="int" resultType="aero.cubox.core.vo.FaceVO">
+        select face_img from T_FACE
+        where id = #{faceId}
+    </select>
+
+    <!-- 특징점추출 오류 목록 조회 -->
+    <select id="selectFaceFeatureErrList" parameterType="aero.cubox.core.vo.FaceFeatureErrVO" resultType="aero.cubox.core.vo.FaceFeatureErrVO">
+        SELECT
+        e.id, f.emp_cd, face_state_typ, c1.cd_nm as face_state_typ_nm,
+        face_feature_typ, c2.cd_nm as face_feature_typ_nm, e.error, e.created_at,
+        emp.emp_nm, emp.dept_nm
+        FROM T_FACE_FEATURE_ERR e
+        JOIN T_FACE f on f.id = e.face_id
+        LEFT OUTER JOIN T_EMP emp on f.emp_cd = emp.emp_cd
+        LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = f.face_state_typ and c1.cd_typ = 'FaceStateTyp'
+        LEFT OUTER JOIN T_CMMN_CD c2 on c2.cd = e.face_feature_typ and c2.cd_typ = 'FaceFeatureTyp'
+        WHERE 1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(emp_cd)'>
+            AND f.emp_cd = #{emp_cd}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(face_feature_typ)'>
+            AND e.face_feature_typ = #{face_feature_typ}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(emp_nm)'>
+            AND emp.emp_nm LIKE CONCAT('%',#{emp_nm},'%')
+        </if>
+        order by e.created_at desc
+        limit	#{srchCnt} offset #{offset}
+    </select>
+
+
+    <select id="getFaceFeatureListCount" parameterType="aero.cubox.core.vo.FaceFeatureErrVO" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM T_FACE_FEATURE_ERR e
+        JOIN T_FACE f on f.id = e.face_id
+        LEFT OUTER JOIN T_EMP emp on f.emp_cd = emp.emp_cd
+        WHERE 1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(emp_cd)'>
+            AND f.emp_cd = #{emp_cd}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(face_feature_typ)'>
+            AND e.face_feature_typ = #{face_feature_typ}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(emp_nm)'>
+            AND emp.emp_nm LIKE CONCAT('%',#{emp_nm},'%')
+        </if>
+    </select>
+
+    <!-- 특징점추출 오류 목록 조회 -->
+    <select id="selectFaceFeatureErrOne" parameterType="aero.cubox.core.vo.FaceFeatureErrVO" resultType="aero.cubox.core.vo.FaceFeatureErrVO">
+        SELECT
+            f.face_img
+        FROM T_FACE_FEATURE_ERR e
+                 JOIN T_FACE f on f.id = e.face_id
+        WHERE e.id = #{id}
     </select>
 
 

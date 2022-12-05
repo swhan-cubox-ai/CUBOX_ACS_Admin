@@ -2,10 +2,9 @@
          pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<jsp:include page="/WEB-INF/jsp/cubox/errManagement/feature/errorPopup.jsp" flush="false"/>
+<jsp:include page="/WEB-INF/jsp/cubox/report/featureErr/errorPopup.jsp" flush="false"/>
 <script type="text/javascript">
   $(function() {
-    console.log("test");
     $(".title_tx").html("특징점추출오류");
 
     modalPopup("faceErrPopup", "추출 오류 상세", 1100, 1000);
@@ -66,8 +65,8 @@
   <div class="search_box mb_20">
     <div class="search_in_r">
       <div class="comm_search  mr_10">
-        <input type="text" class="w_150px input_com" id="emp_cd" name="emp_cd" placeholder="사원코드"/>
-        <input type="text" class="w_150px input_com" id="emp_nm" name="emp_nm" placeholder="사원명"/>
+        <input type="text" class="w_150px input_com" id="emp_cd" name="emp_cd" placeholder="사원코드" value="<c:out value="${data.emp_cd}"/>" />
+        <input type="text" class="w_150px input_com" id="emp_nm" name="emp_nm" placeholder="사원명" value="<c:out value="${data.emp_nm}"/>" />
         <select name="feature_typ" id="feature_typ" size="1" class="w_150px input_com">
           <option value="">전체</option>
           <c:forEach var="list" items="${featureTypList}">
@@ -98,6 +97,7 @@
         <col width="10%" />
         <col width="10%" />
         <col width="10%" />
+        <col width="10%" />
       </colgroup>
       <thead>
         <tr>
@@ -107,6 +107,7 @@
           <th>사원번호</th>
           <th>사원명</th>
           <th>부서명</th>
+          <th>상세</th>
         </tr>
       </thead>
       <tbody id="errListBody">
@@ -117,12 +118,13 @@
       </c:if>
       <c:forEach items="${errList}" var="item" varStatus="status">
         <tr>
-          <td onclick="detail(<c:out value='${item.id}'/>)"><c:out value="${item.created_at}"/></td>
+          <td><c:out value="${item.created_at}"/></td>
           <td><c:out value="${item.face_state_typ_nm}"/></td>
           <td><c:out value="${item.face_feature_typ_nm}"/></td>
           <td><c:out value="${item.emp_cd}"/></td>
           <td><c:out value="${item.emp_nm}"/></td>
           <td><c:out value="${item.dept_nm}"/></td>
+          <td onclick="detail(<c:out value='${item.id}'/>)">상세보기</td>
         </tr>
       </c:forEach>
       </tbody>

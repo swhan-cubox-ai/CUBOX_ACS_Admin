@@ -318,4 +318,10 @@
                )
     </insert>
 
+    <select id="selectFaceOne" parameterType="string" resultType="aero.cubox.core.vo.FaceVO">
+        select f.face_img from T_EMP e
+        join T_FACE f on f.id = e.face_id
+        where e.emp_cd = #{empCd}
+    </select>
+
 </mapper>

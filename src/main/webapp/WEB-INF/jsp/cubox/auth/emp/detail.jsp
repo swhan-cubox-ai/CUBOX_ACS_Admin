@@ -52,6 +52,11 @@
     .title_box {
         margin-top: 10px;
     }
+    .imgT{
+        margin: auto;
+        width: 300px;
+        height: 400px;
+    }
 </style>
 
 <script type="text/javascript">
@@ -63,6 +68,10 @@
         }else{
             $(".title_tx").html("인사정보 관리 - 상세");
         }
+
+        var empCd = $("#empNo").val();
+        console.log(empCd);
+        fnGetFaceImage(empCd);
 
         modalPopup("authEntGroupListLayerPop", "출입권한그룹 선택", 910, 520);
     });
@@ -246,6 +255,24 @@
         $("#authEntGroupListLayerPop").PopupWindow("close");
     }
 
+    function fnGetFaceImage(empCd) {
+        console.log("test");
+        if(empCd == null || empCd == ""){
+            return
+        }
+        $.ajax({
+            type: "POST",
+            url: "<c:url value='img'/>",
+            data: {
+                empCd : empCd
+            },
+            dataType: "json",
+            success: function(result) {
+                document.getElementById("imageReg").src = "data:image/png;base64," + result.regFace;
+            }
+        });
+    }
+
 </script>
 <form id="modifyEmpFrm" name="modifyEmpFrm">
     <input type="hidden" id="id" name="id" value='<c:out value="${data.id}"/>'/>
@@ -290,6 +317,10 @@
                 <c:if test="${isModify}">
                     <button type="button" class="btn_small color_basic ml_5" style="margin-left: 5px;" onclick="fnPopAuthEnt();">변경/선택</button>
                 </c:if>
+            </div>
+            <div class="comm_search w_100p mb_20" style="line-height: 30px">
+                <div class="w_150px fl"><em>등록사진</em></div>
+                <div><img id="imageReg" class="imgT"/></div>
             </div>
 
 
