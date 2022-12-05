@@ -144,7 +144,7 @@
 		   AND TF.building_id = #{buildingId}
 		</if>
 	  ORDER BY building_cd ASC
-		     , FIELD(floor_cd,'B5','B4','B3','B2','B1') DESC
+		     , FIELD(floor_cd,'B1','B2','B3','B4','B5') DESC
 		     , floor_cd ASC
 	</select>
 
