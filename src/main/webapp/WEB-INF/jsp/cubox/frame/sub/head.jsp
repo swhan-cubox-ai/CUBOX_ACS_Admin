@@ -10,17 +10,18 @@
 <title>CUBOX</title>
 <link rel="stylesheet" type="text/css" href="/css/all.css?version=<%= Math.random()%>" media="all">
 <script type="text/javascript" src="/js/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" src="/js/jquery-ui.js"></script>
 <script type="text/javascript" src="/js/jquery.blockUI.js"></script>
 <script type="text/javascript" src="/js/common.js?version=<%= Math.random()%>"></script>
 
     <!-- sweet alert -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/sweetalert2.min.css" media="all">
+    <script type="text/javascript" src="/js/sweetalert2.min.js"></script>
 
     <!-- date picker -->
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/jquery-ui.css" media="all">
+<%--    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>--%>
+<%--    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>--%>
 
     <!-- 왼쪽메뉴 스크립트 -->
     <script src="/js/leftmenu/jquery.cookie.js"></script>

@@ -46,8 +46,8 @@
       </div>
       <div class="comm_search mr_10">
         <p>
-          <input class="w_150px input_com" type="text" readonly="readonly" id="startDt" name="startDt" value="${data.startDt}"> ~
-          <input class="w_150px input_com" type="text" readonly="readonly" id="endDt" name="endDt" value="${data.endDt}">
+          <input class="w_150px input_datepicker" type="text" readonly="readonly" id="startDt" name="startDt" value="${data.startDt}"> ~
+          <input class="w_150px input_datepicker" type="text" readonly="readonly" id="endDt" name="endDt" value="${data.endDt}">
         </p>
       </div>
       <div class="comm_search  mr_10">

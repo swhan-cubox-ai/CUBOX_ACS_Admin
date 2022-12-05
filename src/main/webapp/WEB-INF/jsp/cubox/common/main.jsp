@@ -72,37 +72,37 @@ canvas {
 		});
 
 		//log cnt
-		$.ajax({
-			type:"GET",
-			url:"' />",
-			data:{},
-			dataType: "json",
-			success:function(result) {
-				fnLogInfoCntSet(result);
-			}
-		});
+		<%--$.ajax({--%>
+		<%--	type:"GET",--%>
+		<%--	url:"' />",--%>
+		<%--	data:{},--%>
+		<%--	dataType: "json",--%>
+		<%--	success:function(result) {--%>
+		<%--		fnLogInfoCntSet(result);--%>
+		<%--	}--%>
+		<%--});--%>
 		
-		//notice list
-		$.ajax({
-			type:"GET",
-			url:"<c:url value='/main/getMainNoticeList.do' />",
-			data:{},
-			dataType: "json",
-			success:function(result) {
-				fnNoticeInfoListSet(result);
-			}
-		});
+		<%--//notice list--%>
+		<%--$.ajax({--%>
+		<%--	type:"GET",--%>
+		<%--	url:"<c:url value='/main/getMainNoticeList.do' />",--%>
+		<%--	data:{},--%>
+		<%--	dataType: "json",--%>
+		<%--	success:function(result) {--%>
+		<%--		fnNoticeInfoListSet(result);--%>
+		<%--	}--%>
+		<%--});--%>
 		
-		//q&a list
-		$.ajax({
-			type:"GET",
-			url:"<c:url value='/main/getMainQaList.do' />",
-			data:{},
-			dataType: "json",
-			success:function(result) {
-				fnQaListSet(result);
-			}
-		});
+		<%--//q&a list--%>
+		<%--$.ajax({--%>
+		<%--	type:"GET",--%>
+		<%--	url:"<c:url value='/main/getMainQaList.do' />",--%>
+		<%--	data:{},--%>
+		<%--	dataType: "json",--%>
+		<%--	success:function(result) {--%>
+		<%--		fnQaListSet(result);--%>
+		<%--	}--%>
+		<%--});--%>
 		
 		//근태관리 달력
 		$.ajax({

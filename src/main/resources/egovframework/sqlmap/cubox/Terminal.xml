@@ -107,7 +107,7 @@
 
     <select id="getBuildingList" resultType="aero.cubox.core.vo.CommonVO">
         SELECT
-            id as cd,
+            building_cd as cd,
             building_nm as cdNm
         FROM
             T_BUILDING
