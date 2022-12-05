@@ -62,7 +62,6 @@
         $("#btnboxDetail").css("display", "block");
         $("#btnboxEdit").css("display", "none");
         $("#btnEdit").css("display", "none");
-        $("[name=detail]").attr("disabled", true);
 
         $("#detailForm").load(location.href + ' #detailForm');
         $("[name=detail]").attr("disabled", true).addClass("color_disabled");
@@ -75,7 +74,6 @@
             $("#btnEdit").css("display", "block");
             $("#btnboxDetail").css("display", "none");
             $("#btnboxEdit").css("display", "block");
-            $("[name=detail]").attr("disabled", false);
             $("[name=detail]").attr("disabled", false).removeClass("color_disabled");
         } else {
             return;
@@ -205,7 +203,7 @@
                               font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:set var="nm" value="${fn:split(doorGroupDetail.door_nms,'/')}" /><c:forEach items="${nm}" var="dName" varStatus="varStatus">
 ${dName}</c:forEach></textarea>
                     <div class="ml_10" style="position: relative;">
-                        <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px; display: none;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">출입문 선택</button>
+                        <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 60px; display: none;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">선택</button>
                     </div>
                 </td>
             </tr>

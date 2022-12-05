@@ -11,7 +11,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
-<jsp:include page="/WEB-INF/jsp/cubox/common/doorListPopup.jsp" flush="false"/>
+<%--<jsp:include page="/WEB-INF/jsp/cubox/common/doorListPopup.jsp" flush="false"/>--%>
 
 <style>
     .title_box {
@@ -29,6 +29,10 @@
         position: sticky;
         top: 0;
     }
+    .color_disabled {
+        background-color: #eee !important;
+        opacity: 1;
+    }
 </style>
 
 <script type="text/javascript">
@@ -38,7 +42,7 @@
     $(function() {
         $(".title_tx").html("출입문 알람 그룹 - 등록");
 
-        modalPopup("doorListPopup", "출입문 목록", 450, 550);
+        // modalPopup("doorListPopup", "출입문 목록", 450, 550);
         modalPopup("doorEditPopup", "출입문 등록", 900, 600);
 
         chkAlType();
@@ -144,9 +148,7 @@
 
     // popup close (공통)
     function closePopup(popupNm) {
-        if (popupNm == "doorEditPopup") { // 출입문 수정 팝업
-            setDoors("AlarmGroup");
-        }
+        setDoors("AlarmGroup");
         $("#" + popupNm).PopupWindow("close");
     }
 
@@ -197,8 +199,16 @@
                 <th>출입문 수</th>
                 <td>
                     <input type="number" id="alDoorCnt" name="alDoorCnt" maxlength="50" value="0" class="input_com w_600px" disabled>&ensp;
-                    <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>
-                    <button type="button" class="btn_small color_basic" onclick="openPopup('doorEditPopup')">출입문 등록</button>
+<%--                    <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>--%>
+                </td>
+            </tr>
+            <tr>
+                <th>출입문</th>
+                <td style="display: flex;">
+                    <textarea id="alDoorNms" name="alDoorNms" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px; font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
+                    <div class="ml_10" style="position: relative;">
+                        <button type="button" class="btn_small color_basic" onclick="openPopup('doorEditPopup')" style="width:60px; position:absolute; bottom:0; display:block;">선택</button>
+                    </div>
                 </td>
             </tr>
             </tbody>

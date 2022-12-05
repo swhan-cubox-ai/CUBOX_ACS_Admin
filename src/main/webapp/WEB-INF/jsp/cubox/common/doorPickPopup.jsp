@@ -68,6 +68,7 @@ $(function () {
 
 // 출입문선택 반영
 function setDoors(type) {
+    console.log("setDoors type = " + type);
 
     let doorGpIds = "";
     let doorGpHtml = [];
@@ -87,12 +88,8 @@ function setDoors(type) {
         $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
     } else if (type === "AlarmGroup") {     // 알람그룹
         $("#doorIds").val(doorGpIds);
-        $("#tdGroupTotal").empty();
+        $("#alDoorNms").val(doorGpHtml.join("\r\n"));
         $("#alDoorCnt").val($("input[name=chkDoorConf]").length);   // 출입문 수
-        $.each(doorGpHtml, function(i, html) {                      // 출입문 목록에 반영
-           let tag = "<tr><td>" + html + "</td></tr>";
-           $("#tdGroupTotal").append(tag);
-        });
     }
 }
 
