@@ -55,13 +55,13 @@ public class DoorGroupDAO extends EgovAbstractMapper {
 
         update(sqlNameSpace+"updateDoorInDoorGroup", paramMap);
     }
-    public void updateDoorGroupBatchInit(HashMap paramMap) {
-        update(sqlNameSpace+"updateDoorGroupBatchInit", paramMap);
-    }
 
     public void deleteDoorInDoorGroup(Map<String, Object> paramMap) {
-
         update(sqlNameSpace+"deleteDoorInDoorGroup", paramMap);
+    }
+
+    public void updateDoorGroupBatchInit(HashMap paramMap) {
+        update(sqlNameSpace+"updateDoorGroupBatchInit", paramMap);
     }
 
 }

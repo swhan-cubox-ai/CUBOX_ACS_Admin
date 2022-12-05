@@ -36,8 +36,20 @@ public class DoorAlarmDAO extends EgovAbstractMapper {
         delete(sqlNameSpace+"deleteDoorAlarmGrp", id);
     }
 
-
     public int getDoorAlarmGroupNameVerification(HashMap<String, Object> param) {
         return selectOne(sqlNameSpace+"selectDoorAlarmGrpNameVerification", param);
+    }
+
+
+    public void addDoorInDoorAlarmGroup(Map<String, Object> paramMap) {
+        insert(sqlNameSpace+"insertDoorInDoorAlarmGroup", paramMap);
+    }
+
+    public void updateDoorInDoorAlarmGroup(Map<String, Object> paramMap) {
+        update(sqlNameSpace+"updateDoorInDoorAlarmGroup", paramMap);
+    }
+
+    public void deleteDoorInDoorAlarmGroup(Map<String, Object> paramMap) {
+        update(sqlNameSpace+"deleteDoorInDoorAlarmGroup", paramMap);
     }
 }

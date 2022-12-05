@@ -206,7 +206,6 @@ public class DoorAlarmController {
 
             return modelAndView;
         }
-        String scheduleId = StringUtil.nvl(id);
 
         String nm = StringUtil.nvl(commandMap.get("nm"), "");
         String time = StringUtil.nvl(commandMap.get("time"), "");
@@ -216,7 +215,7 @@ public class DoorAlarmController {
 
         HashMap param = new HashMap();
 
-        param.put("id", scheduleId);
+        param.put("id", id);
         param.put("nm", nm);
         param.put("time", time);
         param.put("envYn", envYn);
