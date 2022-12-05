@@ -943,7 +943,7 @@ public class DoorController {
                 }
 
                 if (row.getCell(0) != null && !row.getCell(1).equals("")) {
-                    String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");                     // 빌딩 명
+                    String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");                                               // 빌딩 명
                     String buildingCd = String.format("%02d", Integer.parseInt(getValue(row.getCell(5)).replaceAll("\n", "<br>")));      // 빌딩 코드
 
                     if (!buildingMap.containsValue(buildingCd)) { // buildingCd가 없는 경우
@@ -959,6 +959,7 @@ public class DoorController {
                             LOGGER.debug("newBuildingId === " + newBuildingId);
                         } catch (Exception e) {
                             e.getStackTrace();
+                            LOGGER.debug("ADD BUILDING EXCEPTION: {} ", e.getMessage());
                         }
                     }
                 }
@@ -997,17 +998,20 @@ public class DoorController {
                     if (!floorMap.containsValue(buildingCd + "_" + floorCd)) {
                         floorMap.put(buildingNm + "_" + floorNm, buildingCd + "_" + floorCd);
 
-                        HashMap param = new HashMap();
+                        if (!buildingId.equals("")) {
+                            HashMap param = new HashMap();
 //                        param.put("floorNm", buildingNm + " " + floorNm);
-                        param.put("floorNm", floorNm);
-                        param.put("floorCd", floorCd);
-                        param.put("buildingId", buildingId);
-                        param.put("buildingCd", buildingCd);
-                        try {
-                            newFloorId = doorService.addFloor(param);
-                            LOGGER.debug("newFloorId === " + newFloorId);
-                        } catch (Exception e) {
-                            e.getStackTrace();
+                            param.put("floorNm", floorNm);
+                            param.put("floorCd", floorCd);
+                            param.put("buildingId", buildingId);
+                            param.put("buildingCd", buildingCd);
+                            try {
+                                newFloorId = doorService.addFloor(param);
+                                LOGGER.debug("newFloorId === " + newFloorId);
+                            } catch (Exception e) {
+                                e.getStackTrace();
+                                LOGGER.debug("ADD FLOOR EXCEPTION: {} ", e.getMessage());
+                            }
                         }
                     }
                 }
@@ -1016,7 +1020,6 @@ public class DoorController {
             // Floor List
             paramMap = new HashMap();
             List<HashMap> floorList = doorService.getFloorList(paramMap);
-            LOGGER.debug("floorList == " + floorList);
 
             // 3. Door
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
@@ -1069,7 +1072,8 @@ public class DoorController {
                             break;
                         }
                     }
-                    if (doorNm.length() > 0) {
+
+                    if (!buildingId.equals("") && !floorId.equals("") && doorNm.length() > 0) {
                         HashMap param = new HashMap();
                         param.put("buildingCd", buildingCd);
                         param.put("floorCd", floorCd);
@@ -1080,13 +1084,13 @@ public class DoorController {
                         param.put("doorNm", doorNm);
 //                        param.put("terminalCd", terminalCd);
 //                        param.put("alarmGroupId", );
-                        LOGGER.debug("door map : {}", param);
                         try {
                             newDoorId = doorService.addDoor(param);
                             LOGGER.debug("newDoorId === {}", newDoorId);
                             if (newDoorId != "") cnt++;
                         } catch (Exception e) {
                             e.getStackTrace();
+                            LOGGER.debug("ADD DOOR EXCEPTION: {} ", e.getMessage());
                         }
                     }
                 }
@@ -1098,11 +1102,11 @@ public class DoorController {
                     modelAndView.addObject("message", "Success");
                 } else {
                     modelAndView.addObject("resultCode", "N");
-                    modelAndView.addObject("message", cnt + "행까지 등록됨");
+                    modelAndView.addObject("message", "Fail : 출입문 갯수 불일치");
                 }
             } else {
                 modelAndView.addObject("resultCode", "N");
-                modelAndView.addObject("message", "Fail");
+                modelAndView.addObject("message", "Fail : 출입문이 등록되지 않음");
             }
 
         } catch (Exception e) {

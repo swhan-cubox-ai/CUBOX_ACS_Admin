@@ -74,7 +74,8 @@
         let doorGroupHtml = [];
         $("input[name=chkGroupConf]").each(function (i) { // 체크된 것 말고 오른쪽 박스에 들어온 모든 항목
             let id = $(this).val();
-            let html = $(this).closest("tr").children().eq(2).html();
+            // let html = $(this).closest("tr").children().eq(2).html();
+            let html = $(this).closest("tr").children().eq(1).html();
             doorGroupIds.push(id);
             doorGroupHtml.push(html);
         });
@@ -119,7 +120,7 @@
                 if (result.doorGroupList.length > 0) {
                     $.each(result.doorGroupList, function (l, dList) {
                         let html = "<tr><td style='padding:0 14px;'><input type='checkbox' name='chkGroup' value='" + dList.id + "'></td>";
-                        html += "<td>" + dList.id + "</td>";
+                        // html += "<td>" + dList.id + "</td>";
                         html += "<td>" + dList.nm + "</td></tr>";
                         $("#tdGroupTotal").append(html);
                     });
@@ -152,13 +153,14 @@
                 <table class="tb_list tb_write_02 tb_write_p1">
                     <colgroup>
                         <col style="width:15%">
-                        <col style="width:20%">
-                        <col style="width:65%">
+<%--                        <col style="width:20%">--%>
+<%--                        <col style="width:65%">--%>
+                        <col style="width:85%">
                     </colgroup>
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="totalGroupCheckAll"></th>
-                        <th>권한코드</th>
+<%--                        <th>권한코드</th>--%>
                         <th>출입문그룹</th>
                     </tr>
                     </thead>
@@ -195,13 +197,14 @@
                 <table class="tb_list tb_write_02 tb_write_p1">
                     <colgroup>
                         <col style="width:15%">
-                        <col style="width:20%">
-                        <col style="width:65%">
+<%--                        <col style="width:20%">--%>
+<%--                        <col style="width:65%">--%>
+                        <col style="width:85%">
                     </colgroup>
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="userGroupCheckAll"></th>
-                        <th>권한코드</th>
+<%--                        <th>권한코드</th>--%>
                         <th>출입문그룹</th>
                     </tr>
                     </thead>
