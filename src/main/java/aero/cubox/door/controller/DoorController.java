@@ -26,10 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 출입문관리
@@ -914,27 +911,27 @@ public class DoorController {
         if (iterator.hasNext()) {
             file = request.getFile(iterator.next());
         }
-        System.out.println(file);
+        LOGGER.debug("File === ", file);
 
         try {
             Workbook wb = WorkbookFactory.create(file.getInputStream());
             Sheet sheet = wb.getSheetAt(0);
 
             int cnt = 0;
-            String bNm = "";
-            String fNm = "";
+//            String bNm = "";
+//            String fNm = "";
             String newBuildingId = "";
             String newFloorId = "";
             String newDoorId = "";
             HashMap paramMap;
+            HashMap buildingMap = new HashMap();
+            HashMap floorMap = new HashMap();
 
             // 전체 삭제
             doorService.deleteDoorAll();
             doorService.deleteFloorAll();
             doorService.deleteAreaAll();
             doorService.deleteBuildingAll();
-
-            LOGGER.debug("Last row num : {}", sheet.getLastRowNum());
 
             // 1. Building
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
@@ -945,12 +942,12 @@ public class DoorController {
                     continue;
                 }
 
-                if (row.getCell(0) != null) {
+                if (row.getCell(0) != null && !row.getCell(1).equals("")) {
                     String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");                     // 빌딩 명
                     String buildingCd = String.format("%02d", Integer.parseInt(getValue(row.getCell(5)).replaceAll("\n", "<br>")));      // 빌딩 코드
 
-                    if (bNm.equals("") || !bNm.equals(buildingNm)) {
-                        bNm = buildingNm;
+                    if (!buildingMap.containsValue(buildingCd)) { // buildingCd가 없는 경우
+                        buildingMap.put(buildingNm, buildingCd);
 
                         HashMap param = new HashMap();
                         param.put("buildingNm", buildingNm);
@@ -964,13 +961,16 @@ public class DoorController {
                             e.getStackTrace();
                         }
                     }
+//                    if (bNm.equals("") || !bNm.equals(buildingNm)) {
+//                        bNm = buildingNm;
+//
+//                    }
                 }
             }
 
             // Building List
             paramMap = new HashMap();
             List<Map> buildingList = doorService.getBuildingList(paramMap);   //빌딩 목록
-            LOGGER.debug("buildingList == " + buildingList);
 
             // 2. Floor
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
@@ -981,7 +981,7 @@ public class DoorController {
                     continue;
                 }
 
-                if (row.getCell(0) != null) {
+                if (row.getCell(0) != null && !row.getCell(2).equals("")) {
                     String buildingId = "";
                     String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");   // 빌딩 명
                     String buildingCd = String.format("%02d", Integer.parseInt(getValue(row.getCell(5)).replaceAll("\n", "<br>")));   // 빌딩 코드
@@ -997,11 +997,13 @@ public class DoorController {
                     if (floorCd.length() == 1) {
                         floorCd = "0" + floorCd;
                     }
-                    if (fNm.equals("") || !fNm.equals(floorNm) || !bNm.equals(buildingNm)) {
-                        fNm = floorNm;
-                        bNm = buildingNm;
+
+                    if (!floorMap.containsValue(buildingCd + "_" + floorCd)) {
+                        floorMap.put(buildingNm + "_" + floorNm, buildingCd + "_" + floorCd);
+
                         HashMap param = new HashMap();
                         param.put("floorNm", buildingNm + " " + floorNm);
+//                        param.put("floorNm", floorNm);
                         param.put("floorCd", floorCd);
                         param.put("buildingId", buildingId);
                         param.put("buildingCd", buildingCd);
@@ -1012,9 +1014,24 @@ public class DoorController {
                             e.getStackTrace();
                         }
                     }
+//                    if (fNm.equals("") || !fNm.equals(floorNm) || !bNm.equals(buildingNm)) {
+//                        fNm = floorNm;
+//                        bNm = buildingNm;
+//                        HashMap param = new HashMap();
+//                        param.put("floorNm", buildingNm + " " + floorNm);
+//                        param.put("floorCd", floorCd);
+//                        param.put("buildingId", buildingId);
+//                        param.put("buildingCd", buildingCd);
+//                        try {
+//                            newFloorId = doorService.addFloor(param);
+//                            LOGGER.debug("newFloorId === " + newFloorId);
+//                        } catch (Exception e) {
+//                            e.getStackTrace();
+//                        }
+//                    }
                 }
             }
-
+//
             // Floor List
             paramMap = new HashMap();
             List<HashMap> floorList = doorService.getFloorList(paramMap);
@@ -1029,7 +1046,7 @@ public class DoorController {
                     continue;
                 }
 
-                if (row.getCell(0) != null) {
+                if (row.getCell(0) != null && !row.getCell(3).equals("")) {
                     String buildingId = "";
                     String floorId = "";
                     String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");                                              // 빌딩 명
@@ -1047,7 +1064,7 @@ public class DoorController {
                         }
                     }
 
-                    if (floorCd.length() == 1) { /////////////////// 빌딩에도 적용해야함!
+                    if (floorCd.length() == 1) {
                         floorCd = "0" + floorCd;
                     }
                     if (doorCd.length() < 6) {
@@ -1060,7 +1077,7 @@ public class DoorController {
                     }
 
                     for (int j = 0; j < floorList.size(); j++) {
-//                        if (floorList.get(j).get("floor_nm").equals(floorNm) && floorList.get(j).get("floor_cd").equals(floorCd) && floorList.get(j).get("building_id").equals(buildingId)) {
+//                        if (floorList.get(j).get("floor_nm").equals(floorNm) && floorList.get(j).get("floor_cd").equals(floorCd)) {
                         if (floorList.get(j).get("floor_nm").equals(buildingNm + " " + floorNm) && floorList.get(j).get("floor_cd").equals(floorCd)) {
                             floorId = floorList.get(j).get("id").toString();
                             break;
