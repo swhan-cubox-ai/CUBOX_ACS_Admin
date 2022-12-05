@@ -119,17 +119,19 @@
 		</if><if test='@aero.cubox.util.CommonUtils@notEmpty(workplace_id)'>
 		  AND TB.workplace_id = #{workplace_id}
 		</if>
+     ORDER BY TB.building_cd ASC
+
 	</select>
 
 
 	<select id="selectFloorList" parameterType="HashMap" resultType="HashMap">
-		SELECT id,
-		       building_id,
-		       area_id,
-		       floor_cd,
-		       floor_nm,
-		       created_at,
-		       updated_at
+		SELECT id
+		     , building_id
+		     , area_id
+		     , floor_cd
+		     , floor_nm
+		     , created_at
+		     , updated_at
 		  FROM T_FLOOR TF
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -139,6 +141,9 @@
 		   AND TF.area_id = #{areaId}
 		   AND TF.building_id = #{buildingId}
 		</if>
+	  ORDER BY building_cd ASC
+		     , FIELD(floor_cd,'B5','B4','B3','B2','B1') DESC
+		     , floor_cd ASC
 	</select>
 
 
