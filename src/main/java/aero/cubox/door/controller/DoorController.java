@@ -918,8 +918,6 @@ public class DoorController {
             Sheet sheet = wb.getSheetAt(0);
 
             int cnt = 0;
-//            String bNm = "";
-//            String fNm = "";
             String newBuildingId = "";
             String newFloorId = "";
             String newDoorId = "";
@@ -961,10 +959,6 @@ public class DoorController {
                             e.getStackTrace();
                         }
                     }
-//                    if (bNm.equals("") || !bNm.equals(buildingNm)) {
-//                        bNm = buildingNm;
-//
-//                    }
                 }
             }
 
@@ -1002,8 +996,8 @@ public class DoorController {
                         floorMap.put(buildingNm + "_" + floorNm, buildingCd + "_" + floorCd);
 
                         HashMap param = new HashMap();
-                        param.put("floorNm", buildingNm + " " + floorNm);
-//                        param.put("floorNm", floorNm);
+//                        param.put("floorNm", buildingNm + " " + floorNm);
+                        param.put("floorNm", floorNm);
                         param.put("floorCd", floorCd);
                         param.put("buildingId", buildingId);
                         param.put("buildingCd", buildingCd);
@@ -1014,21 +1008,6 @@ public class DoorController {
                             e.getStackTrace();
                         }
                     }
-//                    if (fNm.equals("") || !fNm.equals(floorNm) || !bNm.equals(buildingNm)) {
-//                        fNm = floorNm;
-//                        bNm = buildingNm;
-//                        HashMap param = new HashMap();
-//                        param.put("floorNm", buildingNm + " " + floorNm);
-//                        param.put("floorCd", floorCd);
-//                        param.put("buildingId", buildingId);
-//                        param.put("buildingCd", buildingCd);
-//                        try {
-//                            newFloorId = doorService.addFloor(param);
-//                            LOGGER.debug("newFloorId === " + newFloorId);
-//                        } catch (Exception e) {
-//                            e.getStackTrace();
-//                        }
-//                    }
                 }
             }
 //
@@ -1057,6 +1036,7 @@ public class DoorController {
                     String floorCd = getValue(row.getCell(6)).replaceAll("\n", "<br>");                                                 // 층 코드 (2자리로 넣어야함)
                     String doorCd = getValue(row.getCell(7)).replaceAll("\n", "<br>");                                                  // 출입문 코드
 
+                    // buildingId 가져오기
                     for (int j = 0; j < buildingList.size(); j++) {
                         if (buildingList.get(j).get("building_nm").equals(buildingNm) && buildingList.get(j).get("building_cd").equals(buildingCd)) {
                             buildingId = buildingList.get(j).get("id").toString();
@@ -1064,21 +1044,25 @@ public class DoorController {
                         }
                     }
 
+                    // floorCd 2자리수 변형
                     if (floorCd.length() == 1) {
                         floorCd = "0" + floorCd;
                     }
+
+                    // doorCd 6자리수 변형
                     if (doorCd.length() < 6) {
                         String preNum = "";
                         int num = 6 - doorCd.length();
                         for (int j = 0; j < num; j++) {
                             preNum += "0";
                         }
-                        doorCd = preNum+ doorCd;
+                        doorCd = preNum + doorCd;
                     }
 
+                    // floorId 가져오기
                     for (int j = 0; j < floorList.size(); j++) {
-//                        if (floorList.get(j).get("floor_nm").equals(floorNm) && floorList.get(j).get("floor_cd").equals(floorCd)) {
-                        if (floorList.get(j).get("floor_nm").equals(buildingNm + " " + floorNm) && floorList.get(j).get("floor_cd").equals(floorCd)) {
+//                       if (floorList.get(j).get("floor_nm").equals(buildingNm + " " + floorNm) && floorList.get(j).get("floor_cd").equals(floorCd)) {
+                        if (floorList.get(j).get("floor_nm").equals(floorNm) && floorList.get(j).get("floor_cd").equals(floorCd) && floorList.get(j).get("building_cd").equals(buildingCd)) {
                             floorId = floorList.get(j).get("id").toString();
                             break;
                         }

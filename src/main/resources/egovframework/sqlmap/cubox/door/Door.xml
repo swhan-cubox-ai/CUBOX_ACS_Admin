@@ -127,6 +127,7 @@
 	<select id="selectFloorList" parameterType="HashMap" resultType="HashMap">
 		SELECT id
 		     , building_id
+		     , building_cd
 		     , area_id
 		     , floor_cd
 		     , floor_nm
