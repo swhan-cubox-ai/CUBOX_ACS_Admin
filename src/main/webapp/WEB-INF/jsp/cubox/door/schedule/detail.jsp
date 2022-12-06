@@ -899,7 +899,8 @@
             <tr>
                 <th>출입문 스케쥴 명</th>
                 <td>
-                    <input type="text" id="schNm" name="detail" maxlength="35" size="50" value="${doorScheduleDetail.door_sch_nm}" class="w_600px input_com color_disabled" disabled>
+                    <input type="text" id="schNm" name="detail" maxlength="35" size="50" value="${doorScheduleDetail.door_sch_nm}"
+                           class="w_600px input_com color_disabled" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled>
                 </td>
             </tr>
             <tr>

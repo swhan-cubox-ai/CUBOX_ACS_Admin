@@ -867,6 +867,12 @@
 
                 if (result.terminalList.length > 0) {
                     $.each(result.terminalList, function (i, terminal) {
+                        if (terminal.mgmtNum === undefined || terminal.mgmtNum === null) {
+                            terminal.mgmtNum = "";
+                        }
+                        if (terminal.doorNm === undefined || terminal.doorNm === null) {
+                            terminal.doorNm = "";
+                        }
                         let tag = "<tr class='h_35px' style='text-align:center'><td style='padding:0 14px;'>";
                         tag += "<input type='radio' value='" + terminal.id + "' name='checkOne'></td>";
                         tag += "<td>" + terminal.terminalCd + "</td>";
@@ -1409,13 +1415,13 @@
                     <tr>
                         <th>출입문 명</th>
                         <td colspan="2">
-                            <input type="text" id="doorNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                            <input type="text" id="doorNm" name="doorEdit" maxlength="30" class="input_com" value="" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled/>
                         </td>
                     </tr>
                     <tr>
                         <th>출입문 코드</th>
                         <td colspan="2">
-                            <input type="text" id="doorCd" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                            <input type="text" id="doorCd" name="doorEdit" maxlength="30" class="input_com" value="" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled/>
                         </td>
                     </tr>
                     <jsp:include page="/WEB-INF/jsp/cubox/common/buildingSelect.jsp" flush="false" />
@@ -1503,7 +1509,6 @@
                     </tbody>
                     <%-- // 출입문 추가 --%>
 
-
                     <%-- 빌딩 추가 --%>
                     <tbody class="buildingDetailList detailList" style="display: none;">
                         <input type="hidden" id="workplaceId" value="1">
@@ -1515,13 +1520,13 @@
                         <tr>
                             <th>빌딩 명</th>
                             <td colspan="2">
-                                <input type="text" id="buildingNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                                <input type="text" id="buildingNm" name="doorEdit" maxlength="30" class="input_com" value="" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled/>
                             </td>
                         </tr>
                         <tr>
                             <th>빌딩 코드</th>
                             <td colspan="2">
-                                <input type="text" id="buildingCd" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                                <input type="text" id="buildingCd" name="doorEdit" maxlength="30" class="input_com" value="" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled/>
                             </td>
                         </tr>
                     </tbody>
@@ -1537,13 +1542,13 @@
                         <tr>
                             <th>층 명</th>
                             <td colspan="2">
-                                <input type="text" id="floorNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                                <input type="text" id="floorNm" name="doorEdit" maxlength="30" class="input_com" value="" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled/>
                             </td>
                         </tr>
                         <tr>
                             <th>층 코드</th>
                             <td colspan="2">
-                                <input type="text" id="floorCd" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                                <input type="text" id="floorCd" name="doorEdit" maxlength="30" class="input_com" value="" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled/>
                             </td>
                         </tr>
                         <%-- 빌딩 선택 --%>
@@ -1585,7 +1590,8 @@
         <div class="search_box mb_20">
             <div class="search_in">
                 <div class="comm_search mr_10">
-                    <input type="text" class="input_com" id="srchMachine" name="srchMachine" value="" placeholder="단말기명 / 관리번호 / 단말기 코드" maxlength="30" style="width: 629px;">
+                    <input type="text" class="input_com" id="srchMachine" name="srchMachine" value="" placeholder="단말기명 / 관리번호 / 단말기 코드" maxlength="30"
+                           onkeyup="charCheck(this)" onkeydown="charCheck(this)"style="width: 629px;">
                 </div>
                 <div class="comm_search ml_5 mr_10">
                     <input type="checkbox" id="unregisteredDoor" name="unregisteredDoor" value="unregistered">
@@ -1638,7 +1644,8 @@
         <div class="search_box mb_20">
             <div class="search_in">
                 <div class="comm_search mr_10">
-                    <input type="text" class="input_com" id="srchAuth" name="srchAuth" value="" placeholder="권한그룹명" maxlength="30" style="width: 765px;">
+                    <input type="text" class="input_com" id="srchAuth" name="srchAuth" value="" placeholder="권한그룹명" maxlength="30"
+                           onkeyup="charCheck(this)" onkeydown="charCheck(this)" style="width: 765px;">
                 </div>
                 <div class="comm_search ml_40">
                     <div class="search_btn2" id="btnSearchAuthGroup"></div>
