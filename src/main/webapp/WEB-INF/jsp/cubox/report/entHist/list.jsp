@@ -106,8 +106,18 @@
       },
       dataType: "json",
       success: function(result) {
-        document.getElementById("imagePreview").src = "data:image/png;base64," + result.bioFace;
-        document.getElementById("imageReg").src = "data:image/png;base64," + result.regFace;
+        if(!result.bioFace){
+          document.getElementById("imagePreview").src = '/images/no-img.jpg'
+        } else {
+          document.getElementById("imagePreview").src = "data:image/png;base64," + result.bioFace;
+        }
+
+        if(!result.regFace){
+          document.getElementById("imageReg").src = '/images/no-img.jpg'
+        } else {
+          document.getElementById("imageReg").src = "data:image/png;base64," + result.regFace;
+        }
+
       }
     });
   }

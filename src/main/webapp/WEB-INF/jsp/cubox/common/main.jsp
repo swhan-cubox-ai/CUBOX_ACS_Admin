@@ -63,7 +63,7 @@ canvas {
 		//log list
 		$.ajax({
 			type:"GET",
-			url:"",
+			url: "<c:url value='/main/entHist'/>",
 			data:{},
 			dataType: "json",
 			success:function(result) {
@@ -155,8 +155,8 @@ canvas {
 		var data4 = [];
 		for(var i in data) {
 			dtLabel.push(data[i].exp_day);
-			data1.push(parseInt(data[i].tot_log_cnt));
-			data2.push(parseInt(data[i].fail_log_cnt));
+			//data1.push(parseInt(data[i].tot_log_cnt));
+			//data2.push(parseInt(data[i].fail_log_cnt));
 			data3.push(parseInt(data[i].success_log_cnt));
 			data4.push(parseInt(data[i].user_log_cnt));
 		}
@@ -253,34 +253,22 @@ canvas {
 	}
 
 	function fnLogInfoListSet (data) {
-		if(data == null || data.logInfoList == null) {
-			$("#logListBody").html("<tr><th class='h_35px' colspan='7'>조회 목록이 없습니다.</th></tr>");
+		if(data == null || data.entHistList == null) {
+			$("#entHistListBody").html("<tr><th class='h_35px' colspan='6'>조회 목록이 없습니다.</th></tr>");
 		} else {
-			data = data.logInfoList;
+			var histList = data.entHistList;
 			var str = "";
-			for(var i in data) {
+			for(var i in histList) {
 				str += "<tr>";
-				str += "<td>"+(data[i].fevttm!=null && data[i].fevttm.length>16?data[i].fevttm.substr(0,16):data[i].fevttm)+"</td>";
-				str += "<td>"+data[i].flname+"</td>";
-				str += "<td>"+data[i].funm+"</td>";
-				str += "<td>"+data[i].fuid+"</td>";
-				//if(data[i].fcarno != null && data[i].fcarno != "") {
-				//	str += "<td>"+data[i].fcarno+"</td>";
-				//} else {
-				//	str += "<td>"+data[i].fcdno+"</td>";
-				//}
-				str += "<td>"+data[i].cfstatus+"</td>";
-				str += "<td><div class='tdbtnbox'>";
-				if(data[i].fvalue1 != null && data[i].fvalue1 == "성공") {
-					str += "<div class='st_ing1'>"+data[i].fvalue1+"</div>";
-				} else {
-					str += "<div class='st_ing2'>"+data[i].fvalue1+"</div>";
-				}
-				str += "</div></td>";
-				str += "<td>"+data[i].fvalue2+"</td>";
+				str += "<td>"+histList[i].id+"</td>";
+				str += "<td>"+histList[i].evtDtStr+"</td>";
+				str += "<td>"+histList[i].doorNm+"</td>";
+				str += "<td>"+histList[i].empNm+"</td>";
+				str += "<td>"+histList[i].cardStateTypNm+"</td>";
+				str += "<td>"+histList[i].entEvtTypNm+"</td>";
 				str += "</tr>";
 			}
-			$("#logListBody").html(str);
+			$("#entHistListBody").html(str);
 		}
 	}
 	
@@ -358,12 +346,11 @@ canvas {
 			clearInterval(threadRefresh);
 		}
 	}
-	
-	function fnGateLog(page){
+
+	function fnGateLog(){
 		f = document.frmSearch;
-		f.action = "/logInfo/logMngmt.do?srchPage=" + page;
+		f.action = "report/entHist/list.do";
 		f.submit();
-		
 	}
 	
 	function fnBoardList(bbsId){
@@ -375,7 +362,7 @@ canvas {
 	
 	
 	function fnBoardDetail(nttId, bbsId){
-		f = document.frmSearch;
+		var f = document.frmSearch;
 		
 		$("input:hidden[id=hidNttId]").val(nttId);
 		f.action = "/boardInfo/"+pad(bbsId,20)+"/detail.do";
@@ -490,42 +477,7 @@ canvas {
 		<div class="time">updates : 2020.06.22입력</div>
 	</div>
 
-	
-	<div class="inbox7" style="margin-top: 40px;">
-		<div class="title">
-			출입이력
-			<div class="more">
-				<img src="/img/main/icon_more.png" alt="" onclick="fnGateLog();"/>
-			</div>
-		</div>
-		<div class="tb_outbox">
-			<table class="tb_list_main">
-				<col width="15%" />
-				<col width="20%" />
-				<col width="15%" />
-				<col width="10%" />
-				<col width="10%" />
-				<col width="10%" />
-				<col width="20%" />
-				<thead>
-					<tr>
-						<th>시간</th>
-						<th>단말기명</th>
-						<th>이름</th>
-						<th>고유번호</th>
-						<th>카드상태</th>
-						<th>결과</th>
-						<th>권한타입</th>
-					</tr>
-				</thead>
-				<tbody id="logListBody">
-					<tr>
-						<th class="h_35px" colspan="7">조회 목록이 없습니다.</th>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+	<jsp:include page="/WEB-INF/jsp/cubox/common/main_ent_hist.jsp" flush="false"/>
 
 	<c:choose>
 		<c:when test="${isMenu eq true}"><%--  근태관리 접근권한이 있으면 --%>
