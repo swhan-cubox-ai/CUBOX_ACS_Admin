@@ -18,33 +18,38 @@
 
         // 권한그룹 추가
         $("#add_group").click(function () {
-            $("input[name=chkGroup]:checked").each(function (i) {
-                let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
-                tag = tag.replace("chkGroup", "chkGroupConf");
-                $("#tdGroupConf").append(tag);
-            });
-
             let ckd = $("input[name=chkGroup]:checked").length;
-            for (let i = ckd - 1; i > -1; i--) {
-                $("input[name=chkGroup]:checked").eq(i).closest("tr").remove();
+            if (ckd === 0) {
+                alert("선택된 항목이 없습니다.");
+            } else {
+                $("input[name=chkGroup]:checked").each(function (i) {
+                    let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
+                    tag = tag.replace("chkGroup", "chkGroupConf");
+                    $("#tdGroupConf").append(tag);
+                });
+                for (let i = ckd - 1; i > -1; i--) {
+                    $("input[name=chkGroup]:checked").eq(i).closest("tr").remove();
+                }
             }
-
             totalCheck();
         });
 
         // 권한그룹 삭제
         $("#delete_group").click(function () {
-            $("input[name=chkGroupConf]:checked").each(function (i) {
-                let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
-                tag = tag.replace("chkGroupConf", "chkGroup");
-                $("#tdGroupTotal").append(tag);
-            });
 
             let ckd = $("input[name=chkGroupConf]:checked").length;
-            for (let i = ckd - 1; i > -1; i--) {
-                $("input[name=chkGroupConf]:checked").eq(i).closest("tr").remove();
+            if (ckd === 0) {
+                alert("제거할 항목이 없습니다.");
+            } else {
+                $("input[name=chkGroupConf]:checked").each(function (i) {
+                    let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
+                    tag = tag.replace("chkGroupConf", "chkGroup");
+                    $("#tdGroupTotal").append(tag);
+                });
+                for (let i = ckd - 1; i > -1; i--) {
+                    $("input[name=chkGroupConf]:checked").eq(i).closest("tr").remove();
+                }
             }
-
             userCheck();
         });
 

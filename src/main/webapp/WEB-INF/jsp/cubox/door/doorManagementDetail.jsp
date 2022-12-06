@@ -212,30 +212,36 @@
 
         // 권한그룹 추가
         $("#add_auth").click(function () {
-            $("input[name=chkAuth]:checked").each(function (i) {
-                let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
-                tag = tag.replace("chkAuth", "chkAuthConf");
-                $("#tdAuthConf").append(tag);
-            });
-
             let ckd = $("input[name=chkAuth]:checked").length;
-            for (let i = ckd - 1; i > -1; i--) {
-                $("input[name=chkAuth]:checked").eq(i).closest("tr").remove();
+            if (ckd === 0) {
+                alert("선택된 항목이 없습니다.");
+            } else {
+                $("input[name=chkAuth]:checked").each(function (i) {
+                    let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
+                    tag = tag.replace("chkAuth", "chkAuthConf");
+                    $("#tdAuthConf").append(tag);
+                });
+                for (let i = ckd - 1; i > -1; i--) {
+                    $("input[name=chkAuth]:checked").eq(i).closest("tr").remove();
+                }
             }
             totalCheck();
         });
 
         // 권한그룹 삭제
         $("#delete_auth").click(function () {
-            $("input[name=chkAuthConf]:checked").each(function (i) {
-                let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
-                tag = tag.replace("chkAuthConf", "chkAuth");
-                $("#tdAuthTotal").append(tag);
-            });
-
             let ckd = $("input[name=chkAuthConf]:checked").length;
-            for (let i = ckd - 1; i > -1; i--) {
-                $("input[name=chkAuthConf]:checked").eq(i).closest("tr").remove();
+            if (ckd === 0) {
+                alert("제거할 항목이 없습니다.");
+            } else {
+                $("input[name=chkAuthConf]:checked").each(function (i) {
+                    let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
+                    tag = tag.replace("chkAuthConf", "chkAuth");
+                    $("#tdAuthTotal").append(tag);
+                });
+                for (let i = ckd - 1; i > -1; i--) {
+                    $("input[name=chkAuthConf]:checked").eq(i).closest("tr").remove();
+                }
             }
             userCheck();
         });
@@ -1492,7 +1498,7 @@
                         </td>
                         <td class="hideSelectBtn">
                             <button type="button" id="btnDoorAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup');">선택</button>
-                        </tdhideSelectBtn>
+                        </td>
                     </tr>
                     </tbody>
                     <%-- // 출입문 추가 --%>

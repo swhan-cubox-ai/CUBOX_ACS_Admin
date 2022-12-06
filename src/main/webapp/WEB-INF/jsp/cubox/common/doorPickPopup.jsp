@@ -26,13 +26,14 @@ let crudType ="<%=CRUD_TYPE%>";
 $(function () {
     // 출입문 추가
     $(".add_door").click(function () {
-        let nodeSel = $(".nodeSel").html();
-        let nodeSelId = $(".nodeSel").find("span").attr("id");
+        let nodeSel = $("a.nodeSel").html();
+        let nodeSelId = $("a.nodeSel").find("span").attr("id");
         let doorSelected = $("#doorSelected").children();
         // 이미 같은 출입문 있을 경우 return
         for (let i = 0; i < doorSelected.length; i++) {
             let doorPath = doorSelected.eq(i).children().last().html();
             if (doorPath == nodeSel) {
+                alert("이미 선택된 출입문입니다.");
                 return;
             }
         }
@@ -46,8 +47,12 @@ $(function () {
     // 출입문 삭제
     $(".delete_door").click(function () {
         let ckd = $("input[name=chkDoorConf]:checked").length;
-        for (let i = ckd - 1; i > -1; i--) {
-            $("input[name=chkDoorConf]:checked").eq(i).closest("tr").remove();
+        if (ckd === 0) {
+            alert("제거할 항목이 없습니다.");
+        } else {
+            for (let i = ckd - 1; i > -1; i--) {
+                $("input[name=chkDoorConf]:checked").eq(i).closest("tr").remove();
+            }
         }
 
         if ($("#chkDoorConfAll").prop("checked")) {
