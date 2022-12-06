@@ -173,7 +173,8 @@
             <tr>
                 <th>출입문 그룹 명</th>
                 <td>
-                    <input type="text" id="gpNm" name="detail" maxlength="35" value="${doorGroupDetail.nm}" class="input_com w_600px color_disabled" disabled>
+                    <input type="text" id="gpNm" name="detail" maxlength="35" value="${doorGroupDetail.nm}"
+                           class="input_com w_600px color_disabled" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled>
                 </td>
             </tr>
 <%--            <tr>--%>

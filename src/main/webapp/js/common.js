@@ -220,6 +220,17 @@ function fnvalichk (event) {
 	}
 }
 
+/* 특수문자 입력 방지 */
+function charCheck(obj) {
+
+	// let regExp = /[\{\}\[\]\/?.,;:|\)*~`!^+┼<>@\#$%&\'\"\\\(\=]/gi;
+	let regExp = /[{}\[\]\/?.,;:|)*~`!^+┼<>@#$%&'"\\(=]/gi;
+	if (regExp.test(obj.value)) {
+		alert("특수문자는 입력할 수 없습니다.");
+		obj.value = obj.value.substring(0, obj.value.length - 1); // 입력한 특수문자 한 자리 삭제
+	}
+}
+
 
 /**
  * dTree 트리구조 만들기
