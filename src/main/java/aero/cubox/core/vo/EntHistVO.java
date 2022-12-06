@@ -7,6 +7,7 @@ public class EntHistVO {
 
     private int id;
     private Timestamp evtDt;
+    private String evtDtStr;
     private String entEvtTyp;
     private String entEvtTypNm;
     private String terminalCd;
@@ -353,6 +354,14 @@ public class EntHistVO {
 
     public void setEntFaceImg(String entFaceImg) {
         this.entFaceImg = entFaceImg;
+    }
+
+    public String getEvtDtStr() {
+        return evtDtStr;
+    }
+
+    public void setEvtDtStr(String evtDtStr) {
+        this.evtDtStr = evtDtStr;
     }
 
     public String getSrchCond1() {

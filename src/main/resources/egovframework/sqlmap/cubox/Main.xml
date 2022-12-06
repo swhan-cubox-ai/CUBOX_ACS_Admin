@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="main">
+
+    <select id="getMainEntHistList" parameterType="aero.cubox.core.vo.EntHistVO" resultType="aero.cubox.core.vo.EntHistVO">
+        select
+        eh.id,
+        date_format(eh.evt_dt, '%m-%d %H:%i:%S') as evtDtStr,
+        door_nm as doorNm,
+        emp_nm as empNm,
+        c3.cd_nm as  cardStateTypNm,
+        c1.cd_nm as  entEvtTypNm
+        from T_ENT_HIST eh
+        left outer join T_TERMINAL tm on eh.terminal_cd = tm.terminal_cd
+        LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = eh.ent_evt_typ and c1.cd_typ = 'EntEvtTyp'
+        LEFT OUTER JOIN T_CMMN_CD c3 on c3.cd = eh.card_state_typ and c3.cd_typ = 'CardStateTyp'
+        ORDER BY eh.created_at DESC
+        limit	8
+    </select>
+
+    <select id="getDayEntCount" resultType="int">
+        select count(*) FROM T_ENT_HIST where DATE(created_at)=Date(now())
+    </select>
+
+    <select id="getDayEntEmpCount" resultType="int">
+        select count(*) FROM
+                (select emp_cd FROM T_ENT_HIST where emp_cd != ""  and DATE(created_at)=Date(now()) group by emp_cd) A
+    </select>
+
+</mapper>
