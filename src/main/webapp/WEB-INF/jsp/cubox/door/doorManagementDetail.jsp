@@ -867,6 +867,12 @@
 
                 if (result.terminalList.length > 0) {
                     $.each(result.terminalList, function (i, terminal) {
+                        if (terminal.mgmtNum === undefined || terminal.mgmtNum === null) {
+                            terminal.mgmtNum = "";
+                        }
+                        if (terminal.doorNm === undefined || terminal.doorNm === null) {
+                            terminal.doorNm = "";
+                        }
                         let tag = "<tr class='h_35px' style='text-align:center'><td style='padding:0 14px;'>";
                         tag += "<input type='radio' value='" + terminal.id + "' name='checkOne'></td>";
                         tag += "<td>" + terminal.terminalCd + "</td>";
