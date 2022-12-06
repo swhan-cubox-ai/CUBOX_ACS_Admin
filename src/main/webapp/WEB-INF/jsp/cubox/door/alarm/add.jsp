@@ -199,7 +199,6 @@
                 <th>출입문 수</th>
                 <td>
                     <input type="number" id="alDoorCnt" name="alDoorCnt" maxlength="50" value="0" class="input_com w_600px" disabled>&ensp;
-<%--                    <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>--%>
                 </td>
             </tr>
             <tr>

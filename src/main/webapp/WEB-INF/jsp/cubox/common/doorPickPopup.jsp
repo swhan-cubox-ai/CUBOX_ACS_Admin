@@ -86,6 +86,7 @@ function setDoors(type) {
     if (type === "Group") {                 // 그룹관리
         $("#gpDoorIds").val(doorGpIds);
         $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
+        $("#gpDoorCnt").val($("input[name=chkDoorConf]").length);
     } else if (type === "AlarmGroup") {     // 알람그룹
         $("#doorIds").val(doorGpIds);
         $("#alDoorNms").val(doorGpHtml.join("\r\n"));

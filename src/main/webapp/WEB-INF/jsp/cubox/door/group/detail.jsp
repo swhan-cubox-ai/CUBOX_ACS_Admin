@@ -196,6 +196,13 @@
                 </td>
             </tr>
             <tr>
+                <th>출입문 수</th>
+                <td>
+                    <input type="text" id="gpDoorCnt" name="gpDoorCnt" maxlength="50" value="${doorGroupDetail.door_cnt}" class="input_com w_600px" disabled>
+                </td>
+            </tr>
+            <tr>
+            <tr>
                 <th>출입문</th>
                 <td style="display: flex;">
                     <%--  TODO: testarea에 공백 해결  --%>
