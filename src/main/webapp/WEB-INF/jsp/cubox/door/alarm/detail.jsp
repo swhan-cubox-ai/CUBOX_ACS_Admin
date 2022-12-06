@@ -224,7 +224,8 @@
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
-                    <input type="text" id="alNm" name="detail" maxlength="35" value="${doorGroupDetail.nm}" class="input_com w_600px" disabled>
+                    <input type="text" id="alNm" name="detail" maxlength="35" value="${doorGroupDetail.nm}" class="input_com w_600px"
+                           onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled>
                 </td>
             </tr>
             <tr>
