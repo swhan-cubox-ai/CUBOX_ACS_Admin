@@ -83,7 +83,7 @@
             </c:if>
             <c:forEach items="${empList}" var="sList" varStatus="status">
                 <tr>
-                    <td>${(pagination.totRecord - (pagination.totRecord-status.index)+1)  + ( (pagination.curPage - 1)  *  pagination.recPerPage ) }</td>
+                    <td><c:out value="${sList.id}"/></td>
                     <td><a href='/auth/emp/detail/<c:out value="${sList.id}"/>'><c:out value="${sList.empCd}"/></a></td>
                     <td><c:out value="${sList.belongNm}"/></td>
                     <td><c:out value="${sList.insttNm}"/></td>
