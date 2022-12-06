@@ -150,9 +150,11 @@
         <div id="imgBox">
             <div class="imageDiv">
                 <img id="imageReg" class="imgT"/>
+                <p>등록사진</p>
             </div>
             <div class="imageDiv">
                 <img id="imagePreview"  class="imgT"/>
+                <p>출입사진</p>
             </div>
         </div>
 

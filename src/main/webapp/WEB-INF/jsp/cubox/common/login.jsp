@@ -60,7 +60,7 @@ function fnTest () {
 
 	f = document.frmLogin;
 	f.action = "/user/addUser.do"
-	f.submit();
+	//f.submit();
 }
 
 function caps_lock(e) {
@@ -161,7 +161,7 @@ function fnGoVisit() {
 						<input type="password" name="login_pwd" placeholder="Password" onkeypress="caps_lock(event);" />
 					</div>
 					<button type="button" class="login_btn mt_30 mr_20" onClick="fnLoginProc()">로그인</button>
-					<button type="button" class="login_btn mt_30 mr_20" onClick="fnTest()">테스트계정 생성</button>
+					<button type="button" class="login_btn mt_30" onClick="fnTest()">테스트계정 생성</button>
 					<%-- <button type="button" class="login_btn mt_30" onClick="fnGoVisit()">방문신청</button> --%>
 					<div class="com_box">
 						<input type="checkbox" id="chkIdSave" class="checkbox mr_5" value="Y">

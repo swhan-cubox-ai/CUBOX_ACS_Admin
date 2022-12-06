@@ -25,6 +25,7 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword2)'>
             AND (emp_cd = #{keyword2} OR emp_nm like CONCAT('%',#{keyword2},'%'))
         </if>
+        order by updated_at desc
         <if test='@aero.cubox.util.CommonUtils@empty(isExcel)'>
             limit	#{srchCnt} offset #{offset}
         </if>

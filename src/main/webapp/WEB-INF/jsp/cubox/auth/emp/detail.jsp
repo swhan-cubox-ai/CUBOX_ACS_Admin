@@ -70,7 +70,6 @@
         }
 
         var empCd = $("#empNo").val();
-        console.log(empCd);
         fnGetFaceImage(empCd);
 
         modalPopup("authEntGroupListLayerPop", "출입권한그룹 선택", 910, 520);
@@ -256,7 +255,6 @@
     }
 
     function fnGetFaceImage(empCd) {
-        console.log("test");
         if(empCd == null || empCd == ""){
             return
         }
@@ -268,7 +266,12 @@
             },
             dataType: "json",
             success: function(result) {
-                document.getElementById("imageReg").src = "data:image/png;base64," + result.regFace;
+                if(!result.regFace){
+                    document.getElementById("imageReg").src = '/images/no-img.jpg'
+                } else {
+                    document.getElementById("imageReg").src = "data:image/png;base64," + result.regFace;
+                }
+
             }
         });
     }

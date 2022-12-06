@@ -8,6 +8,7 @@ import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.AES256Util;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,9 @@ public class ReportController {
 
     @Resource(name = "commonUtils")
     private CommonUtils commonUtils;
+
+    @Value("#{property['Globals.aes256.key']}")
+    private String AES_KEY;
 
 
     @RequestMapping(value = "/entHist/list.do")
@@ -116,21 +120,22 @@ public class ReportController {
         EntHistBioVO vo = new EntHistBioVO();
         vo.setEnt_hist_id(id);
         EntHistBioVO data = reportService.selectEntFaceOne(vo);
-        byte[] img = byteArrDecode(data.getEnt_face_img());
+        int faceIsFlag = data.getEnt_face_img().length();
+        if(faceIsFlag != 0){
+            byte[] img = byteArrDecode(data.getEnt_face_img());
+            String bioFace = new String(Base64.getEncoder().encode(img));
+            modelAndView.addObject("bioFace", bioFace);
+        } else {
+            modelAndView.addObject("bioFace", null);
+        }
 
-        //FaceVO faceVO = reportService.selectFaceOne(empCd);
+
         FaceVO faceVO = reportService.selectFaceOne(faceId);
         if(faceVO != null) {
             byte[] regImg = faceVO.getFace_img();
             String regFace = new String(Base64.getEncoder().encode(regImg));
             modelAndView.addObject("regFace", regFace);
         }
-
-        //String img = byteArrEncode((byte[]) data.getFace_img());
-        String bioFace = new String(Base64.getEncoder().encode(img));
-        //String errorFace = img;
-
-        modelAndView.addObject("bioFace", bioFace);
 
         return modelAndView;
     }
@@ -229,7 +234,6 @@ public class ReportController {
 
     @RequestMapping(value="/err/faceFeatureList.do")
     public String list(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
-        System.out.println("test");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
 
@@ -288,12 +292,9 @@ public class ReportController {
         vo.setId(id);
         FaceFeatureErrVO data = reportService.selectFaceFeatureErrOne(vo);
 
-        //byte[] img = byteArrDecode(data.getFace_img());
         String img = byteArrEncode((byte[]) data.getFace_img());
 
-        //String img = byteArrEncode((byte[]) data.getFace_img());
         String errorFace = new String(Base64.getEncoder().encode(data.getFace_img()));
-        //String errorFace = img;
 
         modelAndView.addObject("errorFace", errorFace);
 
@@ -301,15 +302,15 @@ public class ReportController {
     }
 
 
-    public static String byteArrEncode(byte[] bytes) throws Exception {
+    public String byteArrEncode(byte[] bytes) throws Exception {
         AES256Util aes256Util = new AES256Util();
-        String result =  aes256Util.byteArrEncode(bytes, "s8LiEwT3if89Yq3i90hIo3HepqPfOhVd");
+        String result =  aes256Util.byteArrEncode(bytes, AES_KEY);
         return result;
     }
 
-    private static byte[] byteArrDecode(String encoded) throws Exception {
+    private byte[] byteArrDecode(String encoded) throws Exception {
         AES256Util aes256Util = new AES256Util();
-        byte[] result =  aes256Util.byteArrDecode(encoded, "s8LiEwT3if89Yq3i90hIo3HepqPfOhVd");
+        byte[] result =  aes256Util.byteArrDecode(encoded, AES_KEY);
         return result;
     }
 
