@@ -13,6 +13,7 @@ public interface DoorService {
     String addDoor(Map<String, Object> commandMap);
     void updateDoor(Map<String, Object> commandMap);
     void deleteDoor(Map<String, Object> commandMap);
+    void deleteDoorAll();
 
     //단말기
     List<HashMap> getTerminalList(Map<String, Object> commandMap);
@@ -26,6 +27,7 @@ public interface DoorService {
     String addBuilding(HashMap param);
     void updateBuilding(Map<String, Object> commandMap);
     void deleteBuilding(Map<String, Object> commandMap);
+    void deleteBuildingAll();
 
     //area
     List<HashMap> getAreaList(Map<String, Object> commandMap);
@@ -33,6 +35,7 @@ public interface DoorService {
     String addArea(HashMap param);
     void updateArea(Map<String, Object> commandMap);
     void deleteArea(Map<String, Object> commandMap);
+    void deleteAreaAll();
 
     //floor
     List<HashMap> getFloorList(Map<String, Object> commandMap);
@@ -40,6 +43,7 @@ public interface DoorService {
     String addFloor(HashMap param);
     void updateFloor(Map<String, Object> commandMap);
     void deleteFloor(Map<String, Object> commandMap);
+    void deleteFloorAll();
 
     int getTerminalUseCnt(HashMap<String, Object> param);
 
