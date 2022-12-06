@@ -111,7 +111,8 @@
                 <tr>
                     <th>출입문 스케쥴 명</th>
                     <td>
-                        <input type="text" id="schNm" name="schNm" maxlength="35" size="50" value='' class="w_600px input_com">
+                        <input type="text" id="schNm" name="schNm" maxlength="35" size="50" value=''
+                               class="w_600px input_com" onkeyup="charCheck(this)" onkeydown="charCheck(this)">
                     </td>
                 </tr>
                 <tr>
