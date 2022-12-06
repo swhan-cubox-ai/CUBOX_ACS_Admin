@@ -35,20 +35,22 @@
              </if>
     </select>
 
+
     <select id="selectDoorAlarmGrpListCount"  parameterType="HashMap" resultType="int">
         SELECT COUNT(A.id)
-        FROM (
-        SELECT TDG.id
-        FROM T_DOORALARM_GRP TDG
-        WHERE 1=1
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
-            AND TDG.id = #{id}
-        </if>
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-            AND TDG.nm like CONCAT('%',#{keyword},'%')
-        </if>
-        ) A
+          FROM (
+                SELECT TDG.id
+                  FROM T_DOORALARM_GRP TDG
+                 WHERE 1=1
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
+                   AND TDG.id = #{id}
+                </if>
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                   AND TDG.nm like CONCAT('%',#{keyword},'%')
+                </if>
+               ) A
     </select>
+
 
     <select id="selectDoorAlarmGrpDetail"  parameterType="int" resultType="HashMap">
         SELECT TDG.id
@@ -58,6 +60,7 @@
              , TDG.delete_yn
              , (select COUNT(TDA.door_id) from T_DOOR_ALARM TDA where TDA.dooralram_grp_id = TDG.id) AS door_cnt
              , (SELECT GROUP_CONCAT( TDA.door_id  SEPARATOR '/') FROM T_DOOR_ALARM TDA WHERE TDA.dooralram_grp_id = TDG.id ) AS door_ids
+             , (SELECT GROUP_CONCAT( (SELECT A.door_nm FROM T_DOOR A where A.id = TDA.door_id ) SEPARATOR '/')  FROM T_DOOR_ALARM TDA WHERE TDA.dooralram_grp_id= TDG.id ) AS door_nms
              , TDG.created_at
              , TDG.updated_at
           FROM T_DOORALARM_GRP TDG
@@ -68,22 +71,22 @@
 
     <insert id="insertDoorAlarmGrp" parameterType="HashMap" useGeneratedKeys="true" keyProperty="doorAlarmGrpId" keyColumn="id">
         INSERT
-        INTO T_DOORALARM_GRP
-        ( nm
-        , time
-        , env_yn
-        , delete_yn
-        , created_at
-        , updated_at
-        )
+          INTO T_DOORALARM_GRP
+             ( nm
+             , time
+             , env_yn
+             , delete_yn
+             , created_at
+             , updated_at
+             )
         VALUES
-            ( #{nm}
-            , #{time}
-            , #{envYn}
-            , #{deleteYn}
-            , NOW()
-            , NOW()
-            )
+             ( #{nm}
+             , #{time}
+             , #{envYn}
+             , #{deleteYn}
+             , NOW()
+             , NOW()
+             )
 
     </insert>
 
@@ -95,16 +98,42 @@
              , env_yn = #{envYn}
              , delete_yn = #{deleteYn}
              , updated_at= NOW()
-        WHERE id = #{id}
+         WHERE id = #{id}
     </update>
 
 
     <delete id="deleteDoorAlarmGrp" parameterType="int" >
         DELETE
-        FROM T_DOORALARM_GRP
-        WHERE id = #{id}
-
+          FROM T_DOORALARM_GRP
+         WHERE id = #{id}
     </delete>
+
+
+    <insert id="insertDoorInDoorAlarmGroup" parameterType="HashMap">
+        INSERT
+          INTO T_DOOR_ALARM
+             ( door_id
+             , dooralram_grp_id)
+        VALUES
+             ( #{doorId}
+             , #{dooralramGrpId}
+             )
+    </insert>
+
+
+    <update id="updateDoorInDoorAlarmGroup" parameterType="HashMap">
+        UPDATE T_DOOR_ALARM
+           SET dooralram_grp_id = #{dooralramGrpId}
+         WHERE door_id = #{doorId}
+    </update>
+
+
+    <delete id="deleteDoorInDoorAlarmGroup" parameterType="HashMap" >
+        DELETE
+          FROM T_DOOR_ALARM
+         WHERE dooralram_grp_id = #{dooralramGrpId}
+    </delete>
+
 
     <select id="selectDoorAlarmGrpNameVerification" parameterType="HashMap" resultType="int">
         SELECT COUNT(TDG.id) AS vCnt

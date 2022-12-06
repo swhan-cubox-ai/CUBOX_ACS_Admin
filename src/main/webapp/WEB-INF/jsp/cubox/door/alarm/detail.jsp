@@ -11,7 +11,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
-<jsp:include page="/WEB-INF/jsp/cubox/common/doorListPopup.jsp" flush="false"/>
+<%--<jsp:include page="/WEB-INF/jsp/cubox/common/doorListPopup.jsp" flush="false"/>--%>
 
 <style>
     .title_box {
@@ -29,7 +29,10 @@
         position: sticky;
         top: 0;
     }
-
+    .color_disabled {
+        background-color: #eee !important;
+        opacity: 1;
+    }
 </style>
 
 <script type="text/javascript">
@@ -39,7 +42,7 @@
     $(function() {
         $(".title_tx").html("출입문 알람 그룹 - 상세");
 
-        modalPopup("doorListPopup", "출입문 목록", 450, 550);
+        // modalPopup("doorListPopup", "출입문 목록", 450, 550);
         modalPopup("doorEditPopup", "출입문 수정", 900, 600);
 
         // chkAlType();
@@ -95,19 +98,15 @@
 
     }
 
-
-
-
     // 수정 취소
     function fnCancel() {
         $(".title_tx").html("출입문 스케쥴 - 상세");
         $("#btnEdit").css("display", "none");
         $("#btnboxDetail").css("display", "block");
         $("#btnboxEdit").css("display", "none");
-        $("[name=detail]").attr("disabled", true);
-
         // 전체페이지 리로드 대신 html만 리로드
         $("#detailForm").load(location.href + ' #detailForm');
+        $("[name=detail]").attr("disabled", true).addClass("color_disabled");
     }
 
     // 수정 버튼
@@ -117,7 +116,7 @@
             $("#btnEdit").css("display", "inline-block");
             $("#btnboxDetail").css("display", "none");
             $("#btnboxEdit").css("display", "block");
-            $("[name=detail]").attr("disabled", false);
+            $("[name=detail]").attr("disabled", false).removeClass("color_disabled");
         } else {
             return;
         }
@@ -140,6 +139,7 @@
 
     // popup open (공통)
     function openPopup(popupNm) {
+        console.log(popupNm);
         $("#" + popupNm).PopupWindow("open");
         if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
             fnGetDoorListAjax("AlarmGroup"); //출입문 목록
@@ -148,10 +148,7 @@
 
     // popup close (공통)
     function closePopup(popupNm) {
-        if (popupNm === "doorEditPopup") { // 출입문 수정 팝업
-            // TODO : 출입문 저장 로직
-            setDoors("AlarmGroup");
-        }
+        setDoors("AlarmGroup");
         $("#" + popupNm).PopupWindow("close");
     }
 
@@ -261,8 +258,16 @@
                 <th>출입문 수</th>
                 <td>
                     <input type="text" id="alDoorCnt" name="alDoorCnt" maxlength="50" value="${doorGroupDetail.door_cnt}" class="input_com w_600px" disabled>
-                    <button type="button" class="btn_small color_basic" onclick="openPopup('doorListPopup')">출입문 목록</button>
-                    <button type="button" id="btnEdit" class="btn_small color_basic" onclick="openPopup('doorEditPopup')" style="display: none">출입문 수정</button>
+                </td>
+            </tr>
+            <tr>
+                <th>출입문</th>
+                <td style="display: flex;">
+                    <textarea id="alDoorNms" name="alDoorNms" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px; font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:set var="nm" value="${fn:split(doorGroupDetail.door_nms,'/')}" /><c:forEach items="${nm}" var="dName" varStatus="varStatus">
+${dName}</c:forEach></textarea>
+                    <div class="ml_10" style="position: relative;">
+                        <button id="btnEdit" type="button" class="btn_small color_basic" onclick="openPopup('doorEditPopup')" style="width:60px; position:absolute; bottom:0; display:none;">선택</button>
+                    </div>
                 </td>
             </tr>
             </tbody>
