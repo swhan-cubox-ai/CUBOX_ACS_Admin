@@ -26,13 +26,14 @@ let crudType ="<%=CRUD_TYPE%>";
 $(function () {
     // 출입문 추가
     $(".add_door").click(function () {
-        let nodeSel = $(".nodeSel").html();
-        let nodeSelId = $(".nodeSel").find("span").attr("id");
+        let nodeSel = $("a.nodeSel").html();
+        let nodeSelId = $("a.nodeSel").find("span").attr("id");
         let doorSelected = $("#doorSelected").children();
         // 이미 같은 출입문 있을 경우 return
         for (let i = 0; i < doorSelected.length; i++) {
             let doorPath = doorSelected.eq(i).children().last().html();
             if (doorPath == nodeSel) {
+                alert("이미 선택된 출입문입니다.");
                 return;
             }
         }
@@ -46,8 +47,12 @@ $(function () {
     // 출입문 삭제
     $(".delete_door").click(function () {
         let ckd = $("input[name=chkDoorConf]:checked").length;
-        for (let i = ckd - 1; i > -1; i--) {
-            $("input[name=chkDoorConf]:checked").eq(i).closest("tr").remove();
+        if (ckd === 0) {
+            alert("제거할 항목이 없습니다.");
+        } else {
+            for (let i = ckd - 1; i > -1; i--) {
+                $("input[name=chkDoorConf]:checked").eq(i).closest("tr").remove();
+            }
         }
 
         if ($("#chkDoorConfAll").prop("checked")) {
@@ -68,6 +73,7 @@ $(function () {
 
 // 출입문선택 반영
 function setDoors(type) {
+    console.log("setDoors type = " + type);
 
     let doorGpIds = "";
     let doorGpHtml = [];
@@ -85,14 +91,11 @@ function setDoors(type) {
     if (type === "Group") {                 // 그룹관리
         $("#gpDoorIds").val(doorGpIds);
         $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
+        $("#gpDoorCnt").val($("input[name=chkDoorConf]").length);
     } else if (type === "AlarmGroup") {     // 알람그룹
         $("#doorIds").val(doorGpIds);
-        $("#tdGroupTotal").empty();
+        $("#alDoorNms").val(doorGpHtml.join("\r\n"));
         $("#alDoorCnt").val($("input[name=chkDoorConf]").length);   // 출입문 수
-        $.each(doorGpHtml, function(i, html) {                      // 출입문 목록에 반영
-           let tag = "<tr><td>" + html + "</td></tr>";
-           $("#tdGroupTotal").append(tag);
-        });
     }
 }
 

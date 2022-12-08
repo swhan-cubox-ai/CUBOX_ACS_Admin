@@ -34,7 +34,8 @@
     <div class="search_box mb_20">
         <div class="search_in">
             <div class="comm_search  mr_10">
-                <input type="text" class="w_300px input_com" id="keyword" name="keyword" value="<c:out value="${data.keyword}"/>" placeholder="출입문 그룹명">
+                <input type="text" class="w_300px input_com" id="keyword" name="keyword" value="<c:out value="${data.keyword}"/>"
+                       placeholder="출입문 그룹명" onkeyup="charCheck(this)" onkeydown="charCheck(this)">
             </div>
             <div class="comm_search ml_40">
                 <div class="search_btn2" onclick="pageSearch('1')"></div>
@@ -90,7 +91,12 @@
                 <tr>
                     <td>${(pagination.totRecord - (pagination.totRecord-status.index)+1)  + ( (pagination.curPage - 1)  *  pagination.recPerPage ) }</td>
                     <td><a href='/door/group/detail/<c:out value="${sList.id}"/>'><c:out value="${sList.nm}"/></a></td>
-                    <td><c:out value="${sList.door_sch_nm}"/></td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${sList.door_sch_nm eq '' || empty sList.door_sch_nm }">-</c:when>
+                            <c:otherwise><c:out value="${sList.door_sch_nm}"/></c:otherwise>
+                        </c:choose>
+                    </td>
                     <td><c:out value="${sList.door_cnt}"/></td>
                     <td><c:out value="${sList.created_at}"/></td>
                     <td><c:out value="${sList.updated_at}"/></td>
