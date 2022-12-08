@@ -165,7 +165,8 @@
             <tr>
                 <th>출입문 알람 그룹 명</th>
                 <td>
-                    <input type="text" id="alNm" name="alNm" maxlength="35" value="" class="input_com w_600px">
+                    <input type="text" id="alNm" name="alNm" maxlength="35" value=""
+                           class="input_com w_600px" onkeyup="charCheck(this)" onkeydown="charCheck(this)">
                 </td>
             </tr>
             <tr>

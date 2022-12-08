@@ -62,6 +62,7 @@
              , TDC.door_sch_nm
              , (SELECT GROUP_CONCAT( TDD.door_id  SEPARATOR '/')  FROM T_DOORGRP_DOOR TDD WHERE TDD.doorgrp_id= TD.id ) AS door_ids
              , (SELECT GROUP_CONCAT( (SELECT A.door_nm FROM T_DOOR A where A.id = TDD.door_id ) SEPARATOR '/')  FROM T_DOORGRP_DOOR TDD WHERE TDD.doorgrp_id= TD.id ) AS door_nms
+             , (select COUNT(TDD.door_id) from T_DOORGRP_DOOR TDD where TDD.doorgrp_id = TD.id) AS door_cnt
              , DATE_FORMAT(TD.created_at, '%Y-%m-%d') as created_at
              , DATE_FORMAT(TD.updated_at, '%Y-%m-%d') as updated_at
         FROM T_DOORGRP TD
