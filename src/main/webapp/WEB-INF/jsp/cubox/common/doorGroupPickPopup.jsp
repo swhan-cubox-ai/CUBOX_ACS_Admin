@@ -85,9 +85,6 @@
             doorGroupHtml.push(html);
         });
 
-        console.log(doorGroupIds);
-        console.log(doorGroupHtml);
-
         // 권한그룹 textarea에 뿌려주기
         $("#doorGroup").val(doorGroupHtml.join("\r\n"));
         $("#doorIds").val(doorGroupIds.join("/"));
