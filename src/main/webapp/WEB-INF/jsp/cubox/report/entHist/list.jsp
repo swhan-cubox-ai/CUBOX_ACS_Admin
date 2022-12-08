@@ -19,7 +19,7 @@
   });
 
   function pageSearch(page){
-    f = document.frmSearch;
+    var f = document.frmSearch;
 
     $("#srchPage").val(page);
 
@@ -137,12 +137,6 @@
         </select>
       </div>
       <div class="comm_search mr_10">
-        <p>
-          <input class="w_150px input_datepicker" type="text" readonly="readonly" id="fromDt" name="fromDt" placeholder="조회 시작일자" value="${data.fromDt}"> ~
-          <input class="w_150px input_datepicker" type="text" readonly="readonly" id="toDt" name="toDt" placeholder="조회 종료일자" value="${data.toDt}">
-        </p>
-      </div>
-      <div class="comm_search mr_10">
         <select name="srchCond2" id="srchCond2" size="1" class="w_150px input_com">
           <option value="">전체</option>
           <c:forEach var="list" items="${buildingCombList}">
@@ -150,8 +144,22 @@
           </c:forEach>
         </select>
       </div>
+      <div class="comm_search mr_10">
+        <p>
+          <input class="w_150px input_datepicker" type="text" readonly="readonly" id="fromDt" name="fromDt" placeholder="조회 시작일자" value="${data.fromDt}"> ~
+          <input class="w_150px input_datepicker" type="text" readonly="readonly" id="toDt" name="toDt" placeholder="조회 종료일자" value="${data.toDt}">
+        </p>
+      </div>
+      <div class="comm_search mr_10">
+        <select name="srchCond3" id="srchCond3" size="1" class="w_150px input_com">
+          <option value="">선택</option>
+          <option value="dept" <c:if test ="${data.srchCond3 eq 'dept'}">selected="selected"</c:if>>부서</option>
+          <option value="terminal" <c:if test ="${data.srchCond3 eq 'terminal'}">selected="selected"</c:if>>단말기</option>
+          <option value="emp" <c:if test ="${data.srchCond3 eq 'emp'}">selected="selected"</c:if>>사원명/사원코드</option>
+        </select>
+      </div>
       <div class="comm_search  mr_10">
-        <input type="text" class="w_150px input_com" id="keyword" name="keyword" value="<c:out value="${data.keyword}"/>" placeholder="사원명/사원코드">
+        <input type="text" class="w_150px input_com" id="keyword" name="keyword" value="<c:out value="${data.keyword}"/>" placeholder="검색어">
       </div>
       <div class="comm_search ml_40">
         <div class="search_btn2" onclick="pageSearch('1')"></div>
@@ -174,16 +182,17 @@
         <col width="6%"/>
         <col width="6%" />
         <col width="6%" />
+        <col width="4%" />
         <col width="6%" />
-        <col width="6%" />
         <col width="9%" />
-        <col width="9%" />
-        <col width="9%" />
+        <col width="4%" />
+        <col width="4%" />
         <col width="5%" />
         <col width="6%" />
         <col width="6%" />
         <col width="6%" />
-        <col width="6%" />
+        <col width="4%" />
+        <col width="10%" />
         <col width="6%" />
       </colgroup>
       <thead>

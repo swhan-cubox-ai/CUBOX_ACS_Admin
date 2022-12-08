@@ -13,6 +13,7 @@
 <script type="text/javascript" src="/js/jquery-ui.js"></script>
 <script type="text/javascript" src="/js/jquery.blockUI.js"></script>
 <script type="text/javascript" src="/js/common.js?version=<%= Math.random()%>"></script>
+<script type="text/javascript" src="/js/jquery.mtz.monthpicker.js"></script>
 
     <!-- sweet alert -->
     <link rel="stylesheet" type="text/css" href="/css/sweetalert2.min.css" media="all">

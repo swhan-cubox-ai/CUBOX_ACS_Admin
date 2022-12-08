@@ -18,6 +18,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -54,22 +56,31 @@ public class ReportController {
 
             String srchCond1 = StringUtil.nvl(commandMap.get("srchCond1"), "");
             String srchCond2 = StringUtil.nvl(commandMap.get("srchCond2"), "");
+            String srchCond3 = StringUtil.nvl(commandMap.get("srchCond3"), "");
             String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
 
             String fromDt = StringUtil.nvl(commandMap.get("fromDt"), "");
             String toDt = StringUtil.nvl(commandMap.get("toDt"), "");
 
-            if(toDt.equals("")){
-                Date now = new Date();
+            Date now = new Date();
+            if(fromDt.equals("")){
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(now);
-                cal.add(Calendar.DATE, -7);
+                cal.add(Calendar.DATE, -6);
+                fromDt = commonUtils.getStringDate(cal.getTime(), "yyyy-MM-dd");
+            }
 
+            if(toDt.equals("")){
                 Calendar cal2 = Calendar.getInstance();
                 cal2.setTime(now);
                 cal2.add(Calendar.DATE, 1);
                 toDt = commonUtils.getStringDate(cal2.getTime(), "yyyy-MM-dd");
-                fromDt = commonUtils.getStringDate(cal.getTime(), "yyyy-MM-dd");
+            } else {
+                Date parseDt = StringToDate(toDt);
+                Calendar cal2 = Calendar.getInstance();
+                cal2.setTime(parseDt);
+                cal2.add(Calendar.DATE, 1);
+                toDt = commonUtils.getStringDate(cal2.getTime(), "yyyy-MM-dd");
             }
 
             vo.setSrchPage(Integer.parseInt(srchPage));
@@ -78,6 +89,7 @@ public class ReportController {
 
             vo.setSrchCond1(srchCond1);
             vo.setSrchCond2(srchCond2);
+            vo.setSrchCond3(srchCond3);
             vo.setKeyword(keyword);
 
             vo.setFromDt(fromDt);
@@ -95,6 +107,15 @@ public class ReportController {
             pageVO.setTotRecord(totalCnt);
             pageVO.setUnitPage(vo.getCurPageUnit());
             pageVO.calcPageList();
+
+            Date parseDt = StringToDate(toDt);
+            Calendar cal2 = Calendar.getInstance();
+            cal2.setTime(parseDt);
+            cal2.add(Calendar.DATE, -1);
+            toDt = commonUtils.getStringDate(cal2.getTime(), "yyyy-MM-dd");
+
+            vo.setFromDt(fromDt);
+            vo.setToDt(toDt);
 
             model.addAttribute("entEvtTypCombList", entEvtTypCombList);
             model.addAttribute("buildingCombList", buildingCombList);
@@ -292,9 +313,8 @@ public class ReportController {
         vo.setId(id);
         FaceFeatureErrVO data = reportService.selectFaceFeatureErrOne(vo);
 
-        String img = byteArrEncode((byte[]) data.getFace_img());
-
-        String errorFace = new String(Base64.getEncoder().encode(data.getFace_img()));
+        byte[] errImg = data.getFace_img();
+        String errorFace = new String(Base64.getEncoder().encode(errImg));
 
         modelAndView.addObject("errorFace", errorFace);
 
@@ -312,6 +332,12 @@ public class ReportController {
         AES256Util aes256Util = new AES256Util();
         byte[] result =  aes256Util.byteArrDecode(encoded, AES_KEY);
         return result;
+    }
+
+    private Date StringToDate(String dateStr) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = formatter.parse(dateStr);
+        return date;
     }
 
 

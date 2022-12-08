@@ -1,6 +1,5 @@
 package aero.cubox.core.vo;
 
-import java.sql.Blob;
 import java.sql.Timestamp;
 
 public class EntHistVO {
@@ -48,6 +47,7 @@ public class EntHistVO {
 
     private String srchCond1;
     private String srchCond2;
+    private String srchCond3;
     private String keyword;
 
     private String fromDt;
@@ -378,6 +378,14 @@ public class EntHistVO {
 
     public void setSrchCond2(String srchCond2) {
         this.srchCond2 = srchCond2;
+    }
+
+    public String getSrchCond3() {
+        return srchCond3;
+    }
+
+    public void setSrchCond3(String srchCond3) {
+        this.srchCond3 = srchCond3;
     }
 
     public String getKeyword() {

@@ -16,8 +16,9 @@ public class MenuUrlSetting {
         else if ("0101".equals(menu_cd)) return  "";           // 환경설정
         else if ("0102".equals(menu_cd)) return "/user/list.do";       // 사용자관리
         else if ("0103".equals(menu_cd)) return "/menuAuth/list.do";   // 메뉴권한관리
-        else if ("0104".equals(menu_cd)) return "";           // 사용자 활동 로그
+        else if ("0104".equals(menu_cd)) return "/system/actLog/list.do";           // 사용자 활동 로그
         else if ("0105".equals(menu_cd)) return "/system/privacy/list.do";           // 개인정보폐기
+        else if ("0106".equals(menu_cd)) return "/system/stat/list.do";           // 통계
 
         if ("0200".equals(menu_cd)) return "";                              // 출입문 관리
         else if ("0201".equals(menu_cd)) return "/door/management.do";      // 출입문 관리

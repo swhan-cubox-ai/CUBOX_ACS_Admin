@@ -92,4 +92,60 @@
             emp_cd = #{empCd}
     </update>
 
+
+    <select id="getStatList" parameterType="aero.cubox.core.vo.EntHistStatVO" resultType="aero.cubox.core.vo.EntHistStatVO">
+        select eh.totDate,
+        CASE
+        WHEN eh.card_tag_typ = ""
+        THEN '얼굴인증'
+        WHEN eh.card_tag_typ = "01"
+        THEN '마이페어 카드'
+        WHEN eh.card_tag_typ = "02"
+        THEN '공무원증'
+        WHEN eh.card_tag_typ = "03"
+        THEN 'Mobile NFC'
+        ELSE 'BLE'
+        END
+        as cardTagTyp
+        , eh.cnt from
+        (select  card_tag_typ , totDate, sum(cnt) as cnt FROM
+        (select DATE_FORMAT(created_at,'%Y-%m-%d') as totDate, card_tag_typ, building_cd, count(1) as cnt FROM T_ENT_HIST group by  DATE_FORMAT(created_at,'%Y-%m-%d'), card_tag_typ, building_cd
+        having card_tag_typ in ("01", "02", "03", "04", "")) a
+        group by building_cd, card_tag_typ, totDate
+        having 1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(fromDt) and @aero.cubox.util.CommonUtils@notEmpty(toDt)'>
+            AND totDate BETWEEN #{fromDt} AND #{toDt}
+        </if>
+        ) eh
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond3)'>
+            AND building_cd = #{srchCond3}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond1)'>
+            AND card_tag_typ = #{srchCond1}
+        </if>
+        order by totDate desc
+        limit	#{srchCnt} offset #{offset}
+    </select>
+
+    <select id="getStatListCount" parameterType="aero.cubox.core.vo.EntHistStatVO" resultType="int">
+        select count(*) from
+        (select  card_tag_typ , totDate, sum(cnt) as cnt FROM
+        (select DATE_FORMAT(created_at,'%Y-%m-%d') as totDate, card_tag_typ, building_cd, count(1) as cnt
+         FROM T_ENT_HIST group by  DATE_FORMAT(created_at,'%Y-%m-%d'), card_tag_typ, building_cd
+        having card_tag_typ in ("01", "02", "03", "04", "")) a
+        group by building_cd, card_tag_typ, totDate
+        having 1=1
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(fromDt) and @aero.cubox.util.CommonUtils@notEmpty(toDt)'>
+            AND totDate BETWEEN #{fromDt} AND #{toDt}
+        </if>
+        ) eh
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond3)'>
+            AND building_cd = #{srchCond3}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond1)'>
+            AND card_tag_typ = #{srchCond1}
+        </if>
+
+    </select>
+
 </mapper>

@@ -92,6 +92,14 @@
     .title_box {
         margin-top: 10px;
     }
+    .radioT{
+        display: inline;
+    }
+    .radioT input{
+        display: inline;
+        width: 10% !important;
+        float: none;
+    }
 </style>
 
 <script type="text/javascript">
@@ -100,7 +108,7 @@
 
     $(function () {
         $(".title_tx").html("출입문 관리");
-
+        debugger;
         modalPopup("termPickPopup", "단말기 선택", 910, 520);
         modalPopup("authPickPopup", "권한그룹 선택", 910, 550);
         modalPopup("excelUploadPopup", "엑셀 업로드", 450, 290);
@@ -114,7 +122,7 @@
             $("#btnAddType").css("display", "none"); // 추가 버튼
             $("#btn_wrapper").css("display", "none"); // 속성쪽 버튼
             $("#btnExcelDownload, #btnExcelUpload").css("display", "none"); // 엑셀 다운로드, 업로드 버튼
-            $(".hideSelectBtn").remove(); // 단말기코드, 권한그룹 선택 버튼
+            //$(".hideSelectBtn").remove(); // 단말기코드, 권한그룹 선택 버튼
             $(".paddingForBtn").attr("colspan", "2").removeClass("paddingForBtn"); // 단말기코드, 권한그룹 길이 조정
             let schVal = ($("#selDoorGroup option:selected").val() === "") ? "없음" : $("#selDoorGroup option:selected").text();
             $("#selDoorGroup option:selected").text(schVal); // 스케쥴
@@ -817,7 +825,6 @@
             url: "<c:url value='/door/list.do' />",
             success: function (result) {
                 console.log(result);
-
                 // tree 생성
                 createTree(crudType, true, result, $("#treeDiv"));
 
@@ -834,6 +841,9 @@
                    let tag = "<option name='floorData' value='" + floor.id + "' class='dFloor' bId='" + floor.building_id + "'>" + floor.floor_nm + "</option>";
                    $(".selectFloor").append(tag);
                 });
+            },
+            error: function(result){
+                console.log(result);
             }
         });
     }
@@ -1473,10 +1483,10 @@
                     <tr>
                         <th>단말기 코드</th>
                         <td class="paddingForBtn">
-                            <input type="text" id="terminalCd" name="doorEditDisabled" maxlength="30" class="input_com" value="" disabled/>
+                            <input type="text" id="terminalCd" name="doorEditDisabled" maxlength="30" class="input_com" value="" />
                         </td>
                         <td class="hideSelectBtn">
-                            <button type="button" id="btnTerminalPick" class="btn_gray3 btn_small disabled" onclick="openPopup('termPickPopup');">선택</button>
+                            <button type="button" id="btnTerminalPick" class="btn_gray3 btn_small " onclick="openPopup('termPickPopup');">선택</button>
                         </td>
                     </tr>
                     <tr>
@@ -1492,7 +1502,15 @@
                         </td>
                         <td class="hideSelectBtn">
                             <button type="button" id="btnDoorAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup');">선택</button>
-                        </tdhideSelectBtn>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>운영모드</th>
+                        <td>
+                            <div class="radioT"><input type="radio" name="chk_info" value="OMT001"/>운영</div>
+                            <div class="radioT"><input type="radio" name="chk_info" value="OMT002"/>개방</div>
+                            <div class="radioT"><input type="radio" name="chk_info" value="OMT003"/>폐쇄</div>
+                        </td>
                     </tr>
                     </tbody>
                     <%-- // 출입문 추가 --%>

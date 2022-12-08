@@ -59,6 +59,7 @@
                 <col width="7%" />
                 <col width="7%" />
                 <col width="7%" />
+                <col width="7%" />
                 <col width="6%" />
                 <col width="9%" />
                 <col width="9%" />
@@ -70,6 +71,7 @@
                 <th>소속</th>
                 <th>기관</th>
                 <th>부서</th>
+                <th>카드상태</th>
                 <th>성명</th>
                 <th>유효일자</th>
                 <th>등록일자</th>
@@ -88,6 +90,7 @@
                     <td><c:out value="${sList.belongNm}"/></td>
                     <td><c:out value="${sList.insttNm}"/></td>
                     <td><c:out value="${sList.deptNm}"/></td>
+                    <td><c:out value="${sList.cardStateTypNm}"/></td>
                     <td><c:out value="${sList.empNm}"/></td>
                     <td><c:out value="${sList.expiredDt}"/></td>
                     <td><c:out value="${sList.createdAt}"/></td>

@@ -58,9 +58,23 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
             AND eh.building_cd = #{srchCond2}
         </if>
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-            and (eh.emp_nm LIKE CONCAT('%',#{keyword},'%') or eh.emp_cd like CONCAT('%',#{keyword},'%') )
-        </if>
+        <choose>
+            <when test="srchCond3 == 'emp'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    and (eh.emp_nm LIKE CONCAT('%',#{keyword},'%') or eh.emp_cd like CONCAT('%',#{keyword},'%') )
+                </if>
+            </when>
+            <when test="srchCond3 == 'terminal'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    and tm.terminal_cd LIKE CONCAT('%',#{keyword},'%')
+                </if>
+            </when>
+            <when test="srchCond3 == 'dept'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    and eh.dept_nm LIKE CONCAT('%',#{keyword},'%')
+                </if>
+            </when>
+        </choose>
         ORDER BY evtDt DESC
         limit	#{srchCnt} offset #{offset}
     </select>
@@ -68,21 +82,39 @@
     <select id="getEntHistListCount" parameterType="aero.cubox.core.vo.EntHistVO" resultType="int">
         select
            count(*)
-        from	T_ENT_HIST
+        from	T_ENT_HIST eh
+        left outer join T_TERMINAL tm on eh.terminal_cd = tm.terminal_cd
         where
             1=1
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond1)'>
-            and ent_evt_typ = #{srchCond1}
+            and eh.ent_evt_typ = #{srchCond1}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(fromDt) and @aero.cubox.util.CommonUtils@notEmpty(toDt)'>
-            and evt_dt between #{fromDt} and #{toDt}
+            and eh.evt_dt between #{fromDt} and #{toDt}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
-            and building_cd = #{srchCond2}
+            and eh.building_cd = #{srchCond2}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-            and (emp_nm LIKE CONCAT('%',#{keyword},'%') or emp_cd like CONCAT('%',#{keyword},'%') )
+            and (eh.emp_nm LIKE CONCAT('%',#{keyword},'%') or eh.emp_cd like CONCAT('%',#{keyword},'%') )
         </if>
+        <choose>
+            <when test="srchCond3 == 'emp'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    and (eh.emp_nm LIKE CONCAT('%',#{keyword},'%') or eh.emp_cd like CONCAT('%',#{keyword},'%') )
+                </if>
+            </when>
+            <when test="srchCond3 == 'terminal'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    and tm.terminal_cd LIKE CONCAT('%',#{keyword},'%')
+                </if>
+            </when>
+            <when test="srchCond3 == 'dept'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    and eh.dept_nm LIKE CONCAT('%',#{keyword},'%')
+                </if>
+            </when>
+        </choose>
     </select>
 
     <select id="selectEntFaceOne" parameterType="aero.cubox.core.vo.EntHistBioVO" resultType="aero.cubox.core.vo.EntHistBioVO">
