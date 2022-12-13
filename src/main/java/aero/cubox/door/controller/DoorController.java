@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.UncheckedIOException;
 import java.util.*;
 
 /**
@@ -950,7 +951,7 @@ public class DoorController {
                 if (!errorMsg.equals("")) {
                     modelAndView.addObject("resultCode", "N");
                     modelAndView.addObject("message", errorMsg);
-                    return modelAndView;
+                    throw new RuntimeException(errorMsg);
                 }
 
                 if (!buildingMap.containsValue(String.format("%02d", Integer.parseInt(buildingCd)))) { // buildingCd가 buildingMap에 없는 경우
@@ -1000,26 +1001,27 @@ public class DoorController {
                 if (!errorMsg.equals("")) {
                     modelAndView.addObject("resultCode", "N");
                     modelAndView.addObject("message", errorMsg);
-                    return modelAndView;
+                    throw new RuntimeException(errorMsg);
                 }
-                    if (!floorMap.containsValue(buildingCd + "_" + floorCd)) {
-                        floorMap.put(buildingNm + "_" + floorNm, buildingCd + "_" + floorCd);
 
-                        if (!buildingId.equals("")) {
-                            HashMap param = new HashMap();
-                            param.put("floorNm", floorNm);
-                            param.put("floorCd", floorCd);
-                            param.put("buildingId", buildingId);
-                            param.put("buildingCd", buildingCd);
-                            try {
-                                newFloorId = doorService.addFloor(param);
-                                LOGGER.debug("newFloorId === " + newFloorId);
-                            } catch (Exception e) {
-                                e.getStackTrace();
-                                LOGGER.debug("ADD FLOOR EXCEPTION: {} ", e.getMessage());
-                            }
+                if (!floorMap.containsValue(buildingCd + "_" + floorCd)) {
+                    floorMap.put(buildingNm + "_" + floorNm, buildingCd + "_" + floorCd);
+
+                    if (!buildingId.equals("")) {
+                        HashMap param = new HashMap();
+                        param.put("floorNm", floorNm);
+                        param.put("floorCd", floorCd);
+                        param.put("buildingId", buildingId);
+                        param.put("buildingCd", buildingCd);
+                        try {
+                            newFloorId = doorService.addFloor(param);
+                            LOGGER.debug("newFloorId === " + newFloorId);
+                        } catch (Exception e) {
+                            e.getStackTrace();
+                            LOGGER.debug("ADD FLOOR EXCEPTION: {} ", e.getMessage());
                         }
                     }
+                }
 //                }
             }
 
@@ -1051,7 +1053,7 @@ public class DoorController {
                 if (!errorMsg.equals("")) {
                     modelAndView.addObject("resultCode", "N");
                     modelAndView.addObject("message", errorMsg);
-                    return modelAndView;
+                    throw new RuntimeException(errorMsg);
                 }
 
                 // doorCd 6자리수 변형

@@ -1317,7 +1317,7 @@
                     alert("출입문 일괄등록이 완료되었습니다.");
                     fnGetDoorListAjax();
                 } else {
-                    alert(result.message);
+                    alert(result.message.message);
                 }
                 hideLoading();
             }
