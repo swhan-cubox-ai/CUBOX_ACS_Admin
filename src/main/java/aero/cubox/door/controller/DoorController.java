@@ -942,25 +942,31 @@ public class DoorController {
                     continue;
                 }
 
-                if (row.getCell(0) != null && !row.getCell(1).equals("")) {
-                    String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");                                               // 빌딩 명
-                    String buildingCd = String.format("%02d", Integer.parseInt(getValue(row.getCell(5)).replaceAll("\n", "<br>")));      // 빌딩 코드
+                String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");                                               // 빌딩 명
+                String buildingCd = getValue(row.getCell(5)).replaceAll("\n", "<br>");                                               // 빌딩 코드
 
-                    if (!buildingMap.containsValue(buildingCd)) { // buildingCd가 없는 경우
-                        buildingMap.put(buildingNm, buildingCd);
+                // validation
+                String errorMsg = validBuilding(buildingNm, buildingCd);
+                if (!errorMsg.equals("")) {
+                    modelAndView.addObject("resultCode", "N");
+                    modelAndView.addObject("message", errorMsg);
+                    return modelAndView;
+                }
 
-                        HashMap param = new HashMap();
-                        param.put("buildingNm", buildingNm);
-                        param.put("buildingCd", buildingCd);
-                        param.put("workplaceId", 1);
+                if (!buildingMap.containsValue(String.format("%02d", Integer.parseInt(buildingCd)))) { // buildingCd가 buildingMap에 없는 경우
+                    buildingMap.put(buildingNm, String.format("%02d", Integer.parseInt(buildingCd)));
 
-                        try {
-                            newBuildingId = doorService.addBuilding(param);
-                            LOGGER.debug("newBuildingId === " + newBuildingId);
-                        } catch (Exception e) {
-                            e.getStackTrace();
-                            LOGGER.debug("ADD BUILDING EXCEPTION: {} ", e.getMessage());
-                        }
+                    HashMap param = new HashMap();
+                    param.put("buildingNm", buildingNm);
+                    param.put("buildingCd", String.format("%02d", Integer.parseInt(buildingCd)));
+                    param.put("workplaceId", 1);
+
+                    try {
+                        newBuildingId = doorService.addBuilding(param);
+                        LOGGER.debug("newBuildingId === " + newBuildingId);
+                    } catch (Exception e) {
+                        e.getStackTrace();
+                        LOGGER.debug("ADD BUILDING EXCEPTION: {} ", e.getMessage());
                     }
                 }
             }
@@ -978,29 +984,29 @@ public class DoorController {
                     continue;
                 }
 
-                if (row.getCell(0) != null && !row.getCell(2).equals("")) {
-                    String buildingId = "";
-                    String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");   // 빌딩 명
-                    String buildingCd = String.format("%02d", Integer.parseInt(getValue(row.getCell(5)).replaceAll("\n", "<br>")));   // 빌딩 코드
-                    String floorNm = getValue(row.getCell(2)).replaceAll("\n", "<br>");      // 층 명
-                    String floorCd = getValue(row.getCell(6)).replaceAll("\n", "<br>");      // 층 코드
+//                if (row.getCell(0) != null && !row.getCell(2).equals("")) {
+                HashMap<String, String> floorInfo = replaceFloorInfo
+                        (getValue(row.getCell(2)).replaceAll("\n", "<br>")
+                        , getValue(row.getCell(6)).replaceAll("\n", "<br>"));
 
-                    for (int j = 0; j < buildingList.size(); j++) {
-                        if (buildingList.get(j).get("building_nm").equals(buildingNm) && buildingList.get(j).get("building_cd").equals(buildingCd)) {
-                            buildingId = buildingList.get(j).get("id").toString();
-                            break;
-                        }
-                    }
-                    if (floorCd.length() == 1) {
-                        floorCd = "0" + floorCd;
-                    }
+                String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");                                            // 빌딩 명
+                String buildingCd = String.format("%02d", Integer.parseInt(getValue(row.getCell(5)).replaceAll("\n", "<br>")));   // 빌딩 코드
+                String buildingId = getBuildingId(buildingList, buildingNm, buildingCd);                                                                 // 빌딩 id
+                String floorNm = floorInfo.get("floorNm");                                                                                               // 층 명
+                String floorCd = floorInfo.get("floorCd");                                                                                               // 층 코드
 
+                // validation
+                String errorMsg = validFloor(floorNm, floorCd);
+                if (!errorMsg.equals("")) {
+                    modelAndView.addObject("resultCode", "N");
+                    modelAndView.addObject("message", errorMsg);
+                    return modelAndView;
+                }
                     if (!floorMap.containsValue(buildingCd + "_" + floorCd)) {
                         floorMap.put(buildingNm + "_" + floorNm, buildingCd + "_" + floorCd);
 
                         if (!buildingId.equals("")) {
                             HashMap param = new HashMap();
-//                        param.put("floorNm", buildingNm + " " + floorNm);
                             param.put("floorNm", floorNm);
                             param.put("floorCd", floorCd);
                             param.put("buildingId", buildingId);
@@ -1014,9 +1020,9 @@ public class DoorController {
                             }
                         }
                     }
-                }
+//                }
             }
-//
+
             // Floor List
             paramMap = new HashMap();
             List<HashMap> floorList = doorService.getFloorList(paramMap);
@@ -1030,68 +1036,52 @@ public class DoorController {
                     continue;
                 }
 
-                if (row.getCell(0) != null && !row.getCell(3).equals("")) {
-                    String buildingId = "";
-                    String floorId = "";
-                    String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");                                              // 빌딩 명
-                    String floorNm = getValue(row.getCell(2)).replaceAll("\n", "<br>");                                                 // 층 명
-                    String doorNm = getValue(row.getCell(3)).replaceAll("\n", "<br>");                                                  // 출입문 명
-                    String terminalCd = getValue(row.getCell(4)).replaceAll("\n", "<br>");                                              // 단말기 코드
-                    String buildingCd = String.format("%02d", Integer.parseInt(getValue(row.getCell(5)).replaceAll("\n", "<br>")));     // 빌딩 코드
-                    String floorCd = getValue(row.getCell(6)).replaceAll("\n", "<br>");                                                 // 층 코드 (2자리로 넣어야함)
-                    String doorCd = getValue(row.getCell(7)).replaceAll("\n", "<br>");                                                  // 출입문 코드
+                String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");                                              // 빌딩 명
+                String floorNm = getValue(row.getCell(2)).replaceAll("\n", "<br>");                                                 // 층 명
+                String doorNm = getValue(row.getCell(3)).replaceAll("\n", "<br>");                                                  // 출입문 명
+                String terminalCd = getValue(row.getCell(4)).replaceAll("\n", "<br>");                                              // 단말기 코드
+                String buildingCd = String.format("%02d", Integer.parseInt(getValue(row.getCell(5)).replaceAll("\n", "<br>")));     // 빌딩 코드 (2자리로 넣어야함)
+                String floorCd = getValue(row.getCell(6)).replaceAll("\n", "<br>");                                                 // 층 코드 (2자리로 넣어야함)
+                String doorCd = getValue(row.getCell(7)).replaceAll("\n", "<br>");                                                  // 출입문 코드
+                String buildingId = getBuildingId(buildingList, buildingNm, buildingCd);                                                                   // 빌딩 id
+                String floorId = getFloorId(floorList, floorCd, buildingCd);                                                                               // 층 id
 
-                    // buildingId 가져오기
-                    for (int j = 0; j < buildingList.size(); j++) {
-                        if (buildingList.get(j).get("building_nm").equals(buildingNm) && buildingList.get(j).get("building_cd").equals(buildingCd)) {
-                            buildingId = buildingList.get(j).get("id").toString();
-                            break;
-                        }
+                // validation
+                String errorMsg = validDoor(doorNm, doorCd); // TODO: areaId, terminalCd, alarmGroupId 체크?
+                if (!errorMsg.equals("")) {
+                    modelAndView.addObject("resultCode", "N");
+                    modelAndView.addObject("message", errorMsg);
+                    return modelAndView;
+                }
+
+                // doorCd 6자리수 변형
+                if (doorCd.length() < 6) {
+                    String preNum = "";
+                    int num = 6 - doorCd.length();
+                    for (int j = 0; j < num; j++) {
+                        preNum += "0";
                     }
+                    doorCd = preNum + doorCd;
+                }
 
-                    // floorCd 2자리수 변형
-                    if (floorCd.length() == 1) {
-                        floorCd = "0" + floorCd;
-                    }
-
-                    // doorCd 6자리수 변형
-                    if (doorCd.length() < 6) {
-                        String preNum = "";
-                        int num = 6 - doorCd.length();
-                        for (int j = 0; j < num; j++) {
-                            preNum += "0";
-                        }
-                        doorCd = preNum + doorCd;
-                    }
-
-                    // floorId 가져오기
-                    for (int j = 0; j < floorList.size(); j++) {
-//                       if (floorList.get(j).get("floor_nm").equals(buildingNm + " " + floorNm) && floorList.get(j).get("floor_cd").equals(floorCd)) {
-                        if (floorList.get(j).get("floor_nm").equals(floorNm) && floorList.get(j).get("floor_cd").equals(floorCd) && floorList.get(j).get("building_cd").equals(buildingCd)) {
-                            floorId = floorList.get(j).get("id").toString();
-                            break;
-                        }
-                    }
-
-                    if (!buildingId.equals("") && !floorId.equals("") && doorNm.length() > 0) {
-                        HashMap param = new HashMap();
-                        param.put("buildingCd", buildingCd);
-                        param.put("floorCd", floorCd);
-                        param.put("doorCd", doorCd);
-                        param.put("buildingId", buildingId);
-                        param.put("areaId", null);
-                        param.put("floorId", floorId);
-                        param.put("doorNm", doorNm);
+                if (!buildingId.equals("") && !floorId.equals("") && doorNm.length() > 0) {
+                    HashMap param = new HashMap();
+                    param.put("buildingCd", buildingCd);
+                    param.put("floorCd", floorCd);
+                    param.put("doorCd", doorCd);
+                    param.put("buildingId", buildingId);
+                    param.put("areaId", null);
+                    param.put("floorId", floorId);
+                    param.put("doorNm", doorNm);
 //                        param.put("terminalCd", terminalCd);
 //                        param.put("alarmGroupId", );
-                        try {
-                            newDoorId = doorService.addDoor(param);
-                            LOGGER.debug("newDoorId === {}", newDoorId);
-                            if (newDoorId != "") cnt++;
-                        } catch (Exception e) {
-                            e.getStackTrace();
-                            LOGGER.debug("ADD DOOR EXCEPTION: {} ", e.getMessage());
-                        }
+                    try {
+                        newDoorId = doorService.addDoor(param);
+                        LOGGER.debug("newDoorId === {}", newDoorId);
+                        if (newDoorId != "") cnt++;
+                    } catch (Exception e) {
+                        e.getStackTrace();
+                        LOGGER.debug("ADD DOOR EXCEPTION: {} ", e.getMessage());
                     }
                 }
             }
@@ -1102,11 +1092,11 @@ public class DoorController {
                     modelAndView.addObject("message", "Success");
                 } else {
                     modelAndView.addObject("resultCode", "N");
-                    modelAndView.addObject("message", "Fail : 출입문 갯수 불일치");
+                    modelAndView.addObject("message", "Fail - 출입문 갯수 불일치");
                 }
             } else {
                 modelAndView.addObject("resultCode", "N");
-                modelAndView.addObject("message", "Fail : 출입문이 등록되지 않음");
+                modelAndView.addObject("message", "Fail - 출입문이 등록되지 않음");
             }
 
         } catch (Exception e) {
@@ -1118,6 +1108,94 @@ public class DoorController {
         return modelAndView;
     }
 
+
+    public String getBuildingId(List<Map> buildingList, String buildingNm, String buildingCd) {
+        String buildingId = "";
+
+        for (int j = 0; j < buildingList.size(); j++) {
+            if (buildingList.get(j).get("building_nm").equals(buildingNm) && buildingList.get(j).get("building_cd").equals(buildingCd)) {
+                buildingId = buildingList.get(j).get("id").toString();
+                break;
+            }
+        }
+        return buildingId;
+    }
+
+    public String getFloorId(List<HashMap> floorList, String floorCd, String buildingCd) {
+        String floorId = "";
+
+        for (int j = 0; j < floorList.size(); j++) {
+            if (floorList.get(j).get("floor_cd").equals(floorCd) && floorList.get(j).get("building_cd").equals(buildingCd)) {
+                floorId = floorList.get(j).get("id").toString();
+                break;
+            }
+        }
+        return floorId;
+    }
+
+    public String validBuilding(String buildingNm, String buildingCd) {
+        //// ERROR_CODE ////
+        // - EB01 : 빌딩 명 없음
+        // - EB02 : 빌딩 코드 없음
+        System.out.println("validBuilding ========= buildingNm = " + buildingNm + " buildingCd = " + buildingCd);
+        String errorMsg = "";
+
+        if (buildingNm.equals("") || buildingNm == null) {
+            errorMsg = "== ErrorCode (EB01) ==\n빌딩 이름이 누락되었습니다. \n관리자에게 문의하세요.";
+        } else if (buildingCd.equals("") || buildingCd == null) {
+            System.out.println("buildingCd ======== ");
+            errorMsg = "== ErrorCode (EB02) ==\n빌딩 코드가 누락되었습니다. \n관리자에게 문의하세요.";
+        }
+        return errorMsg ;
+    }
+
+    public String validFloor(String floorNm, String floorCd) {
+        //// ERROR_CODE ////
+        // - EF01 : 층 명 없음
+        // - EF02 : 층 코드 없음
+        String errorMsg = "";
+
+        if (floorNm.equals("") || floorNm == null) {
+            errorMsg = "== ErrorCode (EF01) ==\n층 이름이 누락되었습니다. \n관리자에게 문의하세요.";
+        } else if (floorCd.equals("") || floorCd == null) {
+            errorMsg = "== ErrorCode (EF02) ==\n층 코드가 누락되었습니다. \n관리자에게 문의하세요.";
+        }
+        return errorMsg ;
+    }
+
+    public String validDoor(String doorNm, String doorCd) {
+        //// ERROR_CODE ////
+        // - ED01 : 층 명 없음
+        // - ED02 : 층 코드 없음
+        String errorMsg = "";
+
+        if (doorNm.equals("") || doorNm == null) {
+            System.out.println("doorNm invalid =========");
+            errorMsg = "== ErrorCode (ED01) ==\n출입문 이름이 누락되었습니다. \n관리자에게 문의하세요.";
+        } else if (doorCd.equals("") || doorCd == null) {
+            System.out.println("doorCd invalid ===========");
+            errorMsg = "== ErrorCode (ED01) ==\n출입문 코드가 누락되었습니다. \n관리자에게 문의하세요.";
+        }
+        return errorMsg ;
+    }
+
+    public HashMap replaceFloorInfo(String floorNm, String floorCd) {
+        HashMap floorInfo = new HashMap();
+        floorInfo.put("floorNm", floorNm);
+        floorInfo.put("floorCd", floorCd);
+
+        // floorNm PH층으로 통일
+        if (floorNm.matches(".*PH*.") || floorNm.matches(".*ph*.") || floorNm.matches(".*옥상*.")) {
+            floorInfo.put("floorNm", "PH층");
+        }
+        // floorCd 2자리수 변형
+        if (floorCd.length() == 1) {
+            floorInfo.put("floorCd", "0" + floorCd);
+        }
+        System.out.println("replaceFloorInfo === " + floorInfo);
+
+        return floorInfo;
+    }
 
     public static String getValue(Cell cell) {
         String value = "";
