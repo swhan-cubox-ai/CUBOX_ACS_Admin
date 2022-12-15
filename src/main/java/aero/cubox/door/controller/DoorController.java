@@ -62,6 +62,16 @@ public class DoorController {
     private AuthService authService;
 
 
+    // 오류코드 정의
+    final String EB01 = "EB01";     // 빌딩 명 없음
+    final String EB02 = "EB02";     // 빌딩 코드 없음
+    final String EF01 = "EF01";     // 층 명 없음
+    final String EF02 = "EF02";     // 층 코드 없음
+    final String ED01 = "ED01";     // 출입문 명 없음
+    final String ED02 = "ED02";     // 출입문 코드 없음
+
+
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DoorController.class);
 
     /**
@@ -898,7 +908,7 @@ public class DoorController {
     }
 
 
-    @Transactional
+    @Transactional(rollbackFor = {RuntimeException.class})
     @ResponseBody
     @RequestMapping(value = "/excel/upload.do", method = RequestMethod.POST)
     public ModelAndView excelUpload(MultipartHttpServletRequest request) throws Exception {
@@ -1136,47 +1146,41 @@ public class DoorController {
     }
 
     public String validBuilding(String buildingNm, String buildingCd) {
-        //// ERROR_CODE ////
-        // - EB01 : 빌딩 명 없음
-        // - EB02 : 빌딩 코드 없음
+
         System.out.println("validBuilding ========= buildingNm = " + buildingNm + " buildingCd = " + buildingCd);
         String errorMsg = "";
 
         if (buildingNm.equals("") || buildingNm == null) {
-            errorMsg = "== ErrorCode (EB01) ==\n빌딩 이름이 누락되었습니다. \n관리자에게 문의하세요.";
+            errorMsg = "== ErrorCode (" + EB01 + ") ==\n빌딩 이름이 누락되었습니다. \n관리자에게 문의하세요.";
         } else if (buildingCd.equals("") || buildingCd == null) {
             System.out.println("buildingCd ======== ");
-            errorMsg = "== ErrorCode (EB02) ==\n빌딩 코드가 누락되었습니다. \n관리자에게 문의하세요.";
+            errorMsg = "== ErrorCode (" + EB02 + ") ==\n빌딩 코드가 누락되었습니다. \n관리자에게 문의하세요.";
         }
         return errorMsg ;
     }
 
     public String validFloor(String floorNm, String floorCd) {
-        //// ERROR_CODE ////
-        // - EF01 : 층 명 없음
-        // - EF02 : 층 코드 없음
+
         String errorMsg = "";
 
         if (floorNm.equals("") || floorNm == null) {
-            errorMsg = "== ErrorCode (EF01) ==\n층 이름이 누락되었습니다. \n관리자에게 문의하세요.";
+            errorMsg = "== ErrorCode (" + EF01 + ") ==\n층 이름이 누락되었습니다. \n관리자에게 문의하세요.";
         } else if (floorCd.equals("") || floorCd == null) {
-            errorMsg = "== ErrorCode (EF02) ==\n층 코드가 누락되었습니다. \n관리자에게 문의하세요.";
+            errorMsg = "== ErrorCode (" + EF02 + ") ==\n층 코드가 누락되었습니다. \n관리자에게 문의하세요.";
         }
         return errorMsg ;
     }
 
     public String validDoor(String doorNm, String doorCd) {
-        //// ERROR_CODE ////
-        // - ED01 : 층 명 없음
-        // - ED02 : 층 코드 없음
+
         String errorMsg = "";
 
         if (doorNm.equals("") || doorNm == null) {
             System.out.println("doorNm invalid =========");
-            errorMsg = "== ErrorCode (ED01) ==\n출입문 이름이 누락되었습니다. \n관리자에게 문의하세요.";
+            errorMsg = "== ErrorCode (" + ED01 + ") ==\n출입문 이름이 누락되었습니다. \n관리자에게 문의하세요.";
         } else if (doorCd.equals("") || doorCd == null) {
             System.out.println("doorCd invalid ===========");
-            errorMsg = "== ErrorCode (ED01) ==\n출입문 코드가 누락되었습니다. \n관리자에게 문의하세요.";
+            errorMsg = "== ErrorCode (" + ED02 + ") ==\n출입문 코드가 누락되었습니다. \n관리자에게 문의하세요.";
         }
         return errorMsg ;
     }
