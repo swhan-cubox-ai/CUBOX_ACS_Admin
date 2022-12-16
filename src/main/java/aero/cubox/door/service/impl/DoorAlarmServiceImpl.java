@@ -55,6 +55,24 @@ public class DoorAlarmServiceImpl extends EgovAbstractServiceImpl implements Doo
         String newAlarmGroupId = "";
         doorAlarmDAO.addDoorAlarmGrp(commandMap);
         newAlarmGroupId = commandMap.get("doorAlarmGrpId").toString();
+
+        commandMap.put("dooralramGrpId", newAlarmGroupId);
+
+        //출입권한-출입문 table에 door_id Insert
+        if( !isEmpty((String) commandMap.get("doorIds"))){
+
+            String doorIds = "";
+            doorIds = commandMap.get("doorIds").toString();
+
+            if( doorIds.length() > 0 ){
+
+                String[] doorIdArr = doorIds.split("/");
+                for (int i = 0; i < doorIdArr.length; i++) {
+                    commandMap.put("doorId", doorIdArr[i]);
+                    doorAlarmDAO.addDoorInDoorAlarmGroup(commandMap);
+                }
+            }
+        }
         return newAlarmGroupId;
     }
 
