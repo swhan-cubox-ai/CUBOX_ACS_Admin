@@ -52,4 +52,5 @@ public class DoorAlarmDAO extends EgovAbstractMapper {
     public void deleteDoorInDoorAlarmGroup(Map<String, Object> paramMap) {
         update(sqlNameSpace+"deleteDoorInDoorAlarmGroup", paramMap);
     }
+
 }

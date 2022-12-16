@@ -25,6 +25,10 @@
         position: sticky;
         top: 0;
     }
+    .color_disabled {
+        background-color: #eee !important;
+        opacity: 1;
+    }
 </style>
 
 <script type="text/javascript">
@@ -128,7 +132,7 @@
                 <tr>
                     <th>출입문 그룹</th>
                     <td style="display: flex;">
-                        <textarea id="doorGroup" name="doorGroup" rows="10" cols="33" class="w_600px" style="border-color: #ccc; border-radius: 2px;
+                        <textarea id="doorGroup" name="doorGroup" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;
                                     font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
                         <div class="ml_10" style="position:relative;">
                             <button type="button" class="btn_small color_basic" onclick="openPopup('doorGroupPickPopup')" style="width:60px; position:absolute; bottom:0;">선택</button>
