@@ -70,6 +70,12 @@ $(function () {
 
 });
 
+function userCheck() {
+    if ($("#chkDoorConfAll").prop("checked")) {
+        $("#chkDoorConfAll").prop("checked", false);
+    }
+}
+
 
 // 출입문선택 반영
 function setDoors(type) {
