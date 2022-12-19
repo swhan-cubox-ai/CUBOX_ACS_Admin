@@ -149,6 +149,7 @@
     // popup close (공통)
     function closePopup(popupNm) {
         setDoors("AlarmGroup");
+        userCheck();
         $("#" + popupNm).PopupWindow("close");
     }
 
