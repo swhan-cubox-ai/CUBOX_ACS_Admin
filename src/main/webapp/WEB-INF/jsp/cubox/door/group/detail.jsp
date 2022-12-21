@@ -62,7 +62,6 @@
         $("#btnboxDetail").css("display", "block");
         $("#btnboxEdit").css("display", "none");
         $("#btnEdit").css("display", "none");
-        $("[name=detail]").attr("disabled", true);
 
         $("#detailForm").load(location.href + ' #detailForm');
         $("[name=detail]").attr("disabled", true).addClass("color_disabled");
@@ -75,7 +74,6 @@
             $("#btnEdit").css("display", "block");
             $("#btnboxDetail").css("display", "none");
             $("#btnboxEdit").css("display", "block");
-            $("[name=detail]").attr("disabled", false);
             $("[name=detail]").attr("disabled", false).removeClass("color_disabled");
         } else {
             return;
@@ -175,7 +173,8 @@
             <tr>
                 <th>출입문 그룹 명</th>
                 <td>
-                    <input type="text" id="gpNm" name="detail" maxlength="35" value="${doorGroupDetail.nm}" class="input_com w_600px color_disabled" disabled>
+                    <input type="text" id="gpNm" name="detail" maxlength="35" value="${doorGroupDetail.nm}"
+                           class="input_com w_600px color_disabled" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled>
                 </td>
             </tr>
 <%--            <tr>--%>
@@ -198,6 +197,13 @@
                 </td>
             </tr>
             <tr>
+                <th>출입문 수</th>
+                <td>
+                    <input type="text" id="gpDoorCnt" name="gpDoorCnt" maxlength="50" value="${doorGroupDetail.door_cnt}" class="input_com w_600px" disabled>
+                </td>
+            </tr>
+            <tr>
+            <tr>
                 <th>출입문</th>
                 <td style="display: flex;">
                     <%--  TODO: testarea에 공백 해결  --%>
@@ -205,7 +211,7 @@
                               font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:set var="nm" value="${fn:split(doorGroupDetail.door_nms,'/')}" /><c:forEach items="${nm}" var="dName" varStatus="varStatus">
 ${dName}</c:forEach></textarea>
                     <div class="ml_10" style="position: relative;">
-                        <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px; display: none;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">출입문 선택</button>
+                        <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 60px; display: none;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">선택</button>
                     </div>
                 </td>
             </tr>

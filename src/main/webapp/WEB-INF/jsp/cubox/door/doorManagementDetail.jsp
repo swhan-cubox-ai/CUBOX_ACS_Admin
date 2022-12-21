@@ -92,14 +92,6 @@
     .title_box {
         margin-top: 10px;
     }
-    .radioT{
-        display: inline;
-    }
-    .radioT input{
-        display: inline;
-        width: 10% !important;
-        float: none;
-    }
 </style>
 
 <script type="text/javascript">
@@ -122,7 +114,7 @@
             $("#btnAddType").css("display", "none"); // 추가 버튼
             $("#btn_wrapper").css("display", "none"); // 속성쪽 버튼
             $("#btnExcelDownload, #btnExcelUpload").css("display", "none"); // 엑셀 다운로드, 업로드 버튼
-            //$(".hideSelectBtn").remove(); // 단말기코드, 권한그룹 선택 버튼
+            $(".hideSelectBtn").remove(); // 단말기코드, 권한그룹 선택 버튼
             $(".paddingForBtn").attr("colspan", "2").removeClass("paddingForBtn"); // 단말기코드, 권한그룹 길이 조정
             let schVal = ($("#selDoorGroup option:selected").val() === "") ? "없음" : $("#selDoorGroup option:selected").text();
             $("#selDoorGroup option:selected").text(schVal); // 스케쥴
@@ -220,30 +212,36 @@
 
         // 권한그룹 추가
         $("#add_auth").click(function () {
-            $("input[name=chkAuth]:checked").each(function (i) {
-                let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
-                tag = tag.replace("chkAuth", "chkAuthConf");
-                $("#tdAuthConf").append(tag);
-            });
-
             let ckd = $("input[name=chkAuth]:checked").length;
-            for (let i = ckd - 1; i > -1; i--) {
-                $("input[name=chkAuth]:checked").eq(i).closest("tr").remove();
+            if (ckd === 0) {
+                alert("선택된 항목이 없습니다.");
+            } else {
+                $("input[name=chkAuth]:checked").each(function (i) {
+                    let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
+                    tag = tag.replace("chkAuth", "chkAuthConf");
+                    $("#tdAuthConf").append(tag);
+                });
+                for (let i = ckd - 1; i > -1; i--) {
+                    $("input[name=chkAuth]:checked").eq(i).closest("tr").remove();
+                }
             }
             totalCheck();
         });
 
         // 권한그룹 삭제
         $("#delete_auth").click(function () {
-            $("input[name=chkAuthConf]:checked").each(function (i) {
-                let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
-                tag = tag.replace("chkAuthConf", "chkAuth");
-                $("#tdAuthTotal").append(tag);
-            });
-
             let ckd = $("input[name=chkAuthConf]:checked").length;
-            for (let i = ckd - 1; i > -1; i--) {
-                $("input[name=chkAuthConf]:checked").eq(i).closest("tr").remove();
+            if (ckd === 0) {
+                alert("제거할 항목이 없습니다.");
+            } else {
+                $("input[name=chkAuthConf]:checked").each(function (i) {
+                    let tag = "<tr>" + $(this).closest("tr").html() + "</tr>";
+                    tag = tag.replace("chkAuthConf", "chkAuth");
+                    $("#tdAuthTotal").append(tag);
+                });
+                for (let i = ckd - 1; i > -1; i--) {
+                    $("input[name=chkAuthConf]:checked").eq(i).closest("tr").remove();
+                }
             }
             userCheck();
         });
@@ -825,6 +823,7 @@
             url: "<c:url value='/door/list.do' />",
             success: function (result) {
                 console.log(result);
+
                 // tree 생성
                 createTree(crudType, true, result, $("#treeDiv"));
 
@@ -841,9 +840,6 @@
                    let tag = "<option name='floorData' value='" + floor.id + "' class='dFloor' bId='" + floor.building_id + "'>" + floor.floor_nm + "</option>";
                    $(".selectFloor").append(tag);
                 });
-            },
-            error: function(result){
-                console.log(result);
             }
         });
     }
@@ -871,6 +867,12 @@
 
                 if (result.terminalList.length > 0) {
                     $.each(result.terminalList, function (i, terminal) {
+                        if (terminal.mgmtNum === undefined || terminal.mgmtNum === null) {
+                            terminal.mgmtNum = "";
+                        }
+                        if (terminal.doorNm === undefined || terminal.doorNm === null) {
+                            terminal.doorNm = "";
+                        }
                         let tag = "<tr class='h_35px' style='text-align:center'><td style='padding:0 14px;'>";
                         tag += "<input type='radio' value='" + terminal.id + "' name='checkOne'></td>";
                         tag += "<td>" + terminal.terminalCd + "</td>";
@@ -1315,7 +1317,7 @@
                     alert("출입문 일괄등록이 완료되었습니다.");
                     fnGetDoorListAjax();
                 } else {
-                    alert("출입문 일괄등록에 실패하였습니다.");
+                    alert(result.message.message);
                 }
                 hideLoading();
             }
@@ -1413,13 +1415,13 @@
                     <tr>
                         <th>출입문 명</th>
                         <td colspan="2">
-                            <input type="text" id="doorNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                            <input type="text" id="doorNm" name="doorEdit" maxlength="30" class="input_com" value="" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled/>
                         </td>
                     </tr>
                     <tr>
                         <th>출입문 코드</th>
                         <td colspan="2">
-                            <input type="text" id="doorCd" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                            <input type="text" id="doorCd" name="doorEdit" maxlength="30" class="input_com" value="" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled/>
                         </td>
                     </tr>
                     <jsp:include page="/WEB-INF/jsp/cubox/common/buildingSelect.jsp" flush="false" />
@@ -1483,10 +1485,10 @@
                     <tr>
                         <th>단말기 코드</th>
                         <td class="paddingForBtn">
-                            <input type="text" id="terminalCd" name="doorEditDisabled" maxlength="30" class="input_com" value="" />
+                            <input type="text" id="terminalCd" name="doorEditDisabled" maxlength="30" class="input_com" value="" disabled/>
                         </td>
                         <td class="hideSelectBtn">
-                            <button type="button" id="btnTerminalPick" class="btn_gray3 btn_small " onclick="openPopup('termPickPopup');">선택</button>
+                            <button type="button" id="btnTerminalPick" class="btn_gray3 btn_small disabled" onclick="openPopup('termPickPopup');">선택</button>
                         </td>
                     </tr>
                     <tr>
@@ -1504,17 +1506,8 @@
                             <button type="button" id="btnDoorAuthPick" class="btn_gray3 btn_small disabled" onclick="openPopup('authPickPopup');">선택</button>
                         </td>
                     </tr>
-                    <tr>
-                        <th>운영모드</th>
-                        <td>
-                            <div class="radioT"><input type="radio" name="chk_info" value="OMT001"/>운영</div>
-                            <div class="radioT"><input type="radio" name="chk_info" value="OMT002"/>개방</div>
-                            <div class="radioT"><input type="radio" name="chk_info" value="OMT003"/>폐쇄</div>
-                        </td>
-                    </tr>
                     </tbody>
                     <%-- // 출입문 추가 --%>
-
 
                     <%-- 빌딩 추가 --%>
                     <tbody class="buildingDetailList detailList" style="display: none;">
@@ -1527,13 +1520,13 @@
                         <tr>
                             <th>빌딩 명</th>
                             <td colspan="2">
-                                <input type="text" id="buildingNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                                <input type="text" id="buildingNm" name="doorEdit" maxlength="30" class="input_com" value="" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled/>
                             </td>
                         </tr>
                         <tr>
                             <th>빌딩 코드</th>
                             <td colspan="2">
-                                <input type="text" id="buildingCd" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                                <input type="text" id="buildingCd" name="doorEdit" maxlength="30" class="input_com" value="" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled/>
                             </td>
                         </tr>
                     </tbody>
@@ -1549,13 +1542,13 @@
                         <tr>
                             <th>층 명</th>
                             <td colspan="2">
-                                <input type="text" id="floorNm" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                                <input type="text" id="floorNm" name="doorEdit" maxlength="30" class="input_com" value="" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled/>
                             </td>
                         </tr>
                         <tr>
                             <th>층 코드</th>
                             <td colspan="2">
-                                <input type="text" id="floorCd" name="doorEdit" maxlength="30" class="input_com" value="" disabled/>
+                                <input type="text" id="floorCd" name="doorEdit" maxlength="30" class="input_com" value="" onkeyup="charCheck(this)" onkeydown="charCheck(this)" disabled/>
                             </td>
                         </tr>
                         <%-- 빌딩 선택 --%>
@@ -1597,7 +1590,8 @@
         <div class="search_box mb_20">
             <div class="search_in">
                 <div class="comm_search mr_10">
-                    <input type="text" class="input_com" id="srchMachine" name="srchMachine" value="" placeholder="단말기명 / 관리번호 / 단말기 코드" maxlength="30" style="width: 629px;">
+                    <input type="text" class="input_com" id="srchMachine" name="srchMachine" value="" placeholder="단말기명 / 관리번호 / 단말기 코드" maxlength="30"
+                           onkeyup="charCheck(this)" onkeydown="charCheck(this)"style="width: 629px;">
                 </div>
                 <div class="comm_search ml_5 mr_10">
                     <input type="checkbox" id="unregisteredDoor" name="unregisteredDoor" value="unregistered">
@@ -1650,7 +1644,8 @@
         <div class="search_box mb_20">
             <div class="search_in">
                 <div class="comm_search mr_10">
-                    <input type="text" class="input_com" id="srchAuth" name="srchAuth" value="" placeholder="권한그룹명" maxlength="30" style="width: 765px;">
+                    <input type="text" class="input_com" id="srchAuth" name="srchAuth" value="" placeholder="권한그룹명" maxlength="30"
+                           onkeyup="charCheck(this)" onkeydown="charCheck(this)" style="width: 765px;">
                 </div>
                 <div class="comm_search ml_40">
                     <div class="search_btn2" id="btnSearchAuthGroup"></div>
