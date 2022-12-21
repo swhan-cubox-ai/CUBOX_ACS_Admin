@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<div class="inbox7" style="margin-top: 40px;">
+<div class="inbox7" style="width: 770px;height: 630px;">
   <div class="title">
     출입이력
     <div class="more">
@@ -9,12 +9,12 @@
   </div>
   <div class="tb_outbox">
     <table class="tb_list_main">
-      <col width="5%" />
-      <col width="20%" />
-      <col width="20%" />
+      <col width="12%" />
+      <col width="15%" />
+      <col width="45%" />
       <col width="10%" />
       <col width="10%" />
-      <col width="10%" />
+      <col width="8%" />
       <thead>
       <tr>
         <th>출입기록번호</th>

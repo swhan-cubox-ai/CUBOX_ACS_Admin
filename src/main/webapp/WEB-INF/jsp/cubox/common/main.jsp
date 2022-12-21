@@ -377,7 +377,7 @@ canvas {
 
 </script>
 <div class="main_a">
-	<div class="st_box">
+	<%--<div class="st_box">
 		<div class="icon">
 			<img src="/img/main/m_icon01.png" alt="" />
 		</div>
@@ -421,7 +421,7 @@ canvas {
 		<div class="tx2">
 			<em id="inmateCnt">0</em>명
 		</div>
-	</div>
+	</div>--%>
 	<div class="w_200px"></div>
 	<form id="frmSearch" name="frmSearch" method="post" onsubmit="return false;">
 	<input type="hidden" id="hidNttId" name="hidNttId">
@@ -437,7 +437,7 @@ canvas {
 
 </div>
 <div class="main_b">
-	<div class="inbox1" style="width: 600px;">
+	<div class="inbox1" style="width: 770px;height: 630px;">
 		<div class="title">
 			출입이력 현황
 			<!-- <div class="more">
@@ -448,11 +448,11 @@ canvas {
 		<div class="gr">
 			<!-- <div id="chart_div" style="width: 100%; height: 300px;"></div> -->
 			<div style="height: 320px; margin-left: 10px;">
-				<canvas id="canvas" width="" height="160" style=""></canvas>
+				<canvas id="canvas" width="" height="160" ></canvas>
 			</div>
 		</div>
 	</div>
-	<div class="inbox2">
+	<%--<div class="inbox2">
 		<div class="icon"><img src="/img/main/m_icon07.png" alt=""></div>
 		<div class="title">단말기 제어관리</div>
 		<div class="tx1">단말기별 펌웨어버전을 <br>확인하실 수 있습니다.</div>
@@ -476,11 +476,11 @@ canvas {
 		<div class="tx3">5455 </div>
 		<div class="time">updates : 2020.06.22입력</div>
 	</div>
-
+--%>
 	<jsp:include page="/WEB-INF/jsp/cubox/common/main_ent_hist.jsp" flush="false"/>
-
+<%--
 	<c:choose>
-		<c:when test="${isMenu eq true}"><%--  근태관리 접근권한이 있으면 --%>
+		<c:when test="${isMenu eq true}">&lt;%&ndash;  근태관리 접근권한이 있으면 &ndash;%&gt;
 			<div class="inbox4" style="width: 49%;">
 				<div class="left_box">
 					<div class="title">
@@ -508,7 +508,7 @@ canvas {
 				</div>
 			</div>
 		</c:when>
-		<c:otherwise><%-- 근태관리 접근권한이 없으면 --%>
+		<c:otherwise>&lt;%&ndash; 근태관리 접근권한이 없으면 &ndash;%&gt;
 			<div class="inbox7" style="margin-top: 40px;">
 				<div class="title">
 					공지사항
@@ -539,6 +539,6 @@ canvas {
 				</div>
 			</div>
 		</c:otherwise>
-	</c:choose>
+	</c:choose>--%>
 	
 </div>
