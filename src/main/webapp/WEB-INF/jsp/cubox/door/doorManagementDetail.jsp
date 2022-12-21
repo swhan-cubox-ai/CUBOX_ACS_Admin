@@ -108,7 +108,7 @@
 
     $(function () {
         $(".title_tx").html("출입문 관리");
-        debugger;
+
         modalPopup("termPickPopup", "단말기 선택", 910, 520);
         modalPopup("authPickPopup", "권한그룹 선택", 910, 550);
         modalPopup("excelUploadPopup", "엑셀 업로드", 450, 290);
