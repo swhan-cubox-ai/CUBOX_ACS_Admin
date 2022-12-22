@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<div class="inbox7" style="width: 100%; height: 760px;">
+<div class="inbox7" style="width: 100%; height: 360px;">
   <div class="title">
     출입이력
     <div class="more">
       <img src="/img/main/icon_more.png" alt="" onclick="fnGateLog();"/>
     </div>
   </div>
-  <div class="tb_outbox" style="overflow:auto; height:93%;">
+  <div class="tb_outbox" style="overflow:auto; height:88%;">
     <table class="tb_list_main">
       <col width="12%" />
       <col width="15%" />
