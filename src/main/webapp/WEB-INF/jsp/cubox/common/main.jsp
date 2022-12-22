@@ -172,13 +172,19 @@ canvas {
 		let ctx = $("#canvas2").get(0).getContext("2d");
 
 		let dataObj = {
-			labels : [],
+			labels : ["공무원증", "신분증", "공무직원증", "일반출입증", "장기공무증", "방문증", "예약방문증", "국회(공무원증)"],
 			datasets: [
 				{
-					data: [40, 60],      // 섭취량, 총급여량 - 섭취량
+					data: [20, 2, 5, 40, 5, 10, 8, 10],
 					backgroundColor: [
+						'#F2F3F6',
 						'#9DCEFF',
-						'#F2F3F6'
+						'#7a96f1',
+						'#2c52c7',
+						'#555e7a',
+						'#152146',
+						'#eedfab',
+						'#eeac48',
 					],
 					borderWidth: 0,
 					scaleBeginAtZero: true,
@@ -188,7 +194,40 @@ canvas {
 
 		let myChart = new Chart(ctx, {
 			type: 'doughnut',
-			data: dataObj
+			data: dataObj,
+			options: {
+				responsive: true,				/*자동크기 조정*/
+				maintainAspectRatio : false, 	/*가로세로 비율*/
+				elements: {
+					line: {
+						tension: 0.000001		/*line 곡선 조절*/
+					}
+				},
+				legend: {
+					position: 'left',
+					align : "end",
+					labels: {
+						fontSize : 11,
+						padding : 5,
+					}
+				},
+				title: {
+					display: false,
+					text: '출입카드 유형'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: true
+				},
+				layout: {
+					padding: {
+						left: 0,
+						right: 0,
+						top: 0,
+						bottom: 10
+					}
+				}
+			}
 		});
 	}
 
@@ -225,25 +264,18 @@ canvas {
 			}, {
 				type: 'bar',
 				label: '출입성공',
-				backgroundColor: color('#016879').alpha(0.8).rgbString(),	//window.chartColors.green
+				backgroundColor: color('#1072d2').alpha(0.8).rgbString(),	//window.chartColors.green
 				data: data3,
 				borderWidth: 2
 			}, {
 				type: 'bar',
 				label: '출입실패',
-				backgroundColor: color('#c13838').alpha(0.8).rgbString(),		//window.chartColors.red
+				backgroundColor: color('#6e7375').alpha(0.8).rgbString(),		//window.chartColors.red
 				data: data2,
 				/* borderColor: 'white', */
 				borderWidth: 2
-			}
-		/* 		, {
-					type: 'bar',
-					label: '단말기출입자',
-					backgroundColor: '#a7c846',	//window.chartColors.gray
-					data: data4,
-					borderWidth: 2
-				} */
-				]
+			}]
+
 		};
 
 		let ctx = document.getElementById('canvas1').getContext('2d');
@@ -261,14 +293,13 @@ canvas {
 				},
 				legend: {
 					position: 'left',
-					align : "end",
+					// align : "end",
 					labels: {
 						fontSize : 11,
-						padding : 5,
+						padding : 0,
 					}
 				},
 				title: {
-					display: false,
 					text: '출입이력현황'
 				},
 				tooltips: {
@@ -483,7 +514,7 @@ canvas {
 				</div>
 			</div>
 		</div>
-		<div class="inbox7" style="width: 100%; height: 360px; margin-top:40px;">
+		<div class="inbox1" style="width: 100%; height: 360px; margin-top:40px;">
 			<div class="title">
 				출입카드 유형
 			</div>
@@ -494,8 +525,40 @@ canvas {
 			</div>
 		</div>
 	</div>
+
 	<div class="main-right" style="width: 49%;">
 		<jsp:include page="/WEB-INF/jsp/cubox/common/main_ent_hist.jsp" flush="false"/>
+		<div class="inbox7" style="width: 100%; height: 360px; margin-top:40px;">
+			<div class="title">
+				알람이력
+				<div class="more">
+					<img src="/img/main/icon_more.png" alt="" onclick="fnGateLog();"/>
+				</div>
+			</div>
+			<div class="tb_outbox" style="overflow:auto; height:88%;">
+				<table class="tb_list_main">
+					<col width="12%" />
+					<col width="15%" />
+					<col width="45%" />
+					<col width="10%" />
+					<col width="10%" />
+					<col width="8%" />
+					<thead>
+					<tr>
+						<th>출입기록번호</th>
+						<th>시간</th>
+						<th>출입장소</th>
+						<th>이름</th>
+						<th>카드상태</th>
+						<th>결과</th>
+					</tr>
+					</thead>
+					<tbody id="entHistListBody">
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
+
 
 </div>
