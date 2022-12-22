@@ -77,91 +77,28 @@ canvas {
 			}
 		});
 
-		//log list
+		//log list1
 		$.ajax({
 			type:"GET",
 			url: "<c:url value='/main/entHist'/>",
 			data:{},
 			dataType: "json",
 			success:function(result) {
-				fnLogInfoListSet(result);
+				fnEntHistSet(result);
 			}
 		});
 
-		//log cnt
-		<%--$.ajax({--%>
-		<%--	type:"GET",--%>
-		<%--	url:"' />",--%>
-		<%--	data:{},--%>
-		<%--	dataType: "json",--%>
-		<%--	success:function(result) {--%>
-		<%--		fnLogInfoCntSet(result);--%>
-		<%--	}--%>
-		<%--});--%>
-		
-		<%--//notice list--%>
-		<%--$.ajax({--%>
-		<%--	type:"GET",--%>
-		<%--	url:"<c:url value='/main/getMainNoticeList.do' />",--%>
-		<%--	data:{},--%>
-		<%--	dataType: "json",--%>
-		<%--	success:function(result) {--%>
-		<%--		fnNoticeInfoListSet(result);--%>
-		<%--	}--%>
-		<%--});--%>
-		
-		<%--//q&a list--%>
-		<%--$.ajax({--%>
-		<%--	type:"GET",--%>
-		<%--	url:"<c:url value='/main/getMainQaList.do' />",--%>
-		<%--	data:{},--%>
-		<%--	dataType: "json",--%>
-		<%--	success:function(result) {--%>
-		<%--		fnQaListSet(result);--%>
-		<%--	}--%>
-		<%--});--%>
-		
-		//근태관리 달력
-		// $.ajax({
-		// 	type : "POST"
-		// 	, url : ""
-		// 	, data : { "nowMonth" : "" }
-		// 	, dataType : "JSON"
-		// 	, success : function (data) {
-		// 		var event = [];
-		// 		$(".today_tx").html( "<em>" + moment().format('YYYY.MM.DD') + "</em>");
-		//
-		// 		$.each(data.workEventList, function(index, item){
-		// 			if(moment().format('YYYYMMDD') == item.fstdde){
-		// 				$(".today_tx").html( $(".today_tx").html() + "<br>" + item.title );
-		// 			}
-		//
-		// 			event.push({
-		// 				startDate: new Date(moment(item.fstdde).format('YYYY-MM-DD'))
-		// 				, endDate: new Date(moment(item.fstdde).format('YYYY-MM-DD'))
-		// 				, summary: item.title
-		// 			});
-		// 		});
-		//
-		// 		$("#container").simpleCalendar({///참고 : https://github.com/brospars/simple-calendar
-		// 			months: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
-		// 			, days: ['일', '월', '화', '수', '목', '금', '토']
-		// 			, displayYear : true// 헤더에 연도 표시
-		// 			, fixedStartDay: 0// 주는 항상 월요일 또는 숫자로 설정된 요일에 시작됩니다. 0 = 일요일, 7 = 토요일, false = 월은 항상 해당 월의 첫 번째 날부터 시작
-		// 			, disableEmptyDetails: true// 빈 날짜 세부 정보 표시 활성화
-		// 			, events: event
-		// 			, onEventCreate : function ( $el ) {// HTML 이벤트가 생성 될 때 콜백이 실행 됨-$ (this) .data ( 'event') 참조
-		// 				$el.find(".event-hour").text("");//시간 지우기
-		//
-		// 				var text = $el.find(".event-date").text().split("-");//시작일과 종료일 분리
-		//
-		// 				$el.find(".event-date").text(
-		// 					moment(text[0]).format('YYYY-MM-DD')
-		// 				);
-		// 			}
-		// 		});
-		// 	}
-		// });
+		//log list2
+		$.ajax({
+			type:"GET",
+			url: "<c:url value='/main/alarmHist'/>",
+			data:{},
+			dataType: "json",
+			success:function(result) {
+				fnAlarmHistSet(result);
+			}
+		});
+
 	}
 
 	// 출입카드 차트
@@ -319,50 +256,10 @@ canvas {
 		//myMixedChart.update();
 	}
 
-	// function fnLogInfoCntSet (data) {
-	// 	if(data == null) {
-	// 		$("#visitReqCnt").html("0");
-	// 		$("#dayCnt").html("0");
-	// 		$("#dayUserCnt").html("0");
-	// 		$("#obsCnt").html("0");
-	// 		$("#inmateCnt").html("0");
-	// 	} else {
-	// 		$("#visitReqCnt").html(data.visitReqCnt==null||data.visitReqCnt==""?"0":data.visitReqCnt);
-	// 		$("#dayCnt").html(data.dayCnt==null||data.dayCnt==""?"0":data.dayCnt);
-	// 		$("#dayUserCnt").html(data.dayUserCnt==null||data.dayUserCnt==""?"0":data.dayUserCnt);
-	// 		$("#obsCnt").html(data.obsCnt==null||data.obsCnt==""?"0":data.obsCnt);
-	// 		$("#inmateCnt").html(data.inmateCnt==null||data.inmateCnt==""?"0":data.inmateCnt);
-	// 	}
-	// }
 
-	function fnLogInfoListSet (data) {
+	function fnEntHistSet (data) {
 		console.log("fnLogInfoListSet");
 		console.log(data);
-
-		data.entHistList = [
-			{id : "188", evtDtStr : "12-13 19:57:50", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "187", evtDtStr : "12-12 22:53:44", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "186", evtDtStr : "12-12 22:44:10", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "185", evtDtStr : "12-12 22:42:09", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "184", evtDtStr : "12-12 22:13:42", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "183", evtDtStr : "12-12 21:59:21", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "182", evtDtStr : "12-12 21:56:15", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "181", evtDtStr : "12-12 21:48:03", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "110", evtDtStr : "12-11 21:00:00", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "109", evtDtStr : "12-11 20:58:30", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "108", evtDtStr : "12-11 20:48:00", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "107", evtDtStr : "12-11 15:35:20", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "106", evtDtStr : "12-11 15:20:01", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "105", evtDtStr : "12-11 13:48:03", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "104", evtDtStr : "12-10 13:31:10", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "103", evtDtStr : "12-10 13:30:00", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "102", evtDtStr : "12-10 12:50:00", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "101", evtDtStr : "12-09 10:30:03", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "100", evtDtStr : "12-09 10:10:10", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "99", evtDtStr : "12-09 08:49:03", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "98", evtDtStr : "12-09 08:48:03", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-			{id : "97", evtDtStr : "12-09 07:30:03", doorNm : "1동 지하1층 피난 공동구 239번(2동방향) OUT", empNm : "홍희경", cardStateTypNm : "사용중", entEvtTypNm : "성공"},
-		];
 
 		if(data == null || data.entHistList == null) {
 			$("#entHistListBody").html("<tr><th class='h_35px' colspan='6'>조회 목록이 없습니다.</th></tr>");
@@ -382,62 +279,26 @@ canvas {
 			$("#entHistListBody").html(str);
 		}
 	}
-	
-	function fnNoticeInfoListSet (data) {
-		if(data == null || data.noticeList == null) {
-			$("#noticeListBody").html("<tr><th class='h_35px' colspan='7'>조회 목록이 없습니다./th></tr>");
-		} else {
-			data = data.noticeList;
-			var str2 = "";
-			for(var i in data) {
-				str2 += "<tr onclick='fnBoardDetail("+data[i].nttId+",00000000000000000001)'>";
-				str2 += "<td>"+data[i].nttSj.substr(0,45)+(data[i].nttSj!=null && data[i].nttSj.length>45?"..":"")+"</td>";
-				//str2 += "<td>"+data[i].nttCn.replace("<p>","").replace("</p>","").replace("<br>","").substr(0,25)+(data[i].nttCn!=null && data[i].nttCn.length>30?"...":"")+"</td>";
-				str2 += "<td>" + data[i].nttCn.replace(/(<([^>]+)>)/ig, "").substr(0,25) + (data[i].nttCn != null && data[i].nttCn.length > 30 ? "..." : "") + "</td>";
-				str2 += "<td>"+data[i].registNm+"</td>";
-				str2 += "<td>"+(data[i].registDt!=null && data[i].registDt.length>16?data[i].registDt.substr(0,16):data[i].registDt)+"</td>";
-				str2 += "</tr>";
-			}
-			
-			$("#noticeListBody").html(str2);
-		}
-	}
-	
-	// function fnQaListSet (data) {
-	// 	if(data == null || data.qaList == null) {
-	// 		$("#qaListBody").html("<tr><th class='h_35px' colspan='7'>조회 목록이 없습니다.</th></tr>");
-	// 	} else {
-	// 		data = data.qaList;
-	// 		var str2 = "";
-	// 		for(var i in data) {
-	// 			str2 += "<tr onclick='fnBoardDetail("+data[i].nttId+",00000000000000000002)'>";
-	// 			str2 += "<td>"+data[i].nttSj.substr(0,45)+(data[i].nttSj!=null && data[i].nttSj.length>45?"..":"")+"</td>";
-	// 			//str2 += "<td>"+data[i].nttCn.replace("<p>","").replace("</p>","").replace("<br>","").substr(0,25)+(data[i].nttCn!=null && data[i].nttCn.length>30?"...":"")+"</td>";
-	// 			str2 += "<td>" + data[i].nttCn.replace(/(<([^>]+)>)/ig, "").substr(0,25) + (data[i].nttCn != null && data[i].nttCn.length > 30 ? "..." : "") + "</td>";
-	// 			str2 += "<td>"+data[i].registNm+"</td>";
-	// 			str2 += "<td>"+(data[i].registDt!=null && data[i].registDt.length>16?data[i].registDt.substr(0,16):data[i].registDt)+"</td>";
-	// 			str2 += "</tr>";
-	// 		}
-	// 		$("#qaListBody").html(str2);
-	// 	}
-	// }
 
-	// function fnChartDraw (arrStatDt) {
-	// 	google.charts.load('current', {'packages':['corechart']});
-	// 	google.charts.setOnLoadCallback(function () {
-	// 		var data = google.visualization.arrayToDataTable(arrStatDt);
-	// 		var options = {
-	// 			title : '',
-	// 			vAxis: {title: ''},
-	// 			hAxis: {title: ''},
-	// 			seriesType: 'bars',
-	// 				colors: ['#173d93', '#77b8bd', '#016879', '#a7c846'],
-	// 				series: {0: {type: 'line'}}
-	// 		};
-	// 		var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
-	// 	        chart.draw(data, options);
-	// 	});
-	// }
+    function fnAlarmHistSet (data) {
+
+        if( data == null || data.alarmHistList == null) {
+            $("#alarmHistListBody").html("<tr><th class='h_35px' colspan='4'>조회 목록이 없습니다.</th></tr>");
+        } else {
+            var histList = data.alarmHistList;
+            var str = "";
+            for(var i in histList) {
+                str += "<tr>";
+                str += "<td>"+histList[i].evtDtStr+"</td>";
+                str += "<td>"+histList[i].doorAlarmTypNm+"</td>";
+                str += "<td>"+histList[i].buildingNm+"</td>";
+                str += "<td>"+histList[i].doorNm+"</td>";
+                str += "</tr>";
+            }
+            $("#alarmHistListBody").html(str);
+        }
+    }
+
 
 	function autoRefresh(value) {
 		var reloadYn = $("#reloadYn");
@@ -463,7 +324,7 @@ canvas {
 		f.action = "report/entHist/list.do";
 		f.submit();
 	}
-	
+
 	function fnBoardList(bbsId){
 		f = document.frmSearch;
 		f.action = "/boardInfo/"+pad(bbsId,20)+"/list.do";
@@ -472,7 +333,7 @@ canvas {
 
 	function fnBoardDetail(nttId, bbsId){
 		var f = document.frmSearch;
-		
+
 		$("input:hidden[id=hidNttId]").val(nttId);
 		f.action = "/boardInfo/"+pad(bbsId,20)+"/detail.do";
 		f.submit();
@@ -485,7 +346,42 @@ canvas {
 
 </script>
 <div class="main_a">
-
+	<div class="st_box">
+		<div class="icon">
+			<img src="/img/main/m_icon03.png" alt="" />
+		</div>
+		<div class="tx1">출입이력</div>
+		<div class="tx2">
+			<em id="visitReqCnt"></em><a href="/report/entHist/list.do">[바로가기]</a>
+		</div>
+	</div>
+	<div class="st_box">
+		<div class="icon">
+			<img src="/img/main/m_icon05.png" alt="" />
+		</div>
+		<div class="tx1">스케쥴 관리</div>
+		<div class="tx2">
+			<em id="dayCnt"></em><a href="/door/schedule/list.do">[바로가기]</a>
+		</div>
+	</div>
+	<div class="st_box">
+		<div class="icon">
+			<img src="/img/main/m_icon02.png" alt="" />
+		</div>
+		<div class="tx1">단말기 관리</div>
+		<div class="tx2">
+			<em id="obsCnt"> </em><a href="/terminal/list.do">[바로가기]</a>
+		</div>
+	</div>
+	<div class="st_box">
+		<div class="icon">
+			<img src="/img/main/m_icon01.png" alt="" />
+		</div>
+		<div class="tx1">사용자 관리</div>
+		<div class="tx2">
+			<em id="inmateCnt"></em><a href="/user/list.do">[바로가기]</a>
+		</div>
+	</div>
 	<div class="w_200px"></div>
 	<form id="frmSearch" name="frmSearch" method="post" onsubmit="return false;">
 	<input type="hidden" id="hidNttId" name="hidNttId">
@@ -528,36 +424,7 @@ canvas {
 
 	<div class="main-right" style="width: 49%;">
 		<jsp:include page="/WEB-INF/jsp/cubox/common/main_ent_hist.jsp" flush="false"/>
-		<div class="inbox7" style="width: 100%; height: 360px; margin-top:40px;">
-			<div class="title">
-				알람이력
-				<div class="more">
-					<img src="/img/main/icon_more.png" alt="" onclick="fnGateLog();"/>
-				</div>
-			</div>
-			<div class="tb_outbox" style="overflow:auto; height:88%;">
-				<table class="tb_list_main">
-					<col width="12%" />
-					<col width="15%" />
-					<col width="45%" />
-					<col width="10%" />
-					<col width="10%" />
-					<col width="8%" />
-					<thead>
-					<tr>
-						<th>출입기록번호</th>
-						<th>시간</th>
-						<th>출입장소</th>
-						<th>이름</th>
-						<th>카드상태</th>
-						<th>결과</th>
-					</tr>
-					</thead>
-					<tbody id="entHistListBody">
-					</tbody>
-				</table>
-			</div>
-		</div>
+		<jsp:include page="/WEB-INF/jsp/cubox/common/main_alarm_hist.jsp" flush="false"/>
 	</div>
 
 

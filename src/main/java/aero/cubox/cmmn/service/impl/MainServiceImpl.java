@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @Service("mainService")
 public class MainServiceImpl extends EgovAbstractServiceImpl implements MainService {
@@ -29,5 +30,10 @@ public class MainServiceImpl extends EgovAbstractServiceImpl implements MainServ
 	public int getDayEntEmpCount() throws Exception {
 		return mainDAO.getDayEntEmpCount();
 	}
+
+    @Override
+    public List<Map> getMainAlarmHistList() throws Exception {
+		return mainDAO.getMainAlarmHistList();
+    }
 
 }

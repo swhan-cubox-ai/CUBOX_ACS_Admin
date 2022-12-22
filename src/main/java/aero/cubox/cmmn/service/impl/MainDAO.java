@@ -5,6 +5,7 @@ import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository("mainDAO")
 public class MainDAO extends EgovAbstractMapper {
@@ -23,4 +24,8 @@ public class MainDAO extends EgovAbstractMapper {
 	public int getDayEntEmpCount() throws Exception {
 		return selectOne (sqlNameSpace+"getDayEntEmpCount");
 	}
+
+    public List<Map> getMainAlarmHistList() {
+		return selectList (sqlNameSpace+"getMainAlarmHistList");
+    }
 }

@@ -28,4 +28,17 @@
                 (select emp_cd FROM T_ENT_HIST where emp_cd != ""  and DATE(created_at)=Date(now()) group by emp_cd) A
     </select>
 
+
+    <select id="getMainAlarmHistList" parameterType="hashmap" resultType="hashmap">
+         SELECT dh.id
+              , DATE_FORMAT(dh.evt_dt, '%m-%d %H:%i:%S') as evtDtStr
+              , c1.cd_nm as doorAlarmTypNm
+              , IFNULL(dh.building_nm, '') as buildingNm
+              , IFNULL(door_nm, '') as doorNm
+           FROM T_DOORALARM_HIST dh
+LEFT OUTER JOIN T_TERMINAL tm on dh.terminal_cd = tm.terminal_cd
+LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = dh.door_alarm_typ and c1.cd_typ = 'DoorAlarmTyp'
+       ORDER BY dh.created_at DESC
+          LIMIT	8
+    </select>
 </mapper>
