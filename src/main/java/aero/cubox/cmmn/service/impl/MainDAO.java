@@ -33,4 +33,8 @@ public class MainDAO extends EgovAbstractMapper {
 	public List<HashMap> getMainStatus01() {
 		return selectList (sqlNameSpace+"selectMainStatus01");
 	}
+
+    public List<HashMap> getMainStatus02() {
+		return selectList (sqlNameSpace+"selectMainStatus02");
+    }
 }

@@ -42,4 +42,9 @@ public class MainServiceImpl extends EgovAbstractServiceImpl implements MainServ
 		return mainDAO.getMainStatus01();
     }
 
+    @Override
+    public List<HashMap> getMainStatus02() throws Exception {
+		return mainDAO.getMainStatus02();
+    }
+
 }

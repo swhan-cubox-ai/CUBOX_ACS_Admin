@@ -65,16 +65,16 @@ canvas {
 
 	//새로고침
 	function reload() {
-		//chart
+		//chart01 - 출입이력 현황 임시
 		$.ajax({
 			type:"GET",
-			url:"<c:url value='/main/getMainStatus.do' />",
+			url:"<c:url value='/main/getMainStatus01.do' />",
 			data:{},
 			dataType: "json",
 			success:function(result) {
 				var arrStatDt = [];
 				arrStatDt.push(['Month', '출입이력', '출입실패', '출입성공' ]);
-				if(result != null && result.statLit != null) {
+				if(result != null && result.mainStatus01 != null) {
 					/* for(var i in result.statLit) {
 						var arr = [result.statLit[i].exp_day, parseInt(result.statLit[i].tot_log_cnt), parseInt(result.statLit[i].fail_log_cnt), parseInt(result.statLit[i].success_log_cnt), parseInt(result.statLit[i].user_log_cnt)];
 						arrStatDt.push(arr);
@@ -83,6 +83,26 @@ canvas {
 					// fnChartCanvasDraw(result.statLit);
 					fnEntHistoryChartDraw(result.statLit);
 				} else {
+
+				}
+			}
+		});
+
+		//chart 02 알람이력 현황
+		$.ajax({
+			type:"GET",
+			url:"<c:url value='/main/getMainStatus02.do' />",
+			data:{},
+			dataType: "json",
+			success:function(result) {
+				var arrStatDt = [];
+				arrStatDt.push(['알람이력 횟수' ]);
+				if(result != null && result.mainStatus02 != null) {
+					 for(var i in result.mainStatus02) {
+						var arr = [result.mainStatus02[i].exp_day, parseInt(result.mainStatus02[i].tot_log_cnt)];
+						arrStatDt.push(arr);
+					}
+					console.log(arrStatDt)
 
 				}
 			}
