@@ -64,6 +64,26 @@ public class MainController {
 		return modelAndView;
 	}
 
+
+	/**
+	 * 대쉬보드 차트2
+	 * @param
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/main/getMainStatus02.do")
+	public ModelAndView getMainStatus02(@RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
+
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+
+		List<HashMap> mainStatus02 = mainService.getMainStatus02();
+
+		modelAndView.addObject("mainStatus02", mainStatus02);
+		return modelAndView;
+	}
+
 	@RequestMapping(value="/main/entHist")
 	public ModelAndView mainEntHistList() throws Exception {
 		ModelAndView modelAndView = new ModelAndView();

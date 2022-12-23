@@ -62,7 +62,7 @@ canvas {
 
 	//새로고침
 	function reload() {
-		// 출입이력 chart
+		//chart01 - 출입이력 현황 임시
 		$.ajax({
 			type:"GET",
 			url:"<c:url value='/main/getMainStatus01.do' />",
@@ -73,24 +73,31 @@ canvas {
 				console.log(result);
 				if (result != null && result.mainStatus01 != null) {
 					fnEntHistoryChartDraw(result.mainStatus01);
+
 				}
 			}
 		});
 
-		<%--// 알람이력 chart--%>
-		<%--$.ajax({--%>
-		<%--	type:"GET",--%>
-		<%--	url:"<c:url value='/main/getMainStatus02.do' />",--%>
-		<%--	data:{},--%>
-		<%--	dataType: "json",--%>
-		<%--	success:function(result) {--%>
-		<%--		console.log("getMainStatus02");--%>
-		<%--		console.log(result);--%>
-		<%--		if (result != null && result.mainStatus02 != null) {--%>
-		<%--			fnEntHistoryChartDraw(result.mainStatus02);--%>
-		<%--		}--%>
-		<%--	}--%>
-		<%--});--%>
+
+		//chart 02 알람이력 현황
+		$.ajax({
+			type:"GET",
+			url:"<c:url value='/main/getMainStatus02.do' />",
+			data:{},
+			dataType: "json",
+			success:function(result) {
+				var arrStatDt = [];
+				arrStatDt.push(['알람이력 횟수' ]);
+				if(result != null && result.mainStatus02 != null) {
+					 for(var i in result.mainStatus02) {
+						var arr = [result.mainStatus02[i].exp_day, parseInt(result.mainStatus02[i].tot_log_cnt)];
+						arrStatDt.push(arr);
+					}
+					console.log(arrStatDt)
+
+				}
+			}
+		});
 
 		//log list1
 		$.ajax({

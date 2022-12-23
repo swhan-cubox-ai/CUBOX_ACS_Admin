@@ -18,4 +18,6 @@ public interface MainService {
     List<HashMap> getMainAlarmHistList() throws Exception;
 
     List<HashMap> getMainStatus01() throws Exception;
+
+    List<HashMap> getMainStatus02() throws Exception;
 }
