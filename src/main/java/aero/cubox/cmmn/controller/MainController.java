@@ -10,11 +10,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +46,24 @@ public class MainController {
 		return "cubox/common/main";
 	}
 
+	/**
+	 * 대쉬보드 차트1
+	 * @param
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/main/getMainStatus01.do")
+	public ModelAndView getMainStatus01(@RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+
+		List<HashMap> mainStatus01 = mainService.getMainStatus01();
+
+		modelAndView.addObject("mainStatus01", mainStatus01);
+		return modelAndView;
+	}
+
 	@RequestMapping(value="/main/entHist")
 	public ModelAndView mainEntHistList() throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
@@ -60,7 +81,7 @@ public class MainController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 
-		List<Map> alarmHistList = mainService.getMainAlarmHistList();
+		List<HashMap> alarmHistList = mainService.getMainAlarmHistList();
 
 		modelAndView.addObject("alarmHistList", alarmHistList);
 

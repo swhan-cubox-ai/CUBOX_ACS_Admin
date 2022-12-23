@@ -56,7 +56,7 @@ canvas {
 		//chart
 		$.ajax({
 			type:"GET",
-			url:"",
+			url:"<c:url value='/main/getMainStatus.do' />",
 			data:{},
 			dataType: "json",
 			success:function(result) {

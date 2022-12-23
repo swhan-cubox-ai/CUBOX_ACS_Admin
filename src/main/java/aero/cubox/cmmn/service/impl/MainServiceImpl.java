@@ -6,6 +6,7 @@ import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +33,13 @@ public class MainServiceImpl extends EgovAbstractServiceImpl implements MainServ
 	}
 
     @Override
-    public List<Map> getMainAlarmHistList() throws Exception {
+    public List<HashMap> getMainAlarmHistList() throws Exception {
 		return mainDAO.getMainAlarmHistList();
+    }
+
+    @Override
+    public List<HashMap> getMainStatus01() throws Exception {
+		return mainDAO.getMainStatus01();
     }
 
 }

@@ -4,8 +4,8 @@ import aero.cubox.core.vo.*;
 import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository("mainDAO")
 public class MainDAO extends EgovAbstractMapper {
@@ -25,7 +25,12 @@ public class MainDAO extends EgovAbstractMapper {
 		return selectOne (sqlNameSpace+"getDayEntEmpCount");
 	}
 
-    public List<Map> getMainAlarmHistList() {
-		return selectList (sqlNameSpace+"getMainAlarmHistList");
+    public List<HashMap> getMainAlarmHistList() {
+
+		return selectList (sqlNameSpace+"selectMainAlarmHistList");
     }
+
+	public List<HashMap> getMainStatus01() {
+		return selectList (sqlNameSpace+"selectMainStatus01");
+	}
 }

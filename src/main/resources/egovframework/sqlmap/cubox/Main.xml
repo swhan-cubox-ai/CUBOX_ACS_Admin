@@ -29,7 +29,7 @@
     </select>
 
 
-    <select id="getMainAlarmHistList" parameterType="hashmap" resultType="hashmap">
+    <select id="selectMainAlarmHistList" parameterType="hashmap" resultType="hashmap">
          SELECT dh.id
               , DATE_FORMAT(dh.evt_dt, '%m-%d %H:%i:%S') as evtDtStr
               , c1.cd_nm as doorAlarmTypNm
@@ -41,4 +41,73 @@ LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = dh.door_alarm_typ and c1.cd_typ = 'DoorA
        ORDER BY dh.created_at DESC
           LIMIT	8
     </select>
+
+    <select id="selectMainStatus01" parameterType="hashmap" resultType="hashmap">
+        SELECT DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -15 DAY), '%m-%d') AS EXP_DAY
+             , IFNULL(CF_TOT, 0) AS TOT_LOG_CNT
+             , IFNULL(CF_PASS, 0) AS SUCCESS_LOG_CNT
+             , IFNULL(CF_FAIL, 0) AS FAIL_LOG_CNT
+          FROM (SELECT DATE_FORMAT(EVT_DT,'%m-%d') FEVTTM
+                   , COUNT(EVT_DT) AS CF_TOT
+                   , SUM(CASE WHEN ENT_EVT_TYP IN ('EET000') THEN 1 ELSE 0 END) AS CF_PASS
+                   , SUM(CASE WHEN ENT_EVT_TYP  IN ('EET000') THEN 0 ELSE 1 END) AS CF_FAIL
+                FROM T_ENT_HIST
+               WHERE EVT_DT BETWEEN DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -15 DAY), '%y-%m-%d')
+                        AND CONCAT(DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -15 DAY), '%y-%m-%d'), ' 23:59:59.999')
+             ) D5
+     UNION ALL
+        SELECT DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -14 DAY), '%m-%d') AS EXP_DAY
+             , IFNULL(CF_TOT, 0) AS TOT_LOG_CNT
+             , IFNULL(CF_PASS, 0) AS SUCCESS_LOG_CNT
+             , IFNULL(CF_FAIL, 0) AS FAIL_LOG_CNT
+          FROM (SELECT DATE_FORMAT(EVT_DT,'%m-%d') FEVTTM
+                    , COUNT(EVT_DT) AS CF_TOT
+                    , SUM(CASE WHEN ENT_EVT_TYP IN ('EET000') THEN 1 ELSE 0 END) AS CF_PASS
+                    , SUM(CASE WHEN ENT_EVT_TYP  IN ('EET000') THEN 0 ELSE 1 END) AS CF_FAIL
+                 FROM T_ENT_HIST
+                WHERE EVT_DT BETWEEN DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -14 DAY), '%y-%m-%d')
+                        AND CONCAT(DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -14 DAY), '%y-%m-%d'), ' 23:59:59.999')
+             ) D4
+     UNION ALL
+        SELECT DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -13 DAY), '%m-%d') AS EXP_DAY
+             , IFNULL(CF_TOT, 0) AS TOT_LOG_CNT
+             , IFNULL(CF_PASS, 0) AS SUCCESS_LOG_CNT
+             , IFNULL(CF_FAIL, 0) AS FAIL_LOG_CNT
+          FROM (SELECT DATE_FORMAT(EVT_DT,'%m-%d') FEVTTM
+                     , COUNT(EVT_DT) AS CF_TOT
+                     , SUM(CASE WHEN ENT_EVT_TYP IN ('EET000') THEN 1 ELSE 0 END) AS CF_PASS
+                     , SUM(CASE WHEN ENT_EVT_TYP  IN ('EET000') THEN 0 ELSE 1 END) AS CF_FAIL
+                  FROM T_ENT_HIST
+                 WHERE EVT_DT BETWEEN DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -13 DAY), '%y-%m-%d')
+                   AND CONCAT(DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -13 DAY), '%y-%m-%d'), ' 23:59:59.999')
+             ) D3
+     UNION ALL
+        SELECT DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -12 DAY), '%m-%d') AS EXP_DAY
+             , IFNULL(CF_TOT, 0) AS TOT_LOG_CNT
+             , IFNULL(CF_PASS, 0) AS SUCCESS_LOG_CNT
+             , IFNULL(CF_FAIL, 0) AS FAIL_LOG_CNT
+          FROM (SELECT DATE_FORMAT(EVT_DT,'%m-%d') FEVTTM
+                   , COUNT(EVT_DT) AS CF_TOT
+                   , SUM(CASE WHEN ENT_EVT_TYP IN ('EET000') THEN 1 ELSE 0 END) AS CF_PASS
+                   , SUM(CASE WHEN ENT_EVT_TYP  IN ('EET000') THEN 0 ELSE 1 END) AS CF_FAIL
+                FROM T_ENT_HIST
+               WHERE EVT_DT BETWEEN DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -12 DAY), '%y-%m-%d')
+                 AND CONCAT(DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -12 DAY), '%y-%m-%d'), ' 23:59:59.999')
+             ) D2
+     UNION ALL
+        SELECT DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -11 DAY), '%m-%d') AS EXP_DAY
+             , IFNULL(CF_TOT, 0) AS TOT_LOG_CNT
+             , IFNULL(CF_PASS, 0) AS SUCCESS_LOG_CNT
+             , IFNULL(CF_FAIL, 0) AS FAIL_LOG_CNT
+          FROM (SELECT DATE_FORMAT(EVT_DT,'%m-%d') FEVTTM
+                    , COUNT(EVT_DT) AS CF_TOT
+                    , SUM(CASE WHEN ENT_EVT_TYP IN ('EET000') THEN 1 ELSE 0 END) AS CF_PASS
+                    , SUM(CASE WHEN ENT_EVT_TYP  IN ('EET000') THEN 0 ELSE 1 END) AS CF_FAIL
+                 FROM T_ENT_HIST
+                WHERE EVT_DT BETWEEN DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -11 DAY), '%Y-%m-%d')
+                  AND CONCAT(DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -11 DAY), '%Y-%m-%d'), ' 23:59:59.999')
+             ) D
+
+    </select>
+
 </mapper>
