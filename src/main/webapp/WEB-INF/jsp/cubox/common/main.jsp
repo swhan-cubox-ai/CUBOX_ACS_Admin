@@ -78,7 +78,6 @@ canvas {
 			}
 		});
 
-
 		//chart 02 알람이력 현황
 		$.ajax({
 			type:"GET",
@@ -262,10 +261,10 @@ canvas {
 			data3 = [];
 
 		for (let i in data) {
-			dtLabel.push(data[i].EXP_DAY);
-			data1.push(parseInt(data[i].TOT_LOG_CNT));
-			data2.push(parseInt(data[i].FAIL_LOG_CNT));
-			data3.push(parseInt(data[i].SUCCESS_LOG_CNT));
+			dtLabel.push(data[i].exp_day);
+			data1.push(parseInt(data[i].tot_log_cnt));
+			data2.push(parseInt(data[i].fail_log_cnt));
+			data3.push(parseInt(data[i].success_log_cnt));
 		}
 
 		let color = Chart.helpers.color;
