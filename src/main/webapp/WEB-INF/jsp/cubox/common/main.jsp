@@ -14,10 +14,11 @@ canvas {
 }
 </style>
 <script type="text/javascript" src="/js/jquery.simple-calendar.js"></script>
+
 <script type="text/javascript">
 
 	let threadRefresh;
-	const data = [
+	const entData = [
 		{exp_day : "12-13", tot_log_cnt : "80", success_log_cnt : "50", fail_log_cnt : "30"},
 		{exp_day : "12-12", tot_log_cnt : "90", success_log_cnt : "60", fail_log_cnt : "30"},
 		{exp_day : "12-11", tot_log_cnt : "80", success_log_cnt : "60", fail_log_cnt : "20"},
@@ -27,6 +28,16 @@ canvas {
 		{exp_day : "12-07", tot_log_cnt : "100", success_log_cnt : "90", fail_log_cnt : "10"},
 		{exp_day : "12-06", tot_log_cnt : "25", success_log_cnt : "20", fail_log_cnt : "5"},
 		{exp_day : "12-05", tot_log_cnt : "50", success_log_cnt : "35", fail_log_cnt : "15"},
+	];
+
+	const alarmData = [
+		{alarm_day : "01-01", tot_alarm_cnt : "3"},
+		{alarm_day : "04-01", tot_alarm_cnt : "1"},
+		{alarm_day : "06-05", tot_alarm_cnt : "1"},
+		{alarm_day : "07-20", tot_alarm_cnt : "2"},
+		{alarm_day : "09-10", tot_alarm_cnt : "1"},
+		{alarm_day : "10-13", tot_alarm_cnt : "5"},
+		{alarm_day : "12-12", tot_alarm_cnt : "1"},
 	];
 
 	$(function() {
@@ -46,8 +57,9 @@ canvas {
 		});
 		
 		reload();
-		fnEntHistoryChartDraw(data);
-		fnCardTypeChartDraw(data);
+		fnEntHistoryChartDraw(entData);
+		fnAlarmHistoryChartDraw(alarmData);
+		// fnCardTypeChartDraw(data);
 	});
 	
 
@@ -70,7 +82,6 @@ canvas {
 					fnChartDraw (arrStatDt); */
 					// fnChartCanvasDraw(result.statLit);
 					fnEntHistoryChartDraw(result.statLit);
-					fnCardTypeChartDraw("");
 				} else {
 
 				}
@@ -102,37 +113,97 @@ canvas {
 	}
 
 	// 출입카드 차트
-	function fnCardTypeChartDraw(data) {
-		console.log("fnCardTypeChartDraw");
+	// function fnCardTypeChartDraw(data) {
+	// 	console.log("fnCardTypeChartDraw");
+	// 	console.log(data);
+	//
+	// 	let ctx = $("#canvas2").get(0).getContext("2d");
+	//
+	// 	let dataObj = {
+	// 		labels : ["공무원증", "신분증", "공무직원증", "일반출입증", "장기공무증", "방문증", "예약방문증", "국회(공무원증)"],
+	// 		datasets: [
+	// 			{
+	// 				data: [20, 2, 5, 40, 5, 10, 8, 10],
+	// 				backgroundColor: [
+	// 					'#F2F3F6',
+	// 					'#9DCEFF',
+	// 					'#7a96f1',
+	// 					'#2c52c7',
+	// 					'#555e7a',
+	// 					'#152146',
+	// 					'#eedfab',
+	// 					'#eeac48',
+	// 				],
+	// 				borderWidth: 0,
+	// 				scaleBeginAtZero: true,
+	// 			}
+	// 		]
+	// 	}
+	//
+	// 	new Chart("canvas2", {
+	// 		type: 'doughnut',
+	// 		data: dataObj,
+	// 		options: {
+	// 			responsive: true,				/*자동크기 조정*/
+	// 			maintainAspectRatio : false, 	/*가로세로 비율*/
+	// 			elements: {
+	// 				line: {
+	// 					tension: 0.000001		/*line 곡선 조절*/
+	// 				}
+	// 			},
+	// 			legend: {display: false},
+	// 			title: {
+	// 				display: false,
+	// 				text: '출입카드 유형'
+	// 			},
+	// 			tooltips: {
+	// 				mode: 'index',
+	// 				intersect: true
+	// 			},
+	// 			layout: {
+	// 				padding: {
+	// 					left: 0,
+	// 					right: 0,
+	// 					top: 0,
+	// 					bottom: 10
+	// 				}
+	// 			}
+	// 		}
+	// 	});
+	//
+	// }
+
+	// 알람이력 차트
+	function fnAlarmHistoryChartDraw(data) {
+		console.log("fnAlarmHistoryChartDraw");
 		console.log(data);
 
-		let ctx = $("#canvas2").get(0).getContext("2d");
+		let dtLabel = [],
+			data1 = [];
 
-		let dataObj = {
-			labels : ["공무원증", "신분증", "공무직원증", "일반출입증", "장기공무증", "방문증", "예약방문증", "국회(공무원증)"],
-			datasets: [
-				{
-					data: [20, 2, 5, 40, 5, 10, 8, 10],
-					backgroundColor: [
-						'#F2F3F6',
-						'#9DCEFF',
-						'#7a96f1',
-						'#2c52c7',
-						'#555e7a',
-						'#152146',
-						'#eedfab',
-						'#eeac48',
-					],
-					borderWidth: 0,
-					scaleBeginAtZero: true,
-				}
-			]
+		for (let i in data) {
+			dtLabel.push(data[i].alarm_day);
+			data1.push(parseInt(data[i].tot_alarm_cnt));
 		}
 
-		let myChart = new Chart(ctx, {
-			type: 'doughnut',
-			data: dataObj,
+		let chartData = {
+			labels: dtLabel, // x축 데이터 라벨
+			datasets: [{
+				type: 'line',
+				label: '알람이력횟수',
+				borderColor: '#173d93',		//window.chartColors.blue
+				borderWidth: 2,
+				fill: false,
+				data: data1
+			}]
+		};
+
+		let ctx = document.getElementById('canvas2').getContext('2d');
+		let myMixedChart = new Chart(ctx, {
+			type: 'bar',
+			data: chartData,
 			options: {
+				/* indexAxis: 'y', */
 				responsive: true,				/*자동크기 조정*/
 				maintainAspectRatio : false, 	/*가로세로 비율*/
 				elements: {
@@ -141,16 +212,17 @@ canvas {
 					}
 				},
 				legend: {
-					position: 'left',
+					display: true,
+					usePointStyle: true,
+					position: 'bottom',
 					align : "end",
 					labels: {
 						fontSize : 11,
-						padding : 5,
+						padding : 0,
 					}
 				},
 				title: {
-					display: false,
-					text: '출입카드 유형'
+					text: '알람이력현황'
 				},
 				tooltips: {
 					mode: 'index',
@@ -209,7 +281,6 @@ canvas {
 				label: '출입실패',
 				backgroundColor: color('#6e7375').alpha(0.8).rgbString(),		//window.chartColors.red
 				data: data2,
-				/* borderColor: 'white', */
 				borderWidth: 2
 			}]
 
@@ -229,8 +300,9 @@ canvas {
 					}
 				},
 				legend: {
-					position: 'left',
-					// align : "end",
+					display: true,
+					position: 'bottom',
+					align : "end",
 					labels: {
 						fontSize : 11,
 						padding : 0,
@@ -253,7 +325,7 @@ canvas {
 				}
 			}
 		});
-		//myMixedChart.update();
+		myMixedChart.update();
 	}
 
 
@@ -400,23 +472,23 @@ canvas {
 <div class="main_b">
 
 	<div class="main_left" style="width: 49%;">
-		<div class="inbox1" style="width: 100%; height: 360px;">
+		<div class="inbox7" style="width: 100%; height: 360px;">
 			<div class="title">
 				출입이력 현황
 			</div>
-			<div class="gr">
-				<div style="height: 320px; margin-left: 10px;">
-					<canvas id="canvas1" width="" height="160"></canvas>
+			<div>
+				<div style="height: 280px; margin-left: 10px;">
+					<canvas id="canvas1"></canvas>
 				</div>
 			</div>
 		</div>
-		<div class="inbox1" style="width: 100%; height: 360px; margin-top:40px;">
+		<div class="inbox7" style="width: 100%; height: 360px; margin-top:40px;">
 			<div class="title">
-				출입카드 유형
+				알람이력 현황
 			</div>
-			<div class="gr">
-				<div style="height: 320px; margin-left: 10px;">
-					<canvas id="canvas2" width="" height="160"></canvas>
+			<div>
+				<div style="height: 280px; margin-left: 10px;">
+					<canvas id="canvas2"></canvas>
 				</div>
 			</div>
 		</div>
