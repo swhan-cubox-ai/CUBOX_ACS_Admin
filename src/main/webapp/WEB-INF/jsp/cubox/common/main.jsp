@@ -57,36 +57,40 @@ canvas {
 		});
 		
 		reload();
-		fnEntHistoryChartDraw(entData);
 		fnAlarmHistoryChartDraw(alarmData);
-		// fnCardTypeChartDraw(data);
 	});
-	
 
 	//새로고침
 	function reload() {
-		//chart
+		// 출입이력 chart
 		$.ajax({
 			type:"GET",
-			url:"<c:url value='/main/getMainStatus.do' />",
+			url:"<c:url value='/main/getMainStatus01.do' />",
 			data:{},
 			dataType: "json",
 			success:function(result) {
-				var arrStatDt = [];
-				arrStatDt.push(['Month', '출입이력', '출입실패', '출입성공' ]);
-				if(result != null && result.statLit != null) {
-					/* for(var i in result.statLit) {
-						var arr = [result.statLit[i].exp_day, parseInt(result.statLit[i].tot_log_cnt), parseInt(result.statLit[i].fail_log_cnt), parseInt(result.statLit[i].success_log_cnt), parseInt(result.statLit[i].user_log_cnt)];
-						arrStatDt.push(arr);
-					}
-					fnChartDraw (arrStatDt); */
-					// fnChartCanvasDraw(result.statLit);
-					fnEntHistoryChartDraw(result.statLit);
-				} else {
-
+				console.log("getMainStatus01");
+				console.log(result);
+				if (result != null && result.mainStatus01 != null) {
+					fnEntHistoryChartDraw(result.mainStatus01);
 				}
 			}
 		});
+
+		<%--// 알람이력 chart--%>
+		<%--$.ajax({--%>
+		<%--	type:"GET",--%>
+		<%--	url:"<c:url value='/main/getMainStatus02.do' />",--%>
+		<%--	data:{},--%>
+		<%--	dataType: "json",--%>
+		<%--	success:function(result) {--%>
+		<%--		console.log("getMainStatus02");--%>
+		<%--		console.log(result);--%>
+		<%--		if (result != null && result.mainStatus02 != null) {--%>
+		<%--			fnEntHistoryChartDraw(result.mainStatus02);--%>
+		<%--		}--%>
+		<%--	}--%>
+		<%--});--%>
 
 		//log list1
 		$.ajax({
@@ -243,22 +247,19 @@ canvas {
 	// 출입이력 차트
 	function fnEntHistoryChartDraw(data) {
 		console.log("fnEntHistoryChartDraw");
+		console.log(data);
 
 		let dtLabel = [],
 			data1 = [],
 			data2 = [],
-			data3 = [],
-			data4 = [];
+			data3 = [];
 
 		for (let i in data) {
-			dtLabel.push(data[i].exp_day);
-			data1.push(parseInt(data[i].tot_log_cnt));
-			data2.push(parseInt(data[i].fail_log_cnt));
-			data3.push(parseInt(data[i].success_log_cnt));
-			data4.push(parseInt(data[i].user_log_cnt));
+			dtLabel.push(data[i].EXP_DAY);
+			data1.push(parseInt(data[i].TOT_LOG_CNT));
+			data2.push(parseInt(data[i].FAIL_LOG_CNT));
+			data3.push(parseInt(data[i].SUCCESS_LOG_CNT));
 		}
-
-		console.log(dtLabel);
 
 		let color = Chart.helpers.color;
 		let chartData = {
