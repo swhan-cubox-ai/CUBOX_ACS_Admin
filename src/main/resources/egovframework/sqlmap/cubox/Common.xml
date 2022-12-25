@@ -264,4 +264,22 @@
 		ORDER BY order_no;
 	</select>
 
+	<select id="getDeptList"  resultType="aero.cubox.core.vo.CommonVO">
+		SELECT
+			dept_cd as cd,
+			dept_nm as cdNm
+		FROM T_DEPT
+		ORDER BY id;
+	</select>
+
+	<select id="getDeptInfo" parameterType="String"  resultType="Map">
+		SELECT
+		    T1.emp_cd as empCd,
+			T1.emp_nm as empNm,
+			T1.dept_cd as deptCd,
+		    nullif((SELECT dept_nm FROM T_DEPT WHERE dept_cd = T1.dept_cd), 'test부서') as deptNm
+		FROM T_EMP T1
+		WHERE emp_cd = #{empCd}
+	</select>
+
 </mapper>

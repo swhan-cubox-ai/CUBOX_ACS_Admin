@@ -8,6 +8,7 @@ public class AuthVO {
     private String authTypNm;
     private String deptAuthYn;
     private String deptCd;
+    private String deptNm;
     private String authEmpCnt;
     private String useYn;
     private String createdAt;
@@ -70,6 +71,14 @@ public class AuthVO {
 
     public void setDeptCd(String deptCd) {
         this.deptCd = deptCd;
+    }
+
+    public String getDeptNm() {
+        return deptNm;
+    }
+
+    public void setDeptNm(String deptNm) {
+        this.deptNm = deptNm;
     }
 
     public String getAuthEmpCnt() {

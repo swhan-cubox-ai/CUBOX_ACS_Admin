@@ -12,6 +12,12 @@ public class LoginVO {
 	private String flastaccip;
 	private String fpasswdyn;
 
+	private String direct_yn;
+
+	private String dept_cd;
+
+	private String dept_nm;
+
 
 	public String getFlastaccdt() {
 		return flastaccdt;
@@ -77,14 +83,44 @@ public class LoginVO {
 		this.fpasswdyn = fpasswdyn;
 	}
 
+	public String getDirect_yn() {
+		return direct_yn;
+	}
+
+	public void setDirect_yn(String direct_yn) {
+		this.direct_yn = direct_yn;
+	}
+
+	public String getDept_cd() {
+		return dept_cd;
+	}
+
+	public void setDept_cd(String dept_cd) {
+		this.dept_cd = dept_cd;
+	}
+
+	public String getDept_nm() {
+		return dept_nm;
+	}
+
+	public void setDept_nm(String dept_nm) {
+		this.dept_nm = dept_nm;
+	}
+
 	@Override
 	public String toString() {
-		return "Login2VO [" + "     login_id=" + login_id +
-				",     login_pwd=" + login_pwd +
-				",     user_nm=" + user_nm +
-				",     fdatediff=" + fdatediff +
-				",     flastaccdt=" + flastaccdt +
-				",     flastaccip=" + flastaccip +
-				"]";
+		return "LoginVO{" +
+				"login_id='" + login_id + '\'' +
+				", login_pwd='" + login_pwd + '\'' +
+				", user_nm='" + user_nm + '\'' +
+				", role_id='" + role_id + '\'' +
+				", fdatediff=" + fdatediff +
+				", flastaccdt='" + flastaccdt + '\'' +
+				", flastaccip='" + flastaccip + '\'' +
+				", fpasswdyn='" + fpasswdyn + '\'' +
+				", direct_yn='" + direct_yn + '\'' +
+				", dept_cd='" + dept_cd + '\'' +
+				", dept_nm='" + dept_nm + '\'' +
+				'}';
 	}
 }
