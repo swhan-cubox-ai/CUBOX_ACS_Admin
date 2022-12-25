@@ -166,13 +166,58 @@ public class AuthController {
         return "cubox/auth/door/list";
     }
 
+    @RequestMapping(value="/door/list2.do")
+    public String doorList2(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try{
+            LoginVO loginVO = (LoginVO)request.getSession().getAttribute("loginVO");
+
+            AuthVO vo = new AuthVO();
+            vo.setDeptCd(loginVO.getDept_cd() + "");
+
+            String srchPage       = StringUtil.nvl(commandMap.get("srchPage"), "1");
+            String srchRecPerPage = StringUtil.nvl(commandMap.get("srchRecPerPage"), "10");
+            String srchCond = StringUtil.nvl(commandMap.get("srchCond"), "");
+            String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
+
+            vo.setSrchPage(Integer.parseInt(srchPage));
+            vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
+            vo.autoOffset();
+
+            vo.setSrchCond(srchCond);
+            vo.setKeyword(keyword);
+
+            int totalCnt = authService.getAuthListCount2(vo);
+            List<AuthVO> authList = authService.getAuthList2(vo);
+
+            List<CommonVO> authTypList = commonService.getCommonCodeList("AuthTyp");
+
+            PaginationVO pageVO = new PaginationVO();
+            pageVO.setCurPage(vo.getSrchPage());
+            pageVO.setRecPerPage(vo.getSrchCnt());
+            pageVO.setTotRecord(totalCnt);
+            pageVO.setUnitPage(vo.getCurPageUnit());
+            pageVO.calcPageList();
+
+            model.addAttribute("authTypList", authTypList);
+            model.addAttribute("authList", authList);
+            model.addAttribute("data", vo);
+            model.addAttribute("pagination", pageVO);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
+
+        return "cubox/auth/door/list2";
+    }
 
     @RequestMapping(value="/emp/detail/{id}", method= RequestMethod.GET)
     public String empDetail(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
         List<Map> authEntMyList = authService.getAuthEntMyList(id);
         HashMap data = authService.getEmpDetail(id);
-
-
 
         model.addAttribute("isModify", false);
         model.addAttribute("authEntMyList", authEntMyList);
@@ -199,11 +244,15 @@ public class AuthController {
 
     @RequestMapping(value="/door/detail/{id}", method= RequestMethod.GET)
     public String doorDetail(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
+        LoginVO loginVO = (LoginVO)request.getSession().getAttribute("loginVO");
+        String drctYn = loginVO.getDirect_yn();
+
         List<Map> authEntMyList = authService.getAuthEntMyList(id);
         HashMap data = authService.getDoorDetail(id);
 
         model.addAttribute("isModify", false);
         model.addAttribute("authEntMyList", authEntMyList);
+        model.addAttribute("drctYn", drctYn);
         model.addAttribute("data", data);
 
         return "cubox/auth/door/detail";
@@ -403,7 +452,31 @@ public class AuthController {
 
     @RequestMapping(value="/door/add", method= RequestMethod.GET)
     public String authAdd(ModelMap model, HttpServletRequest request) throws Exception {
+        List<CommonVO> deptList = commonService.getDeptList();
+        model.addAttribute("deptComboList", deptList);
+
         return "cubox/auth/door/add";
+    }
+
+    @RequestMapping(value="/door/assign/{id}", method= RequestMethod.GET)
+    public String assign(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
+        AuthVO data = authService.getAuthDetail(id);
+        model.addAttribute("data", data);
+
+        return "cubox/auth/door/assign";
+    }
+
+    @RequestMapping(value="/door/assign2/{id}", method= RequestMethod.GET)
+    public String assign2(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
+        LoginVO loginVO = (LoginVO)request.getSession().getAttribute("loginVO");
+
+        AuthVO data = authService.getAuthDetail(id);
+        data.setDeptCd(loginVO.getDept_cd() + "");
+        data.setDeptNm(loginVO.getDept_nm() + "");
+
+        model.addAttribute("data", data);
+
+        return "cubox/auth/door/assign2";
     }
 
     @ResponseBody
@@ -423,6 +496,7 @@ public class AuthController {
 
         return modelAndView;
     }
+
 
     @RequestMapping(value="/emp/excelDownload.do", method = RequestMethod.POST)
     public void empExcelDownload(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
@@ -626,6 +700,61 @@ public class AuthController {
         response.setContentType("ms-vnd/excel");
         response.setHeader("Content-Disposition", "attatchment;filename=" + URLEncoder.encode(fileNm, "UTF-8"));
         wb.write(response.getOutputStream());
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/door/getEmpSourceList.do")
+    public ModelAndView getEmpSourceList(HttpServletRequest request, @RequestParam Map<String, Object> param) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+            List<Map> list = authService.getEmpSourceList(param);
+
+            modelAndView.addObject("list", list);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
+
+        return modelAndView;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/door/getEmpTargetList.do")
+    public ModelAndView getEmpTargetList(HttpServletRequest request, @RequestParam Map<String, Object> param) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try {
+            List<Map> list = authService.getEmpTargetList(param);
+
+            modelAndView.addObject("list", list);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
+
+        return modelAndView;
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/door/assignAuthEmp.do")
+    public ModelAndView assignAuthEmp(HttpServletRequest request, @RequestParam HashMap<String, Object> param) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try{
+            authService.assignAuthEmp(param);
+            modelAndView.addObject("result", "success");
+        }catch (Exception e){
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
+
+        return modelAndView;
     }
 
 }

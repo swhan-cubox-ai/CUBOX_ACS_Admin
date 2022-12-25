@@ -43,6 +43,7 @@ public class CommonController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommonController.class);
 
+
 	@RequestMapping(value="/login.do")
 	public String login(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -61,6 +62,8 @@ public class CommonController {
 		LoginVO loginVO = new LoginVO();
 		loginVO.setLogin_id(login_id);
 		loginVO.setLogin_pwd(login_pwd);
+
+		loginVO.setDirect_yn("N");
 
 		LoginVO resultVO = commonService.actionLogin(loginVO);
 		resultVO.setFlastaccip(commonUtils.getIPFromRequest(request));
@@ -83,6 +86,37 @@ public class CommonController {
 			model.addAttribute("resultMsg", "loginError");
 
 			return "cubox/common/login";
+		}
+	}
+
+	@RequestMapping(value="/common/loginSession.do")
+	public String directSessionLogin(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
+
+		String empCd = (String) commandMap.get("empCd");
+
+		LoginVO loginVO = new LoginVO();
+
+		Map deptMap = commonService.getDeptInfo(empCd);
+
+		if(deptMap == null){
+			model.addAttribute("resultMsg", "loginError");
+			return "cubox/common/login";
+		}else{
+			loginVO.setDept_cd(deptMap.get("deptCd") + "");
+			loginVO.setDept_nm(deptMap.get("deptNm") + "");
+			loginVO.setUser_nm(deptMap.get("empNm") + "");
+			loginVO.setRole_id("19");
+			loginVO.setFlastaccip(commonUtils.getIPFromRequest(request));
+			loginVO.setFlastaccdt(commonUtils.getToday("yyyyMMddHHmmss"));
+
+			loginVO.setDirect_yn("Y");
+
+			LOGGER.debug("[DIRECT_LAST_ACC_IP] :" + loginVO.getFlastaccip());
+			LOGGER.debug("[DIRECT_LAST_ACC_DE] :" + loginVO.getFlastaccdt());
+
+			request.getSession().setAttribute("loginVO", loginVO);
+
+			return "redirect:/main.do";
 		}
 	}
 

@@ -1,6 +1,7 @@
 package aero.cubox.cmmn.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.core.vo.CodeVO;
@@ -174,5 +175,14 @@ public class CommonDAO extends EgovAbstractMapper {
 
 	public List<CommonVO> getCommonCodeList(String cdType) throws Exception {
 		return selectList(sqlNameSpace+"getCommonCodeList", cdType);
+	}
+
+	public List<CommonVO> getDeptList() throws Exception {
+		return selectList(sqlNameSpace+"getDeptList");
+	}
+
+
+	public Map<String, Object> getDeptInfo(String empCd) throws Exception {
+		return selectOne(sqlNameSpace+"getDeptInfo", empCd);
 	}
 }

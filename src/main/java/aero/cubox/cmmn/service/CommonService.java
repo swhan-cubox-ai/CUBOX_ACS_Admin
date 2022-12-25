@@ -4,6 +4,7 @@ import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.core.vo.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface CommonService {
@@ -138,5 +139,15 @@ public interface CommonService {
 	 * @throws Exception
 	 */
 	List<CommonVO> getCommonCodeList(String cdType) throws  Exception;
+
+	List<CommonVO> getDeptList() throws  Exception;
+
+
+	/**
+	 * 부서정보 가져오기
+	 * @return Map
+	 * @throws Exception
+	 */
+	Map<String, Object> getDeptInfo(String empCd) throws  Exception;
 
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @Service("commonService")
 public class CommonServiceImpl extends EgovAbstractServiceImpl implements CommonService {
@@ -234,6 +235,16 @@ public class CommonServiceImpl extends EgovAbstractServiceImpl implements Common
 	@Override
 	public List<CommonVO> getCommonCodeList(String cdType) throws Exception {
 		return commonDAO.getCommonCodeList(cdType);
+	}
+
+	@Override
+	public List<CommonVO> getDeptList() throws Exception {
+		return commonDAO.getDeptList();
+	}
+
+	@Override
+	public Map<String, Object> getDeptInfo(String empCd) throws Exception {
+		return commonDAO.getDeptInfo(empCd);
 	}
 
 	public List<CodeVO> selectAuthorList() throws Exception {

@@ -159,8 +159,16 @@
                     <button type="button" class="btn_middle color_basic ml_5" style="float:left;margin-left: 30px;" onclick="fnCancel();">취소</button>
                 </c:if>
                 <c:if test="${!isModify}">
-                    <button type="button" class="btn_middle color_basic ml_5" style="float:left" onclick="window.location.href='/auth/door/list.do';">목록</button>
-                    <button type="button" class="btn_middle color_basic ml_5" style="float:left;margin-left: 30px;" onclick="window.location.href='/auth/door/modify/${data.id}';">수정</button>
+                    <c:if test="${drctYn ne 'Y'}">
+                        <button type="button" class="btn_middle color_basic ml_5" style="float:left" onclick="window.location.href='/auth/door/list.do';">목록</button>
+                    </c:if>
+                    <c:if test="${drctYn eq 'Y'}">
+                        <button type="button" class="btn_middle color_basic ml_5" style="float:left" onclick="window.location.href='/auth/door/list2.do';">목록</button>
+                    </c:if>
+
+                    <c:if test="${drctYn ne 'Y'}">
+                        <button type="button" class="btn_middle color_basic ml_5" style="float:left;margin-left: 30px;" onclick="window.location.href='/auth/door/modify/${data.id}';">수정</button>
+                    </c:if>
                 </c:if>
             </div>
 
