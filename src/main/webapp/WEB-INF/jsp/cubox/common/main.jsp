@@ -73,11 +73,9 @@ canvas {
 				console.log(result);
 				if (result != null && result.mainStatus01 != null) {
 					fnEntHistoryChartDraw(result.mainStatus01);
-
 				}
 			}
 		});
-
 
 		//chart 02 알람이력 현황
 		$.ajax({
@@ -86,14 +84,15 @@ canvas {
 			data:{},
 			dataType: "json",
 			success:function(result) {
-				var arrStatDt = [];
-				arrStatDt.push(['알람이력 횟수' ]);
+				// var arrStatDt = [];
+				// arrStatDt.push(['알람이력 횟수' ]);
 				if(result != null && result.mainStatus02 != null) {
-					 for(var i in result.mainStatus02) {
-						var arr = [result.mainStatus02[i].exp_day, parseInt(result.mainStatus02[i].tot_log_cnt)];
-						arrStatDt.push(arr);
-					}
-					console.log(arrStatDt)
+					fnAlarmHistoryChartDraw(result.mainStatus02);
+					 // for(var i in result.mainStatus02) {
+						// var arr = [result.mainStatus02[i].exp_day, parseInt(result.mainStatus02[i].tot_log_cnt)];
+						// arrStatDt.push(arr);
+						//
+					// }
 
 				}
 			}
@@ -262,10 +261,10 @@ canvas {
 			data3 = [];
 
 		for (let i in data) {
-			dtLabel.push(data[i].EXP_DAY);
-			data1.push(parseInt(data[i].TOT_LOG_CNT));
-			data2.push(parseInt(data[i].FAIL_LOG_CNT));
-			data3.push(parseInt(data[i].SUCCESS_LOG_CNT));
+			dtLabel.push(data[i].exp_day);
+			data1.push(parseInt(data[i].tot_log_cnt));
+			data2.push(parseInt(data[i].fail_log_cnt));
+			data3.push(parseInt(data[i].success_log_cnt));
 		}
 
 		let color = Chart.helpers.color;
