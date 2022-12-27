@@ -14,245 +14,335 @@ canvas {
 }
 </style>
 <script type="text/javascript" src="/js/jquery.simple-calendar.js"></script>
+
 <script type="text/javascript">
+
+	let threadRefresh;
+	const entData = [
+		{exp_day : "12-13", tot_log_cnt : "80", success_log_cnt : "50", fail_log_cnt : "30"},
+		{exp_day : "12-12", tot_log_cnt : "90", success_log_cnt : "60", fail_log_cnt : "30"},
+		{exp_day : "12-11", tot_log_cnt : "80", success_log_cnt : "60", fail_log_cnt : "20"},
+		{exp_day : "12-10", tot_log_cnt : "130", success_log_cnt : "120", fail_log_cnt : "10"},
+		{exp_day : "12-09", tot_log_cnt : "95", success_log_cnt : "80", fail_log_cnt : "15"},
+		{exp_day : "12-08", tot_log_cnt : "80", success_log_cnt : "20", fail_log_cnt : "60"},
+		{exp_day : "12-07", tot_log_cnt : "100", success_log_cnt : "90", fail_log_cnt : "10"},
+		{exp_day : "12-06", tot_log_cnt : "25", success_log_cnt : "20", fail_log_cnt : "5"},
+		{exp_day : "12-05", tot_log_cnt : "50", success_log_cnt : "35", fail_log_cnt : "15"},
+	];
+
+	const alarmData = [
+		{alarm_day : "01-01", tot_alarm_cnt : "3"},
+		{alarm_day : "04-01", tot_alarm_cnt : "1"},
+		{alarm_day : "06-05", tot_alarm_cnt : "1"},
+		{alarm_day : "07-20", tot_alarm_cnt : "2"},
+		{alarm_day : "09-10", tot_alarm_cnt : "1"},
+		{alarm_day : "10-13", tot_alarm_cnt : "5"},
+		{alarm_day : "12-12", tot_alarm_cnt : "1"},
+	];
+
 	$(function() {
 		// 숫자만 입력가능
-		$(".onlyNumber").keyup(function(event){
+		$(".onlyNumber").keyup(function(event) {
 			if (!(event.keyCode >=37 && event.keyCode<=40)) {
-				var inputVal = $(this).val();
+				let inputVal = $(this).val();
 				$(this).val(inputVal.replace(/[^0-9]/gi,''));
 			}
 		});	
 		
 		//자동새로고침 증가
-		$("#btnRefreshIncrease").click(function(){
-			if(parseInt($("#intervalSecond").val()) < 999) {
+		$("#btnRefreshIncrease").click(function() {
+			if (parseInt($("#intervalSecond").val()) < 999) {
 				$("#intervalSecond").val( parseInt($("#intervalSecond").val())+1);
 			}
 		});
 		
-		reload();			
+		reload();
 	});
-	
-	var threadRefresh;
 
 	//새로고침
 	function reload() {
-		//chart
+		//chart01 - 출입이력 현황 임시
 		$.ajax({
 			type:"GET",
-			url:"",
+			url:"<c:url value='/main/getMainStatus01.do' />",
 			data:{},
 			dataType: "json",
 			success:function(result) {
-				var arrStatDt = [];
-				arrStatDt.push(['Month', '출입이력', '출입실패', '출입성공' ]);
-				if(result != null && result.statLit != null) {
-					/* for(var i in result.statLit) {
-						var arr = [result.statLit[i].exp_day, parseInt(result.statLit[i].tot_log_cnt), parseInt(result.statLit[i].fail_log_cnt), parseInt(result.statLit[i].success_log_cnt), parseInt(result.statLit[i].user_log_cnt)];
-						arrStatDt.push(arr);
-					}
-					fnChartDraw (arrStatDt); */
-					fnChartCanvasDraw (result.statLit);
-				} else {
+				console.log("getMainStatus01");
+				console.log(result);
+				if (result != null && result.mainStatus01 != null) {
+					fnEntHistoryChartDraw(result.mainStatus01);
+				}
+			}
+		});
+
+		//chart 02 알람이력 현황
+		$.ajax({
+			type:"GET",
+			url:"<c:url value='/main/getMainStatus02.do' />",
+			data:{},
+			dataType: "json",
+			success:function(result) {
+				// var arrStatDt = [];
+				// arrStatDt.push(['알람이력 횟수' ]);
+				if(result != null && result.mainStatus02 != null) {
+					fnAlarmHistoryChartDraw(result.mainStatus02);
+					 // for(var i in result.mainStatus02) {
+						// var arr = [result.mainStatus02[i].exp_day, parseInt(result.mainStatus02[i].tot_log_cnt)];
+						// arrStatDt.push(arr);
+						//
+					// }
 
 				}
 			}
 		});
 
-		//log list
+		//log list1
 		$.ajax({
 			type:"GET",
 			url: "<c:url value='/main/entHist'/>",
 			data:{},
 			dataType: "json",
 			success:function(result) {
-				fnLogInfoListSet(result);
+				fnEntHistSet(result);
 			}
 		});
 
-		//log cnt
-		<%--$.ajax({--%>
-		<%--	type:"GET",--%>
-		<%--	url:"' />",--%>
-		<%--	data:{},--%>
-		<%--	dataType: "json",--%>
-		<%--	success:function(result) {--%>
-		<%--		fnLogInfoCntSet(result);--%>
-		<%--	}--%>
-		<%--});--%>
-		
-		<%--//notice list--%>
-		<%--$.ajax({--%>
-		<%--	type:"GET",--%>
-		<%--	url:"<c:url value='/main/getMainNoticeList.do' />",--%>
-		<%--	data:{},--%>
-		<%--	dataType: "json",--%>
-		<%--	success:function(result) {--%>
-		<%--		fnNoticeInfoListSet(result);--%>
-		<%--	}--%>
-		<%--});--%>
-		
-		<%--//q&a list--%>
-		<%--$.ajax({--%>
-		<%--	type:"GET",--%>
-		<%--	url:"<c:url value='/main/getMainQaList.do' />",--%>
-		<%--	data:{},--%>
-		<%--	dataType: "json",--%>
-		<%--	success:function(result) {--%>
-		<%--		fnQaListSet(result);--%>
-		<%--	}--%>
-		<%--});--%>
-		
-		//근태관리 달력
+		//log list2
 		$.ajax({
-			type : "POST"
-			, url : ""
-			, data : { "nowMonth" : "" }
-			, dataType : "JSON"
-			, success : function (data) {
-				var event = [];
-				$(".today_tx").html( "<em>" + moment().format('YYYY.MM.DD') + "</em>");
-				
-				$.each(data.workEventList, function(index, item){
-					if(moment().format('YYYYMMDD') == item.fstdde){
-						$(".today_tx").html( $(".today_tx").html() + "<br>" + item.title );
+			type:"GET",
+			url: "<c:url value='/main/alarmHist'/>",
+			data:{},
+			dataType: "json",
+			success:function(result) {
+				fnAlarmHistSet(result);
+			}
+		});
+
+	}
+
+	// 출입카드 차트
+	// function fnCardTypeChartDraw(data) {
+	// 	console.log("fnCardTypeChartDraw");
+	// 	console.log(data);
+	//
+	// 	let ctx = $("#canvas2").get(0).getContext("2d");
+	//
+	// 	let dataObj = {
+	// 		labels : ["공무원증", "신분증", "공무직원증", "일반출입증", "장기공무증", "방문증", "예약방문증", "국회(공무원증)"],
+	// 		datasets: [
+	// 			{
+	// 				data: [20, 2, 5, 40, 5, 10, 8, 10],
+	// 				backgroundColor: [
+	// 					'#F2F3F6',
+	// 					'#9DCEFF',
+	// 					'#7a96f1',
+	// 					'#2c52c7',
+	// 					'#555e7a',
+	// 					'#152146',
+	// 					'#eedfab',
+	// 					'#eeac48',
+	// 				],
+	// 				borderWidth: 0,
+	// 				scaleBeginAtZero: true,
+	// 			}
+	// 		]
+	// 	}
+	//
+	// 	new Chart("canvas2", {
+	// 		type: 'doughnut',
+	// 		data: dataObj,
+	// 		options: {
+	// 			responsive: true,				/*자동크기 조정*/
+	// 			maintainAspectRatio : false, 	/*가로세로 비율*/
+	// 			elements: {
+	// 				line: {
+	// 					tension: 0.000001		/*line 곡선 조절*/
+	// 				}
+	// 			},
+	// 			legend: {display: false},
+	// 			title: {
+	// 				display: false,
+	// 				text: '출입카드 유형'
+	// 			},
+	// 			tooltips: {
+	// 				mode: 'index',
+	// 				intersect: true
+	// 			},
+	// 			layout: {
+	// 				padding: {
+	// 					left: 0,
+	// 					right: 0,
+	// 					top: 0,
+	// 					bottom: 10
+	// 				}
+	// 			}
+	// 		}
+	// 	});
+	//
+	// }
+
+	// 알람이력 차트
+	function fnAlarmHistoryChartDraw(data) {
+		console.log("fnAlarmHistoryChartDraw");
+		console.log(data);
+
+		let dtLabel = [],
+			data1 = [];
+
+		for (let i in data) {
+			dtLabel.push(data[i].alarm_day);
+			data1.push(parseInt(data[i].tot_alarm_cnt));
+		}
+
+		let chartData = {
+			labels: dtLabel, // x축 데이터 라벨
+			datasets: [{
+				type: 'line',
+				label: '알람이력횟수',
+				borderColor: '#173d93',		//window.chartColors.blue
+				borderWidth: 2,
+				fill: true,
+				backgroundColor: '#eef9fc',
+				pointStyle: 'circle',
+				pointRadius: 10,
+				pointHoverRadius: 15,
+				data: data1
+			}]
+		};
+
+		let ctx = document.getElementById('canvas2').getContext('2d');
+		let myMixedChart = new Chart(ctx, {
+			type: 'bar',
+			data: chartData,
+			options: {
+				/* indexAxis: 'y', */
+				responsive: true,				/*자동크기 조정*/
+				maintainAspectRatio : false, 	/*가로세로 비율*/
+				elements: {
+					line: {
+						tension: 0.000001		/*line 곡선 조절*/
 					}
-					
-					event.push({
-						startDate: new Date(moment(item.fstdde).format('YYYY-MM-DD'))
-						, endDate: new Date(moment(item.fstdde).format('YYYY-MM-DD'))
-						, summary: item.title
-					});
-				});
-				
-				$("#container").simpleCalendar({///참고 : https://github.com/brospars/simple-calendar
-					months: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
-					, days: ['일', '월', '화', '수', '목', '금', '토']
-					, displayYear : true// 헤더에 연도 표시
-					, fixedStartDay: 0// 주는 항상 월요일 또는 숫자로 설정된 요일에 시작됩니다. 0 = 일요일, 7 = 토요일, false = 월은 항상 해당 월의 첫 번째 날부터 시작
-					, disableEmptyDetails: true// 빈 날짜 세부 정보 표시 활성화
-					, events: event
-					, onEventCreate : function ( $el ) {// HTML 이벤트가 생성 될 때 콜백이 실행 됨-$ (this) .data ( 'event') 참조 
-						$el.find(".event-hour").text("");//시간 지우기
-						
-						var text = $el.find(".event-date").text().split("-");//시작일과 종료일 분리
-						
-						$el.find(".event-date").text(
-							moment(text[0]).format('YYYY-MM-DD')
-						);
+				},
+				legend: {
+					display: true,
+					usePointStyle: true,
+					position: 'bottom',
+					align : "end",
+					labels: {
+						fontSize : 11,
+						padding : 0,
 					}
-				});
+				},
+				title: {
+					text: '알람이력현황'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: true
+				},
+				layout: {
+					padding: {
+						left: 0,
+						right: 0,
+						top: 0,
+						bottom: 10
+					}
+				}
 			}
 		});
 	}
-	
-	function fnChartCanvasDraw (data) {
-		var dtLabel = [];
-		var data1 = [];
-		var data2 = [];
-		var data3 = [];
-		var data4 = [];
-		for(var i in data) {
+
+	// 출입이력 차트
+	function fnEntHistoryChartDraw(data) {
+		console.log("fnEntHistoryChartDraw");
+		console.log(data);
+
+		let dtLabel = [],
+			data1 = [],
+			data2 = [],
+			data3 = [];
+
+		for (let i in data) {
 			dtLabel.push(data[i].exp_day);
-			//data1.push(parseInt(data[i].tot_log_cnt));
-			//data2.push(parseInt(data[i].fail_log_cnt));
+			data1.push(parseInt(data[i].tot_log_cnt));
+			data2.push(parseInt(data[i].fail_log_cnt));
 			data3.push(parseInt(data[i].success_log_cnt));
-			data4.push(parseInt(data[i].user_log_cnt));
 		}
-		var color = Chart.helpers.color;
-		var chartData = {
-				labels: dtLabel,
-				datasets: [{
-					type: 'line',
-					label: '출입이력',
-					borderColor: '#173d93',		//window.chartColors.blue
-					borderWidth: 2,
-					fill: false,
-					data: data1
-				}, {
-					type: 'bar',
-					label: '출입성공',
-					backgroundColor: color('#016879').alpha(0.8).rgbString(),	//window.chartColors.green
-					data: data3,
-					borderWidth: 2
-				}, {
-					type: 'bar',
-					label: '출입실패',
-					backgroundColor: color('#c13838').alpha(0.8).rgbString(),		//window.chartColors.red
-					data: data2,
-					/* borderColor: 'white', */
-					borderWidth: 2
-				}
-		/* 		, {
-					type: 'bar',
-					label: '단말기출입자',
-					backgroundColor: '#a7c846',	//window.chartColors.gray
-					data: data4,
-					borderWidth: 2
-				} */
-				]
-			};
-			//chartData.datasets = chartData;
-			var ctx = document.getElementById('canvas').getContext('2d');
-			var myMixedChart = new Chart(ctx, {
+
+		let color = Chart.helpers.color;
+		let chartData = {
+			labels: dtLabel, // x축 데이터 라벨
+			datasets: [{
+				type: 'line',
+				label: '출입이력',
+				borderColor: '#173d93',		//window.chartColors.blue
+				borderWidth: 2,
+				fill: false,
+				data: data1
+			}, {
 				type: 'bar',
-				data: chartData,
-				options: {
-					/* indexAxis: 'y', */
-					responsive: true,				/*자동크기 조정*/
-					maintainAspectRatio : false, 	/*가로세로 비율*/
-					elements: {
-						line: {
-							tension: 0.000001	/*line 곡선 조절*/
-						}
-					},
-					legend: {
-						position: 'left',
-						align : "end",
-						labels: {
-			                fontSize : 11,
-			                padding : 5,
-			            }
-					},
-					title: {
-						display: false,
-						text: '출입이력현황'
-					},
-					tooltips: {
-						mode: 'index',
-						intersect: true
-					},
-					layout: {
-			            padding: {
-			                left: 0,
-			                right: 0,
-			                top: 0,
-			                bottom: 10
-			            }
-			        }
+				label: '출입성공',
+				backgroundColor: color('#1072d2').alpha(0.8).rgbString(),	//window.chartColors.green
+				data: data3,
+				borderWidth: 2
+			}, {
+				type: 'bar',
+				label: '출입실패',
+				backgroundColor: color('#6e7375').alpha(0.8).rgbString(),		//window.chartColors.red
+				data: data2,
+				borderWidth: 2
+			}]
+
+		};
+
+		let ctx = document.getElementById('canvas1').getContext('2d');
+		let myMixedChart = new Chart(ctx, {
+			type: 'bar',
+			data: chartData,
+			options: {
+				/* indexAxis: 'y', */
+				responsive: true,				/*자동크기 조정*/
+				maintainAspectRatio : false, 	/*가로세로 비율*/
+				elements: {
+					line: {
+						tension: 0.000001		/*line 곡선 조절*/
+					}
+				},
+				legend: {
+					display: true,
+					position: 'bottom',
+					align : "end",
+					labels: {
+						fontSize : 11,
+						padding : 0,
+					}
+				},
+				title: {
+					text: '출입이력현황'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: true
+				},
+				layout: {
+					padding: {
+						left: 0,
+						right: 0,
+						top: 0,
+						bottom: 10
+					}
 				}
-			});
-			//myMixedChart.update();
+			}
+		});
+		myMixedChart.update();
 	}
 
-	function fnLogInfoCntSet (data) {
-		if(data == null) {
-			$("#visitReqCnt").html("0");
-			$("#dayCnt").html("0");
-			$("#dayUserCnt").html("0");
-			$("#obsCnt").html("0");
-			$("#inmateCnt").html("0");
-		} else {
-			$("#visitReqCnt").html(data.visitReqCnt==null||data.visitReqCnt==""?"0":data.visitReqCnt);
-			$("#dayCnt").html(data.dayCnt==null||data.dayCnt==""?"0":data.dayCnt);
-			$("#dayUserCnt").html(data.dayUserCnt==null||data.dayUserCnt==""?"0":data.dayUserCnt);
-			$("#obsCnt").html(data.obsCnt==null||data.obsCnt==""?"0":data.obsCnt);
-			$("#inmateCnt").html(data.inmateCnt==null||data.inmateCnt==""?"0":data.inmateCnt);
-		}
-	}
 
-	function fnLogInfoListSet (data) {
+	function fnEntHistSet (data) {
+		console.log("fnLogInfoListSet");
+		console.log(data);
+
 		if(data == null || data.entHistList == null) {
 			$("#entHistListBody").html("<tr><th class='h_35px' colspan='6'>조회 목록이 없습니다.</th></tr>");
 		} else {
@@ -271,62 +361,26 @@ canvas {
 			$("#entHistListBody").html(str);
 		}
 	}
-	
-	function fnNoticeInfoListSet (data) {
-		if(data == null || data.noticeList == null) {
-			$("#noticeListBody").html("<tr><th class='h_35px' colspan='7'>조회 목록이 없습니다./th></tr>");
-		} else {
-			data = data.noticeList;
-			var str2 = "";
-			for(var i in data) {
-				str2 += "<tr onclick='fnBoardDetail("+data[i].nttId+",00000000000000000001)'>";
-				str2 += "<td>"+data[i].nttSj.substr(0,45)+(data[i].nttSj!=null && data[i].nttSj.length>45?"..":"")+"</td>";
-				//str2 += "<td>"+data[i].nttCn.replace("<p>","").replace("</p>","").replace("<br>","").substr(0,25)+(data[i].nttCn!=null && data[i].nttCn.length>30?"...":"")+"</td>";
-				str2 += "<td>" + data[i].nttCn.replace(/(<([^>]+)>)/ig, "").substr(0,25) + (data[i].nttCn != null && data[i].nttCn.length > 30 ? "..." : "") + "</td>";
-				str2 += "<td>"+data[i].registNm+"</td>";
-				str2 += "<td>"+(data[i].registDt!=null && data[i].registDt.length>16?data[i].registDt.substr(0,16):data[i].registDt)+"</td>";
-				str2 += "</tr>";
-			}
-			
-			$("#noticeListBody").html(str2);
-		}
-	}
-	
-	function fnQaListSet (data) {
-		if(data == null || data.qaList == null) {
-			$("#qaListBody").html("<tr><th class='h_35px' colspan='7'>조회 목록이 없습니다.</th></tr>");
-		} else {
-			data = data.qaList;
-			var str2 = "";
-			for(var i in data) {
-				str2 += "<tr onclick='fnBoardDetail("+data[i].nttId+",00000000000000000002)'>";
-				str2 += "<td>"+data[i].nttSj.substr(0,45)+(data[i].nttSj!=null && data[i].nttSj.length>45?"..":"")+"</td>";
-				//str2 += "<td>"+data[i].nttCn.replace("<p>","").replace("</p>","").replace("<br>","").substr(0,25)+(data[i].nttCn!=null && data[i].nttCn.length>30?"...":"")+"</td>";
-				str2 += "<td>" + data[i].nttCn.replace(/(<([^>]+)>)/ig, "").substr(0,25) + (data[i].nttCn != null && data[i].nttCn.length > 30 ? "..." : "") + "</td>";
-				str2 += "<td>"+data[i].registNm+"</td>";
-				str2 += "<td>"+(data[i].registDt!=null && data[i].registDt.length>16?data[i].registDt.substr(0,16):data[i].registDt)+"</td>";
-				str2 += "</tr>";
-			}
-			$("#qaListBody").html(str2);
-		}
-	}
 
-	function fnChartDraw (arrStatDt) {
-		google.charts.load('current', {'packages':['corechart']});
-		google.charts.setOnLoadCallback(function () {
-			var data = google.visualization.arrayToDataTable(arrStatDt);
-			var options = {
-				title : '',
-				vAxis: {title: ''},
-				hAxis: {title: ''},
-				seriesType: 'bars',
-					colors: ['#173d93', '#77b8bd', '#016879', '#a7c846'],
-					series: {0: {type: 'line'}}
-			};
-			var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
-		        chart.draw(data, options);
-		});
-	}
+    function fnAlarmHistSet (data) {
+
+        if( data == null || data.alarmHistList == null) {
+            $("#alarmHistListBody").html("<tr><th class='h_35px' colspan='4'>조회 목록이 없습니다.</th></tr>");
+        } else {
+            var histList = data.alarmHistList;
+            var str = "";
+            for(var i in histList) {
+                str += "<tr>";
+                str += "<td>"+histList[i].evtDtStr+"</td>";
+                str += "<td>"+histList[i].doorAlarmTypNm+"</td>";
+                str += "<td>"+histList[i].buildingNm+"</td>";
+                str += "<td>"+histList[i].doorNm+"</td>";
+                str += "</tr>";
+            }
+            $("#alarmHistListBody").html(str);
+        }
+    }
+
 
 	function autoRefresh(value) {
 		var reloadYn = $("#reloadYn");
@@ -352,74 +406,62 @@ canvas {
 		f.action = "report/entHist/list.do";
 		f.submit();
 	}
-	
+
 	function fnBoardList(bbsId){
 		f = document.frmSearch;
 		f.action = "/boardInfo/"+pad(bbsId,20)+"/list.do";
 		f.submit();
-		
 	}
-	
-	
+
 	function fnBoardDetail(nttId, bbsId){
 		var f = document.frmSearch;
-		
+
 		$("input:hidden[id=hidNttId]").val(nttId);
 		f.action = "/boardInfo/"+pad(bbsId,20)+"/detail.do";
 		f.submit();
-		
 	}
+
 	function pad(n, width) {
 		  n = n + '';
 		  return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
-
 	}
 
 </script>
-<div class="main_a">
-	<div class="st_box">
-		<div class="icon">
-			<img src="/img/main/m_icon01.png" alt="" />
-		</div>
-		<div class="tx1">방문자신청</div>
-		<div class="tx2">
-			<em id="visitReqCnt">0</em>명
-		</div>
-	</div>
+<div class="main_a" style="padding-top: 0px;">
 	<div class="st_box">
 		<div class="icon">
 			<img src="/img/main/m_icon03.png" alt="" />
 		</div>
-		<div class="tx1">일일출입현황</div>
+		<div class="tx1">출입이력</div>
 		<div class="tx2">
-			<em id="dayCnt">0</em>건
+			<em id="visitReqCnt"></em><a href="/report/entHist/list.do">[바로가기]</a>
 		</div>
 	</div>
 	<div class="st_box">
 		<div class="icon">
-			<img src="/img/main/m_icon01.png" alt="" />
+			<img src="/img/main/m_icon05.png" alt="" />
 		</div>
-		<div class="tx1">일일출입인원</div>
+		<div class="tx1">스케쥴 관리</div>
 		<div class="tx2">
-			<em id="dayUserCnt">0</em>명
+			<em id="dayCnt"></em><a href="/door/schedule/list.do">[바로가기]</a>
 		</div>
 	</div>
 	<div class="st_box">
 		<div class="icon">
 			<img src="/img/main/m_icon02.png" alt="" />
 		</div>
-		<div class="tx1">단말기장애현황</div>
+		<div class="tx1">단말기 관리</div>
 		<div class="tx2">
-			<em id="obsCnt">0</em>건
+			<em id="obsCnt"> </em><a href="/terminal/list.do">[바로가기]</a>
 		</div>
 	</div>
 	<div class="st_box">
 		<div class="icon">
 			<img src="/img/main/m_icon01.png" alt="" />
 		</div>
-		<div class="tx1">재실인원</div>
+		<div class="tx1">사용자 관리</div>
 		<div class="tx2">
-			<em id="inmateCnt">0</em>명
+			<em id="inmateCnt"></em><a href="/user/list.do">[바로가기]</a>
 		</div>
 	</div>
 	<div class="w_200px"></div>
@@ -436,109 +478,35 @@ canvas {
 	</form>
 
 </div>
-<div class="main_b">
-	<div class="inbox1" style="width: 600px;">
-		<div class="title">
-			출입이력 현황
-			<!-- <div class="more">
-				<img src="/img/main/icon_more.png" alt="" />
-			</div> 
-			-->
-		</div>
-		<div class="gr">
-			<!-- <div id="chart_div" style="width: 100%; height: 300px;"></div> -->
-			<div style="height: 320px; margin-left: 10px;">
-				<canvas id="canvas" width="" height="160" style=""></canvas>
+
+<div class="main_b" style="padding-top: 20px;">
+	<div class="main_left" style="width: 49%;">
+		<div class="inbox7" style="width: 100%; height: 360px;">
+			<div class="title">
+				출입이력 현황
+			</div>
+			<div>
+				<div style="height: 280px; margin-left: 10px;">
+					<canvas id="canvas1"></canvas>
+				</div>
 			</div>
 		</div>
-	</div>
-	<div class="inbox2">
-		<div class="icon"><img src="/img/main/m_icon07.png" alt=""></div>
-		<div class="title">단말기 제어관리</div>
-		<div class="tx1">단말기별 펌웨어버전을 <br>확인하실 수 있습니다.</div>
-		<div class="tx2">today : </div>
-		<div class="tx3">5455 </div>
-		<div class="time">updates : 2020.06.22입력</div>
-	</div>
-	<div class="inbox2">
-		<div class="icon"><img src="/img/main/m_icon08.png" alt=""></div>
-		<div class="title">출입권한관리</div>
-		<div class="tx1">단말기별 펌웨어버전을 <br>확인하실 수 있습니다.</div>
-		<div class="tx2">today : </div>
-		<div class="tx3">5455 </div>
-		<div class="time">updates : 2020.06.22입력</div>
-	</div>
-	<div class="inbox2 mapbg">
-		<div class="icon"><img src="/img/main/m_icon09.png" alt=""></div>
-		<div class="title">지역관리</div>
-		<div class="tx1">단말기별 펌웨어버전을 <br>확인하실 수 있습니다.</div>
-		<div class="tx2">today : </div>
-		<div class="tx3">5455 </div>
-		<div class="time">updates : 2020.06.22입력</div>
-	</div>
-
-	<jsp:include page="/WEB-INF/jsp/cubox/common/main_ent_hist.jsp" flush="false"/>
-
-	<c:choose>
-		<c:when test="${isMenu eq true}"><%--  근태관리 접근권한이 있으면 --%>
-			<div class="inbox4" style="width: 49%;">
-				<div class="left_box">
-					<div class="title">
-						Working schedule
-						<em>근무스케쥴관리</em>
-					</div>
-					<div class="link">
-						<ul>
-							<li><a href="">근무규칙설정  +</a></li>
-							<li><a href="">휴일설정  +</a></li>
-						</ul>
-					</div>
-					<div class="today">
-						<div class="title">today</div>
-						<div class="today_tx"></div>
-					</div>
-					<!-- <div class="more_go">
-						<a href="#">+</a>
-					</div> -->
-				</div>
-				<div class="right_box">
-					<!--메인스케쥴관리 -->
-					<div id="container" class="calendar-container"></div>
-					<!--//메인스케쥴관리 -->
+		<div class="inbox7" style="width: 100%; height: 360px; margin-top:40px;">
+			<div class="title">
+				알람이력 현황
+			</div>
+			<div>
+				<div style="height: 280px; margin-left: 10px;">
+					<canvas id="canvas2"></canvas>
 				</div>
 			</div>
-		</c:when>
-		<c:otherwise><%-- 근태관리 접근권한이 없으면 --%>
-			<div class="inbox7" style="margin-top: 40px;">
-				<div class="title">
-					공지사항
-					<div class="more">
-						<img src="/img/main/icon_more.png" alt=""  onclick="fnBoardList(00000000000000000001);"/>
-					</div>
-				</div>
-				<div class="tb_outbox">
-					<table class="tb_list_main">
-						<col width="35%" />
-						<col width="35%" />
-						<col width="10%" />
-						<col width="20%" />
-						<thead>
-							<tr>
-								<th>공지명</th>
-								<th>공지내용</th>
-								<th>작성자</th>
-								<th>작성일</th>
-							</tr>
-						</thead>
-						<tbody id="qaListBody">
-							<tr>
-								<th class="h_35px" colspan="7">조회 목록이 없습니다.</th>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</c:otherwise>
-	</c:choose>
-	
+		</div>
+	</div>
+
+	<div class="main-right" style="width: 49%;">
+		<jsp:include page="/WEB-INF/jsp/cubox/common/main_ent_hist.jsp" flush="false"/>
+		<jsp:include page="/WEB-INF/jsp/cubox/common/main_alarm_hist.jsp" flush="false"/>
+	</div>
+
+
 </div>
