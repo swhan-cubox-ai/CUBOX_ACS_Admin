@@ -73,7 +73,6 @@ canvas {
 				console.log(result);
 				if (result != null && result.mainStatus01 != null) {
 					fnEntHistoryChartDraw(result.mainStatus01);
-
 				}
 			}
 		});
@@ -85,14 +84,15 @@ canvas {
 			data:{},
 			dataType: "json",
 			success:function(result) {
-				var arrStatDt = [];
-				arrStatDt.push(['알람이력 횟수' ]);
+				// var arrStatDt = [];
+				// arrStatDt.push(['알람이력 횟수' ]);
 				if(result != null && result.mainStatus02 != null) {
-					 for(var i in result.mainStatus02) {
-						var arr = [result.mainStatus02[i].exp_day, parseInt(result.mainStatus02[i].tot_log_cnt)];
-						arrStatDt.push(arr);
-					}
-					console.log(arrStatDt)
+					fnAlarmHistoryChartDraw(result.mainStatus02);
+					 // for(var i in result.mainStatus02) {
+						// var arr = [result.mainStatus02[i].exp_day, parseInt(result.mainStatus02[i].tot_log_cnt)];
+						// arrStatDt.push(arr);
+						//
+					// }
 
 				}
 			}
