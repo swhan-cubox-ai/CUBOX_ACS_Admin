@@ -57,7 +57,6 @@ canvas {
 		});
 		
 		reload();
-		fnAlarmHistoryChartDraw(alarmData);
 	});
 
 	//새로고침
@@ -203,7 +202,11 @@ canvas {
 				label: '알람이력횟수',
 				borderColor: '#173d93',		//window.chartColors.blue
 				borderWidth: 2,
-				fill: false,
+				fill: true,
+				backgroundColor: '#eef9fc',
+				pointStyle: 'circle',
+				pointRadius: 10,
+				pointHoverRadius: 15,
 				data: data1
 			}]
 		};
@@ -424,7 +427,7 @@ canvas {
 	}
 
 </script>
-<div class="main_a">
+<div class="main_a" style="padding-top: 0px;">
 	<div class="st_box">
 		<div class="icon">
 			<img src="/img/main/m_icon03.png" alt="" />
@@ -476,8 +479,7 @@ canvas {
 
 </div>
 
-<div class="main_b">
-
+<div class="main_b" style="padding-top: 20px;">
 	<div class="main_left" style="width: 49%;">
 		<div class="inbox7" style="width: 100%; height: 360px;">
 			<div class="title">

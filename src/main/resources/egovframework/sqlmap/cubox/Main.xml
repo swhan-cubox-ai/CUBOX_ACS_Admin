@@ -159,8 +159,8 @@ LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = dh.door_alarm_typ and c1.cd_typ = 'DoorA
                    , SUM(CASE WHEN ENT_EVT_TYP IN ('EET000') THEN 1 ELSE 0 END) AS CF_PASS
                    , SUM(CASE WHEN ENT_EVT_TYP  IN ('EET000') THEN 0 ELSE 1 END) AS CF_FAIL
                 FROM T_ENT_HIST
-               WHERE EVT_DT BETWEEN DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -12 DAY), '%y-%m-%d')
-                 AND CONCAT(DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -12 DAY), '%y-%m-%d'), ' 23:59:59.999')
+               WHERE EVT_DT BETWEEN DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -2 DAY), '%y-%m-%d')
+                 AND CONCAT(DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -2 DAY), '%y-%m-%d'), ' 23:59:59.999')
              ) D2
      UNION ALL
         SELECT DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -1 DAY), '%m-%d') AS EXP_DAY
@@ -183,8 +183,8 @@ LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = dh.door_alarm_typ and c1.cd_typ = 'DoorA
 
     <select id="selectMainStatus02" parameterType="hashmap" resultType="hashmap">
         /* #test */
-        select date_format('2023-01-01', '%m-%d') as exp_day
-             , ifnull(cf_tot, 0) as tot_log_cnt
+        select date_format('2023-01-01', '%m-%d') as alarm_day
+             , ifnull(cf_tot, 0) as tot_alarm_cnt
         from (select date_format(evt_dt,'%m-%d') fevttm
                    , count(evt_dt) as cf_tot
               from T_DOORALARM_HIST
@@ -192,8 +192,8 @@ LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = dh.door_alarm_typ and c1.cd_typ = 'DoorA
                         and concat('2023-01-01', ' 23:59:59.999')
              ) a1
         union all
-        select date_format('2023-01-02', '%m-%d') as exp_day
-             , ifnull(cf_tot, 0) as tot_log_cnt
+        select date_format('2023-01-02', '%m-%d') as alarm_day
+             , ifnull(cf_tot, 0) as tot_alarm_cnt
         from (select date_format(evt_dt,'%m-%d') fevttm
                    , count(evt_dt) as cf_tot
               from T_DOORALARM_HIST
@@ -201,8 +201,8 @@ LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = dh.door_alarm_typ and c1.cd_typ = 'DoorA
                         and concat('2023-01-02', ' 23:59:59.999')
              ) a2
         union all
-        select date_format('2023-01-03', '%m-%d') as exp_day
-             , ifnull(cf_tot, 0) as tot_log_cnt
+        select date_format('2023-01-03', '%m-%d') as alarm_day
+             , ifnull(cf_tot, 0) as tot_alarm_cnt
         from (select date_format(evt_dt,'%m-%d') fevttm
                    , count(evt_dt) as cf_tot
               from T_DOORALARM_HIST
@@ -210,8 +210,8 @@ LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = dh.door_alarm_typ and c1.cd_typ = 'DoorA
                         and concat('2023-01-03', ' 23:59:59.999')
              ) a3
         union all
-        select date_format('2023-01-04', '%m-%d')as exp_day
-             , ifnull(cf_tot, 0) as tot_log_cnt
+        select date_format('2023-01-04', '%m-%d')as alarm_day
+             , ifnull(cf_tot, 0) as tot_alarm_cnt
         from (select date_format(evt_dt,'%m-%d') fevttm
                    , count(evt_dt) as cf_tot
               from T_DOORALARM_HIST
@@ -219,8 +219,8 @@ LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = dh.door_alarm_typ and c1.cd_typ = 'DoorA
                         and concat('2023-01-04', ' 23:59:59.999')
              ) a4
         union all
-        select date_format('2023-01-05', '%m-%d') as exp_day
-             , ifnull(cf_tot, 0) as tot_log_cnt
+        select date_format('2023-01-05', '%m-%d') as alarm_day
+             , ifnull(cf_tot, 0) as tot_alarm_cnt
         from (select date_format(evt_dt,'%m-%d') fevttm
                    , count(evt_dt) as cf_tot
               from T_DOORALARM_HIST
@@ -228,7 +228,51 @@ LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = dh.door_alarm_typ and c1.cd_typ = 'DoorA
                         and concat('2023-01-05', ' 23:59:59.999')
              ) a5
 
-
+       /* #real
+       select DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -1 DAY), '%m-%d') as alarm_day
+             , ifnull(cf_tot, 0) as tot_alarm_cnt
+        from (select date_format(evt_dt,'%m-%d') fevttm
+                   , count(evt_dt) as cf_tot
+              from T_DOORALARM_HIST
+              where evt_dt between DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -5 DAY), '%y-%m-%d')
+                        and concat(DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -5 DAY), '%y-%m-%d'), ' 23:59:59.999')
+             ) a1
+        union all
+        select DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -4 DAY), '%m-%d') as alarm_day
+             , ifnull(cf_tot, 0) as tot_alarm_cnt
+        from (select date_format(evt_dt,'%m-%d') fevttm
+                   , count(evt_dt) as cf_tot
+              from T_DOORALARM_HIST
+              where evt_dt between DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -4 DAY), '%y-%m-%d')
+                        and concat(DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -4 DAY), '%y-%m-%d'), ' 23:59:59.999')
+             ) a2
+        union all
+        select DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -3 DAY), '%m-%d') as alarm_day
+             , ifnull(cf_tot, 0) as tot_alarm_cnt
+        from (select date_format(evt_dt,'%m-%d') fevttm
+                   , count(evt_dt) as cf_tot
+              from T_DOORALARM_HIST
+              where evt_dt between DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -3 DAY), '%y-%m-%d')
+                        and concat(DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -3 DAY), '%y-%m-%d'), ' 23:59:59.999')
+             ) a3
+        union all
+        select DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -2 DAY), '%m-%d')as alarm_day
+             , ifnull(cf_tot, 0) as tot_alarm_cnt
+        from (select date_format(evt_dt,'%m-%d') fevttm
+                   , count(evt_dt) as cf_tot
+              from T_DOORALARM_HIST
+              where evt_dt between DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -2 DAY), '%y-%m-%d')
+                        and concat(DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -2 DAY), '%y-%m-%d'), ' 23:59:59.999')
+             ) a4
+        union all
+        select DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -1 DAY), '%m-%d') as alarm_day
+             , ifnull(cf_tot, 0) as tot_alarm_cnt
+        from (select date_format(evt_dt,'%m-%d') fevttm
+                   , count(evt_dt) as cf_tot
+              from T_DOORALARM_HIST
+              where evt_dt between DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -1 DAY), '%y-%m-%d')
+                        and concat(DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL -1 DAY), '%y-%m-%d'), ' 23:59:59.999')
+             ) a5*/
     </select>
 
 </mapper>

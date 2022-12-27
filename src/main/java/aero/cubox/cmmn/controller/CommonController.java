@@ -120,40 +120,6 @@ public class CommonController {
 		}
 	}
 
-	@SuppressWarnings("serial")
-	@RequestMapping(value="/main.do")
-	public String main(ModelMap model, @RequestParam Map<String, Object> commandMap, RedirectAttributes redirectAttributes, HttpSession session) throws Exception {
-		//자동새로고침때문에 추가
-		String reloadYn = StringUtil.isNullToString(commandMap.get("reloadYn")).matches("Y") ? StringUtil.isNullToString(commandMap.get("reloadYn")) : "N";
-		String intervalSecond = StringUtil.isNullToString(commandMap.get("intervalSecond")).matches("(^[0-9]+$)") ? StringUtil.isNullToString(commandMap.get("intervalSecond")) : "5";
-
-
-
-
-//	@ResponseBody
-//	@RequestMapping(value = "/main/getMainNoticeList.do")
-//	public ModelAndView getMainNoticeList (@RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
-//		ModelAndView modelAndView = new ModelAndView();
-//		modelAndView.setViewName("jsonView");
-//
-//		//출입이력
-//		List<BoardVO> noticeList = commonService.getMainNoticeList();
-//		modelAndView.addObject("noticeList", noticeList);
-//		return modelAndView;
-//	}
-//
-//
-//	@ResponseBody
-//	@RequestMapping(value = "/main/getMainQaList.do")
-//	public ModelAndView getMainQaList (@RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
-//		ModelAndView modelAndView = new ModelAndView();
-//		modelAndView.setViewName("jsonView");
-//
-//		//출입이력
-//		List<BoardVO> qaList = commonService.getMainQaList();
-//		modelAndView.addObject("qaList", qaList);
-//		return modelAndView;
-//	}
 	
 	@RequestMapping(value = "/logout.do")
 	public String actionLogout(HttpServletRequest request, ModelMap model) throws Exception {
@@ -167,22 +133,4 @@ public class CommonController {
 		return "redirect:/login.do";
 	}
 
-	/**
-	 * 모니터링
-	 * @param commandMap 파라메터전달용 commandMap
-	 * @return common/index
-	 * @throws Exception
-	 */
-//	@RequestMapping(value="/index.do")
-//	public String index(ModelMap model, @RequestParam Map<String, Object> commandMap,
-//			HttpServletRequest request) throws Exception {
-//		LoginVO loginVO = (LoginVO)request.getSession().getAttribute("loginVO");
-//
-//		if (loginVO != null && loginVO.getFsiteid() != null && !loginVO.getFsiteid().equals("")) {
-//			model.addAttribute("menuPath", "common/index");
-//			return "cubox/cuboxSubContents";
-//		}else{
-//			return "redirect:/login.do";
-//		}
-//	}
 }
