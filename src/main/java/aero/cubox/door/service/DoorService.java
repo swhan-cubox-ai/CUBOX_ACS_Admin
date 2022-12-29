@@ -55,8 +55,6 @@ public interface DoorService {
     int getDoorNameVerification(HashMap<String, Object> param);
 
     // 엑셀
-    void deleteBuildingAreaFloorDoorAll();
-
     int addBuildingFloorDoor(Sheet sheet);
 
 }

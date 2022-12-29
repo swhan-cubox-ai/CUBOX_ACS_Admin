@@ -949,9 +949,6 @@ public class DoorController {
                 }
             }
 
-            // Building Area Floor Door 삭제
-            doorService.deleteBuildingAreaFloorDoorAll();
-
             // Building Floor Door 등록
             int doorCnt = doorService.addBuildingFloorDoor(sheet);
 

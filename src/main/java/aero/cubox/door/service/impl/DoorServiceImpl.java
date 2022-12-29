@@ -395,21 +395,15 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         return doorDAO.getTerminalList(commandMap);
     }
 
-    /**
-     * 엑셀 업로드 시 전체 삭제
-     */
     @Override
     @Transactional
-    public void deleteBuildingAreaFloorDoorAll() {
+    public int addBuildingFloorDoor(Sheet sheet) {
+
+        // Building Area Floor Door 삭제
         doorDAO.deleteDoorAll();
         doorDAO.deleteFloorAll();
         doorDAO.deleteAreaAll();
         doorDAO.deleteBuildingAll();
-    }
-
-    @Override
-    @Transactional
-    public int addBuildingFloorDoor(Sheet sheet) {
 
         int cnt = 0;
         HashMap paramMap;
