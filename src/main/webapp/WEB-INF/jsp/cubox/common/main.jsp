@@ -205,8 +205,8 @@ canvas {
 				fill: true,
 				backgroundColor: '#eef9fc',
 				pointStyle: 'circle',
-				pointRadius: 10,
-				pointHoverRadius: 15,
+				pointRadius: 5,
+				pointHoverRadius: 10,
 				data: data1
 			}]
 		};
@@ -278,6 +278,8 @@ canvas {
 				label: '출입이력',
 				borderColor: '#173d93',		//window.chartColors.blue
 				borderWidth: 2,
+				pointRadius: 5,
+				pointHoverRadius: 10,
 				fill: false,
 				data: data1
 			}, {
@@ -407,6 +409,12 @@ canvas {
 		f.submit();
 	}
 
+	function fnAlarmLog() {
+		f = document.frmSearch;
+		f.action = 'report/alarmHist/list.do';
+		f.submit();
+	}
+
 	function fnBoardList(bbsId){
 		f = document.frmSearch;
 		f.action = "/boardInfo/"+pad(bbsId,20)+"/list.do";
@@ -427,7 +435,7 @@ canvas {
 	}
 
 </script>
-<div class="main_a" style="padding-top: 0px;">
+<div class="main_a" style="padding-top: 0px; margin: 15px 0;">
 	<div class="st_box">
 		<div class="icon">
 			<img src="/img/main/m_icon03.png" alt="" />
