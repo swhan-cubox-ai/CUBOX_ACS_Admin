@@ -1,6 +1,8 @@
 package aero.cubox.door.service;
 
 
+import org.apache.poi.ss.usermodel.Sheet;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,5 +54,7 @@ public interface DoorService {
     int getFloorNameVerification(HashMap<String, Object> param);
     int getDoorNameVerification(HashMap<String, Object> param);
 
+    // 엑셀
+    int addBuildingFloorDoor(Sheet sheet);
 
 }
