@@ -929,6 +929,7 @@ public class DoorController {
             Workbook wb = WorkbookFactory.create(file.getInputStream());
             Sheet sheet = wb.getSheetAt(0);
 
+            // validation
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
