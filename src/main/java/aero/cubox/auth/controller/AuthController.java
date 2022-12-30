@@ -628,4 +628,44 @@ public class AuthController {
         wb.write(response.getOutputStream());
     }
 
+    @RequestMapping(value="/mdm/list.do")
+    public String mdmList(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("jsonView");
+
+        try{
+            MdmVO vo = new MdmVO();
+
+            String srchPage       = StringUtil.nvl(commandMap.get("srchPage"), "1");
+            String srchRecPerPage = StringUtil.nvl(commandMap.get("srchRecPerPage"), "10");
+            String keyword1 = StringUtil.nvl(commandMap.get("keyword1"), "");
+
+            vo.setSrchPage(Integer.parseInt(srchPage));
+            vo.setSrchCnt(Integer.parseInt(srchRecPerPage));
+            vo.autoOffset();
+
+            vo.setKeyword1(keyword1);
+
+            int totalCnt = authService.getMdmListCount(vo);
+            List<MdmVO> mdmList = authService.getMdmList(vo);
+
+            PaginationVO pageVO = new PaginationVO();
+            pageVO.setCurPage(vo.getSrchPage());
+            pageVO.setRecPerPage(vo.getSrchCnt());
+            pageVO.setTotRecord(totalCnt);
+            pageVO.setUnitPage(vo.getCurPageUnit());
+            pageVO.calcPageList();
+
+            model.addAttribute("mdmList", mdmList);
+            model.addAttribute("data", vo);
+            model.addAttribute("pagination", pageVO);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            modelAndView.addObject("message", e.getMessage());
+        }
+
+        return "cubox/auth/mdm/list";
+    }
+
 }

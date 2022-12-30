@@ -32,6 +32,7 @@ public class MenuUrlSetting {
         else if ("0301".equals(menu_cd)) return "/auth/emp/list.do";           // 인사정보관리
         else if ("0302".equals(menu_cd)) return "/auth/dept/list.do";           // 부서관리
         else if ("0303".equals(menu_cd)) return "/auth/door/list.do";           // 출입문 권한그룹 관리
+        else if ("0304".equals(menu_cd)) return "/auth/mdm/list.do";           // mdm 정보 조회
 
         if ("0400".equals(menu_cd)) return "";                // 보고서
         else if ("0401".equals(menu_cd)) return "/report/entHist/list.do";           // 출입이력

@@ -259,9 +259,9 @@ function createTree(crudType, isMngmt, result, treeDiv) {
 
 	d = new dTree('d'); //dtree선언
 
-	// if (result.workplaceList.length > 0) {
-		// $.each(result.workplaceList, function(i, workplace) { // workplace
-			// d.add("w_" + workplace.id, -1, workplace.workplace_nm);
+	if (result.workplaceList.length > 0) {
+		$.each(result.workplaceList, function(i, workplace) { // workplace
+			d.add("w_" + workplace.id, -1, workplace.workplace_nm);
 
 			$.each(result.buildingList, function(j, building) { // building
 				if (building.workplace_id === workplace.id) {
@@ -337,8 +337,8 @@ function createTree(crudType, isMngmt, result, treeDiv) {
 				// }
 				}
 			});
-		// });
-	// }
+		});
+	}
 
 	treeDiv.html(d.toString());
 	$(".nodeSel").toggleClass("nodeSel node");

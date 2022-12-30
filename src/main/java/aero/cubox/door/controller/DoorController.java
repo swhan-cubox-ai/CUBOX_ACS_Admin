@@ -128,11 +128,10 @@ public class DoorController {
             parmaMap.put("keyword",keyword);
         }
 
-//        List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
+        List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
         List<Map>  buildingList = doorService.getBuildingList(parmaMap);  //빌딩 목록
 //        //List<Map>      areaList = doorService.getAreaList(parmaMap);      //지역 목록
         List<Map> floorList = doorService.getFloorList(parmaMap);     //층 목록
-//
         List<Map> doorList = doorService.getDoorList(parmaMap);           //출입문 목록
 //
 ////        model.addAttribute("workplaceList", workplaceList);
@@ -141,7 +140,7 @@ public class DoorController {
 ////        model.addAttribute("floorList", floorList);
 ////        model.addAttribute("doorList", doorList);
 //
-//        modelAndView.addObject("workplaceList", workplaceList);
+        modelAndView.addObject("workplaceList", workplaceList);
         modelAndView.addObject("buildingList", buildingList);
         modelAndView.addObject("floorList", floorList);
         modelAndView.addObject("doorList", doorList);
