@@ -16,9 +16,8 @@ public class MenuUrlSetting {
         else if ("0101".equals(menu_cd)) return  "";           // 환경설정
         else if ("0102".equals(menu_cd)) return "/user/list.do";       // 사용자관리
         else if ("0103".equals(menu_cd)) return "/menuAuth/list.do";   // 메뉴권한관리
-        else if ("0104".equals(menu_cd)) return "/system/actLog/list.do";           // 사용자 활동 로그
+        else if ("0104".equals(menu_cd)) return "";           // 사용자 활동 로그
         else if ("0105".equals(menu_cd)) return "/system/privacy/list.do";           // 개인정보폐기
-        else if ("0106".equals(menu_cd)) return "/system/stat/list.do";           // 통계
 
         if ("0200".equals(menu_cd)) return "";                              // 출입문 관리
         else if ("0201".equals(menu_cd)) return "/door/management.do";      // 출입문 관리
@@ -31,7 +30,7 @@ public class MenuUrlSetting {
         if ("0300".equals(menu_cd)) return "";                // 권한관리
         else if ("0301".equals(menu_cd)) return "/auth/emp/list.do";           // 인사정보관리
         else if ("0302".equals(menu_cd)) return "/auth/dept/list.do";           // 부서관리
-        else if ("0303".equals(menu_cd)) return "/auth/door/list.do";           // 출입문 권한그룹 관리
+        else if ("0303".equals(menu_cd)) return "/auth/door/list.do";           // 출입문 권한그룹 관리(전체)
         else if ("0304".equals(menu_cd)) return "/auth/mdm/list.do";           // mdm 정보 조회
 
         if ("0400".equals(menu_cd)) return "";                // 보고서
@@ -42,6 +41,8 @@ public class MenuUrlSetting {
         else if ("0405".equals(menu_cd)) return "";           // 대량조회신청결과
         else if ("0406".equals(menu_cd)) return "/report/err/faceFeatureList.do";           // 특징점추출 실패 조회
 
+        if ("0500".equals(menu_cd)) return "";                // 권한관리(부서)
+        else if ("0501".equals(menu_cd)) return "/auth/door/list2.do";          // 출입문 권한그룹 관리(부서)
 
         return  menuUrl;
     }

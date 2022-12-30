@@ -69,6 +69,7 @@ public class DoorController {
     final String EF02 = "EF02";     // 층 코드 없음
     final String ED01 = "ED01";     // 출입문 명 없음
     final String ED02 = "ED02";     // 출입문 코드 없음
+    final String ED03 = "ED03";     // 출입문 코드 중복
 
 
 
@@ -911,7 +912,7 @@ public class DoorController {
     }
 
 
-    @Transactional(rollbackFor = {RuntimeException.class})
+    @Transactional
     @ResponseBody
     @RequestMapping(value = "/excel/upload.do", method = RequestMethod.POST)
     public ModelAndView excelUpload(MultipartHttpServletRequest request) throws Exception {
@@ -940,6 +941,7 @@ public class DoorController {
             HashMap paramMap;
             HashMap buildingMap = new HashMap();
             HashMap floorMap = new HashMap();
+            HashMap doorMap = new HashMap();
 
             // 전체 삭제
             doorService.deleteDoorAll();
@@ -1079,7 +1081,9 @@ public class DoorController {
                     doorCd = preNum + doorCd;
                 }
 
-                if (!buildingId.equals("") && !floorId.equals("") && doorNm.length() > 0) {
+                if (!doorMap.containsValue(doorCd)) {
+                    doorMap.put(doorNm, doorCd);
+
                     HashMap param = new HashMap();
                     param.put("buildingCd", buildingCd);
                     param.put("floorCd", floorCd);
@@ -1088,16 +1092,21 @@ public class DoorController {
                     param.put("areaId", null);
                     param.put("floorId", floorId);
                     param.put("doorNm", doorNm);
-//                        param.put("terminalCd", terminalCd);
-//                        param.put("alarmGroupId", );
+                    //  param.put("terminalCd", terminalCd);
+                    //  param.put("alarmGroupId", );
                     try {
                         newDoorId = doorService.addDoor(param);
                         LOGGER.debug("newDoorId === {}", newDoorId);
                         if (newDoorId != "") cnt++;
                     } catch (Exception e) {
                         e.getStackTrace();
-                        LOGGER.debug("ADD DOOR EXCEPTION: {} ", e.getMessage());
+                    LOGGER.debug("ADD DOOR EXCEPTION: {} ", e.getMessage());
                     }
+                } else {
+                    errorMsg = "== ErrorCode (" + ED03 + ") ==\n중복된 출입문 코드가 있습니다. \n관리자에게 문의하세요.";
+                    modelAndView.addObject("resultCode", "N");
+                    modelAndView.addObject("message", errorMsg);
+                    throw new RuntimeException(errorMsg);
                 }
             }
 

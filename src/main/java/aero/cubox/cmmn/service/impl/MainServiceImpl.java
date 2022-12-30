@@ -6,7 +6,9 @@ import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("mainService")
 public class MainServiceImpl extends EgovAbstractServiceImpl implements MainService {
@@ -29,5 +31,20 @@ public class MainServiceImpl extends EgovAbstractServiceImpl implements MainServ
 	public int getDayEntEmpCount() throws Exception {
 		return mainDAO.getDayEntEmpCount();
 	}
+
+    @Override
+    public List<HashMap> getMainAlarmHistList() throws Exception {
+		return mainDAO.getMainAlarmHistList();
+    }
+
+    @Override
+    public List<HashMap> getMainStatus01() throws Exception {
+		return mainDAO.getMainStatus01();
+    }
+
+    @Override
+    public List<HashMap> getMainStatus02() throws Exception {
+		return mainDAO.getMainStatus02();
+    }
 
 }

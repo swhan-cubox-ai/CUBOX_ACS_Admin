@@ -2,8 +2,10 @@ package aero.cubox.auth.service.impl;
 
 
 import aero.cubox.auth.service.AuthService;
-import aero.cubox.core.vo.*;
-import aero.cubox.link.service.impl.MdmDAO;
+import aero.cubox.core.vo.AuthVO;
+import aero.cubox.core.vo.DeptVO;
+import aero.cubox.core.vo.EmpVO;
+import aero.cubox.core.vo.FaceVO;
 import aero.cubox.util.StringUtil;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
@@ -54,6 +56,21 @@ public class AuthServiceImpl extends EgovAbstractServiceImpl implements AuthServ
     @Override
     public int getAuthListCount(AuthVO vo) throws Exception {
         return authDAO.getAuthListCount(vo);
+    }
+
+    @Override
+    public List<AuthVO> getAuthList2(AuthVO vo) throws Exception {
+        return authDAO.getAuthList2(vo);
+    }
+
+    @Override
+    public int getAuthListCount2(AuthVO vo) throws Exception {
+        return authDAO.getAuthListCount2(vo);
+    }
+
+    @Override
+    public AuthVO getAuthDetail(int id) throws Exception {
+        return authDAO.getAuthDetail(id);
     }
 
     @Override
@@ -167,7 +184,7 @@ public class AuthServiceImpl extends EgovAbstractServiceImpl implements AuthServ
         String[] authItemArray =authItemStr.split(",");
 
         map.put("deptAuthYn", "N");
-        map.put("deptCd", "");
+        //map.put("deptCd", "");
 
         this.addAuth(map);
 
@@ -189,6 +206,40 @@ public class AuthServiceImpl extends EgovAbstractServiceImpl implements AuthServ
     @Override
     public FaceVO selectFaceOne(String empCd) throws Exception {
         return authDAO.selectFaceOne(empCd);
+    }
+
+    @Override
+    public List<Map> getEmpSourceList(Map map) throws Exception {
+        return authDAO.getEmpSourceList(map);
+    }
+
+    @Override
+    public List<Map> getEmpTargetList(Map map) throws Exception {
+        return authDAO.getEmpTargetList(map);
+    }
+
+    @Override
+    @Transactional
+    public void assignAuthEmp(HashMap<String, Object> map) throws Exception {
+        String targetEmpAStr = (String) map.get("targetEmpArray");
+        String[] targetEmpArray = targetEmpAStr.split(",");
+
+        this.delAuth(map);
+
+        if(targetEmpArray.length > 0 && ! StringUtil.isEmpty(targetEmpArray[0])){
+            for(String empId : targetEmpArray){
+                HashMap<String, Object> param = new HashMap<String, Object>();
+                param.put("authId", map.get("authId"));
+                param.put("id", empId);
+
+                this.addAuthEmp(param);
+            }
+        }
+    }
+
+    @Override
+    public int delAuth(HashMap<String, Object> map) throws Exception {
+        return authDAO.delAuth(map);
     }
 
     @Override

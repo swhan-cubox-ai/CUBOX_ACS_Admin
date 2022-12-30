@@ -118,6 +118,63 @@
         </if>
     </select>
 
+    <select id="getAuthList2" parameterType="aero.cubox.core.vo.AuthVO" resultType="aero.cubox.core.vo.AuthVO">
+        select
+        id as id
+        ,auth_nm as authNm
+        ,auth_typ as authTyp
+        ,(SELECT cd_nm FROM T_CMMN_CD WHERE cd_typ = 'AuthTyp' AND cd = auth_typ) as authTypNm
+        ,dept_auth_yn as deptAuthYn
+        ,dept_cd as deptCd
+        ,(SELECT COUNT(*) FROM T_EMP_AUTH WHERE auth_id = id) as authEmpCnt
+        ,use_yn as useYn
+        ,DATE_FORMAT(created_at, '%Y-%m-%d') as createdAt
+        ,DATE_FORMAT(update_at, '%Y-%m-%d') as updatedAt
+        from	T_AUTH
+        where
+            dept_cd = #{deptCd}
+            <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond)'>
+                AND auth_typ = #{srchCond}
+            </if>
+            <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                AND auth_nm like CONCAT('%',#{keyword},'%')
+            </if>
+            <if test='@aero.cubox.util.CommonUtils@empty(isExcel)'>
+                limit	#{srchCnt} offset #{offset}
+            </if>
+    </select>
+
+    <select id="getAuthListCount2" parameterType="aero.cubox.core.vo.AuthVO" resultType="int">
+        select
+        count(*)
+        from	T_AUTH
+        where
+            dept_cd = #{deptCd}
+            <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond)'>
+                AND auth_typ = #{srchCond}
+            </if>
+            <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                AND auth_nm like CONCAT('%',#{keyword},'%')
+            </if>
+    </select>
+
+    <select id="getAuthDetail" parameterType="aero.cubox.core.vo.AuthVO" resultType="aero.cubox.core.vo.AuthVO">
+        select
+            id as id
+            ,auth_nm as authNm
+            ,auth_typ as authTyp
+            ,(SELECT cd_nm FROM T_CMMN_CD WHERE cd_typ = 'AuthTyp' AND cd = auth_typ) as authTypNm
+            ,dept_auth_yn as deptAuthYn
+            ,dept_cd as deptCd
+            ,(SELECT COUNT(*) FROM T_EMP_AUTH WHERE auth_id = id) as authEmpCnt
+            ,use_yn as useYn
+            ,DATE_FORMAT(created_at, '%Y-%m-%d') as createdAt
+            ,DATE_FORMAT(update_at, '%Y-%m-%d') as updatedAt
+        from	T_AUTH
+        where
+            id = #{id}
+    </select>
+
     <select id="getEmpDetail" parameterType="int" resultType = "HashMap">
         select
             id as id
@@ -326,5 +383,59 @@
         join T_FACE f on f.id = e.face_id
         where e.emp_cd = #{empCd}
     </select>
+
+    <select id="getEmpSourceList" parameterType="Map" resultType="Map">
+        SELECT
+            TE.id AS id,
+            TE.emp_cd AS empNo,
+            TE.emp_nm AS empNm,
+            IFNULL(TE.dept_nm,  (SELECT dept_nm FROM T_DEPT WHERE dept_cd = TE.dept_cd)) AS deptNm,
+            TE.belong_nm AS belongNm
+        FROM
+            T_EMP TE
+        LEFT OUTER JOIN T_EMP_AUTH TEA
+            ON TE.id = TEA.emp_id AND TEA.auth_id = #{authId}
+        WHERE
+            TEA.emp_id IS NULL
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(deptCd)'>
+            AND TE.dept_cd = #{deptCd}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword1)'>
+            AND (TE.belong_nm like CONCAT('%',#{keyword1},'%') OR TE.dept_nm like CONCAT('%',#{keyword1},'%'))
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword2)'>
+            AND (TE.emp_cd = #{keyword2} OR TE.emp_nm like CONCAT('%',#{keyword2},'%'))
+        </if>
+    </select>
+
+    <select id="getEmpTargetList" parameterType="Map" resultType="Map">
+        SELECT
+            TE.id AS id,
+            TE.emp_cd AS empNo,
+            TE.emp_nm AS empNm,
+            IFNULL(TE.dept_nm,  (SELECT dept_nm FROM T_DEPT WHERE dept_cd = TE.dept_cd)) AS deptNm,
+            TE.belong_nm AS belongNm
+        FROM
+        T_EMP TE
+        LEFT OUTER JOIN T_EMP_AUTH TEA
+        ON TE.id = TEA.emp_id AND TEA.auth_id = #{authId}
+        WHERE
+        TEA.emp_id IS NOT NULL
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(deptCd)'>
+            AND TE.dept_cd = #{deptCd}
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword1)'>
+            AND (TE.belong_nm like CONCAT('%',#{keyword1},'%') OR TE.dept_nm like CONCAT('%',#{keyword1},'%'))
+        </if>
+        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword2)'>
+            AND (TE.emp_cd = #{keyword2} OR TE.emp_nm like CONCAT('%',#{keyword2},'%'))
+        </if>
+    </select>
+
+    <delete id="delAuth" parameterType="HashMap">
+        DELETE FROM T_EMP_AUTH
+        WHERE
+            auth_id = #{authId}
+    </delete>
 
 </mapper>

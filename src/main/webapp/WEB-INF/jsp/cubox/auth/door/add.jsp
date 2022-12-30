@@ -393,6 +393,16 @@
 
     <div class="search_box mb_20">
         <div class="search_in" style="width: 900px;margin-left: 100px;">
+
+            <div class="comm_search mb_20 mt_10">
+                <div class="w_150px fl" style=""><em>부서</em></div>
+                <select name="deptCd" id="deptCd" size="1" class="w_150px input_com">
+                    <option value="">부서선택</option>
+                    <c:forEach var="list" items="${deptComboList}">
+                        <option value="${list.cd}">${list.cdNm}</option>
+                    </c:forEach>
+                </select>
+            </div>
             <div class="comm_search mb_20 mt_10">
                 <div class="w_150px fl" style="line-height: 30px"><em>출입권한그룹 명</em></div>
                 <input type="text" id="authNm" name="authNm" class="w_250px input_com l_radius_no" value="" placeholder="출입권한그룹 명" maxlength="20" style="border:1px solid #ccc;"/>

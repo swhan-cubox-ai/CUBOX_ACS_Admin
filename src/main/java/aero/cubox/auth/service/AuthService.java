@@ -18,6 +18,10 @@ public interface AuthService {
     public List<AuthVO> getAuthList(AuthVO vo) throws Exception;
     public int getAuthListCount(AuthVO vo) throws Exception;
 
+    public List<AuthVO> getAuthList2(AuthVO vo) throws Exception;
+    public int getAuthListCount2(AuthVO vo) throws Exception;
+
+    public AuthVO getAuthDetail(int id) throws Exception;
 
     public HashMap getEmpDetail(int id) throws Exception;
 
@@ -58,6 +62,14 @@ public interface AuthService {
     public void registAuthDoor(Map<String, Object> map) throws Exception;
 
     public FaceVO selectFaceOne(String empCd) throws Exception;
+
+    public List<Map> getEmpSourceList(Map map) throws Exception;
+
+    public List<Map> getEmpTargetList(Map map) throws Exception;
+
+    public void assignAuthEmp(HashMap<String, Object> map) throws Exception;
+
+    public int delAuth(HashMap<String, Object> map) throws Exception;
 
     public List<MdmVO> getMdmList(MdmVO vo) throws Exception;
     public int getMdmListCount(MdmVO vo) throws Exception;
