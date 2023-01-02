@@ -7,7 +7,7 @@
 		<Console name="console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d %5p [%c] %m%n" />
 		</Console>
-		<RollingFile name="RollingfileRoot" fileName="/opt/tomcat/latest/logs/acs_admin.log" filePattern="/opt/tomcat/latest/logs/acs_admin.log.%d{yyyy-MM-dd}_%i">
+		<RollingFile name="RollingfileRoot" fileName="D:/log/logs_${site}/console.log" filePattern="D:/log/logs_${site}/console-%d{yyyy-MM-dd}-%i.log">
 			<PatternLayout>
 				<pattern>%d %5p [%c] %m%n"</pattern>
 			</PatternLayout>

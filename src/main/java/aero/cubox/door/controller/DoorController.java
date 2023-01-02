@@ -88,21 +88,21 @@ public class DoorController {
         //todo 세션처리
 
         HashMap paramMap = new HashMap();
-        //List<Map> workplaceList = doorService.getWorkplaceList(paramMap); //사업장 목록
-//        List<Map> buildingList = doorService.getBuildingList(paramMap);   //빌딩 목록
-//       // List<Map> areaList = doorService.getAreaList(paramMap);           //지역 목록
-//        List<Map> floorList = doorService.getFloorList(paramMap);     //층 목록
+        List<Map> workplaceList = doorService.getWorkplaceList(paramMap); //사업장 목록
+        List<Map> buildingList = doorService.getBuildingList(paramMap);   //빌딩 목록
+       // List<Map> areaList = doorService.getAreaList(paramMap);           //지역 목록
+        List<HashMap> floorList = doorService.getFloorList(paramMap);     //층 목록
 
         // List<HashMap> scheduleList = doorScheduleService.getDoorScheduleList(paramMap);      // 스케쥴 목록
-//        List<HashMap> doorGroupList = doorGroupService.getDoorGroupList(paramMap);      // 스케쥴 목록
-//        List<HashMap> doorAlarmGrpList = doorAlarmService.getDoorAlarmGrpList(paramMap); // 출입물 알람 그룹 목록
+        List<HashMap> doorGroupList = doorGroupService.getDoorGroupList(paramMap);      // 스케쥴 목록
+        List<HashMap> doorAlarmGrpList = doorAlarmService.getDoorAlarmGrpList(paramMap); // 출입물 알람 그룹 목록
 
-//                model.addAttribute("buildingList", buildingList);
-        //model.addAttribute("workplaceList", workplaceList);
-//       // model.addAttribute("areaList", areaList);
-//        model.addAttribute("floorList", floorList);
-//        model.addAttribute("doorAlarmGrpList", doorAlarmGrpList);
-//        model.addAttribute("doorGroupList", doorGroupList);
+        model.addAttribute("workplaceList", workplaceList);
+        model.addAttribute("buildingList", buildingList);
+       // model.addAttribute("areaList", areaList);
+        model.addAttribute("floorList", floorList);
+        model.addAttribute("doorAlarmGrpList", doorAlarmGrpList);
+        model.addAttribute("doorGroupList", doorGroupList);
         //model.addAttribute("scheduleList", scheduleList);
 
         return "cubox/door/doorManagementDetail";
@@ -132,19 +132,16 @@ public class DoorController {
 
         List<Map> workplaceList = doorService.getWorkplaceList(parmaMap); //사업장 목록
         List<Map>  buildingList = doorService.getBuildingList(parmaMap);  //빌딩 목록
-//        //List<Map>      areaList = doorService.getAreaList(parmaMap);      //지역 목록
-        List<Map> floorList = doorService.getFloorList(parmaMap);     //층 목록
+        //List<Map>      areaList = doorService.getAreaList(parmaMap);      //지역 목록
+        List<HashMap> floorList = doorService.getFloorList(parmaMap);     //층 목록
+
         List<Map> doorList = doorService.getDoorList(parmaMap);           //출입문 목록
-//
-////        model.addAttribute("workplaceList", workplaceList);
-////        model.addAttribute("buildingList", buildingList);
-////        //model.addAttribute("areaList", areaList);
-////        model.addAttribute("floorList", floorList);
-////        model.addAttribute("doorList", doorList);
-//
-        modelAndView.addObject("workplaceList", workplaceList);
-        modelAndView.addObject("buildingList", buildingList);
-        modelAndView.addObject("floorList", floorList);
+
+        model.addAttribute("workplaceList", workplaceList);
+        model.addAttribute("buildingList", buildingList);
+        //model.addAttribute("areaList", areaList);
+        model.addAttribute("floorList", floorList);
+
         modelAndView.addObject("doorList", doorList);
 
         return modelAndView;

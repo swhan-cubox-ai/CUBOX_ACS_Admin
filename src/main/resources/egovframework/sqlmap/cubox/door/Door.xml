@@ -37,9 +37,9 @@
 			 , area_id
 			 , floor_id
 			 , door_nm
---			 , alarm_typ
-			 -- , created_at
-			 -- , updated_at
+			 , alarm_typ
+			 , created_at
+			 , updated_at
 		FROM T_DOOR TD
 		WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(building_id)'>
@@ -111,8 +111,8 @@
 		     , TB.building_cd
 		     , TB.workplace_id
 		     , TB.building_nm
-		--  , TB.created_at
-		--   , TB.updated_at
+		     , TB.created_at
+		     , TB.updated_at
 		  FROM T_BUILDING TB
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -132,8 +132,8 @@
 		     , area_id
 		     , floor_cd
 		     , floor_nm
-		--  , created_at
-		--   , updated_at
+		     , created_at
+		     , updated_at
 		  FROM T_FLOOR TF
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -169,8 +169,8 @@
 	<select id="selectWorkplaceList" parameterType="HashMap" resultType="HashMap">
 		SELECT id
              , workplace_nm
-		--  , created_at
-		--  , updated_at
+		     , created_at
+		     , updated_at
 		  FROM T_WORKPLACE TW
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -190,8 +190,8 @@
 			 , face_auth_typ
 			 , op_mode_typ
 			 , online_yn
-			 --  , created_at
-			 --  , updated_at
+			 , created_at
+			 , updated_at
 		  FROM T_TERMINAL TT
 		 WHERE 1 = 1
            AND use_yn = 'Y'

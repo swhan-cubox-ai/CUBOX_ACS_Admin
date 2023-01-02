@@ -41,14 +41,14 @@
         IFNULL(dept_nm,'') as deptNm ,
         eh.created_at as createdAt,
         eh.updated_at as updatedAt
-        from T_ENT_HIST eh
-        left outer join T_TERMINAL tm on eh.terminal_cd = tm.terminal_cd
+        FROM T_ENT_HIST eh
+        LEFT outer join T_TERMINAL tm on eh.terminal_cd = tm.terminal_cd
         LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = eh.ent_evt_typ and c1.cd_typ = 'EntEvtTyp'
         LEFT OUTER JOIN T_CMMN_CD c2 on c2.cd = eh.card_class_typ and c2.cd_typ = 'CardClassTyp'
         LEFT OUTER JOIN T_CMMN_CD c3 on c3.cd = eh.card_state_typ and c3.cd_typ = 'CardStateTyp'
         LEFT OUTER JOIN T_CMMN_CD c4 on c4.cd = eh.card_tag_typ and c4.cd_typ = 'CardTagTyp'
         LEFT OUTER JOIN T_CMMN_CD c5 on c5.cd = eh.auth_way_typ and c5.cd_typ = 'AuthWayTyp'
-        where 1=1
+        WHERE 1=1
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond1)'>
             AND eh.ent_evt_typ = #{srchCond1}
         </if>

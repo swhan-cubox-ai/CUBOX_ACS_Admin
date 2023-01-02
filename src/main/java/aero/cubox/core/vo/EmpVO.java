@@ -10,7 +10,6 @@ public class EmpVO {
     private String deptCd;
     private String deptNm;
     private String belongNm;
-
     private String cardStateTypNm;
     private String expiredDt;
     private String createdAt;

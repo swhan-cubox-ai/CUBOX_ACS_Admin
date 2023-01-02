@@ -54,9 +54,9 @@
         FROM
             T_TERMINAL TM
                 LEFT OUTER JOIN
-            T_DOOR TD ON TM.door_cd = TD.door_cd
-                LEFT OUTER JOIN
-            T_BUILDING TB ON TD.building_cd = TB.building_cd
+            T_DOOR TD ON TM.door_id = TD.id
+                JOIN
+            T_BUILDING TB ON TD.building_id = TB.id
                 LEFT OUTER JOIN
             T_AREA TA ON TD.area_id = TA.id
                 LEFT OUTER JOIN
@@ -199,9 +199,9 @@
         FROM
             T_TERMINAL TM
                 LEFT OUTER JOIN
-            T_DOOR TD ON TM.door_cd = TD.door_cd
+            T_DOOR TD ON TM.door_id = TD.id
                 JOIN
-            T_BUILDING TB ON TD.building_cd = TB.building_cd
+            T_BUILDING TB ON TD.building_id = TB.id
                 LEFT OUTER JOIN
             T_AREA TA ON TD.area_id = TA.id
                 LEFT OUTER JOIN
