@@ -30,7 +30,7 @@ public class MenuUrlSetting {
         if ("0300".equals(menu_cd)) return "";                // 권한관리
         else if ("0301".equals(menu_cd)) return "/auth/emp/list.do";           // 인사정보관리
         else if ("0302".equals(menu_cd)) return "/auth/dept/list.do";           // 부서관리
-        else if ("0303".equals(menu_cd)) return "/auth/door/list.do";           // 출입문 권한그룹 관리
+        else if ("0303".equals(menu_cd)) return "/auth/door/list.do";           // 출입문 권한그룹 관리(전체)
 
         if ("0400".equals(menu_cd)) return "";                // 보고서
         else if ("0401".equals(menu_cd)) return "/report/entHist/list.do";           // 출입이력
@@ -40,6 +40,8 @@ public class MenuUrlSetting {
         else if ("0405".equals(menu_cd)) return "";           // 대량조회신청결과
         else if ("0406".equals(menu_cd)) return "/report/err/faceFeatureList.do";           // 특징점추출 실패 조회
 
+        if ("0500".equals(menu_cd)) return "";                // 권한관리(부서)
+        else if ("0501".equals(menu_cd)) return "/auth/door/list2.do";          // 출입문 권한그룹 관리(부서)
 
         return  menuUrl;
     }

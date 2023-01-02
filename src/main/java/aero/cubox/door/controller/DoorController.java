@@ -10,6 +10,7 @@ import aero.cubox.door.service.DoorService;
 import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
+import org.apache.cxf.common.i18n.UncheckedException;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.UncheckedIOException;
 import java.util.*;
 
 /**
@@ -59,6 +61,17 @@ public class DoorController {
 
     @Resource(name = "authService")
     private AuthService authService;
+
+
+    // 오류코드 정의
+    final String EB01 = "EB01";     // 빌딩 명 없음
+    final String EB02 = "EB02";     // 빌딩 코드 없음
+    final String EF01 = "EF01";     // 층 명 없음
+    final String EF02 = "EF02";     // 층 코드 없음
+    final String ED01 = "ED01";     // 출입문 명 없음
+    final String ED02 = "ED02";     // 출입문 코드 없음
+    final String ED03 = "ED03";     // 출입문 코드 중복
+
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DoorController.class);
@@ -897,12 +910,9 @@ public class DoorController {
     }
 
 
-    @Transactional
     @ResponseBody
     @RequestMapping(value = "/excel/upload.do", method = RequestMethod.POST)
     public ModelAndView excelUpload(MultipartHttpServletRequest request) throws Exception {
-
-        System.out.println("excel file upload controller");
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("jsonView");
@@ -919,194 +929,44 @@ public class DoorController {
             Workbook wb = WorkbookFactory.create(file.getInputStream());
             Sheet sheet = wb.getSheetAt(0);
 
-            int cnt = 0;
-            String newBuildingId = "";
-            String newFloorId = "";
-            String newDoorId = "";
-            HashMap paramMap;
-            HashMap buildingMap = new HashMap();
-            HashMap floorMap = new HashMap();
-
-            // 전체 삭제
-            doorService.deleteDoorAll();
-            doorService.deleteFloorAll();
-            doorService.deleteAreaAll();
-            doorService.deleteBuildingAll();
-
-            // 1. Building
+            // validation
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
+                if (row == null) continue;
 
-                // 행이 없으면 패스
-                if (row == null) {
-                    continue;
-                }
+                String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");              // 빌딩 명
+                String buildingCd = getValue(row.getCell(5)).replaceAll("\n", "<br>");              // 빌딩 코드
+                String floorNm = getValue(row.getCell(2)).replaceAll("\n", "<br>");                 // 층 명
+                String floorCd = getValue(row.getCell(6)).replaceAll("\n", "<br>");                 // 층 코드
+                String doorNm = getValue(row.getCell(3)).replaceAll("\n", "<br>");                  // 출입문 명
+                String doorCd = getValue(row.getCell(7)).replaceAll("\n", "<br>");                  // 출입문 코드
 
-                if (row.getCell(0) != null && !row.getCell(1).equals("")) {
-                    String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");                                               // 빌딩 명
-                    String buildingCd = String.format("%02d", Integer.parseInt(getValue(row.getCell(5)).replaceAll("\n", "<br>")));      // 빌딩 코드
-
-                    if (!buildingMap.containsValue(buildingCd)) { // buildingCd가 없는 경우
-                        buildingMap.put(buildingNm, buildingCd);
-
-                        HashMap param = new HashMap();
-                        param.put("buildingNm", buildingNm);
-                        param.put("buildingCd", buildingCd);
-                        param.put("workplaceId", 1);
-
-                        try {
-                            newBuildingId = doorService.addBuilding(param);
-                            LOGGER.debug("newBuildingId === " + newBuildingId);
-                        } catch (Exception e) {
-                            e.getStackTrace();
-                            LOGGER.debug("ADD BUILDING EXCEPTION: {} ", e.getMessage());
-                        }
-                    }
+                String errorMsg = validExcel(buildingNm, buildingCd, floorNm, floorCd, doorNm, doorCd);
+                if (!errorMsg.equals("")) {
+                    modelAndView.addObject("resultCode", "N");
+                    modelAndView.addObject("message", errorMsg);
+                    return modelAndView;
                 }
             }
 
-            // Building List
-            paramMap = new HashMap();
-            List<Map> buildingList = doorService.getBuildingList(paramMap);   //빌딩 목록
+            // Building Floor Door 등록
+            int doorCnt = doorService.addBuildingFloorDoor(sheet);
 
-            // 2. Floor
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-
-                // 행이 없으면 패스
-                if (row == null) {
-                    continue;
-                }
-
-                if (row.getCell(0) != null && !row.getCell(2).equals("")) {
-                    String buildingId = "";
-                    String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");   // 빌딩 명
-                    String buildingCd = String.format("%02d", Integer.parseInt(getValue(row.getCell(5)).replaceAll("\n", "<br>")));   // 빌딩 코드
-                    String floorNm = getValue(row.getCell(2)).replaceAll("\n", "<br>");      // 층 명
-                    String floorCd = getValue(row.getCell(6)).replaceAll("\n", "<br>");      // 층 코드
-
-                    for (int j = 0; j < buildingList.size(); j++) {
-                        if (buildingList.get(j).get("building_nm").equals(buildingNm) && buildingList.get(j).get("building_cd").equals(buildingCd)) {
-                            buildingId = buildingList.get(j).get("id").toString();
-                            break;
-                        }
-                    }
-                    if (floorCd.length() == 1) {
-                        floorCd = "0" + floorCd;
-                    }
-
-                    if (!floorMap.containsValue(buildingCd + "_" + floorCd)) {
-                        floorMap.put(buildingNm + "_" + floorNm, buildingCd + "_" + floorCd);
-
-                        if (!buildingId.equals("")) {
-                            HashMap param = new HashMap();
-//                        param.put("floorNm", buildingNm + " " + floorNm);
-                            param.put("floorNm", floorNm);
-                            param.put("floorCd", floorCd);
-                            param.put("buildingId", buildingId);
-                            param.put("buildingCd", buildingCd);
-                            try {
-                                newFloorId = doorService.addFloor(param);
-                                LOGGER.debug("newFloorId === " + newFloorId);
-                            } catch (Exception e) {
-                                e.getStackTrace();
-                                LOGGER.debug("ADD FLOOR EXCEPTION: {} ", e.getMessage());
-                            }
-                        }
-                    }
-                }
-            }
-//
-            // Floor List
-            paramMap = new HashMap();
-            List<HashMap> floorList = doorService.getFloorList(paramMap);
-
-            // 3. Door
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-
-                // 행이 없으면 패스
-                if (row == null) {
-                    continue;
-                }
-
-                if (row.getCell(0) != null && !row.getCell(3).equals("")) {
-                    String buildingId = "";
-                    String floorId = "";
-                    String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");                                              // 빌딩 명
-                    String floorNm = getValue(row.getCell(2)).replaceAll("\n", "<br>");                                                 // 층 명
-                    String doorNm = getValue(row.getCell(3)).replaceAll("\n", "<br>");                                                  // 출입문 명
-                    String terminalCd = getValue(row.getCell(4)).replaceAll("\n", "<br>");                                              // 단말기 코드
-                    String buildingCd = String.format("%02d", Integer.parseInt(getValue(row.getCell(5)).replaceAll("\n", "<br>")));     // 빌딩 코드
-                    String floorCd = getValue(row.getCell(6)).replaceAll("\n", "<br>");                                                 // 층 코드 (2자리로 넣어야함)
-                    String doorCd = getValue(row.getCell(7)).replaceAll("\n", "<br>");                                                  // 출입문 코드
-
-                    // buildingId 가져오기
-                    for (int j = 0; j < buildingList.size(); j++) {
-                        if (buildingList.get(j).get("building_nm").equals(buildingNm) && buildingList.get(j).get("building_cd").equals(buildingCd)) {
-                            buildingId = buildingList.get(j).get("id").toString();
-                            break;
-                        }
-                    }
-
-                    // floorCd 2자리수 변형
-                    if (floorCd.length() == 1) {
-                        floorCd = "0" + floorCd;
-                    }
-
-                    // doorCd 6자리수 변형
-                    if (doorCd.length() < 6) {
-                        String preNum = "";
-                        int num = 6 - doorCd.length();
-                        for (int j = 0; j < num; j++) {
-                            preNum += "0";
-                        }
-                        doorCd = preNum + doorCd;
-                    }
-
-                    // floorId 가져오기
-                    for (int j = 0; j < floorList.size(); j++) {
-//                       if (floorList.get(j).get("floor_nm").equals(buildingNm + " " + floorNm) && floorList.get(j).get("floor_cd").equals(floorCd)) {
-                        if (floorList.get(j).get("floor_nm").equals(floorNm) && floorList.get(j).get("floor_cd").equals(floorCd) && floorList.get(j).get("building_cd").equals(buildingCd)) {
-                            floorId = floorList.get(j).get("id").toString();
-                            break;
-                        }
-                    }
-
-                    if (!buildingId.equals("") && !floorId.equals("") && doorNm.length() > 0) {
-                        HashMap param = new HashMap();
-                        param.put("buildingCd", buildingCd);
-                        param.put("floorCd", floorCd);
-                        param.put("doorCd", doorCd);
-                        param.put("buildingId", buildingId);
-                        param.put("areaId", null);
-                        param.put("floorId", floorId);
-                        param.put("doorNm", doorNm);
-//                        param.put("terminalCd", terminalCd);
-//                        param.put("alarmGroupId", );
-                        try {
-                            newDoorId = doorService.addDoor(param);
-                            LOGGER.debug("newDoorId === {}", newDoorId);
-                            if (newDoorId != "") cnt++;
-                        } catch (Exception e) {
-                            e.getStackTrace();
-                            LOGGER.debug("ADD DOOR EXCEPTION: {} ", e.getMessage());
-                        }
-                    }
-                }
-            }
-
-            if (cnt > 0) {
-                if (cnt == sheet.getLastRowNum()) {
+            if (doorCnt > 0) {
+                if (doorCnt == sheet.getLastRowNum()) {
                     modelAndView.addObject("resultCode", "Y");
                     modelAndView.addObject("message", "Success");
                 } else {
                     modelAndView.addObject("resultCode", "N");
-                    modelAndView.addObject("message", "Fail : 출입문 갯수 불일치");
+                    modelAndView.addObject("message", "Fail - 출입문 갯수 불일치");
                 }
+            } else if (doorCnt == -1) {
+                String errorMsg = "=== ErrorCode (" + ED03 + ") ===\n중복된 출입문 코드가 있습니다. \n관리자에게 문의하세요.";
+                modelAndView.addObject("resultCode", "N");
+                modelAndView.addObject("message", errorMsg);
             } else {
                 modelAndView.addObject("resultCode", "N");
-                modelAndView.addObject("message", "Fail : 출입문이 등록되지 않음");
+                modelAndView.addObject("message", "Fail - 출입문이 등록되지 않음");
             }
 
         } catch (Exception e) {
@@ -1116,6 +976,27 @@ public class DoorController {
         }
 
         return modelAndView;
+    }
+
+
+    public String validExcel(String buildingNm, String buildingCd, String floorNm, String floorCd, String doorNm, String doorCd) {
+        String errorMsg = "";
+
+        if (buildingNm.equals("") || buildingNm == null) {
+            errorMsg = "=== ErrorCode (" + EB01 + ") ===\n빌딩 이름이 누락되었습니다. \n관리자에게 문의하세요.";
+        } else if (buildingCd.equals("") || buildingCd == null) {
+            errorMsg = "=== ErrorCode (" + EB02 + ") ===\n빌딩 코드가 누락되었습니다. \n관리자에게 문의하세요.";
+        } else if (floorNm.equals("") || floorNm == null) {
+            errorMsg = "=== ErrorCode (" + EF01 + ") ===\n층 이름이 누락되었습니다. \n관리자에게 문의하세요.";
+        } else if (floorCd.equals("") || floorCd == null) {
+            errorMsg = "=== ErrorCode (" + EF02 + ") ===\n층 코드가 누락되었습니다. \n관리자에게 문의하세요.";
+        } else if (doorNm.equals("") || doorNm == null) {
+            errorMsg = "=== ErrorCode (" + ED01 + ") ===\n출입문 이름이 누락되었습니다. \n관리자에게 문의하세요.";
+        } else if (doorCd.equals("") || doorCd == null) {
+            errorMsg = "=== ErrorCode (" + ED02 + ") ===\n출입문 코드가 누락되었습니다. \n관리자에게 문의하세요.";
+        }
+
+        return errorMsg;
     }
 
 

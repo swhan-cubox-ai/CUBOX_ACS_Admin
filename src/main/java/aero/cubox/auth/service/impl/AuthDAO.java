@@ -44,6 +44,18 @@ public class AuthDAO extends EgovAbstractMapper {
         return selectOne ("auth.getAuthListCount", vo);
     }
 
+    public List<AuthVO> getAuthList2(AuthVO vo) throws Exception {
+        return selectList ("auth.getAuthList2", vo);
+    }
+
+    public int getAuthListCount2(AuthVO vo) throws Exception {
+        return selectOne ("auth.getAuthListCount2", vo);
+    }
+
+    public AuthVO getAuthDetail(int id) throws Exception {
+        return selectOne ("auth.getAuthDetail", id);
+    }
+
     public HashMap getEmpDetail(int id) throws Exception {
         return selectOne ("auth.getEmpDetail", id);
     }
@@ -118,5 +130,17 @@ public class AuthDAO extends EgovAbstractMapper {
 
     public FaceVO selectFaceOne(String empCd) throws Exception {
         return  selectOne ( "auth.selectFaceOne", empCd);
+    }
+
+    public List<Map> getEmpSourceList(Map map) throws Exception {
+        return selectList ("auth.getEmpSourceList", map);
+    }
+
+    public List<Map> getEmpTargetList(Map map) throws Exception {
+        return selectList ("auth.getEmpTargetList", map);
+    }
+
+    public int delAuth(Map map) throws Exception {
+        return delete ("auth.delAuth", map);
     }
 }

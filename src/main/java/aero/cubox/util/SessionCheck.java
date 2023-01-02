@@ -45,6 +45,9 @@ public class SessionCheck extends HandlerInterceptorAdapter {
 		freeAccessUrls.add("/login.do");
 		freeAccessUrls.add("/common/loginProc.do");
 
+		//강제로그인
+		freeAccessUrls.add("/common/loginSession.do");
+
 
 		// 사용자등록 임시
 		freeAccessUrls.add("/user/addUser.do");
@@ -60,7 +63,13 @@ public class SessionCheck extends HandlerInterceptorAdapter {
 		LOGGER.debug("uri >>>> "+uri);
 
 		LoginVO loginVO = (LoginVO) request.getSession().getAttribute("loginVO");
+
 		//로그인
+		if(loginVO != null && loginVO.getDirect_yn() == "Y") {
+			setAuthorInfo(loginVO.getRole_id() + "");
+			return true;
+		}
+
 		if (loginVO != null && loginVO.getLogin_id() != null && !loginVO.getLogin_id().equals("")) {
 			String role_id = loginVO.getRole_id();
 			//권한 확인
@@ -108,9 +117,9 @@ public class SessionCheck extends HandlerInterceptorAdapter {
 
 	public void setAuthorInfo(String role_id) throws Exception {
 		HashMap<String, Object> map = new HashMap<String, Object>();
-        //map.put("role_id", role_id);
+        map.put("role_id", role_id);
 		// 임시 -- 모든 대메뉴접근
-		map.put("role_id", "");
+		//map.put("role_id", "");
 
 		// 권한별 대메뉴 정보
 		List<MenuVO> urlList = menuService.getMenuList(map);
