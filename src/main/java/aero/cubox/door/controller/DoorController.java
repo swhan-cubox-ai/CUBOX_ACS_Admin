@@ -88,7 +88,7 @@ public class DoorController {
 
         HashMap paramMap = new HashMap();
         //List<Map> workplaceList = doorService.getWorkplaceList(paramMap); //사업장 목록
-        List<Map> buildingList = doorService.getBuildingList(paramMap);   //빌딩 목록
+//        List<Map> buildingList = doorService.getBuildingList(paramMap);   //빌딩 목록
 //       // List<Map> areaList = doorService.getAreaList(paramMap);           //지역 목록
 //        List<Map> floorList = doorService.getFloorList(paramMap);     //층 목록
 
