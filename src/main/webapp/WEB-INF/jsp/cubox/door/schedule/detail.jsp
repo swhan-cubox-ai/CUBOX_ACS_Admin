@@ -328,7 +328,6 @@
     // 최초 등록인지 체크
     function isFirstReg(day, schNum, startId, endId) {
         let isFirst = ($("." + day + "_" + schNum).length > 0) ? false : true;  // 최초등록?
-        console.log("isFirstReg");
 
         if (isFirst) {
             console.log("최초 등록");
@@ -342,22 +341,16 @@
 
             // 다른 스케쥴들 schTime에 담기
             for (let i = 0; i < sameDaySch.length; i++) {
-                console.log("sameDaySch i=" + i);
-                console.log(sameDaySch.eq(i));
-
                 let thisId = sameDaySch.eq(i).attr("id");
                 if (thisId.split("_")[1] != schNum) {
                     let isStart = sameDaySch.eq(i).hasClass("start");
-                    console.log($("#" + thisId.replace("start", "end")).val());
-
                     if ((isStart && $("#" + thisId.replace("start", "end")).val() != "") || (!isStart && $("#" + thisId.replace("end", "start")).val())) {
-                        console.log("=다른 스케쥴=");
-                        console.log($("#" + thisId).val());
+                        // console.log("=다른 스케쥴=");
+                        // console.log($("#" + thisId).val());
                         schTime.push($("#" + thisId).val());
                     }
                 }
             }
-            // console.log(schTime);
             // 있는지 없는지 먼저 확인
             if (!fnIsEmpty(schTime[0])) {
                 schTime0 = schTime[0];
@@ -434,7 +427,7 @@
             }
             result = false;
         }
-        console.log("timeValid 결과: " + result);
+        // console.log("timeValid 결과: " + result);
         return result;
     }
 
