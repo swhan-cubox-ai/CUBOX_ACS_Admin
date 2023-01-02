@@ -1,6 +1,5 @@
 package aero.cubox.cmmn.service.impl;
 
-import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.cmmn.service.CommonService;
 import aero.cubox.core.vo.CodeVO;
 import aero.cubox.core.vo.CommonVO;
@@ -218,18 +217,6 @@ public class CommonServiceImpl extends EgovAbstractServiceImpl implements Common
 	@Override
 	public DateTimeVO getDateTime() throws Exception{
 		return commonDAO.getDateTime();
-	}
-
-	@Override
-	public List<BoardVO> getMainNoticeList() throws Exception {
-
-		return commonDAO.getMainNoticeList();
-	}
-
-	@Override
-	public List<BoardVO> getMainQaList() throws Exception {
-
-		return commonDAO.getMainQaList();
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package aero.cubox.user.service.impl;
 
 import aero.cubox.admin.service.impl.AdminServiceImpl;
-import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.cmmn.service.CommonService;
 import aero.cubox.core.vo.*;
 import aero.cubox.user.service.UserService;

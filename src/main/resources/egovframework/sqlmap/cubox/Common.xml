@@ -220,41 +220,6 @@
 	</select>
 
 	
-	<select id="getMainNoticeList" resultType="aero.cubox.board.service.vo.BoardVO">
-		select ntt_id as nttId,
-			   bbs_id as bbsId,
-			   ntt_sj as nttSj,
-			   regist_id as registId,
-			   (select t.fname from tsiteuser t where t.fsiteid = a.regist_id) as registNm,
-			   substr(regist_dt, 1, 10) as registDt,
-			   modify_dt as modifyDt,
-			   inqire_co as inqireCo,
-			   ntt_cn    as nttCn,
-			   use_at as useAt
-		from bbs_tb a
-		where bbs_id = '00000000000000000001'
-		and use_at = 'Y'
-		order by regist_dt desc
-		limit 6 offset 0
-	</select>
-	
-	<select id="getMainQaList" resultType="aero.cubox.board.service.vo.BoardVO">
-		select ntt_id as nttId,
-			   ntt_sj as nttSj,
-			   regist_id as registId,
-			   (select t.fname from tsiteuser t where t.fsiteid = a.regist_id) as registNm,
-			   substr(regist_dt, 1, 10) as registDt,
-			   modify_dt as modifyDt,
-			   inqire_co as inqireCo,
-			   ntt_cn    as nttCn,
-			   use_at as useAt
-		from bbs_tb a
-		where bbs_id = '00000000000000000002'
-		and use_at = 'Y'
-		order by regist_dt desc
-		limit 6 offset 0
-	</select>
-
 	<select id="getCommonCodeList" parameterType="String"  resultType="aero.cubox.core.vo.CommonVO">
 		SELECT
 			cd as cd,
