@@ -1,6 +1,7 @@
 package aero.cubox.cmmn.controller;
 
 import aero.cubox.cmmn.service.CommonService;
+import aero.cubox.core.vo.CommonVO;
 import aero.cubox.core.vo.LoginVO;
 import aero.cubox.link.service.MdmService;
 import aero.cubox.menu.service.MenuService;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
@@ -131,6 +134,25 @@ public class CommonController {
 		AuthorManager.getInstance().clear();
 
 		return "redirect:/login.do";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/common/getDeptList.do")
+	public ModelAndView getDeptList(HttpServletRequest request, @RequestParam Map<String, Object> param) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+
+		try {
+			List<CommonVO> list = commonService.getDeptList();
+
+			modelAndView.addObject("list", list);
+
+		} catch(Exception e) {
+			e.printStackTrace();
+			modelAndView.addObject("message", e.getMessage());
+		}
+
+		return modelAndView;
 	}
 
 }

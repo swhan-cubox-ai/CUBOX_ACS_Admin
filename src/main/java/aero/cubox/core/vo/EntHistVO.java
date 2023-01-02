@@ -53,6 +53,12 @@ public class EntHistVO {
     private String fromDt;
     private String toDt;
 
+    private String[] srchDeptArray;
+
+    private String deptArray;
+
+    private String isExcel;
+
     private int srchPage			= 1;	//조회할 페이지 번호 기본 1페이지
     private int srchCnt				= 10;	//조회할 페이지 수
     private int offset				= 0;
@@ -402,6 +408,30 @@ public class EntHistVO {
 
     public void setToDt(String toDt) {
         this.toDt = toDt;
+    }
+
+    public String[] getSrchDeptArray() {
+        return srchDeptArray;
+    }
+
+    public String getDeptArray() {
+        return deptArray;
+    }
+
+    public void setDeptArray(String deptArray) {
+        this.deptArray = deptArray;
+    }
+
+    public void setSrchDeptArray(String[] srchDeptArray) {
+        this.srchDeptArray = srchDeptArray;
+    }
+
+    public String getIsExcel() {
+        return isExcel;
+    }
+
+    public void setIsExcel(String isExcel) {
+        this.isExcel = isExcel;
     }
 
     public int getSrchPage() {
