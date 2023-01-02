@@ -140,7 +140,7 @@
                     if (timeValid(startId, endId, start, end, day, schNum)) {
                         // if end 면 arr와 나머지 start와 비교
                         let arr = $("." + day + "_timepick:not(.sch" + schNum + "_timepick):not(.end)");
-
+                        let mode = '';
                         for (let i = 0; i <= arr.length; i++) {
                             let tmpStart = [];
                             if (arr.eq(i).val() !== "" && arr.eq(i).val() !== undefined) {
@@ -149,14 +149,15 @@
                                 if (end.hour == Number(tmpStart[0]) && end.min == Number(tmpStart[1])) {
                                     if (end.sec < Number(tmpStart[2])) {
                                         colorSchedule(start, end, day, schNum);
-                                        return;
-                                    } else {
-                                        isFirstReg(day, schNum, startId, endId);
+                                    } else if (end.sec >= Number(tmpStart[2])) {
+                                        console.log("1. 초단위 중복");
+                                        // isFirstReg(day, schNum, startId, endId);
+                                        mode = 'S';
                                     }
                                 }
                             }
                         }
-                        validCheck($("#" + startId).val(), el.val(), startId, endId, start, end, day, schNum);
+                        validCheck(mode, startId, endId, start, end, day, schNum);
                         activeNextTimepicker(day, schNum);
                     }
 
@@ -174,7 +175,7 @@
                     if (timeValid(startId, endId, start, end, day, schNum)) {
                         // if end 아니면 arr와 나머지 end와 시간 비교
                         let arr = $("." + day + "_timepick:not(.sch" + schNum + "_timepick):not(.start)");
-
+                        let mode = '';
                         for (let i = 0; i <= arr.length; i++) {
                             let tmpEnd = [];
                             if (arr.eq(i).val() !== "" && arr.eq(i).val() !== undefined) {
@@ -184,13 +185,15 @@
                                     if (start.sec > Number(tmpEnd[2])) {
                                         colorSchedule(start, end, day, schNum);
                                         return;
-                                    } else {
-                                        isFirstReg(day, schNum, startId, endId);
+                                    } else if (start.sec <= Number(tmpEnd[2])) {
+                                        console.log("2. 초단위 중복");
+                                        // isFirstReg(day, schNum, startId, endId);
+                                        mode = 'S';
                                     }
                                 }
                             }
                         }
-                        validCheck(el.val(), $("#" + endId).val(), startId, endId, start, end, day, schNum);
+                        validCheck(mode, startId, endId, start, end, day, schNum);
                     }
                 }
             }
@@ -262,8 +265,8 @@
         }
     }
 
-    function validCheck(startVal, endVal, startId, endId, start, end, day, schNum) {
-        if (ifValid(startVal, endVal, startId, endId, start, end, day, schNum)) {
+    function validCheck(mode, startId, endId, start, end, day, schNum) {
+        if (ifValid(mode, startId, endId, start, end, day, schNum)) {
             colorSchedule(start, end, day, schNum);
 
         } else {
@@ -271,9 +274,11 @@
         }
     }
 
+
     // 이미 색칠되어 있는지 여부확인
-    function ifValid(startVal, endVal, startId, endId, start, end, day, schNum) {
+    function ifValid(mode, startId, endId, start, end, day, schNum) {
         let result = true; // 다른 스케쥴과 겹치는지 여부
+        if (mode === "S") result = false;
 
         if (start.hour != end.hour) { // 시작시간과 종료시간이 다른 hour 칸에 있을 때
             for (let i = Number(start.hour); i <= Number(end.hour); i++) {
@@ -328,7 +333,6 @@
     // 최초 등록인지 체크
     function isFirstReg(day, schNum, startId, endId) {
         let isFirst = ($("." + day + "_" + schNum).length > 0) ? false : true;  // 최초등록?
-        console.log("isFirstReg");
 
         if (isFirst) {
             console.log("최초 등록");
@@ -342,22 +346,16 @@
 
             // 다른 스케쥴들 schTime에 담기
             for (let i = 0; i < sameDaySch.length; i++) {
-                console.log("sameDaySch i=" + i);
-                console.log(sameDaySch.eq(i));
-
                 let thisId = sameDaySch.eq(i).attr("id");
                 if (thisId.split("_")[1] != schNum) {
                     let isStart = sameDaySch.eq(i).hasClass("start");
-                    console.log($("#" + thisId.replace("start", "end")).val());
-
                     if ((isStart && $("#" + thisId.replace("start", "end")).val() != "") || (!isStart && $("#" + thisId.replace("end", "start")).val())) {
-                        console.log("=다른 스케쥴=");
-                        console.log($("#" + thisId).val());
+                        // console.log("=다른 스케쥴=");
+                        // console.log($("#" + thisId).val());
                         schTime.push($("#" + thisId).val());
                     }
                 }
             }
-            // console.log(schTime);
             // 있는지 없는지 먼저 확인
             if (!fnIsEmpty(schTime[0])) {
                 schTime0 = schTime[0];
@@ -434,7 +432,7 @@
             }
             result = false;
         }
-        console.log("timeValid 결과: " + result);
+        // console.log("timeValid 결과: " + result);
         return result;
     }
 
