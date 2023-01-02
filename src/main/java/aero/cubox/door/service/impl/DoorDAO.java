@@ -162,4 +162,8 @@ public class DoorDAO extends EgovAbstractMapper {
 	public int getDoorNameVerification(HashMap<String, Object> paramMap) {
 		return selectOne(sqlNameSpace+"selectDoorNameVerification", paramMap);
 	}
+
+	public String getTerminalId(String terminalCd) {
+		return selectOne(sqlNameSpace+"selectTerminalId", terminalCd);
+	}
 }

@@ -451,4 +451,11 @@ LEFT OUTER JOIN	T_DOOR TD ON TM.door_id = TD.id
 		   AND TT.door_id = #{doorId}
 	</select>
 
+	<select id="selectTerminalId" parameterType="String" resultType="String">
+		SELECT id AS terminalId
+		  FROM T_TERMINAL TT
+		 WHERE 1 = 1
+		   AND TT.terminal_cd = #{terminalCd}
+	</select>
+
 </mapper>
