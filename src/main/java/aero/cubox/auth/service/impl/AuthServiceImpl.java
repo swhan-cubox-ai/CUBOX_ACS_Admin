@@ -2,10 +2,8 @@ package aero.cubox.auth.service.impl;
 
 
 import aero.cubox.auth.service.AuthService;
-import aero.cubox.core.vo.AuthVO;
-import aero.cubox.core.vo.DeptVO;
-import aero.cubox.core.vo.EmpVO;
-import aero.cubox.core.vo.FaceVO;
+import aero.cubox.core.vo.*;
+import aero.cubox.link.service.impl.MdmDAO;
 import aero.cubox.util.StringUtil;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,11 @@ public class AuthServiceImpl extends EgovAbstractServiceImpl implements AuthServ
 
     @Resource(name="authDAO")
     private AuthDAO authDAO;
+
+
+    @Resource(name="mdmDAO")
+    private MdmDAO mdmDAO;
+
 
 
     @Override
@@ -235,6 +238,16 @@ public class AuthServiceImpl extends EgovAbstractServiceImpl implements AuthServ
     @Override
     public int delAuth(HashMap<String, Object> map) throws Exception {
         return authDAO.delAuth(map);
+    }
+
+    @Override
+    public List<MdmVO> getMdmList(MdmVO vo) throws Exception {
+        return mdmDAO.getMdmList(vo);
+    }
+
+    @Override
+    public int getMdmListCount(MdmVO vo) throws Exception {
+        return mdmDAO.getMdmListCount(vo);
     }
 
 }

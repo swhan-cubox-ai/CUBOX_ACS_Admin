@@ -71,7 +71,7 @@
 		<c:if test="${sessionScope.loginVO.role_id ne '00008'}"><label for="menu_state"><i class="fa"></i></label></c:if>
 		<div class="left_title">
 			<a href="/main.do">
-				<img src="/img/logo/logo_<spring:eval expression="@property['Globals.site.main.id']" />_w.png" alt="" style="max-width: 170px;"/>
+				<img src="/img/logo/logo_<spring:eval expression="@property['Globals.site.main.id']" />_w.png" alt="logo" />
 			</a>
 		</div>
 		<!-- 메뉴 자동 -->

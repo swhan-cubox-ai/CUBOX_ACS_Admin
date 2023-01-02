@@ -41,14 +41,14 @@
         IFNULL(dept_nm,'') as deptNm ,
         eh.created_at as createdAt,
         eh.updated_at as updatedAt
-        FROM T_ENT_HIST eh
-        LEFT outer join T_TERMINAL tm on eh.terminal_cd = tm.terminal_cd
+        from T_ENT_HIST eh
+        left outer join T_TERMINAL tm on eh.terminal_cd = tm.terminal_cd
         LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = eh.ent_evt_typ and c1.cd_typ = 'EntEvtTyp'
         LEFT OUTER JOIN T_CMMN_CD c2 on c2.cd = eh.card_class_typ and c2.cd_typ = 'CardClassTyp'
         LEFT OUTER JOIN T_CMMN_CD c3 on c3.cd = eh.card_state_typ and c3.cd_typ = 'CardStateTyp'
         LEFT OUTER JOIN T_CMMN_CD c4 on c4.cd = eh.card_tag_typ and c4.cd_typ = 'CardTagTyp'
         LEFT OUTER JOIN T_CMMN_CD c5 on c5.cd = eh.auth_way_typ and c5.cd_typ = 'AuthWayTyp'
-        WHERE 1=1
+        where 1=1
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond1)'>
             AND eh.ent_evt_typ = #{srchCond1}
         </if>
@@ -58,39 +58,63 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
             AND eh.building_cd = #{srchCond2}
         </if>
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-            AND (eh.emp_nm LIKE CONCAT('%',#{keyword},'%') or eh.emp_cd like CONCAT('%',#{keyword},'%') )
-        </if>
-        <if test='@aero.cubox.util.CommonUtils@notEmpty(srchDeptArray)'>
-            AND dept_cd IN
-            <foreach collection="srchDeptArray" item="item" separator="," open="(" close=")">
-                #{item}
-            </foreach>
-        </if>
+        <choose>
+            <when test="srchCond3 == 'emp'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    and (eh.emp_nm LIKE CONCAT('%',#{keyword},'%') or eh.emp_cd like CONCAT('%',#{keyword},'%') )
+                </if>
+            </when>
+            <when test="srchCond3 == 'terminal'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    and tm.terminal_cd LIKE CONCAT('%',#{keyword},'%')
+                </if>
+            </when>
+            <when test="srchCond3 == 'dept'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    and eh.dept_nm LIKE CONCAT('%',#{keyword},'%')
+                </if>
+            </when>
+        </choose>
         ORDER BY evtDt DESC
-        <if test='@aero.cubox.util.CommonUtils@empty(isExcel)'>
-            limit	#{srchCnt} offset #{offset}
-        </if>
+        limit	#{srchCnt} offset #{offset}
     </select>
 
     <select id="getEntHistListCount" parameterType="aero.cubox.core.vo.EntHistVO" resultType="int">
         select
            count(*)
-        from	T_ENT_HIST
+        from	T_ENT_HIST eh
+        left outer join T_TERMINAL tm on eh.terminal_cd = tm.terminal_cd
         where
             1=1
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond1)'>
-            and ent_evt_typ = #{srchCond1}
+            and eh.ent_evt_typ = #{srchCond1}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(fromDt) and @aero.cubox.util.CommonUtils@notEmpty(toDt)'>
-            and evt_dt between #{fromDt} and #{toDt}
+            and eh.evt_dt between #{fromDt} and #{toDt}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(srchCond2)'>
-            and building_cd = #{srchCond2}
+            and eh.building_cd = #{srchCond2}
         </if>
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
-            and (emp_nm LIKE CONCAT('%',#{keyword},'%') or emp_cd like CONCAT('%',#{keyword},'%') )
+            and (eh.emp_nm LIKE CONCAT('%',#{keyword},'%') or eh.emp_cd like CONCAT('%',#{keyword},'%') )
         </if>
+        <choose>
+            <when test="srchCond3 == 'emp'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    and (eh.emp_nm LIKE CONCAT('%',#{keyword},'%') or eh.emp_cd like CONCAT('%',#{keyword},'%') )
+                </if>
+            </when>
+            <when test="srchCond3 == 'terminal'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    and tm.terminal_cd LIKE CONCAT('%',#{keyword},'%')
+                </if>
+            </when>
+            <when test="srchCond3 == 'dept'">
+                <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
+                    and eh.dept_nm LIKE CONCAT('%',#{keyword},'%')
+                </if>
+            </when>
+        </choose>
     </select>
 
     <select id="selectEntFaceOne" parameterType="aero.cubox.core.vo.EntHistBioVO" resultType="aero.cubox.core.vo.EntHistBioVO">

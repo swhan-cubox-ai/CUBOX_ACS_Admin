@@ -44,7 +44,7 @@ public class BoardInfoController {
 	@Value("#{property['Globals.formatList'].split(',')}") private List<String> formatList;
 	
 	/** 게시판 파일 저장 경로 globals.properties 지정 */
-	@Value("#{property['Globals.fileStorage']}") private String RESOURCE_PATH;
+//	@Value("#{property['Globals.fileStorage']}") private String RESOURCE_PATH;
 	
 	/** FileService */
 	@Resource(name = "FileService") private FileService fileService;

@@ -8,11 +8,6 @@ import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.AES256Util;
 import aero.cubox.util.CommonUtils;
 import aero.cubox.util.StringUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -23,13 +18,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
-import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 
 @Controller
-@RequestMapping(value = "/report")
+@RequestMapping("/report")
 public class ReportController {
 
     @Resource(name = "reportService")
@@ -61,24 +56,31 @@ public class ReportController {
 
             String srchCond1 = StringUtil.nvl(commandMap.get("srchCond1"), "");
             String srchCond2 = StringUtil.nvl(commandMap.get("srchCond2"), "");
+            String srchCond3 = StringUtil.nvl(commandMap.get("srchCond3"), "");
             String keyword = StringUtil.nvl(commandMap.get("keyword"), "");
 
             String fromDt = StringUtil.nvl(commandMap.get("fromDt"), "");
             String toDt = StringUtil.nvl(commandMap.get("toDt"), "");
 
-            String srchDeptArray = StringUtil.nvl(commandMap.get("deptArray"), "");
-
-            if(toDt.equals("")){
-                Date now = new Date();
+            Date now = new Date();
+            if(fromDt.equals("")){
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(now);
-                cal.add(Calendar.DATE, -7);
+                cal.add(Calendar.DATE, -6);
+                fromDt = commonUtils.getStringDate(cal.getTime(), "yyyy-MM-dd");
+            }
 
+            if(toDt.equals("")){
                 Calendar cal2 = Calendar.getInstance();
                 cal2.setTime(now);
                 cal2.add(Calendar.DATE, 1);
                 toDt = commonUtils.getStringDate(cal2.getTime(), "yyyy-MM-dd");
-                fromDt = commonUtils.getStringDate(cal.getTime(), "yyyy-MM-dd");
+            } else {
+                Date parseDt = StringToDate(toDt);
+                Calendar cal2 = Calendar.getInstance();
+                cal2.setTime(parseDt);
+                cal2.add(Calendar.DATE, 1);
+                toDt = commonUtils.getStringDate(cal2.getTime(), "yyyy-MM-dd");
             }
 
             vo.setSrchPage(Integer.parseInt(srchPage));
@@ -87,16 +89,11 @@ public class ReportController {
 
             vo.setSrchCond1(srchCond1);
             vo.setSrchCond2(srchCond2);
+            vo.setSrchCond3(srchCond3);
             vo.setKeyword(keyword);
 
             vo.setFromDt(fromDt);
             vo.setToDt(toDt);
-
-            if(srchDeptArray != null && srchDeptArray != ""){
-                String[] strTmpArray = srchDeptArray.split(",");
-                vo.setSrchDeptArray(strTmpArray);
-                vo.setDeptArray(srchDeptArray);
-            }
 
             int totalCnt = reportService.getEntHistListCount(vo);
             List<EntHistVO> entHistList = reportService.getEntHistList(vo);
@@ -111,6 +108,15 @@ public class ReportController {
             pageVO.setUnitPage(vo.getCurPageUnit());
             pageVO.calcPageList();
 
+            Date parseDt = StringToDate(toDt);
+            Calendar cal2 = Calendar.getInstance();
+            cal2.setTime(parseDt);
+            cal2.add(Calendar.DATE, -1);
+            toDt = commonUtils.getStringDate(cal2.getTime(), "yyyy-MM-dd");
+
+            vo.setFromDt(fromDt);
+            vo.setToDt(toDt);
+
             model.addAttribute("entEvtTypCombList", entEvtTypCombList);
             model.addAttribute("buildingCombList", buildingCombList);
             model.addAttribute("entHistList", entHistList);
@@ -124,98 +130,6 @@ public class ReportController {
 
         return "cubox/report/entHist/list";
     }
-
-
-    @RequestMapping(value = "/entHist/excelDownload.do")
-    public void excelEntHistDownload(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
-        try{
-            ObjectMapper objectMapper = new ObjectMapper();
-            EntHistVO vo = objectMapper.convertValue(commandMap, EntHistVO.class);
-
-            String srchDeptArray = StringUtil.nvl(vo.getDeptArray(), "");
-            System.out.println("#####################################getDeptArray1##########################" + commandMap.get("deptArray"));
-            System.out.println("#####################################getDeptArray2##########################" + vo.getDeptArray());
-            if(srchDeptArray != null && srchDeptArray != ""){
-                System.out.println("#####################################srchDeptArray##########################" + srchDeptArray.length());
-                String[] strTmpArray = srchDeptArray.split(",");
-                vo.setSrchDeptArray(strTmpArray);
-            }
-
-            vo.setIsExcel("Y");
-
-            List<EntHistVO> entHistList = reportService.getEntHistList(vo);
-
-            ///// Create Excel /////
-            Workbook wb = new XSSFWorkbook();
-            Sheet sheet = wb.createSheet();
-            Row row = null;
-            Cell cell = null;
-            int rowNum = 0;
-
-            //// Header ////
-            final String[] colNames = {"No", "출입일시", "출입유형", "단말기코드", "이름", "부서", "카드번호", "카드유형", "카드상태", "태그유형", "시작일시", "종료일시", "인증유형", "건물", "출입문"};
-            // Header size
-            final int[] colWidths = {1500, 3000, 5000, 4000, 3000, 4000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000};
-            // Header font
-            Font fontHeader = wb.createFont();
-            fontHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
-
-            // Header style
-            CellStyle styleHeader = wb.createCellStyle();
-            styleHeader.setAlignment(CellStyle.ALIGN_CENTER);
-            styleHeader.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-            styleHeader.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
-            styleHeader.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-            styleHeader.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-            styleHeader.setBorderTop(HSSFCellStyle.BORDER_THIN);
-            styleHeader.setBorderRight(HSSFCellStyle.BORDER_THIN);
-            styleHeader.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-            styleHeader.setFont(fontHeader);
-
-            row = sheet.createRow(rowNum++);
-            row.setHeight((short) 500);  // 행 높이
-
-            for (int i = 0; i < colNames.length; i++) {
-                cell = row.createCell(i);
-                cell.setCellValue(colNames[i]);
-                cell.setCellStyle(styleHeader);
-                sheet.setColumnWidth(i, colWidths[i]);
-            }
-
-            //// Body ////
-            for (int i = 0; i < entHistList.size(); i++) {
-                row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(i + 1);
-                row.createCell(1).setCellValue(entHistList.get(i).getEvtDt() + "");
-                row.createCell(2).setCellValue(entHistList.get(i).getEntEvtTypNm() + "");
-                row.createCell(3).setCellValue(entHistList.get(i).getTerminalCd() + "");
-                row.createCell(4).setCellValue(entHistList.get(i).getEmpNm() + "");
-                row.createCell(5).setCellValue(entHistList.get(i).getDeptNm() + "");
-                row.createCell(6).setCellValue(entHistList.get(i).getCardNo() + "");
-                row.createCell(7).setCellValue(entHistList.get(i).getCardClassTypNm() + "");
-                row.createCell(8).setCellValue(entHistList.get(i).getCardStateTypNm() + "");
-                row.createCell(9).setCellValue(entHistList.get(i).getCardTagTypNm() + "");
-                row.createCell(10).setCellValue(entHistList.get(i).getBegDt() + "");
-                row.createCell(11).setCellValue(entHistList.get(i).getEndDt() + "");
-                row.createCell(12).setCellValue(entHistList.get(i).getAuthWayTypNm() + "");
-                row.createCell(13).setCellValue(entHistList.get(i).getBuildingNm() + "");
-                row.createCell(14).setCellValue(entHistList.get(i).getDoorNm() + "");
-            }
-
-            // Date
-            SimpleDateFormat fmt = new SimpleDateFormat("yyMMdd-HH_mm_ss");
-            Date date = new Date();
-
-            // File name
-            String fileNm = "출입이력_" + fmt.format(date) + ".xlsx";
-            response.setContentType("ms-vnd/excel");
-            response.setHeader("Content-Disposition", "attatchment;filename=" + URLEncoder.encode(fileNm, "UTF-8"));
-            wb.write(response.getOutputStream());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
 
     @RequestMapping(value="/entHist/detail")
     public ModelAndView detail(ModelMap model, @RequestParam Map<String, Object> param) throws Exception {
@@ -399,16 +313,13 @@ public class ReportController {
         vo.setId(id);
         FaceFeatureErrVO data = reportService.selectFaceFeatureErrOne(vo);
 
-        String img = byteArrEncode((byte[]) data.getFace_img());
-
-        String errorFace = new String(Base64.getEncoder().encode(data.getFace_img()));
+        byte[] errImg = data.getFace_img();
+        String errorFace = new String(Base64.getEncoder().encode(errImg));
 
         modelAndView.addObject("errorFace", errorFace);
 
         return modelAndView;
     }
-
-
 
 
     public String byteArrEncode(byte[] bytes) throws Exception {
@@ -423,6 +334,11 @@ public class ReportController {
         return result;
     }
 
+    private Date StringToDate(String dateStr) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = formatter.parse(dateStr);
+        return date;
+    }
 
 
 

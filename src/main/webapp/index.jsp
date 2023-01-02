@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>CUBOX보안관제시스템</title>
+<title>세종청사 출입관리시스템</title>
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0">
 </head>

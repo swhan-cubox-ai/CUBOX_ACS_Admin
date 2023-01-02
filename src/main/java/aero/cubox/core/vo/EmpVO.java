@@ -10,6 +10,8 @@ public class EmpVO {
     private String deptCd;
     private String deptNm;
     private String belongNm;
+
+    private String cardStateTypNm;
     private String expiredDt;
     private String createdAt;
     private String updatedAt;
@@ -88,6 +90,14 @@ public class EmpVO {
 
     public void setBelongNm(String belongNm) {
         this.belongNm = belongNm;
+    }
+
+    public String getCardStateTypNm() {
+        return cardStateTypNm;
+    }
+
+    public void setCardStateTypNm(String cardStateTypNm) {
+        this.cardStateTypNm = cardStateTypNm;
     }
 
     public String getExpiredDt() {

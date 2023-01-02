@@ -47,22 +47,22 @@
 
 
 	<!-- 세종청사 - 운영계 -->
-	<beans profile="real-sejong">
+	<beans profile="prod-sejong">
 		<!-- maria DB -->
 		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 			<property name="validationQuery" value="select 1"/>
 			<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
-			<property name="url" value="jdbc:log4jdbc:mysql://999.999.999.999:3306/xxxxx?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnection=true&amp;allowMultiQueries=true&amp;noAccessToProcedureBodies=true" />
-			<property name="username" value="xxx"/>
-			<property name="password" value="xxxxxxx!"/>
+			<property name="url" value="jdbc:log4jdbc:mysql://172.31.101.73:3306/acs_sj?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnection=true&amp;allowMultiQueries=true&amp;noAccessToProcedureBodies=true" />
+			<property name="username" value="acs_user"/>
+			<property name="password" value="welcome1!"/>
 		</bean>
 
 		<!-- cubrid mdm -->
 		<bean id="dataSource_mdm" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 			<property name="driverClassName" value="cubrid.jdbc.driver.CUBRIDDriver"/>
-			<property name="url" value="jdbc:CUBRID:888.888.888.888:30000:xxx_xxx:::?charset=UTF-8" />
-			<property name="username" value="xxx"/>
-			<property name="password" value="xxxxxxx"/>
+			<property name="url" value="jdbc:CUBRID:172.30.110.83:30000:gacsmdm:::?charset=UTF-8" />
+			<property name="username" value="mdmsjsc"/>
+			<property name="password" value="chungsamdmsjsc!@"/>
 		</bean>
 	</beans>
 

@@ -2,6 +2,7 @@
          pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
 
 <style>
     .tb_write_p1 tbody th {
@@ -18,22 +19,7 @@
     .gateDetailList tr td textarea {
         width: 95%;
     }
-    .title_s {
-        font-size: 20px;
-    }
-    #gateInfo {
-        width: 100%;
-        height: 690px;
-        border: 1px solid black;
-    }
-    #treeDiv {
-        width: 100%;
-        height: 611px;
-        border-bottom: 1px solid #ccc;
-        padding: 10px 45px;
-        padding: 10px 45px;
-        overflow: auto;
-    }
+
 
     .tb_list tr td {
         text-align: center;
@@ -46,9 +32,7 @@
         height: 40px;
         text-align: center;
     }
-    .title_box {
-        margin-top: 10px;
-    }
+
 </style>
 
 
@@ -59,7 +43,7 @@
         $(".title_tx").html("출입문권한 그룹관리 - 등록 (건물)");
 
         modalPopup("doorListLayerPop", "출입문 명", 500, 520);
-
+        modalPopup("doorEditPopup", "출입문 선택", 900, 600);
         fnGetAuthCnts();
 
         $("input:radio[name=rdoAuthTyp]").click(function()
@@ -354,8 +338,52 @@
         return true;
     }
 
-    function closePopup() {
-        $("#doorListLayerPop").PopupWindow("close");
+    // 출입문선택 반영
+    function setDoors(type) {
+
+        let doorGpIds = "";
+        let doorGpHtml = [];
+        $("input[name=chkDoorConf]").each(function (i) {
+            let ids = $(this).attr("id");
+            let html = $(this).closest("tr").children().eq(1).find("span").html();
+            if (i == 0) {
+                doorGpIds += ids;
+            } else if (i > 0) {
+                doorGpIds += ("/" + ids);
+            }
+            doorGpHtml.push(html);
+        });
+
+        if (type === "Group") {                 // 그룹관리
+            $("#gpDoorIds").val(doorGpIds);
+            $("#gpDoorNms").val(doorGpHtml.join("\r\n"));
+        } else if (type === "AlarmGroup") {     // 알람그룹
+            $("#doorIds").val(doorGpIds);
+            $("#tdGroupTotal").empty();
+            $("#alDoorCnt").val($("input[name=chkDoorConf]").length);   // 출입문 수
+            $.each(doorGpHtml, function(i, html) {                      // 출입문 목록에 반영
+                let tag = "<tr><td>" + html + "</td></tr>";
+                $("#tdGroupTotal").append(tag);
+            });
+        }
+    }
+
+
+
+
+
+    // popup open (공통)
+    function openPopup(popupNm) {
+        $("#" + popupNm).PopupWindow("open");
+        if (popupNm === "doorEditPopup") {
+            fnGetDoorListAjax("Group"); //출입문 목록
+        }
+    }
+
+    // popup close (공통)
+    function closePopup(popupNm) {
+        setDoors("Group");
+        $("#" + popupNm).PopupWindow("close");
     }
 
 </script>
@@ -497,6 +525,12 @@
             </div>
 
             <div id="divAuth3" style="display:none">
+                <textarea id="gpDoorNms" name="gpDoorNms" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;
+                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:set var="nm" value="${fn:split(doorGroupDetail.door_nms,'/')}" /><c:forEach items="${nm}" var="dName" varStatus="varStatus">
+                    ${dName}</c:forEach></textarea>
+                <div class="ml_10" style="position: relative;">
+                    <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 80px;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">출입문 선택</button>
+                </div>
             </div>
 
             <div style="margin-top:300px;margin-left: 50px;">
@@ -508,34 +542,3 @@
     </div>
 </form>
 
-<!-- 출입문 목록 레이어 팝업 -->
-<div id="doorListLayerPop" class="example_content">
-    <div class="popup_box box_w3">
-
-        <div class="com_box ">
-            <div class="txbox">
-                <b class="fl mr_10">출입문 명</b>
-            </div>
-            <!--테이블 시작 -->
-            <div class="tb_outbox" style="margin-bottom: 30px;">
-                <table class="tb_list" >
-                    <colgroup>
-                        <col width="3%" />
-                        <col width="15%" />
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>출입문 명</th>
-                    </tr>
-                    </thead>
-                    <tbody id="doorListDiv"></tbody>
-                </table>
-            </div>
-            <div style="margin-top:300px;text-align: center;">
-                <button type="button" class="btn_middle color_basic ml_5" onclick="closePopup()">확인</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /출입문 목록 레이어 팝업 -->
