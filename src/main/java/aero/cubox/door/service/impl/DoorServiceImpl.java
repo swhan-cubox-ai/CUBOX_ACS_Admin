@@ -53,6 +53,7 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
      * @return
      */
     @Override
+    @Transactional
     public String addDoor(Map<String, Object> commandMap) {
 
         doorDAO.insertDoor(commandMap);
@@ -213,6 +214,7 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
     }
 
     @Override
+    @Transactional
     public String addBuilding(HashMap paramMap) {
         doorDAO.insertBuilding(paramMap);
 
@@ -338,6 +340,7 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
         return doorDAO.getFloorDetail(paramMap);
     }
     @Override
+    @Transactional
     public String addFloor(HashMap paramMap) {
         doorDAO.insertFloor(paramMap);
 
@@ -480,10 +483,11 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
 
             String buildingNm = getValue(row.getCell(1)).replaceAll("\n", "<br>");                                              // 빌딩 명
             String doorNm = getValue(row.getCell(3)).replaceAll("\n", "<br>");                                                  // 출입문 명
-            String terminalCd = getValue(row.getCell(4)).replaceAll("\n", "<br>");                                              // 단말기 코드
+            String terminalCd = getValue(row.getCell(4)).replaceAll("\n", "<br>");                                             // 단말기 코드
             String buildingCd = String.format("%02d", Integer.parseInt(getValue(row.getCell(5)).replaceAll("\n", "<br>")));     // 빌딩 코드 (2자리로 넣어야함)
             String floorCd = getValue(row.getCell(6)).replaceAll("\n", "<br>");                                                 // 층 코드 (2자리로 넣어야함)
             String doorCd = getValue(row.getCell(7)).replaceAll("\n", "<br>");                                                  // 출입문 코드
+            String authGrIds = getValue(row.getCell(8)).replaceAll("\n", "<br>");                                               // 빌딩 명
             String buildingId = getBuildingId(buildingList, buildingNm, buildingCd);                                                                   // 빌딩 id
             String floorId = getFloorId(floorList, floorCd, buildingCd);                                                                               // 층 id
 
@@ -497,6 +501,12 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
                 doorCd = preNum + doorCd;
             }
 
+            // TODO: terminalCd로 terminalId 가져오기
+            String terminalId = doorDAO.getTerminalId(terminalCd);
+
+            // TODO: authGroupIds 가공
+
+
             if (!doorMap.containsValue(doorCd)) {
                 doorMap.put(doorNm, doorCd);
 
@@ -508,8 +518,8 @@ public class DoorServiceImpl extends EgovAbstractServiceImpl implements DoorServ
                 param.put("areaId", null);
                 param.put("floorId", floorId);
                 param.put("doorNm", doorNm);
-                //  param.put("terminalCd", terminalCd);
-                //  param.put("alarmGroupId", );
+                param.put("terminalIds", terminalId);
+//                param.put("authGrIds", authGrIds);
 
                 String newDoorId = addDoor(param);
                 if (newDoorId != "") cnt++;
