@@ -153,7 +153,7 @@
                 <td style="display: flex;">
                     <textarea id="gpDoorNms" name="gpDoorNms" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px; font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
                     <div class="ml_10" style="position: relative;">
-                        <button type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 60px;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">선택</button>
+                        <button type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 60px;" onclick="openPopup('doorEditPopup')">선택</button>
                     </div>
                 </td>
             </tr>
