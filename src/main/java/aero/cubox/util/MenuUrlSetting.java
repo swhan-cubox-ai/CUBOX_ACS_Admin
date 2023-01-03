@@ -22,17 +22,18 @@ public class MenuUrlSetting {
 
         if ("0200".equals(menu_cd)) return "";                              // 출입문 관리
         else if ("0201".equals(menu_cd)) return "/door/management.do";      // 출입문 관리
-        else if ("0206".equals(menu_cd)) return "/door/group/list.do";  // 출입문 그룹관리
         else if ("0202".equals(menu_cd)) return "/door/schedule/list.do";        // 출입문 스케쥴
         else if ("0203".equals(menu_cd)) return "/door/alarm/list.do"; // 출입문 알람그룹
         else if ("0204".equals(menu_cd)) return "/holiday/list.do";         // 공휴일 관리
         else if ("0205".equals(menu_cd)) return "/terminal/list.do";        // 단말기관리
+        else if ("0206".equals(menu_cd)) return "/door/group/list.do";  // 스케쥴 출입문그룹관리
 
         if ("0300".equals(menu_cd)) return "";                // 권한관리
         else if ("0301".equals(menu_cd)) return "/auth/emp/list.do";           // 인사정보관리
         else if ("0302".equals(menu_cd)) return "/auth/dept/list.do";           // 부서관리
-        else if ("0303".equals(menu_cd)) return "/auth/door/list.do";           // 출입문 권한그룹 관리(전체)
-        else if ("0304".equals(menu_cd)) return "/auth/mdm/list.do";           // mdm 정보 조회
+        else if ("0303".equals(menu_cd)) return "/auth/door/list.do";           // 권한그룹 관리
+        else if ("0304".equals(menu_cd)) return "";           // 권한 출입문그룹관리
+        else if ("0305".equals(menu_cd)) return "/auth/mdm/list.do";           // mdm 정보 조회
 
         if ("0400".equals(menu_cd)) return "";                // 보고서
         else if ("0401".equals(menu_cd)) return "/report/entHist/list.do";           // 출입이력

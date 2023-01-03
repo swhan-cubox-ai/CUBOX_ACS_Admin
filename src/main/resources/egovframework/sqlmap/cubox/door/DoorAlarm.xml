@@ -61,8 +61,10 @@
              , (select COUNT(TDA.door_id) from T_DOOR_ALARM TDA where TDA.dooralram_grp_id = TDG.id) AS door_cnt
              , (SELECT GROUP_CONCAT( TDA.door_id  SEPARATOR '/') FROM T_DOOR_ALARM TDA WHERE TDA.dooralram_grp_id = TDG.id ) AS door_ids
              , (SELECT GROUP_CONCAT( (SELECT A.door_nm FROM T_DOOR A where A.id = TDA.door_id ) SEPARATOR '/')  FROM T_DOOR_ALARM TDA WHERE TDA.dooralram_grp_id= TDG.id ) AS door_nms
-             , TDG.created_at
-             , TDG.updated_at
+             -- , TDG.created_at
+             -- , TDG.updated_at
+             , DATE_FORMAT(TDG.created_at, '%Y-%m-%d') as created_at
+             , DATE_FORMAT(TDG.updated_at, '%Y-%m-%d') as updated_at
           FROM T_DOORALARM_GRP TDG
          WHERE 1=1
            AND TDG.id = #{id}

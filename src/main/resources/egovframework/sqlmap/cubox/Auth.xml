@@ -223,7 +223,8 @@
         FROM
             T_AUTH_DOORGRP TADG
                 JOIN
-            T_DOORGRP TDG ON TADG.doorgrp_id = TDG.id
+            -- T_DOORGRP TDG ON TADG.doorgrp_id = TDG.id
+            T_SCH_DOORGRP TDG ON TADG.doorgrp_id = TDG.id
         WHERE
             TADG.auth_id = #{id}
     </select>
@@ -277,7 +278,8 @@
         nm as doorGrpNm,
         (SELECT COUNT(*) FROM T_DOORGRP_DOOR WHERE doorgrp_id = id) as doorCnt
         FROM
-        T_DOORGRP
+        -- T_DOORGRP
+        T_SCH_DOORGRP
         WHERE
         1=1
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword)'>
