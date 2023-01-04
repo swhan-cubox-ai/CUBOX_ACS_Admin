@@ -11,6 +11,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorGroupPickPopup.jsp" flush="false"/> <!-- 출입문 선택 popup -->
+<jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
 
 <style>
     .title_box {
@@ -85,34 +86,11 @@
 
 <script type="text/javascript">
 
-    // let tmp = [
-    //     {id: "mon_1", weekday: "mon", beg_tm: "13:00:27", end_tm: "13:40:30"},
-    //     {id: "mon_2", weekday: "mon", beg_tm: "13:45:00", end_tm: "18:00:30"},
-    //     {id: "mon_3", weekday: "mon", beg_tm: "", end_tm: ""},
-    //     {id: "tue_1", weekday: "tue", beg_tm: "13:00:00", end_tm: "15:00:00"},
-    //     {id: "tue_2", weekday: "tue", beg_tm: "19:40:27", end_tm: "22:00:20"},
-    //     {id: "tue_3", weekday: "tue", beg_tm: "", end_tm: ""},
-    //     {id: "wed_1", weekday: "wed", beg_tm: "01:50:00", end_tm: "08:20:30"},
-    //     {id: "wed_2", weekday: "wed", beg_tm: "08:40:00", end_tm: "12:00:00"},
-    //     {id: "wed_3", weekday: "wed", beg_tm: "13:40:50", end_tm: "23:59:59"},
-    //     {id: "thu_1", weekday: "thu", beg_tm: "", end_tm: ""},
-    //     {id: "thu_2", weekday: "thu", beg_tm: "", end_tm: ""},
-    //     {id: "thu_3", weekday: "thu", beg_tm: "", end_tm: ""},
-    //     {id: "fri_1", weekday: "fri", beg_tm: "10:30:00", end_tm: "19:30:00"},
-    //     {id: "fri_2", weekday: "fri", beg_tm: "", end_tm: ""},
-    //     {id: "fri_3", weekday: "fri", beg_tm: "", end_tm: ""},
-    //     {id: "sat_1", weekday: "sat", beg_tm: "07:00:00", end_tm: "16:30:30"},
-    //     {id: "sat_2", weekday: "sat", beg_tm: "17:40:20", end_tm: "20:20:00"},
-    //     {id: "sat_3", weekday: "sat", beg_tm: "", end_tm: ""},
-    //     {id: "sun_1", weekday: "sun", beg_tm: "01:00:00", end_tm: "23:59:59"},
-    //     {id: "sun_2", weekday: "sun", beg_tm: "", end_tm: ""},
-    //     {id: "sun_3", weekday: "sun", beg_tm: "", end_tm: ""}
-    // ];
-
     $(function () {
         $(".title_tx").html("출입문 스케쥴 - 상세");
         modalPopup("addByDayPopup", "요일 별 스케쥴 등록", 1590, 915);
         modalPopup("doorGroupPickPopup", "출입문 그룹 선택", 910, 550);
+        modalPopup("doorEditPopup", "출입문 선택", 900, 600);
 
         $("input[type=time]").on({
             change: function () {
@@ -149,9 +127,8 @@
                                 if (end.hour == Number(tmpStart[0]) && end.min == Number(tmpStart[1])) {
                                     if (end.sec < Number(tmpStart[2])) {
                                         colorSchedule(start, end, day, schNum);
+                                        return;
                                     } else if (end.sec >= Number(tmpStart[2])) {
-                                        console.log("1. 초단위 중복");
-                                        // isFirstReg(day, schNum, startId, endId);
                                         mode = 'S';
                                     }
                                 }
@@ -186,8 +163,6 @@
                                         colorSchedule(start, end, day, schNum);
                                         return;
                                     } else if (start.sec <= Number(tmpEnd[2])) {
-                                        console.log("2. 초단위 중복");
-                                        // isFirstReg(day, schNum, startId, endId);
                                         mode = 'S';
                                     }
                                 }
@@ -280,47 +255,49 @@
         let result = true; // 다른 스케쥴과 겹치는지 여부
         if (mode === "S") result = false;
 
-        if (start.hour != end.hour) { // 시작시간과 종료시간이 다른 hour 칸에 있을 때
-            for (let i = Number(start.hour); i <= Number(end.hour); i++) {
+        while (result) {
+            if (start.hour != end.hour) { // 시작시간과 종료시간이 다른 hour 칸에 있을 때
+                for (let i = Number(start.hour); i <= Number(end.hour); i++) {
 
-                if (i == Number(start.hour)) { // 시작 hour 칸
-                    for (let j = Number(start.min); j < 60; j++) {
-                        let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
-                        if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
-                            console.log("1. 색칠되어있고 같은 스케쥴 아님"); ///// 걸리는 애가 시작인 경우
-                            result = false;
-                            break;
+                    if (i == Number(start.hour)) { // 시작 hour 칸
+                        for (let j = Number(start.min); j < 60; j++) {
+                            let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
+                            if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
+                                console.log("1. 색칠되어있고 같은 스케쥴 아님"); ///// 걸리는 애가 시작인 경우
+                                result = false;
+                                break;
+                            }
                         }
-                    }
-                } else if (i == end.hour) { // 종료 hour 칸
-                    for (let j = 0; j <= Number(end.min); j++) {
-                        let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
-                        if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
-                            console.log("2. 색칠되어있고 같은 스케쥴 아님");
-                            result = false;
-                            break;
+                    } else if (i == end.hour) { // 종료 hour 칸
+                        for (let j = 0; j <= Number(end.min); j++) {
+                            let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
+                            if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
+                                console.log("2. 색칠되어있고 같은 스케쥴 아님");
+                                result = false;
+                                break;
+                            }
                         }
-                    }
-                } else {
-                    for (let j = 0; j < 60; j++) {
-                        let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
-                        if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
-                            console.log("3. 색칠되어있고 같은 스케쥴 아님");
-                            result = false;
-                            break;
+                    } else {
+                        for (let j = 0; j < 60; j++) {
+                            let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
+                            if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
+                                console.log("3. 색칠되어있고 같은 스케쥴 아님");
+                                result = false;
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
-        } else if (start.hour == end.hour) {  // 시작시간과 종료시간이 같은 hour 칸에 있을 때
-            for (let i = Number(start.hour); i <= Number(end.hour); i++) {
-                for (let j = Number(start.min); j <= Number(end.min); j++) {
-                    let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
-                    if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
-                        console.log("4. 색칠되어있고 같은 스케쥴 아님");
-                        result = false;
-                        break;
+            } else if (start.hour == end.hour) {  // 시작시간과 종료시간이 같은 hour 칸에 있을 때
+                for (let i = Number(start.hour); i <= Number(end.hour); i++) {
+                    for (let j = Number(start.min); j <= Number(end.min); j++) {
+                        let divToColor = $(".timeline_" + day + ("00" + i).slice(-2) + "_" + ("00" + j).slice(-2)); // 색칠할 div
+                        if ((divToColor.hasClass("colored")) && (!divToColor.hasClass(day + "_" + schNum))) {
+                            console.log("4. 색칠되어있고 같은 스케쥴 아님");
+                            result = false;
+                            break;
+                        }
                     }
                 }
             }
@@ -398,7 +375,7 @@
             }
 
         } else {
-            // console.log("이미 같은 시간대에 다른 스케쥴 존재");
+            console.log("이미 같은 시간대에 다른 스케쥴 존재");
             let tmpStart = $("div." + day + "_" + schNum).first().val();
             let tmpEnd = $("div." + day + "_" + schNum).last().val();
             $("#" + startId).val(tmpStart.hour + ":" + tmpStart.min + ":" + tmpStart.sec); // 수정 시
@@ -511,7 +488,7 @@
         $(".title_tx").html("출입문 스케쥴 - 상세");
         $("#btnboxDetail").css("display", "block");
         $("#btnboxEdit").css("display", "none");
-        $("#btnEdit").css("display", "none");
+        $("#btnEdit, #btnEditAuth").css("display", "none");
         $("[name=detail]").attr("disabled", true).addClass("color_disabled");
     }
 
@@ -519,7 +496,7 @@
     function fnEditMode() {
         if (confirm("해당 스케쥴을 수정하시겠습니까?")) {
             $(".title_tx").html("출입문 스케쥴 - 수정");
-            $("#btnEdit").css("display", "block");
+            $("#btnEdit, #btnEditAuth").css("display", "block");
             $("#btnboxDetail").css("display", "none");
             $("#btnboxEdit").css("display", "block");
             $("[name=detail]").attr("disabled", false).removeClass("color_disabled");
@@ -736,6 +713,8 @@
             fnGetDoorGroupListAjax();
         } else if (popupNm === "addByDayPopup") {
             fnGetScheduleByDayDetail();
+        } else if (popupNm === "doorEditPopup") {
+            fnGetDoorListAjax("Schedule");
         }
     }
 
@@ -960,6 +939,7 @@
             <input type="hidden" id="scheduleId" value="${doorScheduleDetail.id}">
             <input type="hidden" id="daySchCnt" value="0">
             <input type="hidden" id="doorIds" value="">
+            <input type="hidden" id="schDoorIds" value="">
             <tr>
                 <th>출입문 스케쥴 명</th>
                 <td>
@@ -977,16 +957,39 @@
                     </select>
                 </td>
             </tr>
+<%--            <tr>--%>
+<%--                <th>출입문 그룹</th>--%>
+<%--                <td style="display: flex;">--%>
+<%--                    <textarea id="doorGroup" name="doorGroup" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;--%>
+<%--                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>--%>
+<%--                    <div class="ml_10" style="position:relative;">--%>
+<%--                        <button id="btnEdit" type="button" class="btn_small color_basic" onclick="openPopup('doorGroupPickPopup')" style="width:60px; position:absolute; bottom:0; display:none;">선택</button>--%>
+<%--                    </div>--%>
+<%--                </td>--%>
+<%--            </tr>--%>
             <tr>
-                <th>출입문 그룹</th>
+                <th>출입문</th>
                 <td style="display: flex;">
-                    <textarea id="doorGroup" name="doorGroup" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;
-                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
-                    <div class="ml_10" style="position:relative;">
-                        <button id="btnEdit" type="button" class="btn_small color_basic" onclick="openPopup('doorGroupPickPopup')" style="width:60px; position:absolute; bottom:0; display:none;">선택</button>
+                    <textarea id="schDoorNms" name="schDoorNms" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;
+                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled><c:set var="nm" value="${fn:split(doorScheduleDetail.door_nms,'/')}" /><c:forEach items="${nm}" var="dName" varStatus="varStatus">
+${dName}</c:forEach></textarea>
+                    <div class="ml_10" style="position: relative;">
+                        <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 60px; display: none;" onclick="openPopup('doorEditPopup')">선택</button>
                     </div>
                 </td>
             </tr>
+<%--            <tr>--%>
+<%--                <th>출입문 권한그룹</th>--%>
+<%--                <td style="display: flex;">--%>
+<%--                    <textarea id="schAuthGrp" name="schAuthGrp" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;--%>
+<%--                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>--%>
+<%--                    </textarea>--%>
+<%--                    <div class="ml_10" style="position: relative;">--%>
+<%--                        <button id="btnEditAuth" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 60px; display: none;" onclick="openPopup('doorEditPopup')">선택</button>--%>
+<%--                    </div>--%>
+<%--                </td>--%>
+<%--                </td>--%>
+<%--            </tr>--%>
             </tbody>
         </table>
     </div>
