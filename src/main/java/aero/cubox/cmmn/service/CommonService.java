@@ -1,6 +1,5 @@
 package aero.cubox.cmmn.service;
 
-import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.core.vo.*;
 
 import java.util.List;
@@ -127,11 +126,6 @@ public interface CommonService {
 	 * @throws Exception
 	 */
 	public DateTimeVO getDateTime() throws Exception;
-
-	List<BoardVO> getMainNoticeList() throws Exception;
-
-	List<BoardVO> getMainQaList() throws Exception;
-
 
 	/**
 	 * 공통코드 목록 가져오기

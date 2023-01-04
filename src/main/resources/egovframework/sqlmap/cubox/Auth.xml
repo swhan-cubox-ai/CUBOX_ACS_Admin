@@ -5,7 +5,7 @@
 
     <select id="getEmpList" parameterType="aero.cubox.core.vo.EmpVO" resultType="aero.cubox.core.vo.EmpVO">
         select
-        id as id
+        e.id as id
         ,emp_nm as empNm
         ,emp_cd as empCd
         ,dept_cd as deptCd
@@ -13,10 +13,12 @@
         ,instt_cd as insttCd
         ,instt_nm as insttNm
         ,belong_nm as belongNm
+        ,c1.cd_nm as cardStateTypNm
         ,DATE_FORMAT(expired_dt, '%Y-%m-%d') as expiredDt
-        ,DATE_FORMAT(created_at, '%Y-%m-%d') as createdAt
-        ,DATE_FORMAT(updated_at, '%Y-%m-%d') as updatedAt
-        from	T_EMP
+        ,DATE_FORMAT(e.created_at, '%Y-%m-%d') as createdAt
+        ,DATE_FORMAT(e.updated_at, '%Y-%m-%d') as updatedAt
+        from	T_EMP e
+        LEFT OUTER JOIN T_CMMN_CD c1 on c1.cd = e.card_state_typ and c1.cd_typ = 'CardStateTyp'
         where
         1=1
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword1)'>
@@ -25,7 +27,7 @@
         <if test='@aero.cubox.util.CommonUtils@notEmpty(keyword2)'>
             AND (emp_cd = #{keyword2} OR emp_nm like CONCAT('%',#{keyword2},'%'))
         </if>
-        order by updated_at desc
+        order by e.updated_at desc
         <if test='@aero.cubox.util.CommonUtils@empty(isExcel)'>
             limit	#{srchCnt} offset #{offset}
         </if>
@@ -221,6 +223,7 @@
         FROM
             T_AUTH_DOORGRP TADG
                 JOIN
+            -- T_DOORGRP TDG ON TADG.doorgrp_id = TDG.id
             T_DOORGRP TDG ON TADG.doorgrp_id = TDG.id
         WHERE
             TADG.auth_id = #{id}
@@ -270,11 +273,12 @@
     </select>
 
     <select id="getDoorGrpList" resultType="HashMap">
-        SELECTo
+        SELECT
         id as id,
         nm as doorGrpNm,
         (SELECT COUNT(*) FROM T_DOORGRP_DOOR WHERE doorgrp_id = id) as doorCnt
         FROM
+        -- T_DOORGRP
         T_DOORGRP
         WHERE
         1=1

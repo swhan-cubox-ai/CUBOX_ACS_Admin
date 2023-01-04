@@ -1,5 +1,6 @@
 package aero.cubox.system.service.impl;
 
+import aero.cubox.core.vo.EntHistStatVO;
 import aero.cubox.core.vo.PrivacyVO;
 import aero.cubox.system.service.SystemService;
 import aero.cubox.terminal.service.impl.TerminalDAO;
@@ -57,5 +58,15 @@ public class SystemServiceImpl extends EgovAbstractServiceImpl implements System
     @Override
     public int delPrivacy(Map map) throws Exception {
         return systemDAO.delPrivacy(map);
+    }
+
+    @Override
+    public List<EntHistStatVO> getStatList(EntHistStatVO vo) throws Exception {
+        return systemDAO.getStatList(vo);
+    }
+
+    @Override
+    public int getStatListCount(EntHistStatVO vo) throws Exception {
+        return systemDAO.getStatListCount(vo);
     }
 }
