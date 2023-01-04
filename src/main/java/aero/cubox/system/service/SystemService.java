@@ -1,5 +1,6 @@
 package aero.cubox.system.service;
 
+import aero.cubox.core.vo.EntHistStatVO;
 import aero.cubox.core.vo.PrivacyVO;
 
 import java.util.List;
@@ -18,4 +19,8 @@ public interface SystemService {
     public int delAllPrivacy(Map map) throws Exception;
 
     public int delPrivacy(Map map) throws Exception;
+
+    public List<EntHistStatVO> getStatList(EntHistStatVO vo) throws Exception;
+
+    public int getStatListCount(EntHistStatVO vo) throws Exception;
 }

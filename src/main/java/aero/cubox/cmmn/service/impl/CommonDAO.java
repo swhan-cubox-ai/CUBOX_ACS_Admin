@@ -3,7 +3,6 @@ package aero.cubox.cmmn.service.impl;
 import java.util.List;
 import java.util.Map;
 
-import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.core.vo.CodeVO;
 import aero.cubox.core.vo.CommonVO;
 import aero.cubox.core.vo.DateTimeVO;
@@ -162,13 +161,6 @@ public class CommonDAO extends EgovAbstractMapper {
 		return selectOne(sqlNameSpace+"getDateTime");
 	}
 
-	public List<BoardVO> getMainNoticeList() {
-		return selectList(sqlNameSpace+"getMainNoticeList");
-	}
-
-	public List<BoardVO> getMainQaList() {
-		return selectList(sqlNameSpace+"getMainQaList");
-	}
 	public List<CodeVO> selectAuthorList() throws Exception {
 		return selectList(sqlNameSpace+"selectAuthorList");
 	}

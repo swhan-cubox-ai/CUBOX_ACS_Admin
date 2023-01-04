@@ -1,9 +1,6 @@
 package aero.cubox.auth.service;
 
-import aero.cubox.core.vo.AuthVO;
-import aero.cubox.core.vo.DeptVO;
-import aero.cubox.core.vo.EmpVO;
-import aero.cubox.core.vo.FaceVO;
+import aero.cubox.core.vo.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -73,4 +70,7 @@ public interface AuthService {
     public void assignAuthEmp(HashMap<String, Object> map) throws Exception;
 
     public int delAuth(HashMap<String, Object> map) throws Exception;
+
+    public List<MdmVO> getMdmList(MdmVO vo) throws Exception;
+    public int getMdmListCount(MdmVO vo) throws Exception;
 }

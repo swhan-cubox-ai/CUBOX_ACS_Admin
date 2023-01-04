@@ -11,9 +11,9 @@
   });
 
   function pageSearch(page){
-    f = document.frmSearch;
+    var f = document.frmSearch;
     $("#srchPage").val(page);
-    f.action = "/err/faceFeatureList.do";
+    f.action = "faceFeatureList.do";
     f.submit();
   }
 

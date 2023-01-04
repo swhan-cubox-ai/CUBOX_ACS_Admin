@@ -1,15 +1,10 @@
 package aero.cubox.admin.service.impl;
 
-import aero.cubox.core.vo.AuthorVO;
-import aero.cubox.core.vo.SiteUserVO;
-import aero.cubox.core.vo.SiteVO;
 import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Map;
 
 @Repository("adminDAO")
 public class AdminDAO extends EgovAbstractMapper {

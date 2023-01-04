@@ -1,6 +1,5 @@
 package aero.cubox.user.service;
 
-import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.core.vo.*;
 
 import java.util.HashMap;

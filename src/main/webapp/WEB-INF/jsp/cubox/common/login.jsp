@@ -44,24 +44,6 @@ function fnLoginProc () {
 	f.submit();
 }
 
-function fnTest () {
-	var login_id = $("input[name=login_id]").val();
-	var login_pwd = $("input[name=login_pwd]").val();
-
-	if(fnIsEmpty(login_id)){alert ("아이디를 입력하세요."); $("input[name=login_id]").focus(); return;}
-	if(fnIsEmpty(login_pwd)){alert ("비밀번호를 입력하세요."); $("input[name=login_pwd]").focus(); return;}
-
-	if($("#chkIdSave").is(":checked")) {
-		var sUserId = $("input[name=login_id]").val();
-		setCookie("cookieLoginUserId", sUserId, 365);
-	}else{
-		deleteCookie("cookieLoginUserId");
-	}
-
-	f = document.frmLogin;
-	f.action = "/user/addUser.do"
-	//f.submit();
-}
 
 function caps_lock(e) {
 	var keyCode = 0;
@@ -143,7 +125,7 @@ function fnGoVisit() {
 					<img src="/img/logo/logo_<spring:eval expression="@property['Globals.site.main.id']" />.png" alt="" />
 				</div>
 				<div class="title">
-					<em>Member login</em><spring:eval expression="@property['Globals.site.main.name']" /> 보안관제시스템
+					<em>Member login</em><spring:eval expression="@property['Globals.site.main.name']" /> 세종청사 출입관리 시스템
 				</div>
 				<div class="fl_box">
 					<div class="tx_box">아이디</div>
@@ -161,7 +143,6 @@ function fnGoVisit() {
 						<input type="password" name="login_pwd" placeholder="Password" onkeypress="caps_lock(event);" />
 					</div>
 					<button type="button" class="login_btn mt_30 mr_20" onClick="fnLoginProc()">로그인</button>
-					<button type="button" class="login_btn mt_30" onClick="fnTest()">테스트계정 생성</button>
 					<%-- <button type="button" class="login_btn mt_30" onClick="fnGoVisit()">방문신청</button> --%>
 					<div class="com_box">
 						<input type="checkbox" id="chkIdSave" class="checkbox mr_5" value="Y">

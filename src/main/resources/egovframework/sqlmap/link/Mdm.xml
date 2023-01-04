@@ -6,4 +6,112 @@
 	<select id="selectTmMdmCpgnList" resultType="String">
 		select 1 from tm_mdm_cgpn
 	</select>
+
+	<select id="getMdmList" parameterType="aero.cubox.core.vo.MdmVO" resultType="aero.cubox.core.vo.MdmVO">
+		select * FROM (
+		select cgpn_hr_sn , hr_no, cgpn_nm, '일반출입증' as tableTyp,
+		case
+		when card_se in ('07','08') then
+		case when card_sttus_se = '02' then '사용중'
+		when card_sttus_se = '04' then '반납'
+		when card_sttus_se = '05' then '분실'
+		end
+		when card_se = '04' then
+		case when card_sttus_se = '04' then '사용중'
+		when card_sttus_se = '06' then '반납'
+		when card_sttus_se = '07' then '분실'
+		when card_sttus_se = '11' then '정지'
+		end
+		when card_se = '05' then
+		case when card_sttus_se = '02' then '사용중'
+		when card_sttus_se = '04' then '반납'
+		when card_sttus_se = '06' then '발급완료'
+		end
+		when card_se in ( '01', '02', '03', '11' ) then
+		case when card_sttus_se = '01' then '사용중'
+		when card_sttus_se = '02' then '정지'
+		when card_sttus_se = '03' then '분실'
+		when card_sttus_se = '04' then '일시정지'
+		end
+		end as card_se
+		, issu_no , cmg_begin_dt , cmg_end_dt ,creat_dt ,process_yn_mdmsjsc  FROM tc_em_cgpn em
+		union
+		select cgpn_hr_sn , hr_no, cgpn_nm, '방문증' as tableTyp,
+		case
+		when card_se in ('07','08') then
+		case when card_sttus_se = '02' then '사용중'
+		when card_sttus_se = '04' then '반납'
+		when card_sttus_se = '05' then '분실'
+		end
+		when card_se = '04' then
+		case when card_sttus_se = '04' then '사용중'
+		when card_sttus_se = '06' then '반납'
+		when card_sttus_se = '07' then '분실'
+		when card_sttus_se = '11' then '정지'
+		end
+		when card_se = '05' then
+		case when card_sttus_se = '02' then '사용중'
+		when card_sttus_se = '04' then '반납'
+		when card_sttus_se = '06' then '발급완료'
+		end
+		when card_se in ( '01', '02', '03', '11' ) then
+		case when card_sttus_se = '01' then '사용중'
+		when card_sttus_se = '02' then '정지'
+		when card_sttus_se = '03' then '분실'
+		when card_sttus_se = '04' then '일시정지'
+		end
+		end as card_se
+		, issu_no , cmg_begin_dt , cmg_end_dt ,creat_dt ,process_yn_mdmsjsc  FROM tc_em_visit
+		union
+		select cgpn_hr_sn , hr_no, cgpn_nm, '공무원' as tableTyp,
+		case
+		when card_se in ('07','08') then
+		case when card_sttus_se = '02' then '사용중'
+		when card_sttus_se = '04' then '반납'
+		when card_sttus_se = '05' then '분실'
+		end
+		when card_se = '04' then
+		case when card_sttus_se = '04' then '사용중'
+		when card_sttus_se = '06' then '반납'
+		when card_sttus_se = '07' then '분실'
+		when card_sttus_se = '11' then '정지'
+		end
+		when card_se = '05' then
+		case when card_sttus_se = '02' then '사용중'
+		when card_sttus_se = '04' then '반납'
+		when card_sttus_se = '06' then '발급완료'
+		end
+		when card_se in ( '01', '02', '03', '11' ) then
+		case when card_sttus_se = '01' then '사용중'
+		when card_sttus_se = '02' then '정지'
+		when card_sttus_se = '03' then '분실'
+		when card_sttus_se = '04' then '일시정지'
+		end
+		end as card_se
+		, issu_no , cmg_begin_dt , cmg_end_dt ,creat_dt ,process_yn_mdmsjsc  FROM tc_em_pbsvnt)
+		where 1=1
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword1)'>
+			AND issu_no like CONCAT('%',#{keyword1},'%')
+		</if>
+		order by cgpn_hr_sn desc
+			limit	#{srchCnt} offset #{offset}
+	</select>
+
+	<select id="getMdmListCount" parameterType="aero.cubox.core.vo.MdmVO" resultType="int">
+		select count(*) FROM (
+		(select issu_no FROM tc_em_cgpn em
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword1)'>
+			WHERE issu_no like CONCAT('%',#{keyword1},'%'))
+		</if>
+		union
+		(select issu_no FROM tc_em_visit
+		WHERE issu_no like CONCAT('%',#{keyword1},'%'))
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword1)'>
+		</if>
+		union
+		(select issu_no   FROM tc_em_pbsvnt
+		<if test='@aero.cubox.util.CommonUtils@notEmpty(keyword1)'>
+			WHERE issu_no like CONCAT('%',#{keyword1},'%'))
+		</if>)
+	</select>
 </mapper>

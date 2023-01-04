@@ -1,6 +1,7 @@
 package aero.cubox.system.service.impl;
 
 
+import aero.cubox.core.vo.EntHistStatVO;
 import aero.cubox.core.vo.PrivacyVO;
 import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
 import org.slf4j.Logger;
@@ -34,5 +35,13 @@ public class SystemDAO extends EgovAbstractMapper {
 
     public int delPrivacy(Map map) throws Exception {
         return update ("system.delPrivacy", map);
+    }
+
+    public List<EntHistStatVO> getStatList(EntHistStatVO vo) throws Exception {
+        return selectList ("system.getStatList", vo);
+    }
+
+    public int getStatListCount(EntHistStatVO vo) throws Exception {
+        return selectOne ("system.getStatListCount", vo);
     }
 }

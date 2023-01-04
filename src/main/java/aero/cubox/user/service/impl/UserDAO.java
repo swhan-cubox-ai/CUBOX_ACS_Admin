@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import aero.cubox.board.service.vo.BoardVO;
 import aero.cubox.core.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

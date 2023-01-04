@@ -19,7 +19,8 @@
                     , (select COUNT(TDD.door_id) FROM T_DOORGRP_DOOR TDD where TDD.doorgrp_id = TD.id )AS door_cnt
                     , TD.created_at
                     , TD.updated_at
-                 FROM T_DOORGRP TD
+        --         FROM T_DOORGRP TD
+                    FROM T_SCH_DOORGRP TD
             LEFT JOIN T_DOOR_SCH TDC on TD.door_sch_id = TDC.id
                 WHERE 1=1
               <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -42,7 +43,8 @@
         SELECT COUNT(*)
           FROM (
                 SELECT TD.id
-                  FROM T_DOORGRP TD
+                 -- FROM T_DOORGRP TD
+                  FROM T_SCH_DOORGRP TD
              LEFT JOIN T_DOOR_SCH TDC on TD.door_sch_id = TDC.id
                  WHERE 1=1
                 <if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -65,7 +67,8 @@
              , (select COUNT(TDD.door_id) from T_DOORGRP_DOOR TDD where TDD.doorgrp_id = TD.id) AS door_cnt
              , DATE_FORMAT(TD.created_at, '%Y-%m-%d') as created_at
              , DATE_FORMAT(TD.updated_at, '%Y-%m-%d') as updated_at
-        FROM T_DOORGRP TD
+        -- FROM T_DOORGRP TD
+           FROM T_SCH_DOORGRP TD
    LEFT JOIN T_DOOR_SCH TDC on TD.door_sch_id = TDC.id
        WHERE TD.id = #{id}
     </select>
@@ -143,7 +146,8 @@
 
     <select id="selectDoorGroupNameVerification" parameterType="HashMap" resultType="int">
         SELECT COUNT(TD.id) AS vCnt
-        FROM T_DOORGRP TD
+        -- FROM T_DOORGRP TD
+            FROM T_DOORGRP TD
         WHERE 1 = 1
           AND replace(TD.nm, ' ', '') = replace(#{doorGroupNm}, ' ', '')
     </select>

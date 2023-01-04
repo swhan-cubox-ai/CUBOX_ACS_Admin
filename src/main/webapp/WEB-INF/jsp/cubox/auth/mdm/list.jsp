@@ -5,20 +5,16 @@
 <!--검색박스 -->
 <script type="text/javascript">
     $(function() {
-        $(".title_tx").html("인사정보관리 - 목록");
+        $(".title_tx").html("mdm정보 - 목록");
     });
 
     function pageSearch(page){
         const f = document.frmSearch;
         $("#srchPage").val(page);
-        f.action = "/auth/emp/list.do";
+        f.action = "/auth/mdm/list.do";
         f.submit();
     }
 
-    function fnExcelDownLoad() {
-        let url = '/auth/emp/excelDownload.do';
-        $("#frmSearch").attr('action', url).submit();
-    }
 
 </script>
 <form id="frmSearch" name="frmSearch" method="post">
@@ -27,10 +23,7 @@
     <div class="search_box mb_20">
         <div class="search_in">
             <div class="comm_search  mr_10">
-                <input type="text" class="w_150px input_com" id="keyword1" name="keyword1" placeholder="기관명/부서명" value="<c:out value="${data.keyword1}"/>">
-            </div>
-            <div class="comm_search  mr_10">
-                <input type="text" class="w_150px input_com" id="keyword2" name="keyword2" placeholder="인사번호/성명" value="<c:out value="${data.keyword2}"/>">
+                <input type="text" class="w_150px input_com" id="keyword1" name="keyword1" placeholder="카드번호" value="<c:out value="${data.keyword1}"/>">
             </div>
             <div class="comm_search ml_40">
                 <div class="search_btn2" onclick="pageSearch('1')"></div>
@@ -45,9 +38,6 @@
         <div class="txbox">
             <b class="fl mr_10">전체 : <c:out value="${pagination.totRecord}"/>건</b>
         </div>	<!--버튼 -->
-        <div class="r_btnbox  mb_10">
-            <button type="button" class="btn_excel" id="excelDown" onclick="fnExcelDownLoad()">엑셀다운로드</button>
-        </div>
         <!--//버튼  -->
     </div>
     <!--테이블 시작 -->
@@ -55,6 +45,7 @@
         <table class="tb_list">
             <colgroup>
                 <col width="3%" />
+                <col width="5%"/>
                 <col width="5%"/>
                 <col width="7%" />
                 <col width="7%" />
@@ -66,34 +57,36 @@
             </colgroup>
             <thead>
             <tr>
-                <th>No.</th>
+                <th>cgpn_hr_sn</th>
+                <th>테이블</th>
                 <th>인사번호</th>
-                <th>소속</th>
-                <th>기관</th>
-                <th>부서</th>
-                <th>카드상태</th>
                 <th>성명</th>
-                <th>유효일자</th>
+                <th>카드상태</th>
+                <th>카드번호</th>
+                <th>시작일시</th>
+                <th>만료일시</th>
                 <th>등록일자</th>
+                <th>동기화여부</th>
             </tr>
             </thead>
-            <tbody id="holidayListBody">
-            <c:if test="${empList == null || fn:length(empList) == 0}">
+            <tbody id="mdmListBody">
+            <c:if test="${mdmList == null || fn:length(mdmList) == 0}">
                 <tr>
                     <td class="h_35px" colspan="13">조회 목록이 없습니다.</td>
                 </tr>
             </c:if>
-            <c:forEach items="${empList}" var="sList" varStatus="status">
+            <c:forEach items="${mdmList}" var="sList" varStatus="status">
                 <tr>
-                    <td><c:out value="${sList.id}"/></td>
-                    <td><a href='/auth/emp/detail/<c:out value="${sList.id}"/>'><c:out value="${sList.empCd}"/></a></td>
-                    <td><c:out value="${sList.belongNm}"/></td>
-                    <td><c:out value="${sList.insttNm}"/></td>
-                    <td><c:out value="${sList.deptNm}"/></td>
-                    <td><c:out value="${sList.cardStateTypNm}"/></td>
-                    <td><c:out value="${sList.empNm}"/></td>
-                    <td><c:out value="${sList.expiredDt}"/></td>
-                    <td><c:out value="${sList.createdAt}"/></td>
+                    <td><c:out value="${sList.cgpn_hr_sn}"/></td>
+                    <td><c:out value="${sList.tableTyp}"/></td>
+                    <td><c:out value="${sList.hr_no}"/></td>
+                    <td><c:out value="${sList.cgpn_nm}"/></td>
+                    <td><c:out value="${sList.card_se}"/></td>
+                    <td><c:out value="${sList.issu_no}"/></td>
+                    <td><c:out value="${sList.cmg_begin_dt}"/></td>
+                    <td><c:out value="${sList.cmg_end_dt}"/></td>
+                    <td><c:out value="${sList.creat_dt}"/></td>
+                    <td><c:out value="${sList.process_yn_mdmsjsc}"/></td>
                 </tr>
             </c:forEach>
             </tbody>

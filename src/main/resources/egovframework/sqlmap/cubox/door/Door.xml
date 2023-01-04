@@ -22,7 +22,7 @@
 			   , (SELECT GROUP_CONCAT( (SELECT TA.auth_nm FROM T_AUTH TA WHERE TA.id = TT.auth_id)  SEPARATOR '/')  FROM T_AUTH_DOOR TT WHERE TT.door_id =TD.id ) AS auth_nms
 		    FROM T_DOOR TD
  LEFT OUTER JOIN T_DOORGRP_DOOR TDD ON TD.id = TDD.door_id
- LEFT OUTER JOIN T_DOORGRP TDG      ON TDD.doorgrp_id = TDG.id
+ LEFT OUTER JOIN T_SCH_DOORGRP TDG      ON TDD.doorgrp_id = TDG.id
  LEFT OUTER JOIN T_DOOR_SCH TDS     ON TDD.doorgrp_id = TDS.id
 		   WHERE TD.id = #{id}
 		GROUP BY TD.id
@@ -38,8 +38,8 @@
 			 , floor_id
 			 , door_nm
 			 , alarm_typ
-			 , created_at
-			 , updated_at
+			 -- , created_at
+			 -- , updated_at
 		FROM T_DOOR TD
 		WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(building_id)'>
@@ -111,8 +111,8 @@
 		     , TB.building_cd
 		     , TB.workplace_id
 		     , TB.building_nm
-		     , TB.created_at
-		     , TB.updated_at
+		     -- , TB.created_at
+		     -- , TB.updated_at
 		  FROM T_BUILDING TB
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -132,8 +132,8 @@
 		     , area_id
 		     , floor_cd
 		     , floor_nm
-		     , created_at
-		     , updated_at
+		     -- , created_at
+		     -- , updated_at
 		  FROM T_FLOOR TF
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -153,8 +153,8 @@
 		SELECT id
 		     , building_id
 		     , area_nm
-		     , created_at
-		     , updated_at
+--		     , created_at
+--		     , updated_at
 		  FROM T_AREA TA
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -169,8 +169,8 @@
 	<select id="selectWorkplaceList" parameterType="HashMap" resultType="HashMap">
 		SELECT id
              , workplace_nm
-		     , created_at
-		     , updated_at
+		     -- , created_at
+		     -- , updated_at
 		  FROM T_WORKPLACE TW
 		 WHERE 1=1
 		<if test='@aero.cubox.util.CommonUtils@notEmpty(id)'>
@@ -190,8 +190,8 @@
 			 , face_auth_typ
 			 , op_mode_typ
 			 , online_yn
-			 , created_at
-			 , updated_at
+			 -- , created_at
+			 -- , updated_at
 		  FROM T_TERMINAL TT
 		 WHERE 1 = 1
            AND use_yn = 'Y'
