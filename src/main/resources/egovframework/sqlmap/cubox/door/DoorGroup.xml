@@ -147,7 +147,7 @@
     <select id="selectDoorGroupNameVerification" parameterType="HashMap" resultType="int">
         SELECT COUNT(TD.id) AS vCnt
         -- FROM T_DOORGRP TD
-            FROM T_SCH_DOORGRP TD
+            FROM T_DOORGRP TD
         WHERE 1 = 1
           AND replace(TD.nm, ' ', '') = replace(#{doorGroupNm}, ' ', '')
     </select>
