@@ -96,19 +96,25 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
     @Override
     public void updateDoorGroup(Map<String, Object> commandMap) {
 
-        HashMap originDoorGroup = doorGroupDAO.getDoorGroupDetail((Integer) commandMap.get("id"));
+        //HashMap originDoorGroup = doorGroupDAO.getDoorGroupDetail((Integer) commandMap.get("id"));
         doorGroupDAO.updateDoorGroup(commandMap);
 
-        commandMap.put("schDoorgrpId", originDoorGroup.get("door_sch_id"));//서버에 저장된 스케쥴ID
-        String originDoorIds = (StringUtil.isNullToString(originDoorGroup.get("door_ids"))=="")?"":originDoorGroup.get("door_ids").toString();
+        commandMap.put("schDoorgrpId", commandMap.get("id"));//서버에 저장된 스케쥴ID
+        //String originDoorIds = (StringUtil.isNullToString(originDoorGroup.get("door_ids"))=="")?"":originDoorGroup.get("door_ids").toString();
+
+        doorDAO.updateDoorByScheduleInit(commandMap);
+
+        /*
 
         if( originDoorIds.length() > 0 ) {
             String[] originDoorIdArr = originDoorIds.split("/");
             commandMap.put("doorIdArr", originDoorIdArr);//서버에 저장된 스케쥴ID
             doorDAO.updateDoorByScheduleInit(commandMap);
         }
+*/
 
-        commandMap.put("schDoorgrpId", commandMap.get("doorSchId").toString()); //클라이언트에서 전달받은 스케쥴ID
+
+        //commandMap.put("schDoorgrpId", commandMap.get("doorSchId").toString()); //클라이언트에서 전달받은 스케쥴ID
 
         //출입권한-출입문 table에 door_id Insert
         if( !isEmpty((String) commandMap.get("doorIds"))){

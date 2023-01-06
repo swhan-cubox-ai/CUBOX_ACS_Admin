@@ -104,7 +104,15 @@
 		 WHERE id = #{id}
 	</update>
 
+
 	<update id="updateDoorByScheduleInit" parameterType="HashMap">
+		UPDATE T_DOOR
+		SET sch_doorgrp_id = NULL
+		, updated_at = NOW()
+		WHERE sch_doorgrp_id = #{schDoorgrpId}
+	</update>
+
+	<!--<update id="updateDoorByScheduleInit" parameterType="HashMap">
 		UPDATE T_DOOR
 		  SET sch_doorgrp_id = NULL
 		    , updated_at = NOW()
@@ -113,7 +121,7 @@
 		  <foreach item="item" index="doorId" collection="doorIdArr" open="(" separator="," close=")">
 			#{doorId}
 		  </foreach>
-	</update>
+	</update>-->
 
 
 	<delete id="deleteDoor" parameterType="HashMap" >
