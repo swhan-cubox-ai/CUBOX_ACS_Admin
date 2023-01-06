@@ -39,7 +39,7 @@
 
     $(function () {
 
-        $(".title_tx").html("출입문 그룹 관리 - 등록");
+        $(".title_tx").html("스케쥴 출입문 그룹 관리 - 등록");
         $("#gpNm").focus();
 
         $("#listBtn").hide();
@@ -125,7 +125,7 @@
             <tbody id="tdGroupDetail">
             <input type="hidden" id="gpDoorIds" value="">
             <tr>
-                <th>출입문 그룹 명</th>
+                <th>스캐쥴 출입문 그룹 명</th>
                 <td>
                     <input type="text" id="gpNm" name="gpNm" maxlength="35" value="" class="input_com w_600px" onkeyup="charCheck(this)" onkeydown="charCheck(this)">
                 </td>
@@ -153,7 +153,7 @@
                 <td style="display: flex;">
                     <textarea id="gpDoorNms" name="gpDoorNms" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px; font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
                     <div class="ml_10" style="position: relative;">
-                        <button type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 60px;" onclick="openPopup('doorEditPopup')" id="btnSelDoor">선택</button>
+                        <button type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 60px;" onclick="openPopup('doorEditPopup')">선택</button>
                     </div>
                 </td>
             </tr>

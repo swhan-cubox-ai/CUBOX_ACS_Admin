@@ -9,6 +9,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:include page="/WEB-INF/jsp/cubox/common/checkPasswd.jsp" flush="false"/>
 <jsp:include page="/WEB-INF/jsp/cubox/common/doorGroupPickPopup.jsp" flush="false"/>
+<jsp:include page="/WEB-INF/jsp/cubox/common/doorPickPopup.jsp" flush="false"/>
+
 
 <style>
     .title_box {
@@ -35,6 +37,7 @@
     $(function() {
         $(".title_tx").html("출입문 스케쥴 - 등록");
         modalPopup("doorGroupPickPopup", "출입문 그룹 선택", 910, 550);
+        modalPopup("doorEditPopup", "출입문 선택", 900, 600);
     });
 
     // 출입문 스케줄 등록 저장
@@ -56,6 +59,8 @@
         $("#" + popupNm).PopupWindow("open");
         if (popupNm === "doorGroupPickPopup") {
             fnGetDoorGroupListAjax();
+        } else if (popupNm === "doorEditPopup") {
+            fnGetDoorListAjax("Schedule");
         }
     }
 
@@ -129,13 +134,24 @@
                         </select>
                     </td>
                 </tr>
+<%--                <tr>--%>
+<%--                    <th>출입문 그룹</th>--%>
+<%--                    <td style="display: flex;">--%>
+<%--                        <textarea id="doorGroup" name="doorGroup" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;--%>
+<%--                                    font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>--%>
+<%--                        <div class="ml_10" style="position:relative;">--%>
+<%--                            <button type="button" class="btn_small color_basic" onclick="openPopup('doorGroupPickPopup')" style="width:60px; position:absolute; bottom:0;">선택</button>--%>
+<%--                        </div>--%>
+<%--                    </td>--%>
+<%--                </tr>--%>
                 <tr>
-                    <th>출입문 그룹</th>
+                    <th>출입문</th>
                     <td style="display: flex;">
-                        <textarea id="doorGroup" name="doorGroup" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;
-                                    font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled></textarea>
-                        <div class="ml_10" style="position:relative;">
-                            <button type="button" class="btn_small color_basic" onclick="openPopup('doorGroupPickPopup')" style="width:60px; position:absolute; bottom:0;">선택</button>
+                    <textarea id="schDoorNms" name="schDoorNms" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;
+                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>
+                    </textarea>
+                        <div class="ml_10" style="position: relative;">
+                            <button id="btnEdit" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 60px; display: none;" onclick="openPopup('doorEditPopup')">선택</button>
                         </div>
                     </td>
                 </tr>
