@@ -6,6 +6,7 @@ import aero.cubox.core.vo.CommonVO;
 import aero.cubox.core.vo.HolidayVO;
 import aero.cubox.core.vo.PaginationVO;
 import aero.cubox.core.vo.TerminalVO;
+import aero.cubox.terminal.service.DigitTwinService;
 import aero.cubox.terminal.service.TerminalService;
 import aero.cubox.util.StringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +14,8 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +39,9 @@ public class TerminalController {
 
     @Resource(name = "commonService")
     private CommonService commonService;
+
+    @Resource(name = "DigitTwinService")
+    DigitTwinService digitTwinService;
 
 
     @RequestMapping(value = "/terminal/list.do")
@@ -93,11 +99,13 @@ public class TerminalController {
         List<CommonVO> terminalTypCombList = commonService.getCommonCodeList("TerminalTyp");
         List<CommonVO> complexAuthTypCombList = commonService.getCommonCodeList("ComplexAuthTyp");
         List<CommonVO> faceAuthTypCombList = commonService.getCommonCodeList("FaceAuthTyp");
+        List<CommonVO> opModeTypCombList = commonService.getCommonCodeList("OpModeTyp");
 
         model.addAttribute("doorCombList", doorCombList);
         model.addAttribute("terminalTypCombList", terminalTypCombList);
         model.addAttribute("complexAuthTypCombList", complexAuthTypCombList);
         model.addAttribute("faceAuthTypCombList", faceAuthTypCombList);
+        model.addAttribute("opModeTypCombList", opModeTypCombList);
 
         return "cubox/terminal/add";
     }
@@ -118,6 +126,7 @@ public class TerminalController {
         List<CommonVO> terminalTypCombList = commonService.getCommonCodeList("TerminalTyp");
         List<CommonVO> complexAuthTypCombList = commonService.getCommonCodeList("ComplexAuthTyp");
         List<CommonVO> faceAuthTypCombList = commonService.getCommonCodeList("FaceAuthTyp");
+        List<CommonVO> opModeTypCombList = commonService.getCommonCodeList("OpModeTyp");
 
         HashMap data = terminalService.getTerminalDetail(id);
 
@@ -127,6 +136,7 @@ public class TerminalController {
         model.addAttribute("complexAuthTypCombList", complexAuthTypCombList);
         model.addAttribute("faceAuthTypCombList", faceAuthTypCombList);
         model.addAttribute("data", data);
+        model.addAttribute("opModeTypCombList", opModeTypCombList);
 
         return "cubox/terminal/detail";
     }
@@ -139,7 +149,7 @@ public class TerminalController {
 
         try{
             int result = terminalService.addTerminal(param);
-
+            digitTwinService.sendToDigitTwin(param, "C");
             modelAndView.addObject("result", "success");
         }catch (Exception e){
             e.printStackTrace();
@@ -157,6 +167,7 @@ public class TerminalController {
 
         try{
             terminalService.deleteTerminal(param);
+            digitTwinService.sendToDigitTwin(param, "D");
             modelAndView.addObject("result", "success");
         }catch (Exception e){
             e.printStackTrace();
@@ -174,7 +185,7 @@ public class TerminalController {
 
         try{
             terminalService.modifyTerminal(param);
-
+            digitTwinService.sendToDigitTwin(param, "U");
             modelAndView.addObject("result", "success");
         }catch (Exception e){
             e.printStackTrace();
@@ -331,10 +342,10 @@ public class TerminalController {
         int rowNum = 0;
 
         //// Header ////
-        final String[] colNames = {"No", "건물", "구역", "층", "출입문명", "단말기코드", "관리번호", "단말기유형", "IP", "출입인증방식",
+        final String[] colNames = {"No", "건물", "층", "출입문명", "단말기코드", "관리번호", "단말기유형", "IP", "출입인증방식",
                                     "얼굴인증방식", "BlackList", "WhiteList", "등록일자", "사용"};
         // Header size
-        final int[] colWidths = {1500, 3000, 4000, 3000, 8000, 4000, 3000, 3000, 5000, 5000, 3000, 3000, 3000, 3000, 1500};
+        final int[] colWidths = {1500, 3000, 3000, 8000, 4000, 3000, 3000, 5000, 5000, 3000, 3000, 3000, 3000, 1500};
         // Header font
         Font fontHeader = wb.createFont();
         fontHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
@@ -392,3 +403,4 @@ public class TerminalController {
         wb.write(response.getOutputStream());
     }
 }
+

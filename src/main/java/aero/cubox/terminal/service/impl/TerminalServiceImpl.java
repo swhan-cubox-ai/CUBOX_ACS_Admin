@@ -113,4 +113,9 @@ public class TerminalServiceImpl extends EgovAbstractServiceImpl implements Term
     public int addTerminal(Map<String, Object> map) throws Exception {
         return terminalDAO.addTerminal(map);
     }
+
+    @Override
+    public Map<String, String> getTerminalInfo(String doorId) throws Exception {
+        return terminalDAO.getTerminalInfo(doorId);
+    }
 }

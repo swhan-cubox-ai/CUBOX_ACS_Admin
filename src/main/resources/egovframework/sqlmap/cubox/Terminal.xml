@@ -7,7 +7,6 @@
         SELECT
             TM.id as id,
             TB.building_nm as buildingNm,
-            TA.area_nm as areaNm,
             TF.floor_nm as floorNm,
             TD.door_nm as doorNm,
             TM.mgmt_num as mgmtNum,
@@ -58,8 +57,6 @@
                 JOIN
             T_BUILDING TB ON TD.building_id = TB.id
                 LEFT OUTER JOIN
-            T_AREA TA ON TD.area_id = TA.id
-                LEFT OUTER JOIN
             T_FLOOR TF ON TD.floor_id = TF.id
         WHERE
             1=1
@@ -86,8 +83,6 @@
               T_DOOR TD ON TM.door_id = TD.id
                   JOIN
               T_BUILDING TB ON TD.building_id = TB.id
-                  LEFT OUTER JOIN
-              T_AREA TA ON TD.area_id = TA.id
                   LEFT OUTER JOIN
               T_FLOOR TF ON TD.floor_id = TF.id
         WHERE
@@ -132,16 +127,13 @@
             TD.id AS id,
             TD.door_nm AS doorNm,
             TB.building_nm AS buildingNm,
-            TF.floor_nm AS floorNm,
-            TA.area_nm AS areaNm
+            TF.floor_nm AS floorNm
         FROM
             T_DOOR TD
                 LEFT OUTER JOIN
             T_BUILDING TB ON TD.building_id = TB.id
                 LEFT OUTER JOIN
             T_FLOOR TF ON TD.floor_id = TF.id
-                LEFT OUTER JOIN
-            T_AREA TA ON TD.area_id = TA.id
         WHERE
             TD.id = #{doorId}
     </select>
@@ -150,7 +142,6 @@
         SELECT
             TM.id as id,
             TB.building_nm as buildingNm,
-            TA.area_nm as areaNm,
             TM.door_id as doorId,
             TF.floor_nm as floorNm,
             TD.door_nm as doorNm,
@@ -183,6 +174,14 @@
                  cd_typ = 'FaceAuthTyp'
                AND cd = TM.face_auth_typ) AS faceAuthTypNm,
             (SELECT
+                 cd_nm
+             FROM
+                 T_CMMN_CD
+             WHERE
+                 cd_typ = 'OpModeTyp'
+               AND cd = TM.face_auth_typ) AS opModeTypNm,
+            TM.op_mode_typ as OpModeTyp,
+            (SELECT
                  COUNT(*)
              FROM
                  T_WB_LIST
@@ -202,8 +201,6 @@
             T_DOOR TD ON TM.door_id = TD.id
                 JOIN
             T_BUILDING TB ON TD.building_id = TB.id
-                LEFT OUTER JOIN
-            T_AREA TA ON TD.area_id = TA.id
                 LEFT OUTER JOIN
             T_FLOOR TF ON TD.floor_id = TF.id
         WHERE
@@ -322,7 +319,7 @@
             complex_auth_typ = #{complexAuthTyp},
             face_auth_typ = #{faceAuthTyp},
             use_yn = #{useYn},
-            updated_at = NOW(3)
+            updated_at = NOW(6)
         WHERE
             id = #{id}
     </update>
@@ -336,6 +333,7 @@
             mgmt_num,
             ip_addr,
             complex_auth_typ,
+            op_mode_typ,
             face_auth_typ,
             use_yn,
             created_at
@@ -347,9 +345,10 @@
             #{mgmtNum},
             #{ipAddr},
             #{complexAuthTyp},
+            #{opModeTyp},
             #{faceAuthTyp},
             #{useYn},
-            NOW(3)
+            NOW(6)
         )
     </insert>
 
@@ -358,5 +357,10 @@
         WHERE
             id = #{id}
     </delete>
+
+    <select id="getTerminalInfo" parameterType="string" resultType="Map">
+        SELECT building_cd, floor_cd, door_nm FROM T_DOOR
+        WHERE id = #{doorId}
+    </select>
 
 </mapper>

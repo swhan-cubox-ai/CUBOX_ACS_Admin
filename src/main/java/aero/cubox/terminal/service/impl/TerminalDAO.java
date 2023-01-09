@@ -77,4 +77,8 @@ public class TerminalDAO extends EgovAbstractMapper {
     public int addTerminal(Map map) throws Exception {
         return insert ("terminal.addTerminal", map);
     }
+
+    public HashMap getTerminalInfo(String doorId) throws Exception {
+        return selectOne ("terminal.getTerminalInfo", doorId);
+    }
 }

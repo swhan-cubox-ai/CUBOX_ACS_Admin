@@ -40,4 +40,6 @@ public interface TerminalService {
     public int deleteTerminal(Map<String, Object> map) throws Exception;
 
     public int addTerminal(Map<String, Object> map) throws Exception;
+
+    public Map<String, String> getTerminalInfo(String doorId) throws Exception;
 }

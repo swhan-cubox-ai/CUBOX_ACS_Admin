@@ -89,26 +89,24 @@
     <table class="tb_list">
       <colgroup>
         <col width="3%" />
-        <col width="9%"/>
-        <col width="9%" />
-        <col width="9%" />
-        <col width="10%" />
-        <col width="9%" />
-        <col width="9%" />
-        <col width="9%" />
-        <col width="14%" />
-        <col width="9%" />
-        <col width="9%" />
-        <col width="15%" />
+        <col width="6%"/>
+        <col width="6%" />
         <col width="15%" />
         <col width="9%" />
-        <col width="30%" />
+        <col width="6%" />
+        <col width="6%" />
+        <col width="15%" />
+        <col width="6%" />
+        <col width="6%" />
+        <col width="3%" />
+        <col width="3%" />
+        <col width="9%" />
+        <col width="3%" />
       </colgroup>
       <thead>
         <tr>
           <th>No.</th>
           <th>건물</th>
-          <th>구역</th>
           <th>층</th>
           <th>출입문명</th>
           <th>단말기코드</th>
@@ -133,7 +131,6 @@
         <tr>
           <td>${(pagination.totRecord - (pagination.totRecord-status.index)+1)  + ( (pagination.curPage - 1)  *  pagination.recPerPage ) }</td>
           <td><c:out value="${sList.buildingNm}"/></td>
-          <td><c:out value="${sList.areaNm}"/></td>
           <td><c:out value="${sList.floorNm}"/></td>
           <td><c:out value="${sList.doorNm}"/></td>
           <td><a href='/terminal/detail/<c:out value="${sList.id}"/>'><c:out value="${sList.terminalCd}"/></a></td>

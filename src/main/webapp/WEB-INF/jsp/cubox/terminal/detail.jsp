@@ -87,7 +87,6 @@
 
         if(returnData.result == "success") {
           $('#buildingNm').val(returnData.data.buildingNm);
-          $('#areaNm').val(returnData.data.areaNm);
           $('#floorNm').val(returnData.data.floorNm);
 
         }else{ alert("ERROR!");return;}
@@ -287,10 +286,6 @@
         <input type="text" id="buildingNm" name="buildingNm" class="w_250px input_com l_radius_no" readonly="readonly" value='<c:out value="${data.buildingNm}"/>' placeholder="건물" maxlength="20" style="border:1px solid #ccc;"/>
       </div>
       <div class="comm_search w_100p mb_20" style="line-height: 30px">
-        <div class="w_150px fl"><em>구역</em></div>
-        <input type="text" id="areaNm" name="areaNm" class="w_250px input_com l_radius_no" readonly="readonly" value="<c:out value='${data.areaNm}'/>" placeholder="구역" maxlength="20" style="border:1px solid #ccc;"/>
-      </div>
-      <div class="comm_search w_100p mb_20" style="line-height: 30px">
         <div class="w_150px fl"><em>층</em></div>
         <input type="text" id="floorNm" name="floorNm" class="w_250px input_com l_radius_no" readonly="readonly" value="<c:out value='${data.floorNm}'/>" placeholder="층" maxlength="20" style="border:1px solid #ccc;"/>
       </div>
@@ -358,6 +353,19 @@
           <select name="faceAuthTyp" id="faceAuthTyp" size="1" class="w_150px input_com">
             <c:forEach var="list" items="${faceAuthTypCombList}">
               <option <c:if test="${data.faceAuthTyp == list.cd}">selected</c:if> value="${list.cd}">${list.cdNm}</option>
+            </c:forEach>
+          </select>
+        </c:if>
+      </div>
+      <div class="comm_search w_100p mb_20" style="line-height: 30px">
+        <div class="w_150px fl"><em>운영모드방식</em></div>
+        <c:if test="${!isModify}">
+          <input type="text" id="opModeTypNm" name="opModeTypNm" class="w_250px input_com l_radius_no" readonly="readonly" value="<c:out value='${data.faceAuthTypNm}'/>" placeholder="얼굴인증방식" maxlength="20" style="border:1px solid #ccc;"/>
+        </c:if>
+        <c:if test="${isModify}">
+          <select name="OpModeTyp" id="OpModeTyp" size="1" class="w_150px input_com">
+            <c:forEach var="list" items="${opModeTypCombList}">
+              <option <c:if test="${data.OpModeTyp == list.cd}">selected</c:if> value="${list.cd}">${list.cdNm}</option>
             </c:forEach>
           </select>
         </c:if>

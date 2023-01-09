@@ -24,7 +24,6 @@
 
                 if(returnData.result == "success") {
                     $('#buildingNm').val(returnData.data.buildingNm);
-                    $('#areaNm').val(returnData.data.areaNm);
                     $('#floorNm').val(returnData.data.floorNm);
 
                 }else{ alert("ERROR!");return;}
@@ -118,10 +117,6 @@
                 <input type="text" id="buildingNm" name="buildingNm" class="w_250px input_com l_radius_no" readonly="readonly" value='' placeholder="건물" maxlength="20" style="border:1px solid #ccc;"/>
             </div>
             <div class="comm_search w_100p mb_20" style="line-height: 30px">
-                <div class="w_150px fl"><em>구역</em></div>
-                <input type="text" id="areaNm" name="areaNm" class="w_250px input_com l_radius_no" readonly="readonly" value="" placeholder="구역" maxlength="20" style="border:1px solid #ccc;"/>
-            </div>
-            <div class="comm_search w_100p mb_20" style="line-height: 30px">
                 <div class="w_150px fl"><em>층</em></div>
                 <input type="text" id="floorNm" name="floorNm" class="w_250px input_com l_radius_no" readonly="readonly" value="" placeholder="층" maxlength="20" style="border:1px solid #ccc;"/>
             </div>
@@ -173,6 +168,15 @@
                 <select name="faceAuthTyp" id="faceAuthTyp" size="1" class="w_150px input_com">
                     <option value="">선택</option>
                     <c:forEach var="list" items="${faceAuthTypCombList}">
+                        <option value="${list.cd}">${list.cdNm}</option>
+                    </c:forEach>
+                </select>
+            </div>
+            <div class="comm_search w_100p mb_20" style="line-height: 30px">
+                <div class="w_150px fl"><em>운영모드방식</em></div>
+                <select name="opModeTyp" id="opModeTyp" size="1" class="w_150px input_com">
+                    <option value="">선택</option>
+                    <c:forEach var="list" items="${opModeTypCombList}">
                         <option value="${list.cd}">${list.cdNm}</option>
                     </c:forEach>
                 </select>
