@@ -873,12 +873,18 @@
                         if (terminal.doorNm === undefined || terminal.doorNm === null) {
                             terminal.doorNm = "";
                         }
+                        if (terminal.useYn === "Y") {
+                            terminal.useYn = "사용중";
+                        } else {
+                            terminal.useYn = "";
+                        }
                         let tag = "<tr class='h_35px' style='text-align:center'><td style='padding:0 14px;'>";
                         tag += "<input type='radio' value='" + terminal.id + "' name='checkOne'></td>";
                         tag += "<td>" + terminal.terminalCd + "</td>";
                         tag += "<td>" + terminal.mgmtNum + "</td>";
                         tag += "<td>" + terminal.terminalTyp + "</td>";
-                        tag += "<td>" + terminal.doorNm + "</td></tr>";
+                        tag += "<td>" + terminal.doorNm + "</td>";
+                        tag += "<td>" + terminal.useYn + "</td></tr>";
                         $("#tbTerminal").append(tag);
                     });
 
@@ -1607,10 +1613,11 @@
             <table class="tb_list tb_write_02 tb_write_p1">
                 <colgroup>
                     <col style="width:5%">
-                    <col style="width:28%">
                     <col style="width:20%">
-                    <col style="width:22%">
+                    <col style="width:20%">
+                    <col style="width:20%">
                     <col style="width:25%">
+                    <col style="width:10%">
                 </colgroup>
                 <thead>
                 <tr>
@@ -1619,6 +1626,7 @@
                     <th>관리번호</th>
                     <th>단말기유형</th>
                     <th>출입문명</th>
+                    <th>사용여부</th>
                 </tr>
                 </thead>
                 <tbody id="tbTerminal">
