@@ -939,7 +939,6 @@
             <input type="hidden" id="scheduleId" value="${doorScheduleDetail.id}">
             <input type="hidden" id="daySchCnt" value="0">
             <input type="hidden" id="doorIds" value="">
-            <input type="hidden" id="schDoorIds" value="">
             <tr>
                 <th>출입문 스케쥴 명</th>
                 <td>
@@ -967,7 +966,7 @@
 <%--                    </div>--%>
 <%--                </td>--%>
 <%--            </tr>--%>
-            <tr>
+            <tr style="display:none;">
                 <th>출입문</th>
                 <td style="display: flex;">
                     <textarea id="schDoorNms" name="schDoorNms" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;
@@ -978,18 +977,6 @@ ${dName}</c:forEach></textarea>
                     </div>
                 </td>
             </tr>
-<%--            <tr>--%>
-<%--                <th>출입문 권한그룹</th>--%>
-<%--                <td style="display: flex;">--%>
-<%--                    <textarea id="schAuthGrp" name="schAuthGrp" rows="10" cols="33" class="w_600px color_disabled" style="border-color: #ccc; border-radius: 2px;--%>
-<%--                              font-size: 14px; line-height: 1.5; padding: 2px 10px;" disabled>--%>
-<%--                    </textarea>--%>
-<%--                    <div class="ml_10" style="position: relative;">--%>
-<%--                        <button id="btnEditAuth" type="button" class="btn_small color_basic" style="position: absolute; bottom: 0; width: 60px; display: none;" onclick="openPopup('doorEditPopup')">선택</button>--%>
-<%--                    </div>--%>
-<%--                </td>--%>
-<%--                </td>--%>
-<%--            </tr>--%>
             </tbody>
         </table>
     </div>
