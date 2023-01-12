@@ -116,8 +116,8 @@
             $("#btnExcelDownload, #btnExcelUpload").css("display", "none"); // 엑셀 다운로드, 업로드 버튼
             $(".hideSelectBtn").remove(); // 단말기코드, 권한그룹 선택 버튼
             $(".paddingForBtn").attr("colspan", "2").removeClass("paddingForBtn"); // 단말기코드, 권한그룹 길이 조정
-            let schVal = ($("#selDoorGroup option:selected").val() === "") ? "없음" : $("#selDoorGroup option:selected").text();
-            $("#selDoorGroup option:selected").text(schVal); // 스케쥴
+            let schVal = ($("#selSchDoorGroup option:selected").val() === "") ? "없음" : $("#selSchDoorGroup option:selected").text();
+            $("#selSchDoorGroup option:selected").text(schVal); // 스케쥴
             let alGrpVal = ($("#doorAlarmGroup option:selected").val() === "") ? "없음" : $("#doorAlarmGroup option:selected").text();
             $("#doorAlarmGroup option:selected").text(alGrpVal); // 알람그룹
         }
@@ -481,7 +481,7 @@
                 $("#doorCd").val(dInfo.door_cd);                                        // 출입문 코드
                 $(".doorDetailList #dBuilding").val(dInfo.building_id);                 // 빌딩
                 $(".doorDetailList #dFloor").val(dInfo.floor_id);                       // 층
-                $("#selDoorGroup").val(dInfo.doorgrp_id);                               // 스케쥴
+                $("#selSchDoorGroup").val(dInfo.sch_doorgrp_id);                           // 스케쥴
                 $("#doorAlarmGroup").val(dInfo.alarm_typ);                              // 알람그룹
                 $("#terminalId").val(dInfo.terminal_id);                                // 단말기 id
                 $("#terminalCd").val(dInfo.terminal_cd);                                // 단말기 코드
@@ -791,8 +791,7 @@
     // popup open (공통)
     function openPopup(popupNm) {
         if (popupNm === "termPickPopup") {
-            fnGetTerminalListAjax() // 단말기 목록
-
+            fnGetTerminalListAjax(); // 단말기 목록
         } else if (popupNm === "authPickPopup") {
             fnGetAuthGroupListAjax(); // 출입문 권한그룹 목록
         }
@@ -1469,10 +1468,11 @@
                     <tr>
                         <th>스케쥴</th>
                         <td colspan="2">
-                            <select name="doorEdit" id="selDoorGroup" class="form-control" style="padding-left:10px;" disabled>
+<%--                            <select name="doorEdit" id="selDoorGroup" class="form-control" style="padding-left:10px;" disabled>--%>
+                            <select name="doorEdit" id="selSchDoorGroup" class="form-control" style="padding-left:10px;" disabled>
                                 <option value="" name="selected">선택</option>
-                                <c:forEach items="${doorGroupList}" var="doorGroup" varStatus="status">
-                                <option value='<c:out value="${doorGroup.id}"/>'><c:out value="${doorGroup.nm}"/></option>
+                                <c:forEach items="${schDoorGroupList}" var="schDoorGroup" varStatus="status">
+                                <option value='<c:out value="${schDoorGroup.id}"/>'><c:out value="${schDoorGroup.nm}"/></option>
                                 </c:forEach>
                             </select>
                         </td>

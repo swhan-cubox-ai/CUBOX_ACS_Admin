@@ -28,9 +28,9 @@ public class DoorGroupServiceImpl extends EgovAbstractServiceImpl implements Doo
      * @return
      */
     @Override
-    public List<HashMap> getDoorGroupList(Map<String, Object> commandMap) {
+    public List<HashMap> getSchDoorGroupList(Map<String, Object> commandMap) {
 
-        return doorGroupDAO.getDoorGroupList(commandMap);
+        return doorGroupDAO.getSchDoorGroupList(commandMap);
     }
 
     @Override

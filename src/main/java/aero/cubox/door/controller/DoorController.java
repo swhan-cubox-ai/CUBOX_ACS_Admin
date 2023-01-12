@@ -94,7 +94,7 @@ public class DoorController {
         List<HashMap> floorList = doorService.getFloorList(paramMap);     //층 목록
 
         // List<HashMap> scheduleList = doorScheduleService.getDoorScheduleList(paramMap);      // 스케쥴 목록
-        List<HashMap> doorGroupList = doorGroupService.getDoorGroupList(paramMap);      // 스케쥴 목록
+        List<HashMap> schDoorGroupList = doorGroupService.getSchDoorGroupList(paramMap);      // 스케쥴 목록
         List<HashMap> doorAlarmGrpList = doorAlarmService.getDoorAlarmGrpList(paramMap); // 출입물 알람 그룹 목록
 
         model.addAttribute("workplaceList", workplaceList);
@@ -102,7 +102,7 @@ public class DoorController {
        // model.addAttribute("areaList", areaList);
         model.addAttribute("floorList", floorList);
         model.addAttribute("doorAlarmGrpList", doorAlarmGrpList);
-        model.addAttribute("doorGroupList", doorGroupList);
+        model.addAttribute("schDoorGroupList", schDoorGroupList);
         //model.addAttribute("scheduleList", scheduleList);
 
         return "cubox/door/doorManagementDetail";
