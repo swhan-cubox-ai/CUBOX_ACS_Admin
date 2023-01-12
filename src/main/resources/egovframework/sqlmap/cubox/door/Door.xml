@@ -12,20 +12,22 @@
 		       , TD.area_id
 		       , TD.floor_id
 		       , TD.alarm_typ
-		      -- , TDD.doorgrp_id
+			   , TD.dooralarm_grp_id
+			   , TDG.nm as doorgrp_nm
 		       , TSD.id AS sch_doorgrp_id
 		       , TDS.id as sch_id
 		       , TDS.door_sch_nm as sch_nm
-		       , (SELECT GROUP_CONCAT( TT.id  SEPARATOR '/') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_id
-		       , (SELECT GROUP_CONCAT( TT.terminal_cd  SEPARATOR '/') FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS terminal_cd
-		       , (SELECT GROUP_CONCAT( TT.mgmt_num  SEPARATOR '/')  FROM T_TERMINAL TT WHERE TT.door_id= TD.id ) AS mgmt_num
+		       , TT.id AS terminal_id
+		       , TT.terminal_cd AS terminal_cd
+		       , TT.mgmt_num AS mgmt_num
 		       , (SELECT GROUP_CONCAT( TT.auth_id  SEPARATOR '/')  FROM T_AUTH_DOOR TT WHERE TT.door_id= TD.id ) AS auth_ids
 			   , (SELECT GROUP_CONCAT( (SELECT TA.auth_nm FROM T_AUTH TA WHERE TA.id = TT.auth_id)  SEPARATOR '/')  FROM T_AUTH_DOOR TT WHERE TT.door_id =TD.id ) AS auth_nms
 		    FROM T_DOOR TD
  LEFT OUTER JOIN T_SCH_DOORGRP TSD ON TSD.id = TD.sch_doorgrp_id
  LEFT OUTER JOIN T_DOOR_SCH TDS    ON TSD.door_sch_id = TDS.id
+ LEFT OUTER JOIN T_TERMINAL TT ON TD.id = TT.door_id
+ LEFT OUTER JOIN T_DOORALARM_GRP TDG ON TDG.id = TD.dooralarm_grp_id
 		   WHERE TD.id = #{id}
-		GROUP BY TD.id
 	</select>
 
 	<select id="selectDoorList" parameterType="HashMap" resultType="HashMap">

@@ -330,9 +330,9 @@
       <div class="comm_search  mr_10">
         <input type="text" class="w_150px input_com" id="keyword" name="keyword" value="<c:out value="${data.keyword}"/>" placeholder="검색어">
       </div>
-      <div class="comm_search ml_3">
-        <button type="button" class="btn_middle color_basic ml_3" onclick="showDeptPop();">부서선택</button>
-      </div>
+<%--      <div class="comm_search ml_3">--%>
+<%--        <button type="button" class="btn_middle color_basic ml_3" onclick="showDeptPop();">부서선택</button>--%>
+<%--      </div>--%>
       <div class="comm_search ml_40" style="margin-left: 53px;">
         <div class="search_btn2" onclick="pageSearch('1')"></div>
       </div>
@@ -369,7 +369,6 @@
         <col width="6%" />
         <col width="4%" />
         <col width="10%" />
-        <col width="6%" />
         <col width="6%" />
       </colgroup>
       <thead>

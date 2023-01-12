@@ -179,8 +179,8 @@
                  T_CMMN_CD
              WHERE
                  cd_typ = 'OpModeTyp'
-               AND cd = TM.face_auth_typ) AS opModeTypNm,
-            TM.op_mode_typ as OpModeTyp,
+               AND cd = TM.op_mode_typ) AS opModeTypNm,
+            TM.op_mode_typ as opModeTyp,
             (SELECT
                  COUNT(*)
              FROM

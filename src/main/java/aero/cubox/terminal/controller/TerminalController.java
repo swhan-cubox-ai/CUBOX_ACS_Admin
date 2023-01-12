@@ -149,7 +149,7 @@ public class TerminalController {
 
         try{
             int result = terminalService.addTerminal(param);
-            digitTwinService.sendToDigitTwin(param, "C");
+//            digitTwinService.sendToDigitTwin(param, "C");
             modelAndView.addObject("result", "success");
         }catch (Exception e){
             e.printStackTrace();
@@ -167,7 +167,7 @@ public class TerminalController {
 
         try{
             terminalService.deleteTerminal(param);
-            digitTwinService.sendToDigitTwin(param, "D");
+//            digitTwinService.sendToDigitTwin(param, "D");
             modelAndView.addObject("result", "success");
         }catch (Exception e){
             e.printStackTrace();
@@ -185,7 +185,7 @@ public class TerminalController {
 
         try{
             terminalService.modifyTerminal(param);
-            digitTwinService.sendToDigitTwin(param, "U");
+//            digitTwinService.sendToDigitTwin(param, "U");
             modelAndView.addObject("result", "success");
         }catch (Exception e){
             e.printStackTrace();

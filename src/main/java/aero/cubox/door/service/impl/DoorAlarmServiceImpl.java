@@ -56,7 +56,7 @@ public class DoorAlarmServiceImpl extends EgovAbstractServiceImpl implements Doo
         doorAlarmDAO.addDoorAlarmGrp(commandMap);
         newAlarmGroupId = commandMap.get("doorAlarmGrpId").toString();
 
-        commandMap.put("dooralramGrpId", newAlarmGroupId);
+        commandMap.put("dooralarm_grp_id", newAlarmGroupId);
 
         //출입권한-출입문 table에 door_id Insert
         if( !isEmpty((String) commandMap.get("doorIds"))){
@@ -69,7 +69,7 @@ public class DoorAlarmServiceImpl extends EgovAbstractServiceImpl implements Doo
                 String[] doorIdArr = doorIds.split("/");
                 for (int i = 0; i < doorIdArr.length; i++) {
                     commandMap.put("doorId", doorIdArr[i]);
-                    doorAlarmDAO.addDoorInDoorAlarmGroup(commandMap);
+                    doorAlarmDAO.updateDoorAlarmGroupId(commandMap);
                 }
             }
         }
@@ -84,8 +84,7 @@ public class DoorAlarmServiceImpl extends EgovAbstractServiceImpl implements Doo
     public void updateDoorAlarmGrp(Map<String, Object> commandMap) {
         doorAlarmDAO.updateDoorAlarmGrp(commandMap);
 
-        commandMap.put("dooralramGrpId", commandMap.get("id").toString());
-        doorAlarmDAO.deleteDoorInDoorAlarmGroup(commandMap);
+        commandMap.put("dooralarm_grp_id", commandMap.get("id").toString());
 
         //출입권한-출입문 table에 door_id Insert
         if( !isEmpty((String) commandMap.get("doorIds"))){
@@ -98,7 +97,7 @@ public class DoorAlarmServiceImpl extends EgovAbstractServiceImpl implements Doo
                 String[] doorIdArr = doorIds.split("/");
                 for (int i = 0; i < doorIdArr.length; i++) {
                     commandMap.put("doorId", doorIdArr[i]);
-                    doorAlarmDAO.addDoorInDoorAlarmGroup(commandMap);
+                    doorAlarmDAO.updateDoorAlarmGroupId(commandMap);
                 }
             }
         }
@@ -111,7 +110,9 @@ public class DoorAlarmServiceImpl extends EgovAbstractServiceImpl implements Doo
      */
     @Override
     public void deleteDoorAlarmGrp(int id) {
+
         doorAlarmDAO.deleteDoorAlarmGrp(id);
+        doorAlarmDAO.deleteDoorAlarmGrpDoor(id);
     }
 
     @Override

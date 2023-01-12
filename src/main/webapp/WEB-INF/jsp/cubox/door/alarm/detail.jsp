@@ -81,14 +81,7 @@
         } else if (fnIsEmpty($("#alTime").val())) {
             alert("시간을 입력해주세요.");
             $("#alTime").focus(); return;
-        } else if (fnIsEmpty($("#alUseYn").val())) {
-            alert("사용여부를 선택해주세요.");
-            $("#alUseYn").focus(); return;
         }
-        // else if (fnIsEmpty($("#doorIds").val() || $("#alDoorCnt").val()) == 0) {
-        //     alert("출입문을 선택해주세요.");
-        //     return;
-        // }
 
         if (confirm("출입문 알람그룹을 저장하시겠습니까?")) {
             fnUpdateAlarmGroupAjax();
@@ -160,7 +153,6 @@
         let alNm = $("#alNm").val();
         let envYn = $("#alType").val();
         let alTime = $("#alTime").val();
-        let deleteYn = $("#alUseYn").val();
         let doorIds = $("#doorIds").val();
         let url = "<c:url value='/door/alarm/modify/${doorGroupDetail.id}'/>"
         // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
@@ -172,7 +164,6 @@
                 nm: alNm,
                 envYn: envYn,
                 time: alTime,
-                deleteYn: deleteYn,
                 doorIds: doorIds
             },
             dataType: "json",
@@ -246,16 +237,7 @@
                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');this.value = this.value.slice(0,this.maxLength);" disabled>&ensp;초
                 </td>
             </tr>
-            <tr>
-                <th>사용</th>
-                <td>
-                    <select id="alUseYn" name="detail" class="form-control input_com w_600px" style="padding-left:10px;" disabled>
-                        <option value="">선택</option>
-                        <option value="Y" <c:if test="${doorGroupDetail.delete_yn eq 'Y'}" >selected </c:if>>사용</option>
-                        <option value="N" <c:if test="${doorGroupDetail.delete_yn eq 'N'}" >selected </c:if>>미사용</option>
-                    </select>
-                </td>
-            </tr>
+
             <tr>
                 <th>출입문 수</th>
                 <td>

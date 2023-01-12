@@ -295,7 +295,7 @@
           <input type="text" id="doorNm" name="doorNm" class="w_250px input_com l_radius_no" readonly="readonly" value="<c:out value='${data.doorNm}'/>" placeholder="출입문 명" maxlength="20" style="border:1px solid #ccc;"/>
         </c:if>
         <c:if test="${isModify}">
-          <select name="doorId" id="doorId" size="1" class="w_150px input_com">
+          <select name="doorId" id="doorId" size="1" class="w_250px input_com">
             <c:forEach var="list" items="${doorCombList}">
               <option <c:if test="${data.doorId == list.cd}">selected</c:if> value="${list.cd}">${list.cdNm}</option>
             </c:forEach>
@@ -316,7 +316,7 @@
           <input type="text" id="terminalTypNm" name="terminalTypNm" class="w_250px input_com l_radius_no" readonly="readonly" value="<c:out value='${data.terminalTypNm}'/>" placeholder="단말기 유형" maxlength="20" style="border:1px solid #ccc;"/>
         </c:if>
         <c:if test="${isModify}">
-           <select name="terminalTyp" id="terminalTyp" size="1" class="w_150px input_com">
+           <select name="terminalTyp" id="terminalTyp" size="1" class="w_250px input_com">
              <c:forEach var="list" items="${terminalTypCombList}">
                <option <c:if test="${data.terminalTyp == list.cd}">selected</c:if> value="${list.cd}">${list.cdNm}</option>
              </c:forEach>
@@ -337,7 +337,7 @@
           <input type="text" id="complexAuthTypNm" name="complexAuthTypNm" class="w_250px input_com l_radius_no" readonly="readonly" value="<c:out value='${data.complexAuthTypNm}'/>" placeholder="출입인증방식" maxlength="20" style="border:1px solid #ccc;"/>
         </c:if>
         <c:if test="${isModify}">
-          <select name="complexAuthTyp" id="complexAuthTyp" size="1" class="w_150px input_com">
+          <select name="complexAuthTyp" id="complexAuthTyp" size="1" class="w_250px input_com">
             <c:forEach var="list" items="${complexAuthTypCombList}">
               <option <c:if test="${data.complexAuthTyp == list.cd}">selected</c:if> value="${list.cd}">${list.cdNm}</option>
             </c:forEach>
@@ -350,7 +350,7 @@
           <input type="text" id="faceAuthTypNm" name="faceAuthTypNm" class="w_250px input_com l_radius_no" readonly="readonly" value="<c:out value='${data.faceAuthTypNm}'/>" placeholder="얼굴인증방식" maxlength="20" style="border:1px solid #ccc;"/>
         </c:if>
         <c:if test="${isModify}">
-          <select name="faceAuthTyp" id="faceAuthTyp" size="1" class="w_150px input_com">
+          <select name="faceAuthTyp" id="faceAuthTyp" size="1" class="w_250px input_com">
             <c:forEach var="list" items="${faceAuthTypCombList}">
               <option <c:if test="${data.faceAuthTyp == list.cd}">selected</c:if> value="${list.cd}">${list.cdNm}</option>
             </c:forEach>
@@ -360,12 +360,12 @@
       <div class="comm_search w_100p mb_20" style="line-height: 30px">
         <div class="w_150px fl"><em>운영모드방식</em></div>
         <c:if test="${!isModify}">
-          <input type="text" id="opModeTypNm" name="opModeTypNm" class="w_250px input_com l_radius_no" readonly="readonly" value="<c:out value='${data.faceAuthTypNm}'/>" placeholder="얼굴인증방식" maxlength="20" style="border:1px solid #ccc;"/>
+          <input type="text" id="opModeTypNm" name="opModeTypNm" class="w_250px input_com l_radius_no" readonly="readonly" value="<c:out value='${data.opModeTypNm}'/>" placeholder="운영모드방식" maxlength="20" style="border:1px solid #ccc;"/>
         </c:if>
         <c:if test="${isModify}">
-          <select name="OpModeTyp" id="OpModeTyp" size="1" class="w_150px input_com">
+          <select name="OpModeTyp" id="OpModeTyp" size="1" class="w_250px input_com">
             <c:forEach var="list" items="${opModeTypCombList}">
-              <option <c:if test="${data.OpModeTyp == list.cd}">selected</c:if> value="${list.cd}">${list.cdNm}</option>
+              <option <c:if test="${data.opModeTyp == list.cd}">selected</c:if> value="${list.cd}">${list.cdNm}</option>
             </c:forEach>
           </select>
         </c:if>

@@ -84,10 +84,6 @@
             alert("시간을 입력해주세요.");
             $("#alTime").focus();
             return;
-        } else if (fnIsEmpty($("#alUseYn").val())) {
-            alert("사용여부를 선택해주세요.");
-            $("#alUseYn").focus();
-            return;
         }
         // else if (fnIsEmpty($("#doorIds").val() || $("#alDoorCnt").val()) == 0) {
         //     alert("출입문을 선택해주세요.");
@@ -108,7 +104,6 @@
         let alNm = $("#alNm").val();
         let envYn = $("#alType").val();
         let alTime = $("#alTime").val();
-        let deleteYn = $("#alUseYn").val();
         let doorIds = $("#doorIds").val();
         // TODO : 저장할 때 #alTime disabled 된 것 풀어줘야 함.
 
@@ -119,7 +114,6 @@
                 nm: alNm,
                 time: alTime,
                 envYn: envYn,
-                deleteYn: deleteYn,
                 doorIds: doorIds
             },
             dataType: "json",
@@ -185,16 +179,6 @@
                 <td>
                     <input type="number" id="alTime" name="detail" min="1" max="9999" maxlength="4" value="" class="input_com w_600px"
                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');this.value = this.value.slice(0,this.maxLength);" disabled>&ensp;초
-                </td>
-            </tr>
-            <tr>
-                <th>사용</th>
-                <td>
-                    <select id="alUseYn" name="alUseYn" class="form-control input_com w_600px" style="padding-left:10px;">
-                        <option value="" selected>선택</option>
-                        <option value="Y">사용</option>
-                        <option value="N">미사용</option>
-                    </select>
                 </td>
             </tr>
             <tr>

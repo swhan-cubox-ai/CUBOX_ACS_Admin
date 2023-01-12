@@ -27,10 +27,6 @@ public class DigitTwinService extends EgovAbstractServiceImpl {
     @Autowired
     TerminalService terminalService;
 
-//    @Value("#{property['Globals.digitwin_host']}")
-//    private String digitwin_host;
-
-
     private static String txtKey = "Yk1g690tRe1bMk12";
     private static String txtIv = "H21nBU97L19Vc122";
 

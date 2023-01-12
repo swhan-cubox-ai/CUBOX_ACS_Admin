@@ -149,9 +149,6 @@ public class DoorAlarmController {
 
         HashMap doorGroupDetail = doorAlarmService.getDoorAlarmGrpDetail(id);
 
-        HashMap parmaMap = new HashMap();
-        List<HashMap> scheduleList = doorScheduleService.getDoorScheduleList(parmaMap);      // 스케쥴 목록
-
         model.addAttribute("doorGroupDetail", doorGroupDetail);
 
         return "cubox/door/alarm/detail";
@@ -210,7 +207,6 @@ public class DoorAlarmController {
         String nm = StringUtil.nvl(commandMap.get("nm"), "");
         String time = StringUtil.nvl(commandMap.get("time"), "");
         String envYn = StringUtil.nvl(commandMap.get("envYn"), "");
-        String deleteYn = StringUtil.nvl(commandMap.get("deleteYn"), "");
         String doorIds = StringUtil.nvl(commandMap.get("doorIds"), "");
 
         HashMap param = new HashMap();
@@ -219,7 +215,6 @@ public class DoorAlarmController {
         param.put("nm", nm);
         param.put("time", time);
         param.put("envYn", envYn);
-        param.put("deleteYn", deleteYn);
         param.put("doorIds", doorIds);
 
         try {

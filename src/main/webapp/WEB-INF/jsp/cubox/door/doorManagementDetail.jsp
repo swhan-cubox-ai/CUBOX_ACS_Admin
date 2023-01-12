@@ -370,9 +370,9 @@
 
     // 버튼 보여주기
     function viewButtons() {
-        if (crudType !== "R") {
+        // if (crudType !== "R") {
             $("#btn_wrapper").css("display", "block");
-        }
+        // }
     }
 
     // 버튼 숨기기
@@ -383,9 +383,9 @@
     // title 설정
     function setTitle(type, txt) {
         if (type === "add") {
-            if (crudType !== "R") {
+            // if (crudType !== "R") {
                 $("#titleProp").text(txt + " 추가");
-            }
+            // }
         } else if (type === "detail") {
             $("#titleProp").text(txt + " 속성");
         }
