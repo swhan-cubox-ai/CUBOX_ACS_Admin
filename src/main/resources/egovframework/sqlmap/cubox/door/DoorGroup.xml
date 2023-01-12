@@ -3,7 +3,7 @@
 
 <mapper namespace="door.group">
 
-    <select id="selectDoorGroupList"  parameterType="HashMap" resultType="HashMap">
+    <select id="selectSchDoorGroupList"  parameterType="HashMap" resultType="HashMap">
         SELECT A.id
              , A.nm
              , A.door_sch_id
