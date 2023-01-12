@@ -122,11 +122,9 @@
             $("#btnExcelDownload, #btnExcelUpload").css("display", "none"); // 엑셀 다운로드, 업로드 버튼
             $(".hideSelectBtn").remove(); // 단말기코드, 권한그룹 선택 버튼
             $(".paddingForBtn").attr("colspan", "2").removeClass("paddingForBtn"); // 단말기코드, 권한그룹 길이 조정
-            let schVal = ($("#selSchedule option:selected").val() === "") ? "없음" : $("#selSchedule option:selected").text();
-            $("#selSchedule option:selected").text(schVal); // 스케쥴
-            let alGrpVal = ($("#doorAlarmGroup option:selected").val() === "") ? "없음" : $("#doorAlarmGroup option:selected").text();
-            $("#doorAlarmGroup option:selected").text(alGrpVal); // 알람그룹
         }
+
+
 
         // 빌딩 선택 시,
         $(".selectBuilding").on('click', function() {
@@ -499,11 +497,21 @@
                 if (dInfo.auth_nms != undefined || dInfo.auth_nms != null) {            // 권한그룹 이름
                     $("#authGroupNm").val(dInfo.auth_nms.split("/ ").join("\r\n"));
                 }
-
                 path = [$(".doorDetailList #dBuilding option:checked").text(), $(".doorDetailList #dFloor option:checked").text(), dInfo.door_nm];
                 $("#doorPath").text(path.join(" > "));                                   // 경로
+                validValue();
             }
         });
+    }
+
+    // 알람그룹, 스케쥴 그룹, 스케쥴 값 없을 시 '없음'으로 표기
+    function validValue() {
+        let schGrpVal = ($("#selSchDoorGroup").val() === "") ? "없음" : $("#selSchDoorGroup").val();
+        $("#selSchDoorGroup").val(schGrpVal); // 스케쥴 그룹
+        let schVal = ($("#selSchedule").val() === "") ? "없음" : $("#selSchedule").val();
+        $("#selSchedule").val(schVal); // 스케쥴
+        let alGrpVal = ($("#doorAlarmGroup option:selected").val() === "") ? "없음" : $("#doorAlarmGroup option:selected").text();
+        $("#doorAlarmGroup option:selected").text(alGrpVal); // 알람그룹
     }
 
     // 출입문 관리 - 수정 취소
